@@ -1,4 +1,7 @@
 
-bootJar {
-    mainClassName = "com.aws.codestar.projecttemplates.Application"
+//bootJar {
+//    mainClassName = "com.aws.codestar.projecttemplates.Application"
+//}
+shadowJar{
+    archiveName= "${baseName}-fat.jar"
 }
