@@ -24,6 +24,7 @@ Resources:
     Properties:
       Handler: com.aws.codestar.projecttemplates.handler.HelloWorldHandler
       Runtime: java8
+      CodeUri: 'hello/build/libs/hello.jar'
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
@@ -34,17 +35,3 @@ Resources:
             Path: /
             Method: get
 
-  PostHelloWorld:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: com.aws.codestar.projecttemplates.handler.HelloWorldHandler
-      Runtime: java8
-      Role:
-        Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
-      Events:
-        PostEvent:
-          Type: Api
-          Properties:
-            Path: /
-            Method: post
