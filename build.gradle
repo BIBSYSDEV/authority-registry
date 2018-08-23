@@ -61,7 +61,7 @@ subprojects {
 
     }
 
-    task spec.dependsOn(shadowJar)
+    task spec(dependsOn: shadowJar){}
 
 
 
