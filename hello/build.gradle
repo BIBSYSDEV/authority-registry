@@ -1,0 +1,4 @@
+
+bootJar {
+    mainClassName = "com.aws.codestar.projecttemplates.Application"
+}
