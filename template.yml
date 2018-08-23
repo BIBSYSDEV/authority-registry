@@ -40,7 +40,7 @@ Resources:
     Properties:
       Handler: com.aws.codestar.projecttemplates.handler.HelloWorldHandler
       Runtime: java8
-       CodeUri: './hello/build/libs/hello.jar'
+      CodeUri: './hello/build/libs/hello.jar'
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
