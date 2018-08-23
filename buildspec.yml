@@ -8,11 +8,11 @@ phases:
   pre_build:
     commands:
       - echo Test started on `date`
-      - gradle clean test
+      - ./gradlew clean test
   build:
     commands:
       - echo Build started on `date`
-      - gradle clean build
+      - ./gradlew clean build
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
 artifacts:
   files:
