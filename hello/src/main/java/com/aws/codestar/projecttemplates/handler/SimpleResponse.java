@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class SimpleResponse {
 
-  private String message;
-  private Map<String,String> headers;
-  private int statusCode;
+   String message;
+   Map<String,String> headers;
+   int statusCode;
 
 
 
