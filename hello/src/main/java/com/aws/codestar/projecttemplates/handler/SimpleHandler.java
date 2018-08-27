@@ -2,6 +2,7 @@ package com.aws.codestar.projecttemplates.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.aws.codestar.projecttemplates.GatewayResponse;
 
 
 public class SimpleHandler implements RequestHandler<SimpleRequest, SimpleResponse> {
@@ -12,6 +13,7 @@ public class SimpleHandler implements RequestHandler<SimpleRequest, SimpleRespon
     String name=input.getName();
     Integer age=input.getAge();
     String message=String.format("Hello %s!, Are you %d years old?",name,age);
+
     return new SimpleResponse(message);
 
 
