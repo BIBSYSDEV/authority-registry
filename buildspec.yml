@@ -14,6 +14,7 @@ phases:
       - echo Build started on `date`
       - ./gradlew clean build spec
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
+
 artifacts:
   files:
     - template-export.yml

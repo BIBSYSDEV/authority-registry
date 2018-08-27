@@ -8,6 +8,7 @@ public class SimpleHandler implements RequestHandler<SimpleRequest, SimpleRespon
 
   @Override
   public SimpleResponse handleRequest(SimpleRequest input, Context context) {
+
     String name=input.getName();
     Integer age=input.getAge();
     String message=String.format("Hello %s!, Are you %d years old?",name,age);
