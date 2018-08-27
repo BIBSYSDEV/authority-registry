@@ -5,6 +5,14 @@ public class SimpleRequest {
   private String name;
   private Integer age;
 
+
+  public SimpleRequest(){}
+
+  public SimpleRequest(String name,Integer age){
+    this.name=name;
+    this.age=age;
+  }
+
   public String getName() {
     return name;
   }
