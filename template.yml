@@ -41,7 +41,7 @@ Resources:
   PostHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: com.aws.codestar.projecttemplates.handler.HelloWorldHandler
+      Handler: com.aws.codestar.projecttemplates.handler.SimpleHandler
       Runtime: java8
       CodeUri: './hello/build/libs/hello-fat.jar'
       Role:
