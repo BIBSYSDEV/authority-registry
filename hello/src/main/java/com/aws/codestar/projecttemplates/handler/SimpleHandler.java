@@ -4,6 +4,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.aws.codestar.projecttemplates.GatewayResponse;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -42,14 +44,17 @@ public class SimpleHandler   implements RequestStreamHandler {
       throws IOException {
 
     LambdaLogger logger = context.getLogger();
-
     BufferedReader reader=new BufferedReader(new InputStreamReader(input));
 
-    HashMap<String, Object> jsonMap = (HashMap<String, Object>) objectMapper
-        .readValue(reader, HashMap.class);
-    String keys=String.join(",",jsonMap.keySet());
-    logger.log(keys);
-    String response=new SimpleResponse(keys).toGatewayResponse();
+    JsonFactory jsonFactory=new JsonFactory();
+    ObjectMapper mapper=new ObjectMapper(jsonFactory);
+    JsonNode node = mapper.readTree(reader);
+    JsonNode body = node.get("body");
+    SimpleRequest request=mapper.readValue(body.asText(),SimpleRequest.class);
+    String name=request.getName();
+
+    logger.log(name);
+    String response = new SimpleResponse("hello").toGatewayResponse();
     BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(output));
     writer.write(response);
     writer.close();
