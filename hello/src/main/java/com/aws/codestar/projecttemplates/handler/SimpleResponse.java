@@ -11,8 +11,7 @@ public class SimpleResponse {
 
 
 
-  public SimpleResponse(
-  ){
+  public SimpleResponse(){
     headers=new HashMap<>();
     headers.put("Content-Type", "application/json");
     this.statusCode=200;
@@ -66,5 +65,18 @@ public class SimpleResponse {
   public void setStatusCode(int statusCode) {
     this.statusCode = statusCode;
   }
+
+
+  public String getBody(){
+    return getMessage();
+  }
+
+  public void setBody(String body){
+     setMessage(message);
+  }
+
+
+
+
 
 }
