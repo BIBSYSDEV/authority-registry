@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.HashMap;
 import org.json.JSONObject;
 
@@ -43,12 +44,15 @@ public class SimpleHandler   implements RequestStreamHandler {
   public void handleRequest(InputStream input, OutputStream output, Context context)
       throws IOException {
 
-    LambdaLogger logger = context.getLogger();
-    BufferedReader reader=new BufferedReader(new InputStreamReader(input));
 
+
+    LambdaLogger logger = context.getLogger();
+
+    String inputString=readInput(input);
+    logger.log(inputString);
     JsonFactory jsonFactory=new JsonFactory();
     ObjectMapper mapper=new ObjectMapper(jsonFactory);
-    JsonNode node = mapper.readTree(reader);
+    JsonNode node = mapper.readTree(new StringReader(inputString));
     JsonNode body = node.get("body");
     SimpleRequest request=mapper.readValue(body.asText(),SimpleRequest.class);
     String name=request.getName();
@@ -60,6 +64,18 @@ public class SimpleHandler   implements RequestStreamHandler {
     writer.close();
 
 
-
   }
+
+
+  private String readInput(InputStream stream) throws IOException {
+    BufferedReader reader=new BufferedReader(new InputStreamReader(stream));
+    StringBuffer output=new StringBuffer();
+    String line=reader.readLine();
+    while(line!=null){
+      output.append(line);
+      line=reader.readLine();
+    }
+    return output.toString();
+  }
+
 }
