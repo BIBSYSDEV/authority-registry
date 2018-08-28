@@ -3,7 +3,6 @@ package com.aws.codestar.projecttemplates.handler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import com.aws.codestar.projecttemplates.GatewayResponse;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,30 +14,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.util.HashMap;
-import org.json.JSONObject;
 
 
 
 public class SimpleHandler   implements RequestStreamHandler {
 
-    ObjectMapper objectMapper=new ObjectMapper();
 
 
-//  @Override
-//  public GatewayResponse handleRequest(SimpleRequest input, Context context) {
-//
-//    context.getLogger().log(input.);
-//    String name=input.getName();
-//    Integer age=input.getAge();
-//    String message=String.format("Hello %s!, Are you %d years old?",name,age);
-//
-//    return new SimpleResponse(message).toGatewayResponse();
-//
-//
-//
-//
-//  }
+
 
   @Override
   public void handleRequest(InputStream input, OutputStream output, Context context)
