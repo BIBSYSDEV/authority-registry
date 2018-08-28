@@ -1,6 +1,8 @@
 package com.aws.codestar.projecttemplates.handler;
 
 import com.aws.codestar.projecttemplates.GatewayResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
@@ -69,10 +71,12 @@ public class SimpleResponse {
   }
 
 
-  public GatewayResponse toGatewayResponse(){
+  public String toGatewayResponse() throws JsonProcessingException {
     String body= new JSONObject().put("message",getMessage()).toString();
     GatewayResponse response=new GatewayResponse(body,headers,statusCode);
-    return response;
+    ObjectMapper mapper=new ObjectMapper();
+    String responseStr=mapper.writeValueAsString(response);
+    return responseStr;
 
   }
 

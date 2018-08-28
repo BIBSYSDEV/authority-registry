@@ -3,12 +3,15 @@ package com.aws.codestar.projecttemplates.handler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.aws.codestar.projecttemplates.GatewayResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import org.json.JSONObject;
 
@@ -46,6 +49,10 @@ public class SimpleHandler   implements RequestStreamHandler {
         .readValue(reader, HashMap.class);
     String keys=String.join(",",jsonMap.keySet());
     logger.log(keys);
+    String response=new SimpleResponse(keys).toGatewayResponse();
+    BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(output));
+    writer.write(response);
+    writer.close();
 
 
 

@@ -1,9 +1,14 @@
 package com.aws.codestar.projecttemplates.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 public class SimpleRequest {
 
   private String name;
   private Integer age;
+
 
 
   public SimpleRequest(){}
@@ -52,4 +57,15 @@ public class SimpleRequest {
     result = 31 * result + (age != null ? age.hashCode() : 0);
     return result;
   }
+
+
+  public String toJson() throws JsonProcessingException {
+    ObjectMapper mapper=new ObjectMapper();
+    String json=mapper.writeValueAsString(this);
+    return json;
+  }
+
+
+
+
 }
