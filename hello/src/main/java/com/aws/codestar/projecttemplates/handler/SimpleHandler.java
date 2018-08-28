@@ -57,8 +57,8 @@ public class SimpleHandler   implements RequestStreamHandler {
     SimpleRequest request=mapper.readValue(body.asText(),SimpleRequest.class);
     String name=request.getName();
 
-    logger.log(name);
-    String response = new SimpleResponse("hello").toGatewayResponse();
+    logger.log("*************************"+name);
+    String response = new SimpleResponse(name).toGatewayResponse();
     BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(output));
     writer.write(response);
     writer.close();
