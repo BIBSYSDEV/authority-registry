@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class SimpleHandlerTest {
 
     private static final String EXPECTED_CONTENT_TYPE = "application/json";
-    private static final String EXPECTED_RESPONSE_VALUE = "Hello orestis!, Are you 15 years old?";
+    private static final String EXPECTED_RESPONSE_VALUE = "{\"message\":\"Hello orestis!, Are you 15 years old?\"}";
     private static final int EXPECTED_STATUS_CODE_SUCCESS = 200;
 
     // A mock class for com.amazonaws.services.lambda.runtime.Context
@@ -50,11 +50,11 @@ public class SimpleHandlerTest {
     @Test
     @DisplayName("Basic test for request handler")
     void testHandleRequest() {
-        SimpleResponse response = new SimpleHandler().handleRequest(input, mockLambdaContext);
+        GatewayResponse response = new SimpleHandler().handleRequest(input, mockLambdaContext);
 
         // Verify the response obtained matches the values we expect.
 //        JSONObject jsonObjectFromResponse = new JSONObject(response.getBody());
-        assertEquals(EXPECTED_RESPONSE_VALUE, response.getMessage());
+        assertEquals(EXPECTED_RESPONSE_VALUE, response.getBody());
         assertEquals(EXPECTED_CONTENT_TYPE, response.getHeaders().get("Content-Type"));
         assertEquals(EXPECTED_STATUS_CODE_SUCCESS, response.getStatusCode());
     }

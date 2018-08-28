@@ -1,7 +1,9 @@
 package com.aws.codestar.projecttemplates.handler;
 
+import com.aws.codestar.projecttemplates.GatewayResponse;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.JSONObject;
 
 public class SimpleResponse {
 
@@ -67,12 +69,11 @@ public class SimpleResponse {
   }
 
 
-  public String getBody(){
-    return getMessage();
-  }
+  public GatewayResponse toGatewayResponse(){
+    String body= new JSONObject().put("message",getMessage()).toString();
+    GatewayResponse response=new GatewayResponse(body,headers,statusCode);
+    return response;
 
-  public void setBody(String body){
-     setMessage(message);
   }
 
 

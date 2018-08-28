@@ -1,26 +1,51 @@
 package com.aws.codestar.projecttemplates.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.HashMap;
+import org.json.JSONObject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
+public class SimpleHandler   implements RequestStreamHandler {
 
-public class SimpleHandler implements RequestHandler<SimpleRequest, SimpleResponse> {
+    ObjectMapper objectMapper=new ObjectMapper();
 
-  public static final Logger logger=LoggerFactory.getLogger(SimpleHandler.class);
+
+//  @Override
+//  public GatewayResponse handleRequest(SimpleRequest input, Context context) {
+//
+//    context.getLogger().log(input.);
+//    String name=input.getName();
+//    Integer age=input.getAge();
+//    String message=String.format("Hello %s!, Are you %d years old?",name,age);
+//
+//    return new SimpleResponse(message).toGatewayResponse();
+//
+//
+//
+//
+//  }
 
   @Override
-  public SimpleResponse handleRequest(SimpleRequest input, Context context) {
-    logger.info(input.getClass().getName());
-    String name=input.getName();
-    Integer age=input.getAge();
-    String message=String.format("Hello %s!, Are you %d years old?",name,age);
+  public void handleRequest(InputStream input, OutputStream output, Context context)
+      throws IOException {
 
-    return new SimpleResponse(message);
+    LambdaLogger logger = context.getLogger();
 
+    BufferedReader reader=new BufferedReader(new InputStreamReader(input));
+
+    HashMap<String, Object> jsonMap = (HashMap<String, Object>) objectMapper
+        .readValue(reader, HashMap.class);
+    String keys=String.join(",",jsonMap.keySet());
+    logger.log(keys);
 
 
 

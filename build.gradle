@@ -49,10 +49,12 @@ subprojects {
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
         testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
 
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springVersion}"
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: "${springVersion}"
+//        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springVersion}"
+//        compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: "${springVersion}"
         compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
         compile group: 'org.json', 'name': 'json', version: '20180130'
+
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
         testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
         testCompile "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
