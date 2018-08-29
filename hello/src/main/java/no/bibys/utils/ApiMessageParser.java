@@ -22,6 +22,7 @@ public class ApiMessageParser<T> {
     JsonNode body = tree.map(node -> node.get("body")).orElse(null);
     T request=null;
     if(body!=null){
+      // body should always be a string for A lambda fuction connected to the API
       if(body.isValueNode()){
         request=parseBody(mapper, body.asText(),tClass);
       }

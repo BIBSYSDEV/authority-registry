@@ -3,11 +3,13 @@ package no.bibys.handlers;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
 import no.bibys.handlers.responses.GatewayResponse;
 import no.bibys.utils.ApiMessageParser;
 import no.bibys.utils.IOUtils;
@@ -15,58 +17,57 @@ import no.bibys.utils.IOUtils;
 public abstract class HandlerHelper<I, O> {
 
 
-  private final Class<I> iclass;
-  private final Class<O> oclass;
-  private  OutputStream outputStream;
-  private  Context context;
-  private InputStream inputStream;
+    private final Class<I> iclass;
+    private final Class<O> oclass;
+    private OutputStream outputStream;
+    private Context context;
+    private InputStream inputStream;
 
 
+    private ApiMessageParser<I> inputParser = new ApiMessageParser<>();
+
+    private IOUtils ioUtils = new IOUtils();
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    public HandlerHelper(Class<I> iclass, Class<O> oclass) {
+        this.iclass = iclass;
+        this.oclass = oclass;
+
+    }
 
 
-  private ApiMessageParser<I> inputParser = new ApiMessageParser<>();
+    public void init(InputStream inputStream, OutputStream outputStream, Context context) {
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
+        this.context = context;
+    }
 
-  private IOUtils ioUtils = new IOUtils();
-  private ObjectMapper objectMapper = new ObjectMapper();
+    public I parseInput(InputStream inputStream)
+            throws IOException {
+        String inputString = ioUtils.streamToString(inputStream);
 
-  public HandlerHelper(Class<I> iclass,Class<O> oclass) {
-    this.iclass = iclass;
-    this.oclass = oclass;
+        I input = inputParser.getBodyElementFromJson(inputString, iclass);
 
-  }
+        return input;
 
+    }
 
+    abstract O processInput(I input);
 
- public void init(InputStream inputStream, OutputStream outputStream, Context context){
-    this.inputStream=inputStream;
-    this.outputStream=outputStream;
-    this.context=context;
- }
+    public void writeOutput(O output) throws IOException {
 
-  public I parseInput(InputStream inputStream)
-      throws IOException {
-    String inputString = ioUtils.streamToString(inputStream);
+        String outputString = objectMapper.writeValueAsString(output);
+        GatewayResponse gatewayResponse = new GatewayResponse(outputString);
+        String responseJson = objectMapper.writeValueAsString(gatewayResponse);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+        writer.write(responseJson);
+        writer.close();
 
-    I input = inputParser.getBodyElementFromJson(inputString, iclass);
-
-    return input;
-
-  }
-
-  abstract O processInput(I input);
-
-  public void writeOutput(O o) throws IOException {
-    GatewayResponse<O> gatewayResponse = new GatewayResponse<O>(o);
-    String responseJson = objectMapper.writeValueAsString(gatewayResponse);
-    BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
-    writer.write(responseJson);
-    writer.close();
-
-  }
+    }
 
 
-  protected Context getContext(){
-    return this.context;
-  }
+    protected Context getContext() {
+        return this.context;
+    }
 
 }
