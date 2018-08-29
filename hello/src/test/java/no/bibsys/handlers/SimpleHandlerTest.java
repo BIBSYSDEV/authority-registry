@@ -1,5 +1,6 @@
 package no.bibsys.handlers;
 
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -13,8 +14,8 @@ import no.bibsys.utils.ReadableOutputStream;
 import no.bibys.handlers.HelloWorldHandler;
 import no.bibys.handlers.SimpleHandler;
 import no.bibys.handlers.responses.SimpleResponse;
-import no.bibys.utils.IOUtils;
 import no.bibys.utils.ApiMessageParser;
+import no.bibys.utils.IOUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +36,6 @@ public class SimpleHandlerTest implements IOTestUtils {
   private IOUtils ioUtils=new IOUtils();
   private ApiMessageParser<SimpleResponse> responseParser=new ApiMessageParser<>();
 
-  public SimpleHandlerTest() throws IOException {
-  }
 
 
   /**
@@ -44,7 +43,7 @@ public class SimpleHandlerTest implements IOTestUtils {
    */
   @Test
   @DisplayName("Basic test for request handler")
-  void testHandleRequest() throws IOException {
+  public  void testHandleRequest() throws IOException {
     String json = resourceAsString(Paths.get("api", "apiInput.txt"));
 
     ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());

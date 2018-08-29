@@ -7,9 +7,9 @@ import java.util.Map;
 /**
  * POJO containing response object for API Gateway.
  */
-public class GatewayResponse {
+public class GatewayResponse<O> {
 
-    private  String body;
+    private  O body;
     private  Map<String, String> headers;
     private  int statusCode;
 
@@ -17,13 +17,13 @@ public class GatewayResponse {
 
     public GatewayResponse(){};
 
-    public GatewayResponse(final String body, final Map<String, String> headers, final int statusCode) {
+    public GatewayResponse(final O body, final Map<String, String> headers, final int statusCode) {
         this.statusCode = statusCode;
         this.body = body;
         this.headers = Collections.unmodifiableMap(new HashMap<>(headers));
     }
 
-    public GatewayResponse(final String body){
+    public GatewayResponse(final O body){
         this.body=body;
         HashMap<String, String> map = new HashMap<>();
         map.put("Content-Type", "application/json");
@@ -32,7 +32,7 @@ public class GatewayResponse {
     }
 
 
-    public String getBody() {
+    public O getBody() {
         return body;
     }
 
@@ -44,7 +44,7 @@ public class GatewayResponse {
         return statusCode;
     }
 
-    public void setBody(String body) {
+    public void setBody(O body) {
         this.body = body;
     }
 

@@ -56,8 +56,7 @@ public abstract class HandlerHelper<I, O> {
   abstract O processInput(I input);
 
   public void writeOutput(O o) throws IOException {
-    String json = objectMapper.writeValueAsString(o);
-    GatewayResponse gatewayResponse = new GatewayResponse(json);
+    GatewayResponse<O> gatewayResponse = new GatewayResponse<O>(o);
     String responseJson = objectMapper.writeValueAsString(gatewayResponse);
     BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
     writer.write(responseJson);

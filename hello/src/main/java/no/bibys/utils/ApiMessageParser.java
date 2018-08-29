@@ -3,9 +3,11 @@ package no.bibys.utils;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +19,36 @@ public class ApiMessageParser<T> {
     JsonFactory jsonFactory = new JsonFactory();
     ObjectMapper mapper = new ObjectMapper(jsonFactory);
     Optional<JsonNode> tree = Optional.ofNullable(mapper.readTree(new StringReader(inputString)));
-    Optional<JsonNode> body = tree.map(node -> node.get("body"));
-    Optional<T> request=body.map(b->parseBody(mapper,b.asText(),tClass));
-    return request.orElse(null);
+    JsonNode body = tree.map(node -> node.get("body")).orElse(null);
+    T request=null;
+    if(body!=null){
+      if(body.isValueNode()){
+        request=parseBody(mapper, body.asText(),tClass);
+      }
+      else{
+        request=parseBody(mapper,body,tClass);
+      }
+    }
 
+    return request;
+
+  }
+
+
+
+  private T parseBody(ObjectMapper mapper,JsonNode node, Class<T> tclass) throws IOException {
+    try{
+
+      T result = mapper.readValue(new TreeTraversingParser(node), tclass);
+      return result;
+    }
+    catch(Exception e){
+      String json="null";
+      if(node!=null)
+         json=node.toString();
+      logger.error("Error parsing JsonNode:{}",json);
+      return null;
+    }
   }
 
 
