@@ -28,13 +28,18 @@ import org.junit.jupiter.api.Test;
 public class HelloWorldHandlerTest implements IOTestUtils {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
-  private static final String EXPECTED_RESPONSE_VALUE = "Hello World!";
+  private static final String EXPECTED_BODY_VALUE = "{\"message\":\"Hello World!\"}";
+  private static final String EXPECTED_MESSAGE_VALUE = "Hello World!";
+
   private static final int EXPECTED_STATUS_CODE_SUCCESS = 200;
 
   // A mock class for com.amazonaws.services.lambda.runtime.Context
   private final MockLambdaContext mockLambdaContext = new MockLambdaContext();
-  IOUtils ioUtils = new IOUtils();
+
+  private IOUtils ioUtils = new IOUtils();
   private ApiMessageParser<SimpleResponse> outputMessageParser = new ApiMessageParser<>();
+  private ObjectMapper mapper=new ObjectMapper();
+
 
   /**
    * Basic test to verify the result obtained when calling {@link HelloWorldHandler} successfully.
@@ -50,16 +55,16 @@ public class HelloWorldHandlerTest implements IOTestUtils {
         mockLambdaContext);
 
     String outputString = ioUtils.readerToString(ros.reader);
-    ObjectMapper mapper = new ObjectMapper();
-
 
     SimpleResponse outputMessage = outputMessageParser
         .getBodyElementFromJson(outputString, SimpleResponse.class);
 
     // Verify the response obtained matches the values we expect.
-    JSONObject jsonObjectFromResponse = new JSONObject(outputString);
-    assertEquals(EXPECTED_RESPONSE_VALUE, outputMessage.getMessage());
-//    assertEquals(EXPECTED_CONTENT_TYPE, gatewayResponse.getHeaders().get("Content-Type"));
-//    assertEquals(EXPECTED_STATUS_CODE_SUCCESS, gatewayResponse.getStatusCode());
+    GatewayResponse gatewayResponse= mapper.readValue(outputString,GatewayResponse.class) ;
+
+    assertEquals(EXPECTED_BODY_VALUE, gatewayResponse.getBody());
+    assertEquals(EXPECTED_MESSAGE_VALUE, outputMessage.getMessage());
+    assertEquals(EXPECTED_CONTENT_TYPE, gatewayResponse.getHeaders().get("Content-Type"));
+    assertEquals(EXPECTED_STATUS_CODE_SUCCESS, gatewayResponse.getStatusCode());
   }
 }
