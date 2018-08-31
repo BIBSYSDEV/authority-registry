@@ -49,11 +49,15 @@ subprojects {
 
 
         testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
+        compile group: 'org.json', 'name': 'json', version: '20180130'
 
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springVersion}"
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: "${springVersion}"
         compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
-        compile group: 'org.json', 'name': 'json', version: '20180130'
+
+
+        compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
+
 
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
         testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"

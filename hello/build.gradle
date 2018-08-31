@@ -3,3 +3,13 @@ shadowJar{
     archiveName= "${baseName}-fat.jar"
 }
 
+dependencies{
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.398'
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+}
+
+repositories {
+    maven {
+        url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'
+    }
+}
