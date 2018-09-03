@@ -1,15 +1,12 @@
 package no.bibys.handlers;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
 import no.bibys.handlers.responses.GatewayResponse;
 import no.bibys.utils.ApiMessageParser;
 import no.bibys.utils.IOUtils;
@@ -68,6 +65,17 @@ public abstract class HandlerHelper<I, O> {
 
     protected Context getContext() {
         return this.context;
+    }
+
+
+
+
+    public void handleRequest(InputStream input, OutputStream output, Context context)
+        throws IOException {
+        init(input,output,context);
+        I inputString=parseInput(input);
+        O outputMessage = processInput(inputString);
+        writeOutput(outputMessage);
     }
 
 }
