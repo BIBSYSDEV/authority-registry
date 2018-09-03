@@ -1,39 +1,40 @@
 package no.bibsys.db;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-import java.util.ArrayList;
-import no.bibsys.utils.IOTestUtils;
-import no.bibys.db.TableCreator;
-import no.bibys.db.structures.LanguageString;
-import no.bibys.db.structures.SimpleEntry;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 
-public class TableCreatorTest implements IOTestUtils {
+import org.junit.Test;
+
+public class TableCreatorTest {
 
 
-  String tableName="itemTable";
-  SimpleEntry entry;
-  AmazonDynamoDB client= DynamoDBEmbedded.create().amazonDynamoDB();
+//  String tableName="itemTable";
+//  SimpleEntry entry;
+//  AmazonDynamoDB client= DynamoDBEmbedded.create().amazonDynamoDB();
 
-  TableCreator tableCreator=new TableCreator(client);
+//  TableCreator tableCreator=new TableCreator(client);
 
-  @BeforeEach
-  public void init(){
-    ArrayList<LanguageString> labels=new ArrayList<>();
-    labels.add(new LanguageString("The preferred label","en"));
-    entry=new SimpleEntry("DasID",labels);
-  }
-
+//  @BeforeEach
+//  public void init(){
+//    ArrayList<LanguageString> labels=new ArrayList<>();
+//    labels.add(new LanguageString("The preferred label","en"));
+//    entry=new SimpleEntry("DasID",labels);
+//  }
 
 
 
   @Test
-  public void createTable() throws InterruptedException {
-    tableCreator.createTable(tableName, entry);
-
+  public void testTest(){
+    assertThat(2, is(equalTo(1)));
   }
+
+//  @Test
+//  public void createTable() throws InterruptedException {
+//    tableCreator.createTable(tableName, entry);
+//    throw new RuntimeException("AAAAAAAAAAAAAa");
+//
+//  }
 
 
 //  @Test

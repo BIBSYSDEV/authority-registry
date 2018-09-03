@@ -5,7 +5,15 @@ shadowJar{
 
 dependencies{
     compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.398'
-    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+//    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+//
+//
+////    testCompile "com.almworks.sqlite4java:sqlite4java-win32-x86:1.0.392"
+////    testCompile "com.almworks.sqlite4java:sqlite4java-win32-x64:1.0.392"
+////    testCompile "com.almworks.sqlite4java:libsqlite4java-osx:1.0.392"
+////    testCompile "com.almworks.sqlite4java:libsqlite4java-linux-i386:1.0.392"
+////    testCompile "com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392"
+//
 }
 
 repositories {
@@ -13,3 +21,36 @@ repositories {
         url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'
     }
 }
+
+
+
+
+
+
+
+
+//task copyNativeDeps(type: Copy) {
+//    from(configurations.compile + configurations.testCompile) {
+//        include '*.dll'
+//        include '*.dylib'
+//        include '*.so'
+//    }
+//    into 'build/libs'
+//}
+
+
+//
+//test {
+//    dependsOn copyNativeDeps
+//    systemProperty "java.library.path", 'build/libs'
+//    useJUnitPlatform()
+//    testLogging {
+//        events "passed", "skipped", "failed"
+//        exceptionFormat "FULL"
+//        outputs.upToDateWhen {false}
+//        showStandardStreams = true
+//        reports.html.enabled=true
+//    }
+//
+//
+//}
