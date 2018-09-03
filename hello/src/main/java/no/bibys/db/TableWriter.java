@@ -28,9 +28,6 @@ public class TableWriter extends TableDriver {
   }
 
 
-
-
-
   public void insertEntry(Entry entry) throws JsonProcessingException {
     String json = mapper.writeValueAsString(entry);
     insertJson(json);

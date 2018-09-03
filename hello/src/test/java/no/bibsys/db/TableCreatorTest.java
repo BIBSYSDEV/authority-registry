@@ -1,65 +1,30 @@
 package no.bibsys.db;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
+import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
+import no.bibsys.utils.IOTestUtils;
+import org.junit.jupiter.api.Test;
 
-public class TableCreatorTest {
 
-
-//  String tableName="itemTable";
-//  SimpleEntry entry;
-//  AmazonDynamoDB client= DynamoDBEmbedded.create().amazonDynamoDB();
-
-//  TableCreator tableCreator=new TableCreator(client);
-
-//  @BeforeEach
-//  public void init(){
-//    ArrayList<LanguageString> labels=new ArrayList<>();
-//    labels.add(new LanguageString("The preferred label","en"));
-//    entry=new SimpleEntry("DasID",labels);
-//  }
+public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
 
 
 
   @Test
-  public void testTest(){
-    assertThat(2, is(equalTo(1)));
+  public void createTable() throws InterruptedException {
+    tableCreator.createTable(tableName, entry);
+    ListTablesResult tables = client.listTables();
+    int numberOftables=tables.getTableNames().size();
+    assertThat(numberOftables,is(equalTo(1)));
+
+
   }
 
-//  @Test
-//  public void createTable() throws InterruptedException {
-//    tableCreator.createTable(tableName, entry);
-//    throw new RuntimeException("AAAAAAAAAAAAAa");
-//
-//  }
 
 
-//  @Test
-//  public void insertItem() throws JsonProcessingException {
-//   init();
-//    TableWriter entryManager=new TableWriter("itemTable");
-//    entryManager.insertEntry(entry);
-//
-//  }
-//
-//
-//
-//
-//  @Test
-//  public void insertJson() throws IOException {
-//    String json=resourceAsString(Paths.get("db","sample.json"));
-//    Item inputItem= Item.fromJSON(json);
-//    TableWriter entryManager=new TableWriter(tableName);
-//    entryManager.insertJson(json);
-//    TableReader tableReader=new TableReader(tableName);
-//    String output=tableReader.getEntry("id01");
-//    Item outputItem=Item.fromJSON(output);
-//    assertThat(outputItem, is(equalTo(inputItem)));
-//
-//  }
 //
 //
 //

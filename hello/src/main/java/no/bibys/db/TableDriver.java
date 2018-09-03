@@ -10,11 +10,6 @@ public abstract class TableDriver {
   DynamoDB dynamoDB;
 
 
-//  protected TableDriver(){
-//    this(AmazonDynamoDBClientBuilder.standard().build());
-//  }
-
-
   public TableDriver(AmazonDynamoDB client){
     this.client=client;
     dynamoDB=new DynamoDB(client);
