@@ -12,7 +12,7 @@ import no.bibys.db.TableReader;
 import no.bibys.db.TableWriter;
 import org.junit.jupiter.api.Test;
 
-public class TableWriterTest extends  LocalDynamoTest implements IOTestUtils {
+public class TableWriterAndReaderTest extends  LocalDynamoTest implements IOTestUtils {
 
 
 
@@ -27,7 +27,7 @@ public class TableWriterTest extends  LocalDynamoTest implements IOTestUtils {
     entryManager.insertJson(json);
     TableReader tableReader=new TableReader(tableName,client);
     String output=tableReader.getEntry("id01");
-    Item outputItem=Item.fromJSON(output.toUpperCase());
+    Item outputItem=Item.fromJSON(output);
     assertThat(outputItem, is(equalTo(inputItem)));
 
   }

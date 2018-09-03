@@ -23,20 +23,4 @@ public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
 
   }
 
-
-
-//
-//
-//
-//
-//
-//  @Test
-//  public void getItem() throws IOException {
-//    insertJson();
-//    TableReader entryManager=new TableReader(tableName);
-//    String json=entryManager.getEntry("id01");
-//    System.out.println(json);
-//
-//  }
-
 }
