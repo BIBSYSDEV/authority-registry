@@ -8,9 +8,8 @@ import no.bibys.handlers.responses.SimpleResponse;
 public class SimpleHandler extends HandlerHelper<SimpleRequest,SimpleResponse>  implements RequestStreamHandler {
 
 
-  public SimpleHandler(Class<SimpleRequest> iclass,
-      Class<SimpleResponse> oclass) {
-    super(iclass, oclass);
+  public SimpleHandler() {
+    super(SimpleRequest.class, SimpleResponse.class);
   }
 
   @Override
