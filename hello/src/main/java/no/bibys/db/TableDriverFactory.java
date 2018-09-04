@@ -6,20 +6,20 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 
 public class TableDriverFactory {
 
-  private  DynamoDB dynamoDB;
-  private  AmazonDynamoDB client;
+  private DynamoDB dynamoDB;
+  private AmazonDynamoDB client;
 
 
-  public TableDriver build(){
+  public TableDriver build() {
     init();
-    return new TableDriver(client,dynamoDB);
+    return new TableDriver(client, dynamoDB);
   }
 
-  private void init(){
-    if(client==null)
-      this.client= AmazonDynamoDBClientBuilder.standard().build();
-
-    this.dynamoDB=new DynamoDB(client);
+  private void init() {
+    if (client == null) {
+      this.client = AmazonDynamoDBClientBuilder.standard().build();
+    }
+    this.dynamoDB = new DynamoDB(client);
   }
 
 

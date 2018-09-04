@@ -11,13 +11,16 @@ import no.bibys.db.structures.Entry;
 public class TableCreator extends TableDriver {
 
 
-  protected TableCreator(TableDriver tableDriver) {
-    super(tableDriver.getClient(), tableDriver.getDynamoDB());
-  }
 
   public static TableCreator create(TableDriverFactory factory) {
     return new TableCreator(factory.build());
   }
+
+
+  private TableCreator(TableDriver tableDriver) {
+    super(tableDriver.getClient(), tableDriver.getDynamoDB());
+  }
+
 
   public void deleteTable(String tableName) {
     client.deleteTable(tableName);

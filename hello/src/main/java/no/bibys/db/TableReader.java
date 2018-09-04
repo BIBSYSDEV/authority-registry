@@ -16,7 +16,7 @@ public class TableReader extends TableDriver {
   private String tableName;
 
 
-  protected TableReader(String tableName, TableDriver tableDriver) {
+  private TableReader(String tableName, TableDriver tableDriver) {
     super(tableDriver.getClient(),tableDriver.getDynamoDB());
 
     this.tableName=tableName;

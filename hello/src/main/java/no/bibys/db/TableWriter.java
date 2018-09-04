@@ -19,7 +19,7 @@ public class TableWriter extends TableDriver  {
 
 
 
-  protected TableWriter(String tableName, TableDriver tableDriver) {
+  private TableWriter(String tableName, TableDriver tableDriver) {
      super(tableDriver.getClient(),tableDriver.getDynamoDB());
     this.tableName = tableName;
     mapper=new ObjectMapper();
