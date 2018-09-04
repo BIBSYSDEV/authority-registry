@@ -3,39 +3,48 @@
 plugins {
     id 'java'
     id 'base'
-    id "org.springframework.boot" version "2.0.4.RELEASE"
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id 'com.github.johnrengelman.shadow' version '2.0.4'
 
 
+}
+repositories {
+    mavenCentral()
 }
 
 def springVersion="2.0.4.RELEASE"
 def junitJupiterVersion="5.2.0"
 def junitPlatformVesion="1.2.0"
 
-dependencies {
-    compile project(":hello")
-
-}
 
 //root project has no executable
 bootJar.enabled = false
 jar.enabled=false
-//
 
-task fatJar{
-    println "Creating fat jars"
+
+
+dependencies {
+    compile project(":hello")
 }
+
+
+allprojects{
+
+
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+}
+
+
+
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'com.github.johnrengelman.shadow'
-
-    shadowJar {
-        zip64 true
-    }
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
     repositories {
         mavenCentral()
     }
@@ -43,34 +52,44 @@ subprojects {
     jar.enabled=false
     bootJar.enabled = false
 
-
     dependencies {
 
+        //json libraries
+        compile group: 'org.json', name: 'json', version: '20180130'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
-        testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
-        compile group: 'org.json', 'name': 'json', version: '20180130'
+        //spring boot libraries
+        compile 'org.springframework.boot:spring-boot-starter-web'
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+        compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springVersion}"
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: "${springVersion}"
+        //connection to amazon
         compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
+        testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
 
-
+        //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 
 
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
+        //junit testing
         testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
         testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
         testCompile "org.junit.platform:junit-platform-launcher:${junitPlatformVesion}"
         testCompile "org.junit.platform:junit-platform-runner:${junitPlatformVesion}"
+
+        //libraries for more expressive testing
         testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+
+
+        //library for using embedded DynamoDB during local tests
         testCompile group: 'com.almworks.sqlite4java', name: 'libsqlite4java-linux-amd64', version: '1.0.392'
 
+
+        shadowJar { zip64 true }
     }
 
 
     test {
-
         useJUnitPlatform()
         testLogging {
             events "passed", "skipped", "failed"
@@ -89,4 +108,8 @@ subprojects {
 }
 
 
+
+task fatJar{
+    println "Creating fat jars"
+}
 

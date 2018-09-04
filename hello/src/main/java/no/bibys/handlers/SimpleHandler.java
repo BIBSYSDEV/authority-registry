@@ -33,9 +33,14 @@ public class SimpleHandler   implements RequestStreamHandler {
       throws IOException {
     helper.init(input,output,context);
     SimpleRequest request=helper.parseInput(input);
-    SimpleResponse response=helper.processInput(request);
+    SimpleResponse response= null;
     helper.writeOutput(response);
-
+    try {
+      response = helper.processInput(request);
+    } catch (IOException e) {
+      e.printStackTrace();
+      helper.writerFailure(e);
+    }
   }
 
 

@@ -12,13 +12,12 @@ import org.junit.jupiter.api.Test;
 public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
 
 
-
   @Test
   public void createTable() throws InterruptedException {
     tableCreator.createTable(tableName, entry);
-    ListTablesResult tables = client.listTables();
-    int numberOftables=tables.getTableNames().size();
-    assertThat(numberOftables,is(equalTo(1)));
+    ListTablesResult tables = tableCreator.getClient().listTables();
+    int numberOftables = tables.getTableNames().size();
+    assertThat(numberOftables, is(equalTo(1)));
 
 
   }

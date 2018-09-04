@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import no.bibys.handlers.responses.GatewayResponse;
 import no.bibys.utils.ApiMessageParser;
 import no.bibys.utils.IOUtils;
+import org.springframework.http.HttpStatus;
 
 public abstract class HandlerHelper<I, O> {
 
@@ -49,10 +50,9 @@ public abstract class HandlerHelper<I, O> {
 
     }
 
-    abstract O processInput(I input);
+    abstract O processInput(I input) throws  IOException;
 
     public void writeOutput(O output) throws IOException {
-
         String outputString = objectMapper.writeValueAsString(output);
         GatewayResponse gatewayResponse = new GatewayResponse(outputString);
         String responseJson = objectMapper.writeValueAsString(gatewayResponse);
@@ -60,6 +60,17 @@ public abstract class HandlerHelper<I, O> {
         writer.write(responseJson);
         writer.close();
 
+    }
+
+
+    public void writerFailure(Throwable error) throws IOException {
+        String outputString=error.getMessage();
+        GatewayResponse gatewayResponse = new GatewayResponse(outputString,
+            GatewayResponse.defaultHeaders(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        String responseJson=objectMapper.writeValueAsString(gatewayResponse);
+        BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
+        writer.write(responseJson);
+        writer.close();
     }
 
 

@@ -25,10 +25,15 @@ public class GatewayResponse {
 
     public GatewayResponse(final String body){
         this.body=body;
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Content-Type", "application/json");
+        HashMap<String, String> map = defaultHeaders();
         this.headers=Collections.unmodifiableMap(map);
         this.statusCode=200;
+    }
+
+    public static HashMap<String, String> defaultHeaders() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Content-Type", "application/json");
+        return map;
     }
 
 

@@ -22,9 +22,9 @@ public class TableWriterAndReaderTest extends  LocalDynamoTest implements IOTest
     String json=resourceAsString(Paths.get("db","sample.json"));
     Item inputItem= Item.fromJSON(json);
     tableCreator.createTable(tableName,entry);
-    TableWriter entryManager=new TableWriter(tableName,client);
+    TableWriter entryManager=TableWriter.create(tableName,tableDriverFactory);
     entryManager.insertJson(json);
-    TableReader tableReader=new TableReader(tableName,client);
+    TableReader tableReader=TableReader.create(tableName,tableDriverFactory);
     String output=tableReader.getEntry("id01");
     Item outputItem=Item.fromJSON(output);
     assertThat(outputItem, is(equalTo(inputItem)));

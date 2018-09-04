@@ -1,24 +1,25 @@
 package no.bibys.db;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class TableReader extends TableDriver{
 
-  private String tableName;
+public class TableReader extends TableDriver {
 
-  public TableReader(String tableName) {
-    this(tableName,AmazonDynamoDBClientBuilder.standard().build());
+
+  public static TableReader create(String tableName,TableDriverFactory factory){
+    return new TableReader(tableName,factory.build());
   }
 
 
-  public TableReader(String tableName, AmazonDynamoDB client) {
-    super(client);
-    this.tableName = tableName;
+  private String tableName;
 
+
+  protected TableReader(String tableName, TableDriver tableDriver) {
+    super(tableDriver.getClient(),tableDriver.getDynamoDB());
+
+    this.tableName=tableName;
   }
 
 

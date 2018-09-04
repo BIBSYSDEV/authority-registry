@@ -1,9 +1,10 @@
 package no.bibsys.db;
 
 import no.bibys.db.TableCreator;
+import no.bibys.db.TableDriverFactory;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 public class DatabaseIntegrationTest extends DynamoTest  {
 
@@ -15,9 +16,9 @@ public class DatabaseIntegrationTest extends DynamoTest  {
 
 
   @Tag("integration")
-  @Test
+  @Ignore
   public void createReadAndWriteIntegrationTest(){
-    tableCreator=new TableCreator();
+    tableCreator= TableCreator.create(new TableDriverFactory());
 
   }
 
