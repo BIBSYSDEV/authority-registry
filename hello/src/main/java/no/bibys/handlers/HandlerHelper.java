@@ -84,9 +84,15 @@ public abstract class HandlerHelper<I, O> {
     public void handleRequest(InputStream input, OutputStream output, Context context)
         throws IOException {
         init(input,output,context);
-        I inputString=parseInput(input);
-        O outputMessage = processInput(inputString);
-        writeOutput(outputMessage);
+        I inputObject=parseInput(input);
+        O response= null;
+        try {
+            response = processInput(inputObject);
+            writeOutput(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            writerFailure(e);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package no.bibys.db;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public  class TableDriver {
 
@@ -10,13 +11,11 @@ public  class TableDriver {
   protected DynamoDB dynamoDB;
 
 
+  @Autowired
   protected TableDriver(AmazonDynamoDB client, DynamoDB dynamoDB){
     this.client= client;
     this.dynamoDB=dynamoDB;
   }
-
-
-
 
   public AmazonDynamoDB getClient() {
     return client;
