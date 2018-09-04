@@ -16,7 +16,6 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   public DatabaseHandler() {
     super(DatabaseWriteRequest.class, SimpleResponse.class);
 
-
   }
 
 

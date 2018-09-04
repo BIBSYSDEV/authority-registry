@@ -53,6 +53,21 @@ Resources:
           Properties:
             Path: /
             Method: post
+  PostWriteBD:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler:  no.bibys.handlers.DatabaseHandler
+      Runtime: java8
+      CodeUri: './hello/build/libs/hello-fat.jar'
+      Role:
+        Fn::ImportValue:
+          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Events:
+        PostEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
   Database:
     Type: AWS::DynamoDB::Table
     Properties:
