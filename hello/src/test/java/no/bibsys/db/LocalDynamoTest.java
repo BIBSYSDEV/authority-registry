@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class LocalDynamoTest  extends DynamoTest {
 
 
-    TableCreator tableCreator;
+
     TableDriverFactory tableDriverFactory;
 
   @BeforeEach

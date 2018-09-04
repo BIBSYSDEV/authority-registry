@@ -10,7 +10,6 @@ public class TableDriverFactory {
   private  AmazonDynamoDB client;
 
 
-
   public TableDriver build(){
     init();
     return new TableDriver(client,dynamoDB);
