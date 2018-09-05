@@ -1,4 +1,4 @@
-package no.bibys.db.structures;
+package no.bibsys.db.structures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;

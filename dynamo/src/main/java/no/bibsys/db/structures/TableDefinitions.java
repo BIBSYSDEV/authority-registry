@@ -1,4 +1,4 @@
-package no.bibys.db;
+package no.bibsys.db.structures;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;

@@ -1,4 +1,4 @@
-package no.bibys.db.structures;
+package no.bibsys.db.structures;
 
 import java.util.List;
 

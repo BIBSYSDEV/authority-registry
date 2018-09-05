@@ -1,7 +1,7 @@
 package no.bibsys.handlers;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import com.amazonaws.serverless.proxy.internal.testutils.MockLambdaContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,6 @@ import no.bibys.handlers.responses.SimpleResponse;
 import no.bibys.utils.ApiMessageParser;
 import no.bibys.utils.IOUtils;
 import org.junit.Ignore;
-import org.junit.jupiter.api.DisplayName;
 
 
 /**
@@ -45,7 +44,6 @@ public class HelloWorldHandlerTest implements IOTestUtils {
    */
 
   @Ignore
-  @DisplayName("Basic test for request handler")
   public void testHandleRequest() throws IOException {
     String input = "";
     InputStream inputStream = new ByteArrayInputStream(input.getBytes());

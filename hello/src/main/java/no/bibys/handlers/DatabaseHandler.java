@@ -2,15 +2,22 @@ package no.bibys.handlers;
 
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import java.io.IOException;
-import no.bibys.db.TableCreator;
-import no.bibys.db.TableDriverFactory;
-import no.bibys.db.TableWriter;
+import no.bibsys.db.TableCreator;
 import no.bibys.handlers.requests.DatabaseWriteRequest;
 import no.bibys.handlers.responses.SimpleResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
+@Service
 public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleResponse> implements
     RequestStreamHandler {
+
+
+//  @Autowired
+//  private  TableWriter tableWriter;
+  @Autowired
+  private  TableCreator tableCreator;
 
 
   public DatabaseHandler() {
@@ -24,14 +31,12 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
     try {
       String tableName = input.getTableName();
       String jsonObject = input.getJsonObject();
-      TableCreator tableCreator = TableCreator.create(new TableDriverFactory());
       boolean tableExists = tableCreator.tableExists(tableName);
       if (!tableExists) {
         tableCreator.createTable(tableName);
       }
 
-      TableWriter tableWriter = TableWriter.create(tableName, new TableDriverFactory());
-      tableWriter.insertJson(jsonObject);
+//      tableWriter.insertJson(jsonObject);
       return new SimpleResponse("DB works! Go check it!!!!!");
     } catch (InterruptedException e) {
       e.printStackTrace();

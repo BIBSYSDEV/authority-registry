@@ -1,29 +1,35 @@
-package no.bibys.db;
+package no.bibsys.db;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import java.util.List;
-import no.bibys.db.structures.Entry;
+import no.bibsys.db.structures.Entry;
+import no.bibsys.db.structures.TableDefinitions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class TableCreator extends TableDriver {
 
+@Service
+public class TableCreator {
 
+  private TableDriver tableDriver;
 
-  public static TableCreator create(TableDriverFactory factory) {
-    return new TableCreator(factory.build());
+  @Autowired
+  public TableCreator(TableDriver tableDriver) {
+    this.tableDriver = tableDriver;
   }
-
-
-  private TableCreator(TableDriver tableDriver) {
-    super(tableDriver.getClient(), tableDriver.getDynamoDB());
-  }
-
 
   public void deleteTable(String tableName) {
-    client.deleteTable(tableName);
+    tableDriver.getClient().deleteTable(tableName);
+  }
+
+
+  public AmazonDynamoDB getClient(){
+    return tableDriver.getClient();
   }
 
   public void createTable(String tableName, TableDefinitions tableEntry)
@@ -39,7 +45,7 @@ public class TableCreator extends TableDriver {
             new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
 
     System.out.println("Issuing CreateTable request for " + tableName);
-    Table table = dynamoDB.createTable(request);
+    Table table = tableDriver.getDynamoDB().createTable(request);
 
     System.out.println("Waiting for " + tableName + " to be created...this may take a while...");
     table.waitForActive();
@@ -49,7 +55,7 @@ public class TableCreator extends TableDriver {
 
   public boolean tableExists(String tableName) {
     try {
-      dynamoDB.getTable(tableName).describe().getTableStatus();
+      tableDriver.getTable(tableName).describe().getTableStatus();
       return true;
     } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
       return false;

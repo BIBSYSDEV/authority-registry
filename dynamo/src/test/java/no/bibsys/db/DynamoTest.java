@@ -1,7 +1,7 @@
 package no.bibsys.db;
 
-import no.bibys.db.TableCreator;
-import no.bibys.db.structures.SimpleEntry;
+
+import no.bibsys.db.structures.SimpleEntry;
 
 public abstract class DynamoTest {
 

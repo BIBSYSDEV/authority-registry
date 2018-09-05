@@ -1,4 +1,4 @@
-package no.bibys.db.structures;
+package no.bibsys.db.structures;
 
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import java.util.ArrayList;
 import java.util.List;
-import no.bibys.db.TableDefinitions;
 
 
 public interface Entry  extends TableDefinitions {

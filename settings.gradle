@@ -1,3 +1,4 @@
 
 rootProject.name= 'emne-test'
 include 'hello'
+include 'dynamo'

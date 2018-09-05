@@ -19,13 +19,11 @@ import no.bibys.utils.ApiMessageParser;
 import no.bibys.utils.IOUtils;
 import org.json.JSONObject;
 import org.junit.Ignore;
-import org.junit.jupiter.api.DisplayName;
 
 /**
  * Tests for {@link HelloWorldHandler}. Modify the tests in order to support your use case as you
  * build your project.
  */
-@DisplayName("Tests for SimpleHandlerTest")
 public class SimpleHandlerTest implements IOTestUtils {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
@@ -45,7 +43,6 @@ public class SimpleHandlerTest implements IOTestUtils {
    * Basic test to verify the result obtained when calling {@link HelloWorldHandler} successfully.
    */
   @Ignore
-  @DisplayName("Basic test for request handler")
   public  void testHandleRequest() throws IOException {
     String json = resourceAsString(Paths.get("api", "apiInput.txt"));
 
