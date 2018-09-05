@@ -8,13 +8,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import no.bibsys.utils.IOTestUtils;
+import no.bibsys.utils.IOUtils;
 import no.bibsys.utils.ReadableOutputStream;
 import no.bibys.handlers.HelloWorldHandler;
 import no.bibys.handlers.responses.GatewayResponse;
 import no.bibys.handlers.responses.SimpleResponse;
 import no.bibys.utils.ApiMessageParser;
-import no.bibys.utils.IOUtils;
 import org.junit.Ignore;
 
 
@@ -23,7 +22,7 @@ import org.junit.Ignore;
  * build your project.
  */
 //@DisplayName("Tests for HelloWorldHandler")
-public class HelloWorldHandlerTest implements IOTestUtils {
+public class HelloWorldHandlerTest  {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
   private static final String EXPECTED_BODY_VALUE = "{\"message\":\"Hello World!\"}";

@@ -1,30 +1,40 @@
-//package no.bibys.db;
+package no.bibsys.db;
 
-//public class TableReader extends TableDriver {
-//
-//
-//
-//
-//  public static TableReader create(String tableName){
-//    return new TableReader(tableName,factory.build());
-//  }
-//
-//
-//  private String tableName;
-//
-//
-//  private TableReader(String tableName, ) {
-//    super(tableDriver.getClient(),tableDriver.getDynamoDB());
-//
-//    this.tableName=tableName;
-//  }
-//
-//
-//  public String getEntry(String id) throws JsonProcessingException {
-//    Table table = dynamoDB.getTable(tableName);
-//    Item item=table.getItem("id",id);
-//    String json=item.toJSON();
-//    return json;
-//  }
-//
-//}
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TableReader {
+
+  private TableDriver tableDriver;
+  private String tableName;
+
+
+  @Autowired
+  public TableReader(TableDriver tableDriver) {
+    this.tableDriver = tableDriver;
+
+  }
+
+
+  public void setTableName(String tableName){
+    if(this.tableName==null){
+      this.tableName=tableName;
+    }
+    else{
+      throw new IllegalStateException("Cannot initialize tableName twice");
+    }
+  }
+
+
+  public String getEntry(String id) throws JsonProcessingException {
+    Table table = tableDriver.getDynamoDB().getTable(tableName);
+    Item item = table.getItem("id", id);
+    String json = item.toJSON();
+    return json;
+  }
+
+}

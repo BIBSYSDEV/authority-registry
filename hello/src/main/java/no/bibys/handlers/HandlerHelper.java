@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import no.bibsys.utils.IOUtils;
 import no.bibys.handlers.responses.GatewayResponse;
 import no.bibys.utils.ApiMessageParser;
-import no.bibys.utils.IOUtils;
 import org.springframework.http.HttpStatus;
 
 public abstract class HandlerHelper<I, O> {

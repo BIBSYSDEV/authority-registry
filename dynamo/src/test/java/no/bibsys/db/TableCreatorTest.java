@@ -6,31 +6,23 @@ import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import no.bibsys.utils.IOTestUtils;
-import no.bibys.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 @ContextConfiguration(classes={LocalDynamoConfiguration.class})
 @RunWith(SpringRunner.class)
+@DirtiesContext
 public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
 
   @Autowired
   private TableCreator tableCreator;
 
-  @Autowired
-  private String name;
-
-
-  @Test
-  public void nameShouldBeSomething(){
-    System.out.println(name);
-    assert(name!=null);
-  }
 
 
   @Test

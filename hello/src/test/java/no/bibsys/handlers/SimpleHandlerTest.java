@@ -10,13 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import no.bibsys.utils.IOTestUtils;
+import no.bibsys.utils.IOUtils;
 import no.bibsys.utils.ReadableOutputStream;
 import no.bibys.handlers.HelloWorldHandler;
 import no.bibys.handlers.SimpleHandler;
 import no.bibys.handlers.responses.SimpleResponse;
 import no.bibys.utils.ApiMessageParser;
-import no.bibys.utils.IOUtils;
 import org.json.JSONObject;
 import org.junit.Ignore;
 
@@ -24,7 +23,7 @@ import org.junit.Ignore;
  * Tests for {@link HelloWorldHandler}. Modify the tests in order to support your use case as you
  * build your project.
  */
-public class SimpleHandlerTest implements IOTestUtils {
+public class SimpleHandlerTest  {
 
   private static final String EXPECTED_CONTENT_TYPE = "application/json";
   private static final String EXPECTED_BODY_VALUE = "{\"message\":\"Hello orestis. Are you 15 years old?\"}";
@@ -44,7 +43,7 @@ public class SimpleHandlerTest implements IOTestUtils {
    */
   @Ignore
   public  void testHandleRequest() throws IOException {
-    String json = resourceAsString(Paths.get("api", "apiInput.txt"));
+    String json = ioUtils.resourceAsString(Paths.get("api", "apiInput.txt"));
 
     ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());
     ReadableOutputStream ros = ReadableOutputStream.create();

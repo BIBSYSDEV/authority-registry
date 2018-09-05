@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "label": "TheLabel",
+  "body": {
+    "message": "Hello world",
+    "type": "text"
+  }
+}
