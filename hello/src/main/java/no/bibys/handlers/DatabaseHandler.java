@@ -35,9 +35,9 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
       String tableName = input.getTableName();
 //      String jsonObject = input.getJsonObject();
       boolean tableExists = tableCreator.tableExists(tableName);
-      if (!tableExists) {
-        tableCreator.createTable(tableName);
-      }
+//      if (!tableExists) {
+//        tableCreator.createTable(tableName);
+//      }
 //      tableWriter.setTableName(tableName);
 //      tableWriter.insertJson(jsonObject);
 
