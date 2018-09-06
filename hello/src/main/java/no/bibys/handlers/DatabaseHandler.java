@@ -14,19 +14,34 @@ import org.springframework.stereotype.Service;
 public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleResponse> implements
     RequestStreamHandler {
 
-  @Autowired
+
   private  TableCreator tableCreator;
-
-  @Autowired
   private  TableWriter tableWriter;
-
-  @Autowired
   private String helloString;
+
 
 
   public DatabaseHandler() {
     super(DatabaseWriteRequest.class, SimpleResponse.class);
   }
+
+
+  @Autowired
+  public void setTableCreator(TableCreator tableCreator){
+    this.tableCreator=tableCreator;
+  }
+
+  @Autowired
+  public void setTableWriter(TableWriter tableWriter){
+    this.tableWriter=tableWriter;
+  }
+
+
+  @Autowired
+  public void setHelloString(String helloString){
+    this.helloString=helloString;
+  }
+
 
 
   @Override

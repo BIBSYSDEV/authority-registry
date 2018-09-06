@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import no.bibsys.utils.IOTestUtils;
+import no.bibys.HandlerConfiguration;
 import no.bibys.handlers.DatabaseHandler;
 import no.bibys.handlers.requests.DatabaseWriteRequest;
 import org.junit.Ignore;
@@ -20,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
-@ContextConfiguration(classes={LocalDynamoConfiguration.class})
+@ContextConfiguration(classes={HandlerConfiguration.class,LocalDynamoConfiguration.class})
 @RunWith(SpringRunner.class)
 @DirtiesContext
 public class DatabaseHandlerTest extends LocalDynamoTest implements IOTestUtils {
