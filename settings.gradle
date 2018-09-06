@@ -3,4 +3,5 @@ rootProject.name= 'emne-test'
 include 'common'
 include 'hello'
 include 'dynamo'
+include 'cypress'
 
