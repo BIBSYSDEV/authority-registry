@@ -14,7 +14,7 @@ public class HelloWorldHandler extends HandlerHelper<String,SimpleResponse> impl
     }
 
     @Override
-    SimpleResponse processInput(String input) {
+    public SimpleResponse processInput(String input) {
             return new SimpleResponse("Hello World!");
     }
 

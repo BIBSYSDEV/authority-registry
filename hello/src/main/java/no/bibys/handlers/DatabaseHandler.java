@@ -21,13 +21,14 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   private  TableWriter tableWriter;
 
 
+
   public DatabaseHandler() {
     super(DatabaseWriteRequest.class, SimpleResponse.class);
   }
 
 
   @Override
-  SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
+  public SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
     try {
       String tableName = input.getTableName();
       String jsonObject = input.getJsonObject();
@@ -35,6 +36,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
       if (!tableExists) {
         tableCreator.createTable(tableName);
       }
+      tableWriter.setTableName(tableName);
       tableWriter.insertJson(jsonObject);
       return new SimpleResponse("DB works! Go check it!!!!!");
     } catch (InterruptedException e) {
@@ -42,5 +44,16 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
       throw new IOException(e);
     }
 
+  }
+
+
+
+
+  public TableCreator getTableCreator() {
+    return tableCreator;
+  }
+
+  public TableWriter getTableWriter() {
+    return tableWriter;
   }
 }

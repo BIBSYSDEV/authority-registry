@@ -10,6 +10,7 @@ public class DatabaseWriteRequest implements JsonSerializable {
 
 
 
+
   public DatabaseWriteRequest(String tableName,String jsonObject){
     this.tableName=tableName;
     this.jsonObject=jsonObject;

@@ -49,7 +49,7 @@ public abstract class HandlerHelper<I, O> {
 
     }
 
-    abstract O processInput(I input) throws  IOException;
+    public abstract O processInput(I input) throws  IOException;
 
     public void writeOutput(O output) throws IOException {
         String outputString = objectMapper.writeValueAsString(output);
