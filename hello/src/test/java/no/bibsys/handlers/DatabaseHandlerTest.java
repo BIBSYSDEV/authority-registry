@@ -10,6 +10,7 @@ import java.util.List;
 import no.bibsys.utils.IOTestUtils;
 import no.bibys.handlers.DatabaseHandler;
 import no.bibys.handlers.requests.DatabaseWriteRequest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class DatabaseHandlerTest extends LocalDynamoTest implements IOTestUtils 
   private DatabaseHandler databaseHandler;
 
   @Test
+  @Ignore
   public void DatabaseHandlerShouldStoreAJsonOBjectInDatabase() throws IOException {
     String data=resourceAsString(Paths.get("api","dbHandlerInput.json"));
       String tableName="DatabaseHandlerTestTable";
