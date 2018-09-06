@@ -68,29 +68,29 @@ Resources:
           Properties:
             Path: /db
             Method: post
-  Database:
-    Type: AWS::DynamoDB::Table
-    Properties:
-          TableName:
-            !Join ['-', [!Ref 'Stage', 'data-table']]
-          AttributeDefinitions:
-            -
-              AttributeName: "name"
-              AttributeType: "S"
-
-            -
-              AttributeName: "birthYear"
-              AttributeType: "N"
-
-          KeySchema:
-           -
-            AttributeName: "name"
-            KeyType: HASH
-           -
-            AttributeName: "birthYear"
-            KeyType: RANGE
-          ProvisionedThroughput:
-            ReadCapacityUnits: 10
-            WriteCapacityUnits: 10
+#  Database:
+#    Type: AWS::DynamoDB::Table
+#    Properties:
+#          TableName:
+#            !Join ['-', [!Ref 'Stage', 'data-table']]
+#          AttributeDefinitions:
+#            -
+#              AttributeName: "name"
+#              AttributeType: "S"
+#
+#            -
+#              AttributeName: "birthYear"
+#              AttributeType: "N"
+#
+#          KeySchema:
+#           -
+#            AttributeName: "name"
+#            KeyType: HASH
+#           -
+#            AttributeName: "birthYear"
+#            KeyType: RANGE
+#          ProvisionedThroughput:
+#            ReadCapacityUnits: 10
+#            WriteCapacityUnits: 10
 
 

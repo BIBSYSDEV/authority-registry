@@ -17,6 +17,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
 
   private  TableCreator tableCreator;
   private  TableWriter tableWriter;
+  @Autowired
   private String helloString;
 
 
@@ -37,9 +38,14 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   }
 
 
-  @Autowired
-  public void setHelloString(String helloString){
-    this.helloString=helloString;
+//  @Autowired
+//  public void setHelloString(String helloString){
+//    this.helloString=helloString;
+//  }
+
+
+  public String getHelloString(){
+    return this.helloString;
   }
 
 
@@ -48,11 +54,11 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   public SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
     try {
       String tableName = input.getTableName();
-//      String jsonObject = input.getJsonObject();
-//      boolean tableExists = tableCreator.tableExists(tableName);
-//      if (!tableExists) {
-//        tableCreator.createTable(tableName);
-//      }
+      String jsonObject = input.getJsonObject();
+      boolean tableExists = tableCreator.tableExists(tableName);
+      if (!tableExists) {
+        tableCreator.createTable(tableName);
+      }
 //      tableWriter.setTableName(tableName);
 //      tableWriter.insertJson(jsonObject);
 
