@@ -34,6 +34,12 @@ task fatJar{
     println "Creating fat jars"
 }
 
+task myZip(type:Zip){
+    archiveName = "cypress.zip"
+    destinationDir file("${buildDir}/cypressZip")
+    from "${buildDir}/cypress"
+}
+
 subprojects {
 
     bootJar.enabled=false
