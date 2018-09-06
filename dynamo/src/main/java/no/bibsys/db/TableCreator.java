@@ -9,16 +9,13 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import java.util.List;
 import no.bibsys.db.structures.Entry;
 import no.bibsys.db.structures.TableDefinitions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
-@Service
+
 public class TableCreator {
 
   private TableDriver tableDriver;
 
-  @Autowired
   public TableCreator(TableDriver tableDriver) {
     this.tableDriver = tableDriver;
   }

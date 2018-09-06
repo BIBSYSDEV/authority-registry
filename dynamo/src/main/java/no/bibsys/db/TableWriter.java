@@ -5,11 +5,8 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.db.structures.Entry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class TableWriter  {
+public class TableWriter {
 
 
   private TableDriver tableDriver;
@@ -18,23 +15,19 @@ public class TableWriter  {
   private ObjectMapper mapper;
 
 
-
-  @Autowired
   public TableWriter(TableDriver tableDriver) {
     this.tableDriver = tableDriver;
-    mapper=new ObjectMapper();
+    mapper = new ObjectMapper();
   }
 
 
-  public void setTableName(String tableName){
-    if(this.tableName==null){
-      this.tableName=tableName;
-    }
-    else{
+  public void setTableName(String tableName) {
+    if (this.tableName == null) {
+      this.tableName = tableName;
+    } else {
       throw new IllegalStateException("Cannot initialize tableName twice");
     }
   }
-
 
 
   public void insertEntry(Entry entry) throws JsonProcessingException {
@@ -47,8 +40,6 @@ public class TableWriter  {
     Table table = tableDriver.getTable(tableName);
     table.putItem(item);
   }
-
-
 
 
 }

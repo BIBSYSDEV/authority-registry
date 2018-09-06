@@ -15,9 +15,12 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
     RequestStreamHandler {
 
 
+
   private  TableCreator tableCreator;
+
   private  TableWriter tableWriter;
-  @Autowired
+
+
   private String helloString;
 
 
@@ -38,10 +41,10 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   }
 
 
-//  @Autowired
-//  public void setHelloString(String helloString){
-//    this.helloString=helloString;
-//  }
+  @Autowired
+  public void setHelloString(String helloString){
+    this.helloString=helloString;
+  }
 
 
   public String getHelloString(){

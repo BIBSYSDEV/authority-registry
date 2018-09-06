@@ -3,17 +3,15 @@ package no.bibsys.db;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public class TableReader {
 
   private TableDriver tableDriver;
   private String tableName;
 
 
-  @Autowired
+
   public TableReader(TableDriver tableDriver) {
     this.tableDriver = tableDriver;
 
