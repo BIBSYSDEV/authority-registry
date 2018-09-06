@@ -38,6 +38,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
 //      }
 //      tableWriter.setTableName(tableName);
 //      tableWriter.insertJson(jsonObject);
+
       return new SimpleResponse(String.format("DB works! Go check table %s!",tableName));
     } catch (Exception e) {
       e.printStackTrace();
