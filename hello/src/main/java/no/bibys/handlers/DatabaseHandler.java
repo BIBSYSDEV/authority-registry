@@ -20,6 +20,8 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   @Autowired
   private  TableWriter tableWriter;
 
+  @Autowired
+  private String helloString;
 
 
   public DatabaseHandler() {
@@ -39,7 +41,8 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
 //      tableWriter.setTableName(tableName);
 //      tableWriter.insertJson(jsonObject);
 
-      return new SimpleResponse(String.format("DB works! Go check table %s!",tableName));
+      return new SimpleResponse(String.format("DB works! Go check table %s! %s",tableName,
+          helloString));
     } catch (Exception e) {
       e.printStackTrace();
       throw new IOException(e);

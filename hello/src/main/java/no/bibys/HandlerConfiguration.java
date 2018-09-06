@@ -42,5 +42,10 @@ public class HandlerConfiguration {
     return new TableCreator(tableDriver);
   }
 
+  @Bean
+  public String getHelloString(){
+    return "hello world";
+  }
+
 
 }
