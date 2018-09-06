@@ -17,7 +17,6 @@ public class LocalDynamoConfiguration {
   public AmazonDynamoDB getClient() {
     System.setProperty("java.library.path", "native-libs");
     AmazonDynamoDB client = DynamoDBEmbedded.create().amazonDynamoDB();
-    System.out.println("************************LLLLLLLLLLLLLAAAAAAAAAAAAAAAAAAAAAAAAAA");
     return client;
   }
 

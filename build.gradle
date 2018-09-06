@@ -6,9 +6,8 @@ plugins {
     id 'org.springframework.boot' version '2.0.4.RELEASE'
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id 'com.github.johnrengelman.shadow' version '2.0.4'
-
-
 }
+
 repositories {
     mavenCentral()
 }
@@ -17,8 +16,6 @@ def springVersion="2.0.4.RELEASE"
 
 //root project has no executable
 bootJar.enabled = false
-
-
 
 
 dependencies {
@@ -37,9 +34,9 @@ task fatJar{
     println "Creating fat jars"
 }
 
-
-
 subprojects {
+
+    bootJar.enabled=false
 
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'io.spring.dependency-management'
@@ -48,11 +45,7 @@ subprojects {
         mavenCentral()
     }
 
-//    jar.enabled=false
-//    bootJar.enabled = true
-
     dependencies {
-
         //json libraries
         compile group: 'org.json', name: 'json', version: '20180130'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
@@ -62,25 +55,16 @@ subprojects {
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
-//        //connection to amazon
-//        compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
-//        testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
-
         //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
-
-
-
 
         //libraries for more expressive testing
         testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 
-
-
-
-
         shadowJar { zip64 true }
     }
+
+    task fatJar(dependsOn: shadowJar){}
 
 
 //    test {
@@ -95,9 +79,6 @@ subprojects {
 
 
 //    }
-
-
-    task fatJar(dependsOn: shadowJar){}
 
 }
 

@@ -20,7 +20,6 @@ dependencies {
     testCompile "com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392"
 }
 
-bootJar.enabled=false
 
 task copyNativeDeps(type: Copy) {
     from(configurations.compile + configurations.testCompile) {
@@ -37,6 +36,9 @@ test {
     dependsOn copyNativeDeps
     //Copy native path for testing locally DynamoDB
     systemProperty "java.library.path", 'build/libs'
-
-
 }
+
+
+//create simple jar this is not an independent application.
+jar.enabled=true
+bootJar.enabled=false

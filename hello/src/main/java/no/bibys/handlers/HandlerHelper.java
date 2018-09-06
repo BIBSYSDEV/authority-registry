@@ -23,7 +23,6 @@ public abstract class HandlerHelper<I, O> {
 
 
     private ApiMessageParser<I> inputParser = new ApiMessageParser<>();
-
     private IOUtils ioUtils = new IOUtils();
     private ObjectMapper objectMapper = new ObjectMapper();
 

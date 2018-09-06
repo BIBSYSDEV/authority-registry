@@ -5,8 +5,11 @@ shadowJar{
 
 dependencies{
     compile project (":common")
-    compile project(":dynamo")
+    compile project (":dynamo")
 
+    //connection to amazon
+    compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
+    testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
 
 
 }
