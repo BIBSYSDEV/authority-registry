@@ -1,9 +1,7 @@
 package no.bibys.handlers;
 
-import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import java.io.IOException;
-import java.util.HashMap;
 import no.bibsys.db.TableCreator;
 import no.bibsys.db.TableWriter;
 import no.bibys.handlers.requests.DatabaseWriteRequest;
@@ -16,12 +14,14 @@ import org.springframework.stereotype.Service;
 public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleResponse> implements
     RequestStreamHandler {
 
+  @Autowired
   private  TableCreator tableCreator;
+
+  @Autowired
   private  TableWriter tableWriter;
 
 
-  @Autowired
-  public DatabaseHandler(TableCreator tableCreator, TableWriter tableWriter) {
+  public DatabaseHandler() {
     super(DatabaseWriteRequest.class, SimpleResponse.class);
   }
 
@@ -30,14 +30,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
     try {
       String tableName = input.getTableName();
-      HashMap<String,Object> jsonMap=new HashMap<>();
-      jsonMap.put("name","orestis");
-      jsonMap.put("id",1);
-      jsonMap.put("message","hello!");
-      Item item= Item.fromMap(jsonMap);
-      String jsonObject=item.toJSON();
-
-      //      String jsonObject = input.getJsonObject();
+      String jsonObject = input.getJsonObject();
       boolean tableExists = tableCreator.tableExists(tableName);
       if (!tableExists) {
         tableCreator.createTable(tableName);
