@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
-@ContextConfiguration(classes={HandlerConfiguration.class})
+@ContextConfiguration(classes={HandlerConfiguration.class,LocalDynamoConfiguration.class})
 @RunWith(SpringRunner.class)
 @DirtiesContext
 public class DatabaseHandlerTest extends LocalDynamoTest implements IOTestUtils {
