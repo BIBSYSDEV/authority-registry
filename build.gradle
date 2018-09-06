@@ -21,7 +21,7 @@ bootJar.enabled = false
 dependencies {
     compile project(":hello")
     compile project(":common")
-    compile project(":cypress")
+//    compile project(":cypress")
 }
 
 
@@ -35,11 +35,11 @@ task fatJar{
     println "Creating fat jars"
 }
 
-task myZip(type:Zip){
-    archiveName = "cypress.zip"
-    destinationDir file("${buildDir}/cypressZip")
-    from "${buildDir}/cypress"
-}
+//task myZip(type:Zip){
+//    archiveName = "cypress.zip"
+//    destinationDir file("${buildDir}/cypressZip")
+//    from "${buildDir}/cypress"
+//}
 
 subprojects {
 

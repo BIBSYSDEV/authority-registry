@@ -29,8 +29,6 @@ public class LocalDynamoConfiguration {
 
 
 
-
-
   @Bean
   public DatabaseHandler getDatabaseHandler(){
     return new DatabaseHandler();
