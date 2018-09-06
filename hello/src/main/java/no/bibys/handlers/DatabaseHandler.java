@@ -30,7 +30,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   @Override
   public SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
     try {
-//      String tableName = input.getTableName();
+      String tableName = input.getTableName();
 //      String jsonObject = input.getJsonObject();
 //      boolean tableExists = tableCreator.tableExists(tableName);
 //      if (!tableExists) {
@@ -38,7 +38,7 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
 //      }
 //      tableWriter.setTableName(tableName);
 //      tableWriter.insertJson(jsonObject);
-      return new SimpleResponse("DB works! Go check it!!!!!");
+      return new SimpleResponse(String.format("DB works! Go check table %s!",tableName));
     } catch (Exception e) {
       e.printStackTrace();
       throw new IOException(e);
