@@ -2,7 +2,6 @@ package no.bibsys;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RestController;
 
 /** Simple class to start up the application.
  *
@@ -11,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  *  @EnableAutoConfiguration
  *  @ComponentScan
  */
-@SpringBootApplication(scanBasePackages = "no.bibsys")
-@RestController
+@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
