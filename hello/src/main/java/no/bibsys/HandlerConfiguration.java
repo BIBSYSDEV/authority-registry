@@ -23,7 +23,6 @@ public class HandlerConfiguration {
 
   }
 
-
   @Bean
   public AmazonDynamoDB getClient(){
     return AmazonDynamoDBClientBuilder.standard().build();
