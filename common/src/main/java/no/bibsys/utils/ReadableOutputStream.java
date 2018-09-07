@@ -32,7 +32,7 @@ public class ReadableOutputStream {
   public static ReadableOutputStream create() throws IOException {
     PipedInputStream inputStream = new PipedInputStream();
     PipedOutputStream outputStream = new PipedOutputStream(inputStream);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
     return new ReadableOutputStream(inputStream,outputStream,reader);
   }
 

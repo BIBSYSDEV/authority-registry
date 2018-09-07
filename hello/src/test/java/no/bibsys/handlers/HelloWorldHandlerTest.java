@@ -44,7 +44,7 @@ public class HelloWorldHandlerTest  {
   @Ignore
   public void testHandleRequest() throws IOException {
     String input = "";
-    InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+    InputStream inputStream = new ByteArrayInputStream(input.getBytes("utf-8"));
     ReadableOutputStream ros = ReadableOutputStream.create();
     new HelloWorldHandler().handleRequest(inputStream,
         ros.outputStream,

@@ -1,11 +1,11 @@
-
-
 plugins {
     id 'java'
     id 'base'
     id 'org.springframework.boot' version '2.0.4.RELEASE'
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'checkstyle'
+    id "com.github.spotbugs" version "1.6.2"
 }
 
 repositories {
@@ -28,7 +28,6 @@ dependencies {
 allprojects{
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
-
 }
 
 task fatJar{
@@ -48,11 +47,14 @@ subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
+//    apply plugin: 'checkstyle'
+    apply plugin: "com.github.spotbugs"
+    
     repositories {
         mavenCentral()
     }
 
-    dependencies {
+    dependencies {    
         //json libraries
         compile group: 'org.json', name: 'json', version: '20180130'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
@@ -87,8 +89,14 @@ subprojects {
 
 //    }
 
+	tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	    reports {
+	        xml.enabled false
+	        html.enabled true
+	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+	    }
+	}
+
+
 }
-
-
-
 

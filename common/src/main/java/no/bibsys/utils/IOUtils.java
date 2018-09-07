@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 public class IOUtils implements IOTestUtils {
 
   public String streamToString(InputStream stream) throws IOException {
-    BufferedReader reader=new BufferedReader(new InputStreamReader(stream));
+    BufferedReader reader=new BufferedReader(new InputStreamReader(stream, "utf-8"));
     StringBuffer output=new StringBuffer();
     String line=reader.readLine();
     while(line!=null){

@@ -18,16 +18,18 @@ public interface IOTestUtils {
 
 
   default List<String> resouceAsList(Path path) throws IOException {
-    BufferedReader reader=new BufferedReader(new InputStreamReader(resourceAsStream(path)));
-    ArrayList<String> result=new ArrayList<>();
-    String line=reader.readLine();
-    while(line!=null){
-      result.add(line);
-      line=reader.readLine();
-    }
+	try (InputStreamReader isr = new InputStreamReader(resourceAsStream(path), "utf-8")) {
+	    try (BufferedReader reader = new BufferedReader(isr)) {
+		    ArrayList<String> result=new ArrayList<>();
+		    String line=reader.readLine();
+		    while(line!=null){
+		      result.add(line);
+		      line=reader.readLine();
+		    }
 
-    return result;
-
+		    return result;		    	
+	    }
+	}
   }
 
 
