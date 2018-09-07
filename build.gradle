@@ -47,7 +47,7 @@ subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
-//    apply plugin: 'checkstyle'
+    apply plugin: 'checkstyle'
     apply plugin: "com.github.spotbugs"
     
     repositories {
@@ -89,6 +89,10 @@ subprojects {
 
 //    }
 
+	checkstyle {
+		configFile = file('../config/checkstyle/checkstyle.xml')
+	}
+
 	tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	    reports {
 	        xml.enabled false
@@ -96,7 +100,5 @@ subprojects {
 	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
 	    }
 	}
-
-
 }
 
