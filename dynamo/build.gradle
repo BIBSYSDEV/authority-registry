@@ -30,8 +30,6 @@ task copyNativeDeps(type: Copy) {
     into 'build/libs'
 }
 
-
-
 test {
     dependsOn copyNativeDeps
     //Copy native path for testing locally DynamoDB
