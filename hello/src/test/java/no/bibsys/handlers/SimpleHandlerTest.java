@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import no.bibsys.utils.IOUtils;
 import no.bibsys.utils.ReadableOutputStream;
-import no.bibys.handlers.HelloWorldHandler;
-import no.bibys.handlers.SimpleHandler;
-import no.bibys.handlers.responses.SimpleResponse;
-import no.bibys.utils.ApiMessageParser;
+import no.bibsys.handlers.responses.SimpleResponse;
+import no.bibsys.utils.ApiMessageParser;
 import org.json.JSONObject;
 import org.junit.Ignore;
 

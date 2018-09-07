@@ -1,4 +1,4 @@
-package no.bibys;
+package no.bibsys;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -6,13 +6,12 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import no.bibsys.db.TableCreator;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.TableWriter;
-import no.bibys.handlers.DatabaseHandler;
+import no.bibsys.handlers.DatabaseHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class HandlerConfiguration {
-
 
 
   @Bean

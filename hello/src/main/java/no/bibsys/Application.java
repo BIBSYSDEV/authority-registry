@@ -1,4 +1,4 @@
-package no.bibys;
+package no.bibsys;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

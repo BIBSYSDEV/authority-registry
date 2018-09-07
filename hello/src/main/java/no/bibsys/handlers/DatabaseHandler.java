@@ -1,11 +1,11 @@
-package no.bibys.handlers;
+package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import java.io.IOException;
 import no.bibsys.db.TableCreator;
 import no.bibsys.db.TableWriter;
-import no.bibys.handlers.requests.DatabaseWriteRequest;
-import no.bibys.handlers.responses.SimpleResponse;
+import no.bibsys.handlers.requests.DatabaseWriteRequest;
+import no.bibsys.handlers.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package no.bibys.handlers.responses;
+package no.bibsys.handlers.responses;
 
 import java.util.Collections;
 import java.util.HashMap;

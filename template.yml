@@ -25,7 +25,7 @@ Resources:
   GetHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler:  no.bibys.handlers.HelloWorldHandler
+      Handler:  no.bibsys.handlers.HelloWorldHandler
       Runtime: java8
       CodeUri: './hello/build/libs/hello-fat.jar'
       Role:
@@ -41,7 +41,7 @@ Resources:
   PostHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler:  no.bibys.handlers.SimpleHandler
+      Handler:  no.bibsys.handlers.SimpleHandler
       Runtime: java8
       CodeUri: './hello/build/libs/hello-fat.jar'
       Role:
@@ -56,7 +56,7 @@ Resources:
   PostWriteBD:
     Type: AWS::Serverless::Function
     Properties:
-      Handler:  no.bibys.handlers.DatabaseHandler
+      Handler:  no.bibsys.handlers.DatabaseHandler
       Runtime: java8
       CodeUri: './hello/build/libs/hello-fat.jar'
       Role:

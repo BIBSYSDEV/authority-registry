@@ -1,4 +1,4 @@
-package no.bibys.handlers.requests;
+package no.bibsys.handlers.requests;
 
 import com.google.common.base.Preconditions;
 

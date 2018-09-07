@@ -1,4 +1,4 @@
-package no.bibys.handlers;
+package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import no.bibsys.utils.IOUtils;
-import no.bibys.handlers.responses.GatewayResponse;
-import no.bibys.utils.ApiMessageParser;
+import no.bibsys.handlers.responses.GatewayResponse;
+import no.bibsys.utils.ApiMessageParser;
 import org.springframework.http.HttpStatus;
 
 public abstract class HandlerHelper<I, O> {

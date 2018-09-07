@@ -1,8 +1,8 @@
-package no.bibys.handlers;
+package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import no.bibys.handlers.requests.SimpleRequest;
-import no.bibys.handlers.responses.SimpleResponse;
+import no.bibsys.handlers.requests.SimpleRequest;
+import no.bibsys.handlers.responses.SimpleResponse;
 
 
 public class SimpleHandler extends HandlerHelper<SimpleRequest,SimpleResponse>  implements RequestStreamHandler {

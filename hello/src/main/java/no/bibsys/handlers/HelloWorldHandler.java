@@ -1,7 +1,7 @@
-package no.bibys.handlers;
+package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import no.bibys.handlers.responses.SimpleResponse;
+import no.bibsys.handlers.responses.SimpleResponse;
 
 /**
  * Handler for requests to Lambda function.

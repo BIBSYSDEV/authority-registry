@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import no.bibsys.utils.IOUtils;
 import no.bibsys.utils.ReadableOutputStream;
-import no.bibys.handlers.HelloWorldHandler;
-import no.bibys.handlers.responses.GatewayResponse;
-import no.bibys.handlers.responses.SimpleResponse;
-import no.bibys.utils.ApiMessageParser;
+import no.bibsys.handlers.responses.GatewayResponse;
+import no.bibsys.handlers.responses.SimpleResponse;
+import no.bibsys.utils.ApiMessageParser;
 import org.junit.Ignore;
 
 

@@ -1,4 +1,4 @@
-package no.bibys.handlers.responses;
+package no.bibsys.handlers.responses;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

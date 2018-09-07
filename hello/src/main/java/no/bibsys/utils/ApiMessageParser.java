@@ -1,4 +1,4 @@
-package no.bibys.utils;
+package no.bibsys.utils;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Optional;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
