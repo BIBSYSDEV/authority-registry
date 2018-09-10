@@ -1,5 +1,8 @@
 package no.bibsys.controllers;
 
+import no.bibsys.handlers.requests.SimpleRequest;
+import no.bibsys.handlers.responses.SimpleResponse;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,13 +14,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class MyController {
 
 
-//  @RequestMapping(path = "/", method = RequestMethod.GET)
-//  public SimpleResponse sayHello(@RequestBody SimpleRequest request) {
-//
-//    SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
-//
-//    return response;
-//  }
+  @RequestMapping(path = "/db", method = RequestMethod.GET)
+  public SimpleResponse sayHello(@RequestBody SimpleRequest request) {
+
+    SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
+
+    return response;
+  }
 //
 //
 //  @RequestMapping(path = "/hello", method = RequestMethod.GET)

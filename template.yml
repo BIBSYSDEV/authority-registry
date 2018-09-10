@@ -1,8 +1,14 @@
-AWSTemplateFormatVersion: 2010-09-09
-Transform:
-- AWS::Serverless-2016-10-31
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Example Pet Store API written with SpringBoot with the aws-serverless-java-container library
 
-
+Parameters:
+  ProjectId:
+    Type: String
+    Description: AWS CodeStar projectID used to associate new resources to team members
+  Stage:
+    Type: String
+    Description: Deployment stage. E.g. test, prod, etc.
 
 # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
 # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
@@ -14,29 +20,27 @@ Transform:
 #       Enabled: true
 #       Type: Canary10Percent5Minutes
 
+
+
+#Globals:
+#  Api:
+    # API Gateway regional endpoints
+#    EndpointConfiguration: REGIONAL
+
 Resources:
   GetHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler:  no.bibsys.SampleHandler::handleRequest
+      Handler: no.bibsys.handlers.SampleHandler::handleRequest
       Runtime: java8
-      CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
+      CodeUri: hello/build/libs/hello-fat.jar
+     # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
+      MemorySize: 1512
       Policies: AWSLambdaBasicExecutionRole
-      Timeout: 180
-#      Role:
-#        Fn::ImportValue:
-#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Timeout: 60
       Events:
-        GetEvent:
+        GetResource:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: any
-Outputs:
-  GetHelloWorldAPI:
-    Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pets'
-    Export:
-      Name: GetHelloWorldAPI
-
-

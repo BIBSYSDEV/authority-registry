@@ -20,6 +20,7 @@ apply plugin: 'io.spring.dependency-management'
 
 
 dependencies {
+    compile project(":common")
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
 
     //spring boot libraries
