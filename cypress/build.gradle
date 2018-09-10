@@ -1,3 +1,16 @@
 
 bootJar.enabled = false
 jar.enabled=true
+
+task zip( type: Zip, overwrite:true ) {
+    archiveName = "cypressZip.zip"
+    destinationDir = file("${buildDir}/")
+    from ('.'){
+    	exclude "build"
+    	exclude ".settings"
+    	exclude ".*"
+    	exclude "build.gradle"
+    }
+    into 'cypress'
+}
+jar.dependsOn(zip)
