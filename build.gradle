@@ -1,3 +1,11 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
+}
 plugins {
     id 'java'
     id 'base'
@@ -35,8 +43,6 @@ task fatJar {
 
 
 subprojects {
-
-
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
