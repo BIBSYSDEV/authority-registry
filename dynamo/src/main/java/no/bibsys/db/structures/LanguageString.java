@@ -12,7 +12,7 @@ public class LanguageString {
   private String language;
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
@@ -20,7 +20,7 @@ public class LanguageString {
       return false;
     }
 
-    LanguageString label1 = (LanguageString) o;
+    final LanguageString label1 = (LanguageString) o;
 
     if (!getValue().equals(label1.getValue())) {
       return false;
@@ -35,7 +35,7 @@ public class LanguageString {
     return result;
   }
 
-  public LanguageString(String text, String language) {
+  public LanguageString(final String text, final String language) {
     Preconditions.checkNotNull(text);
     Preconditions.checkNotNull(language);
     this.value = text;
@@ -47,7 +47,7 @@ public class LanguageString {
     return value;
   }
 
-  public void setValue(String value) {
+  public void setValue(final String value) {
     Preconditions.checkNotNull(value);
     this.value = value;
   }
@@ -56,7 +56,7 @@ public class LanguageString {
     return language;
   }
 
-  public void setLanguage(String language) {
+  public void setLanguage(final String language) {
     Preconditions.checkNotNull(language);
     this.language = language;
   }

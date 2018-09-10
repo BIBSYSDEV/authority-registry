@@ -7,7 +7,6 @@ public abstract class DynamoTest {
 
   String tableName="itemTable";
   SimpleEntry entry;
-  TableCreator tableCreator;
 
   public abstract void init();
 

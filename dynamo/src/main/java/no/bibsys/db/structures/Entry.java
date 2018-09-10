@@ -17,6 +17,7 @@ public interface Entry  extends TableDefinitions {
   void setId(String id);
 
 
+  @Override
   default List<AttributeDefinition> attributeDefinitions() {
     ArrayList<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
     attributeDefinitions.add(new AttributeDefinition("id", "S"));
@@ -25,6 +26,7 @@ public interface Entry  extends TableDefinitions {
   }
 
 
+  @Override
   default List<KeySchemaElement> keySchema() {
     ArrayList<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
     keys.add(new KeySchemaElement("id", KeyType.HASH));

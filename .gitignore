@@ -3,4 +3,9 @@
 build/
 */out/
 .gradle
+.classpath
+.settings
+.project
+bin/
+
 .iml
