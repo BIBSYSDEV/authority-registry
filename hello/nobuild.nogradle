@@ -1,0 +1,104 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+
+
+
+
+plugins{
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+
+}
+
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven {
+        url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'
+    }
+}
+
+dependencies{
+//    compile project (":common")
+//    compile project (":dynamo")
+
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+
+    //connection to amazon
+
+    //spring boot libraries
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile  'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+
+
+    compile group: 'com.amazonaws.serverless', name: 'aws-serverless-java-container-spring', version: '1.1.4'
+//        compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
+    testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core'
+    compile 'io.symphonia:lambda-logging:1.0.1'
+
+
+}
+
+
+task copyNativeDeps(type: Copy) {
+    from(configurations.compile + configurations.testCompile) {
+        include '*.dll'
+        include '*.dylib'
+        include '*.so'
+    }
+    into 'build/libs'
+}
+
+
+test {
+    dependsOn copyNativeDeps
+    //Copy native path for testing locally DynamoDB
+    systemProperty "java.library.path", 'build/libs'
+}
+
+task buildZip(type: Zip) {
+    // Using the Zip API from gradle to build a zip file of all the dependencies
+    //
+    // The path to this zip file can be set in the serverless.yml file for the
+    // package/artifact setting for deployment to the S3 bucket
+    //
+    // Link: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Zip.html
+
+    // set the base name of the zip file
+    baseName = "hello"
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+
+build.dependsOn buildZip
+
+bootJar.enabled=false
+jar.enabled=true
+//build.dependsOn buildZip
+
+shadowJar{
+    archiveName= "${baseName}-fat.jar"
+    exclude('org.apache.tomcat.embed:*')
+}
+

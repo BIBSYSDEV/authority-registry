@@ -1,0 +1,15 @@
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/utils/ReadableOutputStream.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/HandlerHelper.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/Application.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/HelloWorldHandler.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/utils/IOTestUtils.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/utils/IOUtils.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/responses/SimpleResponse.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/SimpleHandler.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/MyController.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/requests/SimpleRequest.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/requests/DatabaseWriteRequest.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/utils/ApiMessageParser.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/requests/JsonSerializable.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/handlers/responses/GatewayResponse.java
+/home/orestis/workspaces/bibsys/emne-test/hello/src/main/java/no/bibsys/SampleHandler.java
