@@ -94,6 +94,13 @@ subprojects {
 	checkstyle {
 		configFile = file('../config/checkstyle/checkstyle.xml')
 	}
+	
+	pmd {
+		ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
+		ruleSets = []
+		ignoreFailures = true
+		toolVersion = '6.7.0'
+	}
 
 	tasks.withType(com.github.spotbugs.SpotBugsTask) {
 	    reports {
