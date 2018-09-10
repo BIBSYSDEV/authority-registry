@@ -1,15 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform:
 - AWS::Serverless-2016-10-31
-#- AWS::CodeStar
 
-Parameters:
-  ProjectId:
-    Type: String
-    Description: AWS CodeStar projectID used to associate new resources to team members
-  Stage:
-    Type: String
-    Description: Deployment stage. E.g. test, prod, etc.
+
 
 # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
 # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
@@ -28,6 +21,7 @@ Resources:
       Handler:  no.bibsys.SampleHandler::handleRequest
       Runtime: java8
       CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
+      Policies: AWSLambdaBasicExecutionRole
       Timeout: 180
 #      Role:
 #        Fn::ImportValue:
@@ -44,37 +38,5 @@ Outputs:
     Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pets'
     Export:
       Name: GetHelloWorldAPI
-#  PostHelloWorld:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler:  no.bibsys.handlers.RandomHandler::handleRequest
-#      Timeout: 180
-#      Runtime: java8
-#      CodeUri: './hello/build/libs/hello-fat.jar'
-#      Role:
-#        Fn::ImportValue:
-#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
-#      Events:
-#        PostEvent:
-#          Type: Api
-#          Properties:
-#            Path: /hello
-#            Method: post
-#  PostWriteBD:
-#    Type: AWS::Serverless::Function
-#    Properties:
-#      Handler:  no.bibsys.handlers.SampleHandler::handleRequest
-#      Timeout: 180
-#      Runtime: java8
-#      CodeUri: './hello/build/libs/hello-fat.jar'
-#      Role:
-#        Fn::ImportValue:
-#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
-#      Events:
-#        PostEvent:
-#          Type: Api
-#          Properties:
-#            Path: /db
-#            Method: post
 
 

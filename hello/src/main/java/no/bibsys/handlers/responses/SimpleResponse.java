@@ -1,9 +1,5 @@
 package no.bibsys.handlers.responses;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-
 public class SimpleResponse {
 
    String message;
@@ -48,14 +44,14 @@ public class SimpleResponse {
 
 
 
-  public String toGatewayResponse() throws JsonProcessingException {
-    String body= new JSONObject().put("message",getMessage()).toString();
-    GatewayResponse response=new GatewayResponse(body);
-    ObjectMapper mapper=new ObjectMapper();
-    String responseStr=mapper.writeValueAsString(response);
-    return responseStr;
-
-  }
+//  public String toGatewayResponse() throws JsonProcessingException {
+//    String body= new JSONObject().put("message",getMessage()).toString();
+//    GatewayResponse response=new GatewayResponse(body);
+//    ObjectMapper mapper=new ObjectMapper();
+//    String responseStr=mapper.writeValueAsString(response);
+//    return responseStr;
+//
+//  }
 
 
 

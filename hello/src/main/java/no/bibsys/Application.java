@@ -3,7 +3,7 @@ package no.bibsys;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.bibsys.handlers.MyController;
+import no.bibsys.controllers.MyController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,8 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+
 @SpringBootApplication
-@Import({MyController.class})
+@Import({ MyController.class })
 public class Application extends SpringBootServletInitializer {
 
     // silence console logging
@@ -53,8 +54,7 @@ public class Application extends SpringBootServletInitializer {
         return new HandlerExceptionResolver() {
 
             @Override
-            public ModelAndView resolveException(
-                HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+            public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
                 return null;
             }
         };

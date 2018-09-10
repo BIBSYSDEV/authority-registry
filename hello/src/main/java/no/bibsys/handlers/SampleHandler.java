@@ -1,4 +1,4 @@
-package no.bibsys;
+package no.bibsys.handlers;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.internal.testutils.Timer;
@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import no.bibsys.Application;
 
 public class SampleHandler implements RequestStreamHandler {
 

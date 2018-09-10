@@ -1,6 +1,6 @@
 package no.bibsys.handlers.requests;
 
-public class SimpleRequest implements JsonSerializable {
+public class SimpleRequest  {
 
   private String name;
   private Integer age;
