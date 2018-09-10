@@ -17,27 +17,26 @@ public class IOUtilsTest {
   @Test
   public void IOUtilsShouldReadTextFromResources() throws IOException {
     Path path = Paths.get("txt", "singleLineInput.txt");
-    IOUtils ioUtils=new IOUtils();
+    IOUtils ioUtils = new IOUtils();
     List<String> list = ioUtils.resouceAsList(path);
-    assertThat(list.get(0),is(equalTo("Line1")));
-    assertThat(list.get(1),is(equalTo("Line2")));
-    assertThat(list.get(2),is(equalTo("Line3")));
+    assertThat(list.get(0), is(equalTo("Line1")));
+    assertThat(list.get(1), is(equalTo("Line2")));
+    assertThat(list.get(2), is(equalTo("Line3")));
 
-    String everythingInOneLine=ioUtils.resourceAsString(path);
-    assertThat(everythingInOneLine,is(equalTo("Line1 Line2 Line3")));
+    String everythingInOneLine = ioUtils.resourceAsString(path);
+    assertThat(everythingInOneLine, is(equalTo("Line1 Line2 Line3")));
   }
-
 
 
   @Test
   public void IOUtilsShouldReadJsonFiles() throws IOException {
     Path path = Paths.get("json", "sample.json");
-    IOUtils ioUtils=new IOUtils();
-    String jsonString=ioUtils.resourceAsString(path);
-    JSONObject json=new JSONObject(jsonString);
-    assertThat(json.getInt("id"),is(equalTo(1)));
-    assertThat(json.getString("label"),is(equalTo("TheLabel")));
-    assertThat(json.getJSONObject("body").getString("message"),is(equalTo("Hello world")));
+    IOUtils ioUtils = new IOUtils();
+    String jsonString = ioUtils.resourceAsString(path);
+    JSONObject json = new JSONObject(jsonString);
+    assertThat(json.getInt("id"), is(equalTo(1)));
+    assertThat(json.getString("label"), is(equalTo("TheLabel")));
+    assertThat(json.getJSONObject("body").getString("message"), is(equalTo("Hello world")));
   }
 
 }

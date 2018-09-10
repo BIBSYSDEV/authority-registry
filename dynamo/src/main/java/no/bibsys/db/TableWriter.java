@@ -10,9 +10,8 @@ public class TableWriter {
 
 
   private final transient TableDriver tableDriver;
-
-  private transient String tableName;
   private final transient ObjectMapper mapper;
+  private transient String tableName;
 
 
   public TableWriter(final TableDriver tableDriver) {

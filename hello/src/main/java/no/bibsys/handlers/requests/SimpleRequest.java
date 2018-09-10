@@ -1,17 +1,17 @@
 package no.bibsys.handlers.requests;
 
-public class SimpleRequest  {
+public class SimpleRequest {
 
   private String name;
   private Integer age;
 
 
+  public SimpleRequest() {
+  }
 
-  public SimpleRequest(){}
-
-  public SimpleRequest(String name,Integer age){
-    this.name=name;
-    this.age=age;
+  public SimpleRequest(String name, Integer age) {
+    this.name = name;
+    this.age = age;
   }
 
   public String getName() {
@@ -53,11 +53,6 @@ public class SimpleRequest  {
     result = 31 * result + (age != null ? age.hashCode() : 0);
     return result;
   }
-
-
-
-
-
 
 
 }

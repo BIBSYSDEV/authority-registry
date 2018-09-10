@@ -11,7 +11,6 @@ import no.bibsys.db.structures.Entry;
 import no.bibsys.db.structures.TableDefinitions;
 
 
-
 public class TableCreator {
 
   final transient private TableDriver tableDriver;
@@ -25,7 +24,7 @@ public class TableCreator {
   }
 
 
-  public AmazonDynamoDB getClient(){
+  public AmazonDynamoDB getClient() {
     return tableDriver.getClient();
   }
 

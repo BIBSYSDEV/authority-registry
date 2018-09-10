@@ -15,6 +15,7 @@ import no.bibsys.Application;
 public class SampleHandler implements RequestStreamHandler {
 
   private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
+
   static {
     try {
       handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(Application.class);

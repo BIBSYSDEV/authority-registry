@@ -2,16 +2,16 @@ package no.bibsys.handlers.responses;
 
 public class SimpleResponse {
 
-   String message;
+  private String message;
 
 
-
-   public SimpleResponse(){};
-
-  public SimpleResponse(String message){
-    setMessage(message);
+  public SimpleResponse() {
   }
 
+
+  public SimpleResponse(String message) {
+    setMessage(message);
+  }
 
 
   @Override
@@ -42,8 +42,6 @@ public class SimpleResponse {
     this.message = message;
   }
 
-
-
 //  public String toGatewayResponse() throws JsonProcessingException {
 //    String body= new JSONObject().put("message",getMessage()).toString();
 //    GatewayResponse response=new GatewayResponse(body);
@@ -52,9 +50,6 @@ public class SimpleResponse {
 //    return responseStr;
 //
 //  }
-
-
-
 
 
 }

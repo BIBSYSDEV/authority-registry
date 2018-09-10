@@ -11,31 +11,31 @@ import java.util.List;
 public interface IOTestUtils {
 
 
-  default InputStream resourceAsStream(Path path){
+  default InputStream resourceAsStream(Path path) {
     return Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString());
 
   }
 
 
   default List<String> resouceAsList(Path path) throws IOException {
-	try (InputStreamReader isr = new InputStreamReader(resourceAsStream(path), "utf-8")) {
-	    try (BufferedReader reader = new BufferedReader(isr)) {
-		    ArrayList<String> result=new ArrayList<>();
-		    String line=reader.readLine();
-		    while(line!=null){
-		      result.add(line);
-		      line=reader.readLine();
-		    }
+    try (InputStreamReader isr = new InputStreamReader(resourceAsStream(path), "utf-8")) {
+      try (BufferedReader reader = new BufferedReader(isr)) {
+        ArrayList<String> result = new ArrayList<>();
+        String line = reader.readLine();
+        while (line != null) {
+          result.add(line);
+          line = reader.readLine();
+        }
 
-		    return result;		    	
-	    }
-	}
+        return result;
+      }
+    }
   }
 
 
   default String resourceAsString(Path path) throws IOException {
-    List<String> lines=resouceAsList(path);
-    String result=String.join(" ",lines);
+    List<String> lines = resouceAsList(path);
+    String result = String.join(" ", lines);
     return result;
   }
 

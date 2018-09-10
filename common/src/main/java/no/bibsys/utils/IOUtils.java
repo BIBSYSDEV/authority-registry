@@ -6,14 +6,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class IOUtils implements IOTestUtils {
-  
+
   public String streamToString(final InputStream stream) throws IOException {
-    final BufferedReader reader=new BufferedReader(new InputStreamReader(stream, "utf-8"));
-    final StringBuffer output=new StringBuffer();
-    String line=reader.readLine();
-    while(line!=null){
+    final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
+    final StringBuffer output = new StringBuffer();
+    String line = reader.readLine();
+    while (line != null) {
       output.append(line);
-      line=reader.readLine();
+      line = reader.readLine();
     }
     return output.toString();
   }

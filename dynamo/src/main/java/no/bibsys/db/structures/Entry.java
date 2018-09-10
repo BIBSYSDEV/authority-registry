@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public interface Entry  extends TableDefinitions {
+public interface Entry extends TableDefinitions {
 
   @DynamoDBHashKey(attributeName = "id")
   String getId();

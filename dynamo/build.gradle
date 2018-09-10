@@ -36,7 +36,6 @@ test {
     systemProperty "java.library.path", 'build/libs'
 }
 
-
 //create simple jar this is not an independent application.
-jar.enabled=true
+jar.enabled = true
 

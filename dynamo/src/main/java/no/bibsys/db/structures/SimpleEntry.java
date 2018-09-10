@@ -5,11 +5,12 @@ import java.util.List;
 public class SimpleEntry implements Entry {
 
 
-  private  String id;
-  private  List<LanguageString> preferredLabels;
+  private String id;
+  private List<LanguageString> preferredLabels;
 
 
-  public SimpleEntry(){}
+  public SimpleEntry() {
+  }
 
   public SimpleEntry(final String id, final List<LanguageString> preferredLabels) {
     this.id = id;
@@ -23,7 +24,7 @@ public class SimpleEntry implements Entry {
 
   @Override
   public void setId(final String id) {
-      this.id=id;
+    this.id = id;
   }
 
 
@@ -33,7 +34,7 @@ public class SimpleEntry implements Entry {
 
 
   public void setPreferredLabels(final List<LanguageString> labels) {
-      this.preferredLabels=labels;
+    this.preferredLabels = labels;
   }
 
 

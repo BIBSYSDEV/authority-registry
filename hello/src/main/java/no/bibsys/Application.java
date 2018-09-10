@@ -19,12 +19,16 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 
 @SpringBootApplication
-@Import({ MyController.class })
+@Import({MyController.class})
 public class Application extends SpringBootServletInitializer {
 
     // silence console logging
     @Value("${logging.level.root:OFF}")
     String message = "";
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
     /*
      * Create required HandlerMapping, to avoid several default HandlerMapping instances being created
@@ -54,13 +58,11 @@ public class Application extends SpringBootServletInitializer {
         return new HandlerExceptionResolver() {
 
             @Override
-            public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+            public ModelAndView resolveException(HttpServletRequest request,
+                HttpServletResponse response,
+                Object handler, Exception ex) {
                 return null;
             }
         };
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
     }
 }

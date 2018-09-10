@@ -8,9 +8,7 @@ import java.io.PipedOutputStream;
 
 
 /**
- *
  * Helper class for reading the output of methods that write to OutputStreams
- *
  */
 public class ReadableOutputStream {
 
@@ -28,14 +26,12 @@ public class ReadableOutputStream {
   }
 
 
-
   public static ReadableOutputStream create() throws IOException {
     final PipedInputStream inputStream = new PipedInputStream();
     final PipedOutputStream outputStream = new PipedOutputStream(inputStream);
     final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-    return new ReadableOutputStream(inputStream,outputStream,reader);
+    return new ReadableOutputStream(inputStream, outputStream, reader);
   }
-
 
 
   public PipedInputStream getInputStream() {
@@ -43,18 +39,14 @@ public class ReadableOutputStream {
   }
 
 
-
   public PipedOutputStream getOutputStream() {
     return outputStream;
   }
 
 
-
   public BufferedReader getReader() {
     return reader;
   }
-
-
 
 
 }

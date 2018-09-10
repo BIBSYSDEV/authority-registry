@@ -11,6 +11,13 @@ public class LanguageString {
   @JsonProperty("@language")
   private String language;
 
+  public LanguageString(final String text, final String language) {
+    Preconditions.checkNotNull(text);
+    Preconditions.checkNotNull(language);
+    this.value = text;
+    this.language = language;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
@@ -34,14 +41,6 @@ public class LanguageString {
     result = 31 * result + getLanguage().hashCode();
     return result;
   }
-
-  public LanguageString(final String text, final String language) {
-    Preconditions.checkNotNull(text);
-    Preconditions.checkNotNull(language);
-    this.value = text;
-    this.language = language;
-  }
-
 
   public String getValue() {
     return value;

@@ -16,36 +16,32 @@ import org.junit.Test;
 public class TableWriterAndReaderTest extends LocalDynamoTest implements IOTestUtils {
 
 
-
   TableReader tableReader;
   TableWriter tableWriter;
   TableCreator tableCreator;
 
 
-
   @Override
   @Before
-  public void init(){
+  public void init() {
     super.init();
-    tableReader=new TableReader(new TableDriver(localClient,new DynamoDB(localClient)));
-    tableWriter=new TableWriter(new TableDriver(localClient,new DynamoDB(localClient)));
-    tableCreator=new TableCreator(new TableDriver(localClient,new DynamoDB(localClient)));
+    tableReader = new TableReader(new TableDriver(localClient, new DynamoDB(localClient)));
+    tableWriter = new TableWriter(new TableDriver(localClient, new DynamoDB(localClient)));
+    tableCreator = new TableCreator(new TableDriver(localClient, new DynamoDB(localClient)));
     tableReader.setTableName(tableName);
     tableWriter.setTableName(tableName);
   }
 
 
-
   @Test
   public void insertJson() throws IOException, InterruptedException {
 
-
-    String json=resourceAsString(Paths.get("json","sample.json"));
-    Item inputItem= Item.fromJSON(json);
-    tableCreator.createTable(tableName,entry);
+    String json = resourceAsString(Paths.get("json", "sample.json"));
+    Item inputItem = Item.fromJSON(json);
+    tableCreator.createTable(tableName, entry);
     tableWriter.insertJson(json);
-    String output=tableReader.getEntry("id01");
-    Item outputItem=Item.fromJSON(output);
+    String output = tableReader.getEntry("id01");
+    Item outputItem = Item.fromJSON(output);
     assertThat(outputItem, is(equalTo(inputItem)));
 
   }

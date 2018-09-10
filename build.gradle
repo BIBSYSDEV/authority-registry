@@ -1,23 +1,19 @@
-
-
 plugins {
     id 'java'
     id 'base'
-
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'checkstyle'
     id 'pmd'
-    id "com.github.spotbugs" version "1.6.2"
+//    id "com.github.spotbugs" version "1.6.2"
 }
 
 repositories {
     mavenCentral()
 }
 
-def springVersion="2.0.4.RELEASE"
+def springVersion = "2.0.4.RELEASE"
 
 //root project has no executable
-
 
 
 dependencies {
@@ -27,31 +23,24 @@ dependencies {
 }
 
 
-allprojects{
+allprojects {
     apply plugin: 'java'
-    apply plugin: 'base'
-
+//    apply plugin: 'base'
 
 }
 
-task fatJar{
+task fatJar {
     println "Creating fat jars"
 }
 
-//task myZip(type:Zip){
-//    archiveName = "cypress.zip"
-//    destinationDir file("${buildDir}/cypressZip")
-//    from "${buildDir}/cypress"
-//}
 
 subprojects {
 
-    bootJar.enabled=false
 
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
-    apply plugin: "com.github.spotbugs"
+//    apply plugin: "com.github.spotbugs"
 
     repositories {
         mavenCentral()
@@ -74,39 +63,25 @@ subprojects {
         shadowJar { zip64 true }
     }
 
-    task fatJar(dependsOn: shadowJar){}
+    task fatJar(dependsOn: shadowJar) {}
 
+    checkstyle {
+        configFile = file('../config/checkstyle/checkstyle.xml')
+    }
 
-//    test {
-//        useJUnitPlatform()
-//        testLogging {
-//            events "passed", "skipped", "failed"
-//            exceptionFormat "FULL"
-//            outputs.upToDateWhen {false}
-//            showStandardStreams = true
-//            reports.html.enabled=true
-//        }
-
-
-//    }
-
-	checkstyle {
-		configFile = file('../config/checkstyle/checkstyle.xml')
-	}
-
-	pmd {
-		ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
-		ruleSets = []
-		ignoreFailures = true //TODO: Remove this when you start fixing your own errors
-		toolVersion = '6.7.0'
-	}
-
-	tasks.withType(com.github.spotbugs.SpotBugsTask) {
-	    reports {
-	        xml.enabled false
-	        html.enabled true
-	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
-	    }
-	}
+    pmd {
+        ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
+        ruleSets = []
+        ignoreFailures = true //TODO: Remove this when you start fixing your own errors
+        toolVersion = '6.7.0'
+    }
+//
+//	tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//	    reports {
+//	        xml.enabled false
+//	        html.enabled true
+//	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+//	    }
+//	}
 }
 

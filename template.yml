@@ -10,20 +10,20 @@ Parameters:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
 
-# Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
-# https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
-#
-# Globals:
-#   Function:
-#     AutoPublishAlias: live
-#     DeploymentPreference:
-#       Enabled: true
-#       Type: Canary10Percent5Minutes
+    # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
+    # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
+    #
+    # Globals:
+    #   Function:
+    #     AutoPublishAlias: live
+    #     DeploymentPreference:
+    #       Enabled: true
+    #       Type: Canary10Percent5Minutes
 
 
 
-#Globals:
-#  Api:
+    #Globals:
+    #  Api:
     # API Gateway regional endpoints
 #    EndpointConfiguration: REGIONAL
 
@@ -34,7 +34,7 @@ Resources:
       Handler: no.bibsys.handlers.SampleHandler::handleRequest
       Runtime: java8
       CodeUri: hello/build/libs/hello-fat.jar
-     # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
+      # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
       MemorySize: 1512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 60
