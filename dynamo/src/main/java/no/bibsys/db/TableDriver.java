@@ -7,13 +7,13 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 public  class TableDriver {
 
   private AmazonDynamoDB client;
-  private DynamoDB dynamoDB;
+  private transient DynamoDB dynamoDB;
 
 
   public TableDriver(){};
 
 
-  public TableDriver(AmazonDynamoDB client, DynamoDB dynamoDB) {
+  public TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDB) {
     this.client = client;
     this.dynamoDB = dynamoDB;
   }
@@ -26,7 +26,7 @@ public  class TableDriver {
     return dynamoDB;
   }
 
-  public void setClient(AmazonDynamoDB client){
+  public void setClient(final AmazonDynamoDB client){
 
     if(this.client==null){
       this.client=client;
@@ -40,7 +40,7 @@ public  class TableDriver {
   }
 
 
-  public Table getTable(String tableName){
+  public Table getTable(final String tableName){
     return dynamoDB.getTable(tableName);
 
   }

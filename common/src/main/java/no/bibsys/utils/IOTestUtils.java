@@ -12,7 +12,7 @@ public interface IOTestUtils {
 
 
   default InputStream resourceAsStream(Path path){
-    return this.getClass().getClassLoader().getResourceAsStream(path.toString());
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString());
 
   }
 

@@ -46,8 +46,8 @@ public class SimpleHandlerTest  {
     ReadableOutputStream ros = ReadableOutputStream.create();
 
     SimpleHandler handler = new SimpleHandler();
-    handler.handleRequest(inputStream, ros.outputStream, mockLambdaContext);
-    String outputString = ioUtils.readerToString(ros.reader);
+    handler.handleRequest(inputStream, ros.getOutputStream(), mockLambdaContext);
+    String outputString = ioUtils.readerToString(ros.getReader());
 
 
     SimpleResponse response = responseParser
