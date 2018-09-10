@@ -21,7 +21,7 @@ bootJar.enabled = false
 dependencies {
     compile project(":hello")
     compile project(":common")
-//    compile project(":cypress")
+    compile project(":cypress")
 }
 
 
