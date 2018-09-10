@@ -12,14 +12,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LocalDynamoConfiguration {
 
-  @Bean
-  public DatabaseHandler getDatabaseHandler(TableCreator tableCreator, TableWriter writer){
-    DatabaseHandler databaseHandler = new DatabaseHandler();
-    databaseHandler.setTableCreator(tableCreator);
-    databaseHandler.setTableWriter(writer);
-    return databaseHandler;
 
-  }
+
+//  @Bean
+//  public SampleHandler getDatabaseHandler(){
+//    return new SampleHandler();
+//  }
+
+//  @Bean
+//  public SampleHandler getDatabaseHandler(TableCreator tableCreator){
+//    SampleHandler databaseHandler = new SampleHandler();
+//    databaseHandler.setTableCreator(tableCreator);
+////    databaseHandler.setTableWriter(writer);
+//    return databaseHandler;
+//
+//  }
 
 
   @Bean
@@ -64,10 +71,7 @@ public class LocalDynamoConfiguration {
 
 
 
-  @Bean
-  public DatabaseHandler getDatabaseHandler(){
-    return new DatabaseHandler();
-  }
+
 
 
 

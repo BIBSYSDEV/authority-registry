@@ -7,7 +7,7 @@ if [ $# -eq 0  ]; then
  "Argument 3: Resource name from template.yaml of the API lambda function to be invoked" \
  "Argument 4 (Optional):Debug port"  
 else 
-  if [ "$#" -eq 2 ]; then
+  if [ "$#" -ge 2 ]; then
     method=$2
   fi
     cat  $1 |  sed -e "s/^/'/g" | sed -e "s/$/'/g" | xargs sam local generate-event api -m $method -b

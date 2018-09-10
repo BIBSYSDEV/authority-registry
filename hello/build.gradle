@@ -17,8 +17,6 @@ dependencies{
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
 
     //connection to amazon
-    compile group: 'com.amazonaws', 'name': 'aws-lambda-java-core', version: '1.2.0'
-    testCompile group: 'com.amazonaws.serverless', 'name': 'aws-serverless-java-container-core', version: '1.1.3'
 
 }
 

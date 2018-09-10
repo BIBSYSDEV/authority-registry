@@ -1,6 +1,7 @@
 package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import no.bibsys.handlers.responses.GatewayResponse;
 import no.bibsys.utils.ApiMessageParser;
 import org.springframework.http.HttpStatus;
 
-public abstract class HandlerHelper<I, O> {
+public abstract class HandlerHelper<I, O>  implements RequestStreamHandler {
 
 
     private final Class<I> iclass;
@@ -76,6 +77,7 @@ public abstract class HandlerHelper<I, O> {
     protected Context getContext() {
         return this.context;
     }
+
 
 
 

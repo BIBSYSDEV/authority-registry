@@ -25,48 +25,51 @@ Resources:
   GetHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler:  no.bibsys.handlers.HelloWorldHandler
+      Handler:  no.bibsys.SampleHandler::handleRequest
       Runtime: java8
-      CodeUri: './hello/build/libs/hello-fat.jar'
-      Role:
-        Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      CodeUri: hello/build/libs/hello-fat.jar
+      Timeout: 180
+#      Role:
+#        Fn::ImportValue:
+#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Events:
         GetEvent:
           Type: Api
           Properties:
-            Path: /
-            Method: get
+            Path: /{proxy+}
+            Method: any
 
-  PostHelloWorld:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler:  no.bibsys.handlers.SimpleHandler
-      Runtime: java8
-      CodeUri: './hello/build/libs/hello-fat.jar'
-      Role:
-        Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
-      Events:
-        PostEvent:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: post
-  PostWriteBD:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler:  no.bibsys.handlers.DatabaseHandler
-      Runtime: java8
-      CodeUri: './hello/build/libs/hello-fat.jar'
-      Role:
-        Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
-      Events:
-        PostEvent:
-          Type: Api
-          Properties:
-            Path: /db
-            Method: post
+#  PostHelloWorld:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler:  no.bibsys.handlers.SampleHandler::handleRequest
+#      Timeout: 180
+#      Runtime: java8
+#      CodeUri: './hello/build/libs/hello-fat.jar'
+#      Role:
+#        Fn::ImportValue:
+#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+#      Events:
+#        PostEvent:
+#          Type: Api
+#          Properties:
+#            Path: /hello
+#            Method: post
+#  PostWriteBD:
+#    Type: AWS::Serverless::Function
+#    Properties:
+#      Handler:  no.bibsys.handlers.SampleHandler::handleRequest
+#      Timeout: 180
+#      Runtime: java8
+#      CodeUri: './hello/build/libs/hello-fat.jar'
+#      Role:
+#        Fn::ImportValue:
+#          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+#      Events:
+#        PostEvent:
+#          Type: Api
+#          Properties:
+#            Path: /db
+#            Method: post
 
 
