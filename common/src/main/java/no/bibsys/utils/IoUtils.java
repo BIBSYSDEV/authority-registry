@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class IOUtils implements IOTestUtils {
+public class IoUtils implements IoTestUtils {
 
   public String streamToString(final InputStream stream) throws IOException {
     final BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));

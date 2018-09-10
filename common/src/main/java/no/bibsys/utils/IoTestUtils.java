@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface IOTestUtils {
+public interface IoTestUtils {
 
 
   default InputStream resourceAsStream(Path path) {

@@ -8,12 +8,12 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import java.io.IOException;
 import java.nio.file.Paths;
-import no.bibsys.utils.IOTestUtils;
+import no.bibsys.utils.IoTestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class TableWriterAndReaderTest extends LocalDynamoTest implements IOTestUtils {
+public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestUtils {
 
 
   TableReader tableReader;

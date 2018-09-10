@@ -22,47 +22,47 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Import({MyController.class})
 public class Application extends SpringBootServletInitializer {
 
-    // silence console logging
-    @Value("${logging.level.root:OFF}")
-    String message = "";
+  // silence console logging
+  @Value("${logging.level.root:OFF}")
+  String message = "";
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
-    /*
-     * Create required HandlerMapping, to avoid several default HandlerMapping instances being created
-     */
-    @Bean
-    public HandlerMapping handlerMapping() {
-        return new RequestMappingHandlerMapping();
-    }
+  /*
+   * Create required HandlerMapping, to avoid several default HandlerMapping instances being created
+   */
+  @Bean
+  public HandlerMapping handlerMapping() {
+    return new RequestMappingHandlerMapping();
+  }
 
-    /*
-     * Create required HandlerAdapter, to avoid several default HandlerAdapter instances being created
-     */
-    @Bean
-    public HandlerAdapter handlerAdapter() {
-        return new RequestMappingHandlerAdapter();
-    }
+  /*
+   * Create required HandlerAdapter, to avoid several default HandlerAdapter instances being created
+   */
+  @Bean
+  public HandlerAdapter handlerAdapter() {
+    return new RequestMappingHandlerAdapter();
+  }
 
-    /*
-     * optimization - avoids creating default exception resolvers; not required as the serverless container handles
-     * all exceptions
-     *
-     * By default, an ExceptionHandlerExceptionResolver is created which creates many dependent object, including
-     * an expensive ObjectMapper instance.
-     */
-    @Bean
-    public HandlerExceptionResolver handlerExceptionResolver() {
-        return new HandlerExceptionResolver() {
+  /*
+   * optimization - avoids creating default exception resolvers; not required as the serverless container handles
+   * all exceptions
+   *
+   * By default, an ExceptionHandlerExceptionResolver is created which creates many dependent object, including
+   * an expensive ObjectMapper instance.
+   */
+  @Bean
+  public HandlerExceptionResolver handlerExceptionResolver() {
+    return new HandlerExceptionResolver() {
 
-            @Override
-            public ModelAndView resolveException(HttpServletRequest request,
-                HttpServletResponse response,
-                Object handler, Exception ex) {
-                return null;
-            }
-        };
-    }
+      @Override
+      public ModelAndView resolveException(HttpServletRequest request,
+          HttpServletResponse response,
+          Object handler, Exception ex) {
+        return null;
+      }
+    };
+  }
 }

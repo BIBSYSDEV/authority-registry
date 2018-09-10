@@ -5,11 +5,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
-import no.bibsys.utils.IOTestUtils;
+import no.bibsys.utils.IoTestUtils;
 import org.junit.Test;
 
 
-public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
+public class TableCreatorTest extends LocalDynamoTest implements IoTestUtils {
 
   @Test
   public void createTable() throws InterruptedException {
