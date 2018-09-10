@@ -39,4 +39,4 @@ test {
 
 //create simple jar this is not an independent application.
 jar.enabled=true
-bootJar.enabled=false
+
