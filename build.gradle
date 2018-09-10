@@ -98,7 +98,7 @@ subprojects {
 	pmd {
 		ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
 		ruleSets = []
-		ignoreFailures = true
+		ignoreFailures = true //TODO: Remove this when you start fixing your own errors
 		toolVersion = '6.7.0'
 	}
 
