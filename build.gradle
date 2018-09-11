@@ -6,6 +6,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'checkstyle'
     id 'pmd'
+    id "jacoco"
     id "com.github.spotbugs" version "1.6.2"
 }
 
@@ -50,6 +51,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
+    apply plugin: "jacoco"
     apply plugin: "com.github.spotbugs"
     
     repositories {
@@ -100,6 +102,18 @@ subprojects {
 		ruleSets = []
 		ignoreFailures = true //TODO: Remove this when you start fixing your own errors
 		toolVersion = '6.7.0'
+	}
+
+	jacocoTestCoverageVerification {
+	    violationRules {
+			rule {
+	            limit {
+	                counter = 'METHOD'
+	                value = 'COVEREDRATIO'
+	                minimum = 0.1 //TODO: Increase this when we start writing tests
+	            }
+            }
+        }
 	}
 
 	tasks.withType(com.github.spotbugs.SpotBugsTask) {
