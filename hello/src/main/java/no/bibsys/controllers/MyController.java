@@ -1,7 +1,7 @@
 package no.bibsys.controllers;
 
-import no.bibsys.handlers.responses.SimpleResponse;
 
+import no.bibsys.responses.SimpleResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package no.bibsys.handlers.responses;
+package no.bibsys.responses;
 
 public class SimpleResponse {
 
