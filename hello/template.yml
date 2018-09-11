@@ -8,7 +8,7 @@ Globals:
     EndpointConfiguration: REGIONAL
 
 Resources:
-  PetStoreFunction:
+  GetHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
       Handler:  no.bibsys.handlers.SampleHandler::handleRequest
@@ -23,10 +23,3 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: any
-
-Outputs:
-  SpringBootPetStoreApi:
-    Description: URL for application
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pets'
-    Export:
-      Name: SpringBootPetStoreApi
