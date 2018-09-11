@@ -14,19 +14,19 @@
 //
 //
 //
-////  @Bean
-////  public SampleHandler getDatabaseHandler(){
-////    return new SampleHandler();
-////  }
+//  @Bean
+//  public SampleHandler getDatabaseHandler(){
+//    return new SampleHandler();
+//  }
 //
-////  @Bean
-////  public SampleHandler getDatabaseHandler(TableCreator tableCreator){
-////    SampleHandler databaseHandler = new SampleHandler();
-////    databaseHandler.setTableCreator(tableCreator);
-//////    databaseHandler.setTableWriter(writer);
-////    return databaseHandler;
-////
-////  }
+//  @Bean
+//  public SampleHandler getDatabaseHandler(TableCreator tableCreator){
+//    SampleHandler databaseHandler = new SampleHandler();
+//    databaseHandler.setTableCreator(tableCreator);
+////    databaseHandler.setTableWriter(writer);
+//    return databaseHandler;
+//
+//  }
 //
 //
 //  @Bean
