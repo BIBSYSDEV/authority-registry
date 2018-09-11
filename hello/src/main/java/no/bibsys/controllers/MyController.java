@@ -46,7 +46,7 @@ public class MyController {
 
   @RequestMapping(value = "*", method = RequestMethod.GET)
   public SimpleResponse getFallback() {
-    SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
+    SimpleResponse response = new SimpleResponse("Controller says hI!!!");
     return response;
   }
 

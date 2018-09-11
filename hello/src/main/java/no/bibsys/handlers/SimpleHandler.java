@@ -7,12 +7,15 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import no.bibsys.Application;
+import no.bibsys.handlers.responses.SimpleResponse;
 
-public class SampleHandler implements RequestStreamHandler {
+public class SimpleHandler implements RequestStreamHandler {
 
   private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
@@ -32,7 +35,7 @@ public class SampleHandler implements RequestStreamHandler {
     }
   }
 
-  public SampleHandler() {
+  public SimpleHandler() {
     // we enable the timer for debugging. This SHOULD NOT be enabled in production.
     Timer.enable();
   }
@@ -41,7 +44,6 @@ public class SampleHandler implements RequestStreamHandler {
   public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
       throws IOException {
     handler.proxyStream(inputStream, outputStream, context);
-
     // just in case it wasn't closed by the mapper
     outputStream.close();
   }
