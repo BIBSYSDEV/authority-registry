@@ -20,6 +20,9 @@ apply plugin: 'io.spring.dependency-management'
 
 dependencies {
     compile project(":common")
+    compile project(":dynamo")
+
+
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
 
     //spring boot libraries
@@ -53,7 +56,7 @@ test {
 
 bootJar.enabled = false
 jar.enabled = false
-//build.dependsOn buildZip
+
 
 shadowJar {
     archiveName = "${baseName}-fat.jar"
