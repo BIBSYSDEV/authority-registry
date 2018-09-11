@@ -19,7 +19,6 @@ public abstract class HandlerHelper<I, O> {
     private final Class<O> oclass;
     private OutputStream outputStream;
     private Context context;
-    private InputStream inputStream;
 
 
     private ApiMessageParser<I> inputParser = new ApiMessageParser<>();
@@ -33,8 +32,7 @@ public abstract class HandlerHelper<I, O> {
     }
 
 
-    public void init(InputStream inputStream, OutputStream outputStream, Context context) {
-        this.inputStream = inputStream;
+    public void init( OutputStream outputStream, Context context) {
         this.outputStream = outputStream;
         this.context = context;
     }
@@ -55,7 +53,7 @@ public abstract class HandlerHelper<I, O> {
         String outputString = objectMapper.writeValueAsString(output);
         GatewayResponse gatewayResponse = new GatewayResponse(outputString);
         String responseJson = objectMapper.writeValueAsString(gatewayResponse);
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
         writer.write(responseJson);
         writer.close();
 
@@ -67,7 +65,7 @@ public abstract class HandlerHelper<I, O> {
         GatewayResponse gatewayResponse = new GatewayResponse(outputString,
             GatewayResponse.defaultHeaders(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         String responseJson=objectMapper.writeValueAsString(gatewayResponse);
-        BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream));
+        BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"));
         writer.write(responseJson);
         writer.close();
     }
@@ -82,7 +80,7 @@ public abstract class HandlerHelper<I, O> {
 
     public void handleRequest(InputStream input, OutputStream output, Context context)
         throws IOException {
-        init(input,output,context);
+        init(output,context);
         I inputObject=parseInput(input);
         O response= null;
         try {

@@ -11,7 +11,7 @@ public class SimpleEntry implements Entry {
 
   public SimpleEntry(){}
 
-  public SimpleEntry(String id, List<LanguageString> preferredLabels) {
+  public SimpleEntry(final String id, final List<LanguageString> preferredLabels) {
     this.id = id;
     this.preferredLabels = preferredLabels;
   }
@@ -22,7 +22,7 @@ public class SimpleEntry implements Entry {
   }
 
   @Override
-  public void setId(String id) {
+  public void setId(final String id) {
       this.id=id;
   }
 
@@ -32,7 +32,7 @@ public class SimpleEntry implements Entry {
   }
 
 
-  public void setPreferredLabels(List<LanguageString> labels) {
+  public void setPreferredLabels(final List<LanguageString> labels) {
       this.preferredLabels=labels;
   }
 

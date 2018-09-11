@@ -44,13 +44,13 @@ public class HelloWorldHandlerTest  {
   @Ignore
   public void testHandleRequest() throws IOException {
     String input = "";
-    InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+    InputStream inputStream = new ByteArrayInputStream(input.getBytes("utf-8"));
     ReadableOutputStream ros = ReadableOutputStream.create();
     new HelloWorldHandler().handleRequest(inputStream,
-        ros.outputStream,
+        ros.getOutputStream(),
         mockLambdaContext);
 
-    String outputString = ioUtils.readerToString(ros.reader);
+    String outputString = ioUtils.readerToString(ros.getReader());
 
     SimpleResponse outputMessage = outputMessageParser
         .getBodyElementFromJson(outputString, SimpleResponse.class);

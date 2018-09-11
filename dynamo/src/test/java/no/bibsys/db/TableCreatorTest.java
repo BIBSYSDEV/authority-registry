@@ -11,11 +11,6 @@ import org.junit.Test;
 
 public class TableCreatorTest extends LocalDynamoTest implements IOTestUtils {
 
-
-  private TableDriver tableDriver;
-
-
-
   @Test
   public void createTable() throws InterruptedException {
     TableDriver tableDriver=new TableDriver();

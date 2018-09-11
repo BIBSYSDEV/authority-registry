@@ -33,7 +33,6 @@ public class SimpleHandlerTest  {
 
   private IOUtils ioUtils=new IOUtils();
   private ApiMessageParser<SimpleResponse> responseParser=new ApiMessageParser<>();
-  private ObjectMapper objectMapper=new ObjectMapper();
 
 
   /**
@@ -43,12 +42,12 @@ public class SimpleHandlerTest  {
   public  void testHandleRequest() throws IOException {
     String json = ioUtils.resourceAsString(Paths.get("api", "apiInput.txt"));
 
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes());
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(json.getBytes("utf-8"));
     ReadableOutputStream ros = ReadableOutputStream.create();
 
     SimpleHandler handler = new SimpleHandler();
-    handler.handleRequest(inputStream, ros.outputStream, mockLambdaContext);
-    String outputString = ioUtils.readerToString(ros.reader);
+    handler.handleRequest(inputStream, ros.getOutputStream(), mockLambdaContext);
+    String outputString = ioUtils.readerToString(ros.getReader());
 
 
     SimpleResponse response = responseParser

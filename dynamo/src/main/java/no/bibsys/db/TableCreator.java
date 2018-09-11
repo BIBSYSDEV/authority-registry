@@ -14,13 +14,13 @@ import no.bibsys.db.structures.TableDefinitions;
 
 public class TableCreator {
 
-  private TableDriver tableDriver;
+  final transient private TableDriver tableDriver;
 
-  public TableCreator(TableDriver tableDriver) {
+  public TableCreator(final TableDriver tableDriver) {
     this.tableDriver = tableDriver;
   }
 
-  public void deleteTable(String tableName) {
+  public void deleteTable(final String tableName) {
     tableDriver.getClient().deleteTable(tableName);
   }
 
@@ -29,20 +29,20 @@ public class TableCreator {
     return tableDriver.getClient();
   }
 
-  public void createTable(String tableName, TableDefinitions tableEntry)
+  public void createTable(final String tableName, final TableDefinitions tableEntry)
       throws InterruptedException {
 
-    List<AttributeDefinition> attributeDefinitions = tableEntry
+    final List<AttributeDefinition> attributeDefinitions = tableEntry
         .attributeDefinitions();
-    List<KeySchemaElement> keySchema = tableEntry.keySchema();
+    final List<KeySchemaElement> keySchema = tableEntry.keySchema();
 
-    CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
+    final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
         .withKeySchema(keySchema)
         .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
             new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
 
     System.out.println("Issuing CreateTable request for " + tableName);
-    Table table = tableDriver.getDynamoDB().createTable(request);
+    final Table table = tableDriver.getDynamoDB().createTable(request);
 
     System.out.println("Waiting for " + tableName + " to be created...this may take a while...");
     table.waitForActive();
@@ -50,25 +50,26 @@ public class TableCreator {
   }
 
 
-  public boolean tableExists(String tableName) {
+  public boolean tableExists(final String tableName) {
+    boolean tableExists = false;
     try {
-      tableDriver.getTable(tableName).describe().getTableStatus();
-      return true;
+      tableExists = tableDriver.getTable(tableName).describe().getTableStatus() != null;
     } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
-      return false;
+      System.err.println(tableExists + " does not exist");
     }
+    return tableExists;
   }
 
-  public void createTable(String tableName) throws InterruptedException {
+  public void createTable(final String tableName) throws InterruptedException {
 
-    Entry entry = new Entry() {
+    final Entry entry = new Entry() {
       @Override
       public String getId() {
         return null;
       }
 
       @Override
-      public void setId(String id) {
+      public void setId(final String id) {
 
       }
     };

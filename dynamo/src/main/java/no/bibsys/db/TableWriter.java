@@ -9,19 +9,19 @@ import no.bibsys.db.structures.Entry;
 public class TableWriter {
 
 
-  private TableDriver tableDriver;
+  private final transient TableDriver tableDriver;
 
-  private String tableName;
-  private ObjectMapper mapper;
+  private transient String tableName;
+  private final transient ObjectMapper mapper;
 
 
-  public TableWriter(TableDriver tableDriver) {
+  public TableWriter(final TableDriver tableDriver) {
     this.tableDriver = tableDriver;
     mapper = new ObjectMapper();
   }
 
 
-  public void setTableName(String tableName) {
+  public void setTableName(final String tableName) {
     if (this.tableName == null) {
       this.tableName = tableName;
     } else {
@@ -30,14 +30,14 @@ public class TableWriter {
   }
 
 
-  public void insertEntry(Entry entry) throws JsonProcessingException {
-    String json = mapper.writeValueAsString(entry);
+  public void insertEntry(final Entry entry) throws JsonProcessingException {
+    final String json = mapper.writeValueAsString(entry);
     insertJson(json);
   }
 
-  public void insertJson(String json) {
-    Item item = Item.fromJSON(json);
-    Table table = tableDriver.getTable(tableName);
+  public void insertJson(final String json) {
+    final Item item = Item.fromJSON(json);
+    final Table table = tableDriver.getTable(tableName);
     table.putItem(item);
   }
 

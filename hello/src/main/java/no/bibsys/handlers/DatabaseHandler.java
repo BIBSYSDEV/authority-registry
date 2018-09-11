@@ -57,7 +57,6 @@ public class DatabaseHandler extends HandlerHelper<DatabaseWriteRequest, SimpleR
   public SimpleResponse processInput(DatabaseWriteRequest input) throws IOException {
     try {
       String tableName = input.getTableName();
-      String jsonObject = input.getJsonObject();
       boolean tableExists = tableCreator.tableExists(tableName);
       if (!tableExists) {
         tableCreator.createTable(tableName);
