@@ -14,13 +14,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class MyController {
 
 
-  @RequestMapping(path = "/db", method = RequestMethod.GET)
-  public SimpleResponse sayHello(@RequestBody SimpleRequest request) {
-
-    SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
-
-    return response;
-  }
+//  @RequestMapping(path = "/db", method = RequestMethod.GET)
+//  public SimpleResponse sayHello(@RequestBody SimpleRequest request) {
+//
+//    SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
+//
+//    return response;
+//  }
 //
 //
 //  @RequestMapping(path = "/hello", method = RequestMethod.GET)
@@ -45,7 +45,6 @@ public class MyController {
 
 
   @RequestMapping(value = "*", method = RequestMethod.GET)
-  @ResponseBody
   public SimpleResponse getFallback() {
     SimpleResponse response = new SimpleResponse("Contoller says hI!!!");
     return response;
