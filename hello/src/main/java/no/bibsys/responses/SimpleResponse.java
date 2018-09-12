@@ -19,15 +19,15 @@ public class SimpleResponse {
 
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object object) {
+    if (this == object) {
       return true;
     }
-    if (!(o instanceof SimpleResponse)) {
+    if (!(object instanceof SimpleResponse)) {
       return false;
     }
 
-    SimpleResponse that = (SimpleResponse) o;
+    SimpleResponse that = (SimpleResponse) object;
 
     return message != null ? message.equals(that.message) : that.message == null;
   }

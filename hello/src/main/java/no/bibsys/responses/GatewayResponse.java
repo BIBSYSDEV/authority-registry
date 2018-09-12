@@ -1,4 +1,4 @@
-package no.bibsys.handlers.responses;
+package no.bibsys.responses;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class GatewayResponse {
   public GatewayResponse() {
   }
 
-  ;
+
 
   public GatewayResponse(final String body, final Map<String, String> headers,
       final int statusCode) {
@@ -33,6 +33,10 @@ public class GatewayResponse {
     this.statusCode = 200;
   }
 
+
+  /**
+   * Somehtins
+   */
   public static HashMap<String, String> defaultHeaders() {
     HashMap<String, String> map = new HashMap<>();
     map.put("Content-Type", "application/json");

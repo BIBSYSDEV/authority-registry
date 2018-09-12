@@ -42,7 +42,7 @@ public class Application extends SpringBootServletInitializer {
     return new RequestMappingHandlerMapping();
   }
 
-  /*
+  /**
    * Create required HandlerAdapter, to avoid several default HandlerAdapter instances being created
    */
   @Bean
@@ -50,13 +50,14 @@ public class Application extends SpringBootServletInitializer {
     return new RequestMappingHandlerAdapter();
   }
 
-  /*
+  /**
    * optimization - avoids creating default exception resolvers; not required as the serverless container handles
    * all exceptions
    *
    * By default, an ExceptionHandlerExceptionResolver is created which creates many dependent object, including
    * an expensive ObjectMapper instance.
    */
+
   @Bean
   public HandlerExceptionResolver handlerExceptionResolver() {
     return new HandlerExceptionResolver() {

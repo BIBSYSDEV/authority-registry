@@ -7,13 +7,11 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-import java.io.BufferedWriter;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import no.bibsys.Application;
-import no.bibsys.handlers.responses.SimpleResponse;
 
 public class SimpleHandler implements RequestStreamHandler {
 
@@ -39,6 +37,7 @@ public class SimpleHandler implements RequestStreamHandler {
     // we enable the timer for debugging. This SHOULD NOT be enabled in production.
     Timer.enable();
   }
+
 
   @Override
   public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)

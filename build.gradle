@@ -12,22 +12,30 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'checkstyle'
     id 'pmd'
-//    id "com.github.spotbugs" version "1.6.2"
+//    id "com.github.spotbugs" version "1.6.3"
 }
 
 repositories {
     mavenCentral()
 }
 
-def springVersion = "2.0.4.RELEASE"
 
-//root project has no executable
+
+
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion="4.10"
+}
+
+jar.enabled=false
+
 
 
 dependencies {
     compile project(":hello")
     compile project(":common")
-//    compile project(":cypress")
+    compile project(":cypress")
 }
 
 
@@ -53,9 +61,6 @@ subprojects {
     }
 
     dependencies {
-        //json libraries
-        compile group: 'org.json', name: 'json', version: '20180130'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
         //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
@@ -73,6 +78,8 @@ subprojects {
 
     checkstyle {
         configFile = file('../config/checkstyle/checkstyle.xml')
+        showViolations=false
+
     }
 
     pmd {
@@ -80,8 +87,9 @@ subprojects {
         ruleSets = []
         ignoreFailures = true //TODO: Remove this when you start fixing your own errors
         toolVersion = '6.7.0'
+        consoleOutput=false
     }
-//
+
 //	tasks.withType(com.github.spotbugs.SpotBugsTask) {
 //	    reports {
 //	        xml.enabled false
