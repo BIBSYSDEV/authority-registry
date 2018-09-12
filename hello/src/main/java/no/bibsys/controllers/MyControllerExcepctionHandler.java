@@ -1,6 +1,6 @@
 package no.bibsys.controllers;
 
-import no.bibsys.db.TableExistsException;
+import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,8 @@ public class MyControllerExcepctionHandler extends ResponseEntityExceptionHandle
 
 
   @ResponseStatus(HttpStatus.CONFLICT)
-  @ExceptionHandler(value = TableExistsException.class)
-  public ResponseEntity<Object> handleConflict(TableExistsException ex, WebRequest request) {
+  @ExceptionHandler(value = TableAlreadyExistsException.class)
+  public ResponseEntity<Object> handleConflict(TableAlreadyExistsException ex, WebRequest request) {
     SimpleResponse response = new SimpleResponse("Table already exists");
     return handleExceptionInternal(ex, response,
         new HttpHeaders(), HttpStatus.CONFLICT, request);

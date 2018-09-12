@@ -57,7 +57,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
   @Test
   @DirtiesContext
   public void DatabaseManagerShouldCheckIfARegistryExists()
-      throws InterruptedException, TableExistsException {
+      throws InterruptedException, TableAlreadyExistsException {
     DatabaseManagerShouldCreateATable();
   }
 
