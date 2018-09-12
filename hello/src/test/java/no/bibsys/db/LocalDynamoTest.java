@@ -1,20 +1,17 @@
 package no.bibsys.db;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-import org.junit.Before;
+import no.bibsys.LocalDynamoConfiguration;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
+@SpringBootTest
+@ContextConfiguration(classes = {LocalDynamoConfiguration.class})
+@RunWith(SpringRunner.class)
+@DirtiesContext
 public abstract class LocalDynamoTest {
-
-
-  AmazonDynamoDB client;
-
-  @Before
-  public void init() {
-    System.setProperty("java.library.path", "native-libs");
-    client = DynamoDBEmbedded.create().amazonDynamoDB();
-  }
-
 
 }
