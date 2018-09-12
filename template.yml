@@ -36,7 +36,9 @@ Resources:
       CodeUri: hello/build/libs/hello-fat.jar
       # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
       MemorySize: 1512
-      Policies: AWSLambdaBasicExecutionRole
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AmazonDynamoDBFullAccess
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
