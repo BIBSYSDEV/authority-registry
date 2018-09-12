@@ -38,7 +38,7 @@ Resources:
       MemorySize: 1512
       Policies:
       - AWSLambdaBasicExecutionRole
-      - AmazonDynamoDBFullAccess
+      - CustomDynamoDBFullAccess
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
