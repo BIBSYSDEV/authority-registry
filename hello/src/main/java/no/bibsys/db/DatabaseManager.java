@@ -16,8 +16,13 @@ public class DatabaseManager {
   }
 
 
-  public void createRegistry(String tableName) throws InterruptedException {
+  void createRegistry(String tableName) throws InterruptedException {
     tableCreator.createTable(tableName);
+  }
+
+
+  boolean registryExists(String tableName) {
+    return tableCreator.tableExists(tableName);
   }
 
 
