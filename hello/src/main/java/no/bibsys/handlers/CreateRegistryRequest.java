@@ -4,6 +4,17 @@ public class CreateRegistryRequest {
 
   private String registryName;
 
+  public CreateRegistryRequest() {
+  }
+
+  ;
+
+
+  public CreateRegistryRequest(String registryName) {
+    this.registryName = registryName;
+  }
+
+
 
   public String getRegistryName() {
     return registryName;

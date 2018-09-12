@@ -1,6 +1,7 @@
 package no.bibsys.db;
 
 
+import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,13 @@ public class DatabaseManager {
   }
 
 
-  void createRegistry(String tableName) throws InterruptedException {
-    tableCreator.createTable(tableName);
+  public void createRegistry(String tableName)
+      throws InterruptedException, TableAlreadyExistsException {
+    if (!registryExists(tableName)) {
+      tableCreator.createTable(tableName);
+    } else {
+      throw new TableAlreadyExistsException(String.format("Registry %s already exists", tableName));
+    }
   }
 
 

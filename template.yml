@@ -31,7 +31,7 @@ Resources:
   GetHelloWorld:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: no.bibsys.handlers.SampleHandler::handleRequest
+      Handler: no.bibsys.handlers.SimpleHandler::handleRequest
       Runtime: java8
       CodeUri: hello/build/libs/hello-fat.jar
       # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar

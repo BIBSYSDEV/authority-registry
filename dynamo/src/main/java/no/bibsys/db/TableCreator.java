@@ -9,9 +9,14 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import java.util.List;
 import no.bibsys.db.structures.Entry;
 import no.bibsys.db.structures.TableDefinitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TableCreator {
+
+
+  private static Logger logger = LoggerFactory.getLogger(TableCreator.class);
 
   final transient private TableDriver tableDriver;
 
@@ -24,7 +29,7 @@ public class TableCreator {
   }
 
 
-  public AmazonDynamoDB getClient() {
+  AmazonDynamoDB getClient() {
     return tableDriver.getClient();
   }
 
@@ -50,13 +55,13 @@ public class TableCreator {
 
 
   public boolean tableExists(final String tableName) {
-    boolean tableExists = false;
+    boolean exists = false;
     try {
-      tableExists = tableDriver.getTable(tableName).describe().getTableStatus() != null;
+      exists = tableDriver.getTable(tableName).describe().getTableStatus() != null;
     } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
-      System.err.println(tableExists + " does not exist");
+      logger.warn("Table {} does not exist", tableName);
     }
-    return tableExists;
+    return exists;
   }
 
   public void createTable(final String tableName) throws InterruptedException {
