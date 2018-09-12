@@ -25,7 +25,7 @@ public class MyController {
     this.databaseManager = databaseManager;
   }
 
-  @PostMapping(path = "/db", produces = "application/json;charset=UTF-8")
+  @PostMapping(path = "/registry/create", produces = "application/json;charset=UTF-8")
   public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
       throws InterruptedException, TableAlreadyExistsException {
     String tableName = request.getRegistryName();
