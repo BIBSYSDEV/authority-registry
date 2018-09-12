@@ -1,0 +1,65 @@
+plugins {
+    id 'org.springframework.boot' version '2.0.4.RELEASE'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+
+}
+
+
+repositories {
+    maven {
+        url 'http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
+
+
+dependencies {
+    compile project(":common")
+    compile project(":dynamo")
+
+
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+
+    //spring boot libraries
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    //connection to amazon
+    compile group: 'com.amazonaws.serverless', name: 'aws-serverless-java-container-spring', version: '1.1.4'
+    compile 'io.symphonia:lambda-logging:1.0.1'
+
+
+}
+
+
+task copyNativeDeps(type: Copy) {
+    from(configurations.compile + configurations.testCompile) {
+        include '*.dll'
+        include '*.dylib'
+        include '*.so'
+    }
+    into 'build/libs'
+}
+
+
+test {
+    dependsOn copyNativeDeps
+    //Copy native path for testing locally DynamoDB
+    systemProperty "java.library.path", 'build/libs'
+}
+
+
+bootJar.enabled = false
+jar.enabled = false
+
+
+shadowJar {
+    archiveName = "${baseName}-fat.jar"
+    exclude('org.apache.tomcat.embed:*')
+}
+

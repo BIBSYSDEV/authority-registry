@@ -42,5 +42,5 @@ Resources:
         GetResource:
           Type: Api
           Properties:
-            Path: /
+            Path: /{proxy+}
             Method: any
