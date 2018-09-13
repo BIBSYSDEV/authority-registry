@@ -34,11 +34,10 @@ Resources:
       Handler: no.bibsys.handlers.SimpleHandler::handleRequest
       Runtime: java8
       CodeUri: hello/build/libs/hello-fat.jar
-      # CodeUri: hello/target/hello-1.0-SNAPSHOT.jar
       MemorySize: 1512
       Policies:
       - AWSLambdaBasicExecutionRole
-      - CustomDynamoDBFullAccess
+      - CustomDynamoDB_Full_Access
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
