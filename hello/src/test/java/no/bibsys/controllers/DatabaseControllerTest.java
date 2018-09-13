@@ -12,11 +12,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
-public class MyControllerTest extends LocalDynamoTest {
+public class DatabaseControllerTest extends LocalDynamoTest {
 
 
   @Autowired
-  MyController myController;
+  DatabaseController databaseController;
 
   @Autowired
   TableCreator tableCreator;
@@ -27,7 +27,7 @@ public class MyControllerTest extends LocalDynamoTest {
     CreateRegistryRequest registryRequest =
         new CreateRegistryRequest("MyControllerTestTable");
 
-    myController.createRegistry(registryRequest);
+    databaseController.createRegistry(registryRequest);
     boolean tableExists = tableCreator.tableExists(registryRequest.getRegistryName());
     assertThat(tableExists, is(equalTo(true)));
 
@@ -43,10 +43,10 @@ public class MyControllerTest extends LocalDynamoTest {
         new CreateRegistryRequest("MyControllerTestTable");
     boolean tableExists = tableCreator.tableExists(registryRequest.getRegistryName());
     assertThat("Table should not existe before creation", tableExists, is(equalTo(false)));
-    myController.createRegistry(registryRequest);
+    databaseController.createRegistry(registryRequest);
     tableExists = tableCreator.tableExists(registryRequest.getRegistryName());
     assertThat("Table should not existe before creation", tableExists, is(equalTo(true)));
-    myController.createRegistry(registryRequest);
+    databaseController.createRegistry(registryRequest);
 
 
   }

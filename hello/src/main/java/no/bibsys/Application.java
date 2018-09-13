@@ -1,8 +1,8 @@
 package no.bibsys;
 
 
-import no.bibsys.controllers.MyController;
-import no.bibsys.controllers.MyControllerExcepctionHandler;
+import no.bibsys.controllers.DatabaseController;
+import no.bibsys.controllers.DatabaseControllerExcepctionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +19,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @SpringBootApplication
 
-@Import({MyController.class, DefaultConfiguration.class, MyControllerExcepctionHandler.class})
+@Import({DatabaseController.class, DefaultConfiguration.class,
+    DatabaseControllerExcepctionHandler.class})
 public class Application extends SpringBootServletInitializer {
 
   // silence console logging

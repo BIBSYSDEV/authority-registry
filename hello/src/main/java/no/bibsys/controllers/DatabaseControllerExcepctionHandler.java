@@ -12,7 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class MyControllerExcepctionHandler extends ResponseEntityExceptionHandler {
+public class DatabaseControllerExcepctionHandler extends ResponseEntityExceptionHandler {
 
 
   @ResponseStatus(HttpStatus.CONFLICT)
