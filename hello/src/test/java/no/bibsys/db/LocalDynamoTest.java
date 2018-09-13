@@ -9,9 +9,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 
 @SpringBootTest
-@ContextConfiguration(classes = {LocalDynamoConfiguration.class})
 @RunWith(SpringRunner.class)
 @DirtiesContext
+@ContextConfiguration(classes = {LocalDynamoConfiguration.class})
+
 public abstract class LocalDynamoTest {
 
 }
