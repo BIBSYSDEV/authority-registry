@@ -1,0 +1,9 @@
+Given:
+that there is an {userType} user
+that the {userType} user is authenticated
+that there is an existing entity registry with a schema
+that there is an entity in the registry
+that the registry {userType} user has a set of properly schema-formated data
+that there is an existing, empty entity registry
+that there is an existing, populated entity registry
+
