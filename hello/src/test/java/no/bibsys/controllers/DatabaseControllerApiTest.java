@@ -8,31 +8,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.ws.rs.core.Response.Status;
-import no.bibsys.LocalDynamoConfiguration;
 import no.bibsys.handlers.CreateRegistryRequest;
 import no.bibsys.responses.SimpleResponse;
+import no.bibsys.testtemplates.ApiTest;
 import org.apache.http.entity.ContentType;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@RunWith(SpringRunner.class)
-//@SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-@WebMvcTest
-@DirtiesContext
-@ContextConfiguration(classes = {LocalDynamoConfiguration.class})
 
-//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-//@ContextConfiguration(classes = {LocalDynamoConfiguration.class})
-public class DatabaseControllerApiTest {
+public class DatabaseControllerApiTest extends ApiTest {
 
 
   @Autowired

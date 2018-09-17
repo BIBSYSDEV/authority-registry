@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * POJO containing response object for API Gateway.
+ * This can be used when Spring is not used
  */
 public class GatewayResponse {
 
@@ -34,9 +35,6 @@ public class GatewayResponse {
   }
 
 
-  /**
-   * Somehtins
-   */
   public static HashMap<String, String> defaultHeaders() {
     HashMap<String, String> map = new HashMap<>();
     map.put("Content-Type", "application/json");
