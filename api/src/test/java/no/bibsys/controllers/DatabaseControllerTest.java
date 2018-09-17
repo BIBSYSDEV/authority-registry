@@ -23,7 +23,7 @@ public class DatabaseControllerTest extends LocalDynamoTest {
 
   @Test
   @DirtiesContext
-  public void MyControllerShouldCreateANewRegistry() throws InterruptedException {
+  public void myControllerShouldCreateANewRegistry() throws InterruptedException {
     CreateRegistryRequest registryRequest =
         new CreateRegistryRequest("MyControllerTestTable");
 
@@ -37,7 +37,7 @@ public class DatabaseControllerTest extends LocalDynamoTest {
 
   @Test(expected = TableAlreadyExistsException.class)
   @DirtiesContext
-  public void MyControllerShouldThrowExceptionWhenTryingToCreateAnExistinTable()
+  public void myControllerShouldThrowExceptionWhenTryingToCreateAnExistinTable()
       throws InterruptedException {
     CreateRegistryRequest registryRequest =
         new CreateRegistryRequest("MyControllerTestTable");

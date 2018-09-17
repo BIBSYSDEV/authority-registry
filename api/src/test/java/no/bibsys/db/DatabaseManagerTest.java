@@ -22,7 +22,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
   @Test
   @DirtiesContext
-  public void DatabaseManagerShouldCreateATable()
+  public void databaseManagerShouldCreateATable()
       throws InterruptedException {
     String tableName = "DBManagerTest";
     boolean existsBeforeCreation = databaseManager.registryExists(tableName);
@@ -38,7 +38,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
   @Test(expected = TableAlreadyExistsException.class)
   @DirtiesContext
-  public void DatabaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
+  public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
       throws InterruptedException {
     String tableName = "DBManagerTest";
     boolean existsBeforeCreation = databaseManager.registryExists(tableName);
@@ -57,9 +57,9 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
   @Test
   @DirtiesContext
-  public void DatabaseManagerShouldCheckIfARegistryExists()
+  public void databaseManagerShouldCheckIfARegistryExists()
       throws InterruptedException, TableAlreadyExistsException {
-    DatabaseManagerShouldCreateATable();
+    databaseManagerShouldCreateATable();
   }
 
 

@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 
 @SpringBootApplication
-
 @Import({DatabaseController.class, DefaultConfiguration.class,
     DatabaseControllerExcepctionHandler.class})
 public class Application extends SpringBootServletInitializer {

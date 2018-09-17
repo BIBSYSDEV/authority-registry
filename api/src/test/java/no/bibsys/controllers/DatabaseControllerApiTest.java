@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.Response.Status;
 import no.bibsys.handlers.CreateRegistryRequest;
 import no.bibsys.responses.SimpleResponse;
@@ -48,7 +49,7 @@ public class DatabaseControllerApiTest extends ApiTest {
         .andReturn();
 
     MockHttpServletResponse response = result.getResponse();
-    String message = new String(response.getContentAsByteArray());
+    String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
     SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
 
     assertThat(actual, is(equalTo(expected)));
@@ -58,19 +59,19 @@ public class DatabaseControllerApiTest extends ApiTest {
 
   @Test
   @DirtiesContext
-  public void DatabaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
+  public void databaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
     String tableName = "createTableAPITest";
     ObjectMapper mapper = new ObjectMapper();
 
     CreateRegistryRequest request = new CreateRegistryRequest(tableName);
     String requestJson = mapper.writeValueAsString(request);
     SimpleResponse expected = new SimpleResponse(
-        String.format("The registry name is %s", tableName));
+        String.format("A registry with name %s has been created", tableName));
 
     MvcResult result = createTableRequest(requestJson);
 
     MockHttpServletResponse response = result.getResponse();
-    String message = new String(response.getContentAsByteArray());
+    String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
     assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
     SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
@@ -80,25 +81,15 @@ public class DatabaseControllerApiTest extends ApiTest {
 
   @Test
   @DirtiesContext
-  public void DatabaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
+  public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
     String tableName = "createTableAPITest";
     ObjectMapper mapper = new ObjectMapper();
 
     CreateRegistryRequest request = new CreateRegistryRequest(tableName);
     String requestJson = mapper.writeValueAsString(request);
-    SimpleResponse expected = new SimpleResponse(
-        String.format("The registry name is %s", tableName));
-
     createTableRequest(requestJson).getResponse();
-
     MockHttpServletResponse response = createTableRequest(requestJson).getResponse();
-
     assertThat(response.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
-//    String message = new String(response.getContentAsByteArray());
-//    SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
-
-//    assertThat(actual,is(equalTo(expected)));
-
   }
 
   private MvcResult createTableRequest(String requestJson) throws Exception {

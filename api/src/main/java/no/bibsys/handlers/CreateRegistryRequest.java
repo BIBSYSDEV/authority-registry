@@ -4,10 +4,9 @@ public class CreateRegistryRequest {
 
   private String registryName;
 
+
   public CreateRegistryRequest() {
   }
-
-  ;
 
 
   public CreateRegistryRequest(String registryName) {

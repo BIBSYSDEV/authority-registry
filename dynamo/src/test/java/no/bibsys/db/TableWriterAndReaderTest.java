@@ -38,7 +38,7 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
 
     String json = resourceAsString(Paths.get("json", "sample.json"));
     Item inputItem = Item.fromJSON(json);
-    tableCreator.createTable(tableName, entry);
+    tableCreator.createTable(tableName);
     tableWriter.insertJson(json);
     String output = tableReader.getEntry("id01");
     Item outputItem = Item.fromJSON(output);
