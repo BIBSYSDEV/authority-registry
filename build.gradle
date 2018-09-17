@@ -33,7 +33,7 @@ jar.enabled=false
 
 
 dependencies {
-    compile project(":hello")
+    compile project(":api")
     compile project(":common")
     compile project(":cypress")
 }
