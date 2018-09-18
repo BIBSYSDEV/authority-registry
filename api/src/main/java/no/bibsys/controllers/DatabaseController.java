@@ -31,7 +31,7 @@ public class DatabaseController {
     String tableName = request.getRegistryName();
     databaseManager.createRegistry(tableName);
     return new SimpleResponse(
-        String.format("The registry name is %s", tableName));
+        String.format("A registry with name %s has been created", tableName));
   }
 
 

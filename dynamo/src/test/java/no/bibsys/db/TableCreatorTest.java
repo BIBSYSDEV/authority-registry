@@ -16,7 +16,7 @@ public class TableCreatorTest extends LocalDynamoTest implements IoTestUtils {
   public void createTable() throws InterruptedException {
     TableDriver tableDriver = TableDriver.create(localClient, new DynamoDB(localClient));
     TableCreator tableCreator = new TableCreator(tableDriver);
-    tableCreator.createTable(tableName, entry);
+    tableCreator.createTable(tableName);
     ListTablesResult tables = tableCreator.getClient().listTables();
     int numberOftables = tables.getTableNames().size();
     assertThat(numberOftables, is(equalTo(1)));

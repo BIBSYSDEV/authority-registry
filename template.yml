@@ -28,17 +28,17 @@ Parameters:
 #    EndpointConfiguration: REGIONAL
 
 Resources:
-  GetHelloWorld:
+  CreateDynamoTable:
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.SimpleHandler::handleRequest
       Runtime: java8
-      CodeUri: hello/build/libs/hello-fat.jar
+      CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
       #     Policies are inactive if there is a role attached to the lambda function
-      #      Policies:
-      #      - AWSLambdaBasicExecutionRole
-      #      - CustomDynamoDB_Full_Access
+      #Policies:
+      # - AWSLambdaBasicExecutionRole
+      # - CustomDynamoDB_Full_Access
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
@@ -47,5 +47,5 @@ Resources:
         GetResource:
           Type: Api
           Properties:
-            Path: /{proxy+}
+            Path: /{+proxy}
             Method: any

@@ -17,20 +17,31 @@ public interface Entry extends TableDefinitions {
   void setId(String id);
 
 
+  /**
+   * The number of attributes in key schema must match the number of attributesdefined in attribute
+   * definitions
+   *
+   * @return A list of AttributeDefintions
+   */
   @Override
   default List<AttributeDefinition> attributeDefinitions() {
-    ArrayList<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
+    List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
     attributeDefinitions.add(new AttributeDefinition("id", "S"));
-//    attributeDefinitions.add(new AttributeDefinition("preferredLabels","R"));
+//    attributeDefinitions.add(new AttributeDefinition("name","S"));
     return attributeDefinitions;
   }
 
 
+  /**
+   * The number of attributes in key schema must match the number of attributesdefined in attribute definitions
+   *
+   * @return A list of KeySchemaElement
+   */
   @Override
   default List<KeySchemaElement> keySchema() {
-    ArrayList<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
+    List<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
     keys.add(new KeySchemaElement("id", KeyType.HASH));
-//    keys.add(new KeySchemaElement("preferredLabels", KeyType.RANGE));
+//    keys.add(new KeySchemaElement("name", KeyType.RANGE));
     return keys;
   }
 

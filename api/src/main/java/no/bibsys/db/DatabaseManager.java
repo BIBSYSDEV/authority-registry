@@ -11,6 +11,7 @@ public class DatabaseManager {
 
   private TableCreator tableCreator;
 
+
   @Autowired
   public DatabaseManager(TableCreator tableCreator) {
     this.tableCreator = tableCreator;

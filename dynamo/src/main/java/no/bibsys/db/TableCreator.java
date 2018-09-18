@@ -33,7 +33,7 @@ public class TableCreator {
     return tableDriver.getClient();
   }
 
-  public void createTable(final String tableName, final TableDefinitions tableEntry)
+  private void createTable(final String tableName, final TableDefinitions tableEntry)
       throws InterruptedException {
 
     final List<AttributeDefinition> attributeDefinitions = tableEntry
@@ -45,10 +45,7 @@ public class TableCreator {
         .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
             new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
 
-    System.out.println("Issuing CreateTable request for " + tableName);
     final Table table = tableDriver.getDynamoDB().createTable(request);
-
-    System.out.println("Waiting for " + tableName + " to be created...this may take a while...");
     table.waitForActive();
 
   }
