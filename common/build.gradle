@@ -1,7 +1,7 @@
 //bootJar.enabled = false
 jar.enabled = true
 
-dependencies{
+dependencies {
     //json libraries
     compile group: 'org.json', name: 'json', version: '20180130'
 }

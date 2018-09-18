@@ -6,54 +6,53 @@ import org.json.JSONObject;
 
 public class SimpleResponse {
 
-  private String message;
+    private String message;
 
 
-  public SimpleResponse() {
-  }
-
-
-  public SimpleResponse(String message) {
-    setMessage(message);
-  }
-
-
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (!(object instanceof SimpleResponse)) {
-      return false;
+    public SimpleResponse() {
     }
 
-    SimpleResponse that = (SimpleResponse) object;
 
-    return message != null ? message.equals(that.message) : that.message == null;
-  }
-
-  @Override
-  public int hashCode() {
-    return message != null ? message.hashCode() : 0;
-  }
+    public SimpleResponse(String message) {
+        setMessage(message);
+    }
 
 
-  public String getMessage() {
-    return message;
-  }
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof SimpleResponse)) {
+            return false;
+        }
 
-  public void setMessage(String message) {
-    this.message = message;
-  }
+        SimpleResponse that = (SimpleResponse) object;
 
-  public String toGatewayResponse() throws JsonProcessingException {
-    String body = new JSONObject().put("message", getMessage()).toString();
-    GatewayResponse response = new GatewayResponse(body);
-    ObjectMapper mapper = new ObjectMapper();
-    String responseStr = mapper.writeValueAsString(response);
-    return responseStr;
+        return message != null ? message.equals(that.message) : that.message == null;
+    }
 
-  }
+    @Override
+    public int hashCode() {
+        return message != null ? message.hashCode() : 0;
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String toGatewayResponse() throws JsonProcessingException {
+        String body = new JSONObject().put("message", getMessage()).toString();
+        GatewayResponse response = new GatewayResponse(body);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(response);
+
+    }
 
 
 }

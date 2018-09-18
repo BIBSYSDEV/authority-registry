@@ -3,9 +3,9 @@ plugins {
     id 'base'
     id 'com.github.johnrengelman.shadow' version '2.0.4'
     id 'checkstyle'
-    id 'pmd'
-    id "jacoco"
-    id "com.github.spotbugs" version "1.6.3"
+//    id 'pmd'
+//    id "jacoco"
+//    id "com.github.spotbugs" version "1.6.3"
 }
 
 repositories {
@@ -18,10 +18,10 @@ repositories {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion="4.10"
+    gradleVersion = "4.10.1"
 }
 
-jar.enabled=false
+jar.enabled = false
 
 
 
@@ -46,9 +46,9 @@ task fatJar {
 subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
-    apply plugin: 'pmd'
-    apply plugin: "jacoco"
-    apply plugin: "com.github.spotbugs"
+//    apply plugin: 'pmd'
+//    apply plugin: "jacoco"
+//    apply plugin: "com.github.spotbugs"
 
     repositories {
         mavenCentral()
@@ -71,37 +71,46 @@ subprojects {
     task fatJar(dependsOn: shadowJar) {}
 
     checkstyle {
-        configFile = file('../config/checkstyle/checkstyle.xml')
-        showViolations=false
-
+        configFile = file('../config/checkstyle/google_checks.xml')
+        showViolations = false
+        toolVersion '8.11'
     }
 
-    pmd {
-        ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
-        ruleSets = []
-        ignoreFailures = true //TODO: Remove this when you start fixing your own errors
-        toolVersion = '6.7.0'
-        consoleOutput=false
-    }
 
-	jacocoTestCoverageVerification {
-	    violationRules {
-			rule {
-	            limit {
-	                counter = 'METHOD'
-	                value = 'COVEREDRATIO'
-	                minimum = 0.1 //TODO: Increase this when we start writing tests
-	            }
-            }
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+            html.enabled true
+            html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
         }
-	}
+    }
 
-	tasks.withType(com.github.spotbugs.SpotBugsTask) {
-	    reports {
-	        xml.enabled false
-	        html.enabled true
-	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
-	    }
-	}
+//    pmd {
+//        ruleSetFiles = files('../config/pmd/potential-future-pmd.xml')
+//        ruleSets = []
+//        ignoreFailures = true //TODO: Remove this when you start fixing your own errors
+//        toolVersion = '6.7.0'
+//        consoleOutput=false
+//    }
+//
+//	jacocoTestCoverageVerification {
+//	    violationRules {
+//			rule {
+//	            limit {
+//	                counter = 'METHOD'
+//	                value = 'COVEREDRATIO'
+//	                minimum = 0.1 //TODO: Increase this when we start writing tests
+//	            }
+//            }
+//        }
+//	}
+//
+//	tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//	    reports {
+//	        xml.enabled false
+//	        html.enabled true
+//	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+//	    }
+//	}
 }
 

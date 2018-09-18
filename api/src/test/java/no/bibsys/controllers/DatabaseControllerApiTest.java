@@ -25,79 +25,79 @@ import org.springframework.test.web.servlet.MvcResult;
 public class DatabaseControllerApiTest extends ApiTest {
 
 
-  @Autowired
-  MockMvc mockMvc;
-  @Autowired
-  DatabaseController databaseController;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    DatabaseController databaseController;
 
 
-  private HttpHeaders httpHeaders;
+    private HttpHeaders httpHeaders;
 
 
-  public void init() {
-    httpHeaders = new HttpHeaders();
-    httpHeaders.add("Content-Type", "application/json");
-  }
+    public void init() {
+        httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/json");
+    }
 
 
-  @Test
-  public void greetingShouldReturnDefaultMessage() throws Exception {
-    ObjectMapper mapper = new ObjectMapper();
-    SimpleResponse expected = new SimpleResponse("Invalid path");
+    @Test
+    public void greetingShouldReturnDefaultMessage() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleResponse expected = new SimpleResponse("Invalid path");
 
-    MvcResult result = mockMvc.perform(get("/hello"))
-        .andReturn();
+        MvcResult result = mockMvc.perform(get("/hello"))
+            .andReturn();
 
-    MockHttpServletResponse response = result.getResponse();
-    String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
-    SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
+        MockHttpServletResponse response = result.getResponse();
+        String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
+        SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
 
-    assertThat(actual, is(equalTo(expected)));
+        assertThat(actual, is(equalTo(expected)));
 
-  }
+    }
 
 
-  @Test
-  @DirtiesContext
-  public void databaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
-    String tableName = "createTableAPITest";
-    ObjectMapper mapper = new ObjectMapper();
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
+        String tableName = "createTableAPITest";
+        ObjectMapper mapper = new ObjectMapper();
 
-    CreateRegistryRequest request = new CreateRegistryRequest(tableName);
-    String requestJson = mapper.writeValueAsString(request);
-    SimpleResponse expected = new SimpleResponse(
-        String.format("A registry with name %s has been created", tableName));
+        CreateRegistryRequest request = new CreateRegistryRequest(tableName);
+        String requestJson = mapper.writeValueAsString(request);
+        SimpleResponse expected = new SimpleResponse(
+            String.format("A registry with name %s has been created", tableName));
 
-    MvcResult result = createTableRequest(requestJson);
+        MvcResult result = createTableRequest(requestJson);
 
-    MockHttpServletResponse response = result.getResponse();
-    String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
-    assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        MockHttpServletResponse response = result.getResponse();
+        String message = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-    SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
-    assertThat(actual, is(equalTo(expected)));
+        SimpleResponse actual = mapper.readValue(message, SimpleResponse.class);
+        assertThat(actual, is(equalTo(expected)));
 
-  }
+    }
 
-  @Test
-  @DirtiesContext
-  public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
-    String tableName = "createTableAPITest";
-    ObjectMapper mapper = new ObjectMapper();
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
+        String tableName = "createTableAPITest";
+        ObjectMapper mapper = new ObjectMapper();
 
-    CreateRegistryRequest request = new CreateRegistryRequest(tableName);
-    String requestJson = mapper.writeValueAsString(request);
-    createTableRequest(requestJson).getResponse();
-    MockHttpServletResponse response = createTableRequest(requestJson).getResponse();
-    assertThat(response.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
-  }
+        CreateRegistryRequest request = new CreateRegistryRequest(tableName);
+        String requestJson = mapper.writeValueAsString(request);
+        createTableRequest(requestJson).getResponse();
+        MockHttpServletResponse response = createTableRequest(requestJson).getResponse();
+        assertThat(response.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
+    }
 
-  private MvcResult createTableRequest(String requestJson) throws Exception {
-    return mockMvc.perform(post("/registry/create/")
-        .contentType(ContentType.APPLICATION_JSON.toString())
-        .content(requestJson))
-        .andReturn();
-  }
+    private MvcResult createTableRequest(String requestJson) throws Exception {
+        return mockMvc.perform(post("/registry/create/")
+            .contentType(ContentType.APPLICATION_JSON.toString())
+            .content(requestJson))
+            .andReturn();
+    }
 
 
 }

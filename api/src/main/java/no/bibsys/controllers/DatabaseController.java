@@ -17,28 +17,27 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class DatabaseController {
 
 
-  final
-  DatabaseManager databaseManager;
+    final DatabaseManager databaseManager;
 
-  @Autowired
-  public DatabaseController(DatabaseManager databaseManager) {
-    this.databaseManager = databaseManager;
-  }
+    @Autowired
+    public DatabaseController(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
 
-  @PostMapping(path = "/registry/create", produces = "application/json;charset=UTF-8")
-  public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
-      throws InterruptedException, TableAlreadyExistsException {
-    String tableName = request.getRegistryName();
-    databaseManager.createRegistry(tableName);
-    return new SimpleResponse(
-        String.format("A registry with name %s has been created", tableName));
-  }
+    @PostMapping(path = "/registry/create", produces = "application/json;charset=UTF-8")
+    public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
+        throws InterruptedException, TableAlreadyExistsException {
+        String tableName = request.getRegistryName();
+        databaseManager.createRegistry(tableName);
+        return new SimpleResponse(
+            String.format("A registry with name %s has been created", tableName));
+    }
 
 
-  @RequestMapping(value = "*", method = RequestMethod.GET)
-  public SimpleResponse getFallback() {
-    return new SimpleResponse("Invalid path");
-  }
+    @RequestMapping(value = "*", method = RequestMethod.GET)
+    public SimpleResponse getFallback() {
+        return new SimpleResponse("Invalid path");
+    }
 
 
 }

@@ -35,8 +35,6 @@ dependencies {
     compile 'io.symphonia:lambda-logging:1.0.1'
 
 
-
-
 }
 
 

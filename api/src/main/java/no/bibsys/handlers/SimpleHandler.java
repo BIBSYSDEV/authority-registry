@@ -14,35 +14,35 @@ import no.bibsys.Application;
 
 public class SimpleHandler implements RequestStreamHandler {
 
-  private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
+    private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
-  static {
-    try {
-      handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(Application.class);
+    static {
+        try {
+            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(Application.class);
 
-      // we use the onStartup method of the handler to register our custom filter
-//      handler.onStartup(servletContext -> {
-//        FilterRegistration.Dynamic registration = servletContext.addFilter("CognitoIdentityFilter", CognitoIdentityFilter.class);
-//        registration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
-//      });
-    } catch (ContainerInitializationException e) {
-      // if we fail here. We re-throw the exception to force another cold start
-      e.printStackTrace();
-      throw new RuntimeException("Could not initialize Spring Boot application", e);
+            // we use the onStartup method of the handler to register our custom filter
+            //      handler.onStartup(servletContext -> {
+            //        FilterRegistration.Dynamic registration = servletContext.addFilter("CognitoIdentityFilter", CognitoIdentityFilter.class);
+            //        registration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
+            //      });
+        } catch (ContainerInitializationException e) {
+            // if we fail here. We re-throw the exception to force another cold start
+            e.printStackTrace();
+            throw new RuntimeException("Could not initialize Spring Boot application", e);
+        }
     }
-  }
 
-  public SimpleHandler() {
-    // we enable the timer for debugging. This SHOULD NOT be enabled in production.
-    Timer.enable();
-  }
+    public SimpleHandler() {
+        // we enable the timer for debugging. This SHOULD NOT be enabled in production.
+        Timer.enable();
+    }
 
 
-  @Override
-  public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
-      throws IOException {
-    handler.proxyStream(inputStream, outputStream, context);
-    // just in case it wasn't closed by the mapper
-    outputStream.close();
-  }
+    @Override
+    public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context)
+        throws IOException {
+        handler.proxyStream(inputStream, outputStream, context);
+        // just in case it wasn't closed by the mapper
+        outputStream.close();
+    }
 }

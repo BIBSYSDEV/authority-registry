@@ -11,39 +11,40 @@ import java.util.List;
 
 public interface Entry extends TableDefinitions {
 
-  @DynamoDBHashKey(attributeName = "id")
-  String getId();
+    @DynamoDBHashKey(attributeName = "id")
+    String getId();
 
-  void setId(String id);
+    void setId(String id);
 
 
-  /**
-   * The number of attributes in key schema must match the number of attributesdefined in attribute
-   * definitions
-   *
-   * @return A list of AttributeDefintions
-   */
-  @Override
-  default List<AttributeDefinition> attributeDefinitions() {
-    List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-    attributeDefinitions.add(new AttributeDefinition("id", "S"));
+    /**
+     * The number of attributes in key schema must match the number of attributesdefined in
+     * attribute definitions
+     *
+     * @return A list of AttributeDefintions
+     */
+    @Override
+    default List<AttributeDefinition> attributeDefinitions() {
+        List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
+        attributeDefinitions.add(new AttributeDefinition("id", "S"));
 //    attributeDefinitions.add(new AttributeDefinition("name","S"));
-    return attributeDefinitions;
-  }
+        return attributeDefinitions;
+    }
 
 
-  /**
-   * The number of attributes in key schema must match the number of attributesdefined in attribute definitions
-   *
-   * @return A list of KeySchemaElement
-   */
-  @Override
-  default List<KeySchemaElement> keySchema() {
-    List<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
-    keys.add(new KeySchemaElement("id", KeyType.HASH));
+    /**
+     * The number of attributes in key schema must match the number of attributesdefined in
+     * attribute definitions
+     *
+     * @return A list of KeySchemaElement
+     */
+    @Override
+    default List<KeySchemaElement> keySchema() {
+        List<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
+        keys.add(new KeySchemaElement("id", KeyType.HASH));
 //    keys.add(new KeySchemaElement("name", KeyType.RANGE));
-    return keys;
-  }
+        return keys;
+    }
 
 
 }

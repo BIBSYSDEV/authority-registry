@@ -15,13 +15,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class DatabaseControllerExcepctionHandler extends ResponseEntityExceptionHandler {
 
 
-  @ResponseStatus(HttpStatus.CONFLICT)
-  @ExceptionHandler(value = TableAlreadyExistsException.class)
-  public ResponseEntity<Object> handleConflict(TableAlreadyExistsException ex, WebRequest request) {
-    SimpleResponse response = new SimpleResponse("Table already exists");
-    return handleExceptionInternal(ex, response,
-        new HttpHeaders(), HttpStatus.CONFLICT, request);
-  }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(value = TableAlreadyExistsException.class)
+    public ResponseEntity<Object> handleConflict(TableAlreadyExistsException ex,
+        WebRequest request) {
+        SimpleResponse response = new SimpleResponse("Table already exists");
+        return handleExceptionInternal(ex, response,
+            new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
 }
 
 

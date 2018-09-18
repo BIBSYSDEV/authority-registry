@@ -8,13 +8,13 @@ import org.junit.Before;
 public abstract class LocalDynamoTest extends DynamoTest {
 
 
-  protected AmazonDynamoDB localClient;
+    protected AmazonDynamoDB localClient;
 
-  @Before
-  public void init() {
-    System.setProperty("java.library.path", "native-libs");
-    localClient = DynamoDBEmbedded.create().amazonDynamoDB();
-  }
+    @Before
+    public void init() {
+        System.setProperty("java.library.path", "native-libs");
+        localClient = DynamoDBEmbedded.create().amazonDynamoDB();
+    }
 
 
 }

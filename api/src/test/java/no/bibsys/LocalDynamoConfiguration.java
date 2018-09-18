@@ -17,30 +17,30 @@ import org.springframework.context.annotation.Import;
 public class LocalDynamoConfiguration {
 
 
-  @Bean
-  public DatabaseController getController(DatabaseManager databaseManager) {
-    return new DatabaseController(databaseManager);
-  }
+    @Bean
+    public DatabaseController getController(DatabaseManager databaseManager) {
+        return new DatabaseController(databaseManager);
+    }
 
-  @Bean
-  public DatabaseManager getDatabaseManager(TableCreator tableCreator) {
-    return new DatabaseManager(tableCreator);
-  }
+    @Bean
+    public DatabaseManager getDatabaseManager(TableCreator tableCreator) {
+        return new DatabaseManager(tableCreator);
+    }
 
 
-  @Bean
-  public TableCreator getTableCreator(TableDriver tableDriver) {
-    return new TableCreator(tableDriver);
-  }
+    @Bean
+    public TableCreator getTableCreator(TableDriver tableDriver) {
+        return new TableCreator(tableDriver);
+    }
 
-  @Bean
-  public TableDriver getTableDriver() {
-    System.setProperty("java.library.path", "native-libs");
-    AmazonDynamoDB client = DynamoDBEmbedded.create()
-        .amazonDynamoDB();
+    @Bean
+    public TableDriver getTableDriver() {
+        System.setProperty("java.library.path", "native-libs");
+        AmazonDynamoDB client = DynamoDBEmbedded.create()
+            .amazonDynamoDB();
 
-    DynamoDB dynamoDB = new DynamoDB(client);
-    return TableDriver.create(client, dynamoDB);
-  }
+        DynamoDB dynamoDB = new DynamoDB(client);
+        return TableDriver.create(client, dynamoDB);
+    }
 
 }

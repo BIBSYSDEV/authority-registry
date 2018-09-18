@@ -3,9 +3,9 @@ package no.bibsys.db;
 
 public abstract class DynamoTest {
 
-  String tableName = "itemTable";
+    String tableName = "itemTable";
 
-  public abstract void init();
+    public abstract void init();
 
 
 }

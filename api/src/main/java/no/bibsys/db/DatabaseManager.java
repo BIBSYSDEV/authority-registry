@@ -9,28 +9,29 @@ import org.springframework.stereotype.Service;
 public class DatabaseManager {
 
 
-  private TableCreator tableCreator;
+    private TableCreator tableCreator;
 
 
-  @Autowired
-  public DatabaseManager(TableCreator tableCreator) {
-    this.tableCreator = tableCreator;
-  }
-
-
-  public void createRegistry(String tableName)
-      throws InterruptedException, TableAlreadyExistsException {
-    if (!registryExists(tableName)) {
-      tableCreator.createTable(tableName);
-    } else {
-      throw new TableAlreadyExistsException(String.format("Registry %s already exists", tableName));
+    @Autowired
+    public DatabaseManager(TableCreator tableCreator) {
+        this.tableCreator = tableCreator;
     }
-  }
 
 
-  boolean registryExists(String tableName) {
-    return tableCreator.tableExists(tableName);
-  }
+    public void createRegistry(String tableName)
+        throws InterruptedException, TableAlreadyExistsException {
+        if (!registryExists(tableName)) {
+            tableCreator.createTable(tableName);
+        } else {
+            throw new TableAlreadyExistsException(
+                String.format("Registry %s already exists", tableName));
+        }
+    }
+
+
+    boolean registryExists(String tableName) {
+        return tableCreator.tableExists(tableName);
+    }
 
 
 }
