@@ -7,50 +7,43 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 
 public class TableDriver {
 
-  private AmazonDynamoDB client;
-  private transient DynamoDB dynamoDB;
+	private AmazonDynamoDB client;
+	private transient DynamoDB dynamoDB;
 
 
-  public TableDriver() {
-  }
+	private TableDriver() {
+	}
+
+	public static TableDriver create() {
+		AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+		DynamoDB dynamoDB = new DynamoDB(client);
+		return create(client, dynamoDB);
+	}
+
+	public static TableDriver create(final AmazonDynamoDB client, final DynamoDB dynamoDB) {
+		if(client == null) {
+			throw new IllegalStateException("Cannot set null client ");  
+		}
+		TableDriver tableDriver = new TableDriver(client, dynamoDB);
+		return tableDriver;
+	}
 
 
-  public static TableDriver create() {
-    AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-    DynamoDB dynamoDB = new DynamoDB(client);
-    return new TableDriver(client, dynamoDB);
-  }
+	private TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDB) {
+		this.client = client;
+		this.dynamoDB = dynamoDB;
+	}
 
+	public AmazonDynamoDB getClient() {
+		return client;
+	}
 
-  public TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDB) {
-    this.client = client;
-    this.dynamoDB = dynamoDB;
-  }
+	public DynamoDB getDynamoDB() {
+		return dynamoDB;
+	}
 
-  public AmazonDynamoDB getClient() {
-    return client;
-  }
+	public Table getTable(final String tableName) {
+		return dynamoDB.getTable(tableName);
 
-  public void setClient(final AmazonDynamoDB client) {
-
-    if (this.client == null) {
-      this.client = client;
-      dynamoDB = new DynamoDB(client);
-    } else {
-      throw new IllegalStateException("Cannot set not null client ");
-    }
-
-
-  }
-
-  public DynamoDB getDynamoDB() {
-    return dynamoDB;
-  }
-
-  public Table getTable(final String tableName) {
-    return dynamoDB.getTable(tableName);
-
-  }
-
-
+	}
 }
