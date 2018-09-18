@@ -192,19 +192,19 @@
     <module name="OverloadMethodsDeclarationOrder"/>
     <module name="VariableDeclarationUsageDistance"/>
 
-    <module name="CustomImportOrder">
-      <property name="sortImportsInGroupAlphabetically" value="true"/>
-      <property name="separateLineBetweenGroups" value="true"/>
-      <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
-    </module>
-
-    <!--&lt;!&ndash;True Google style as described here:https://google.github.io/styleguide/javaguide.html#s3.3-import-statements &ndash;&gt;-->
-    <!--<module name="ImportOrder">-->
-    <!--<property name="ordered" value="true"/>-->
-    <!--<property name="separated" value="false"/>-->
-    <!--<property name="option" value="bottom"/>-->
-    <!--<property name="sortStaticImportsAlphabetically" value="true"/>-->
+    <!--<module name="CustomImportOrder">-->
+    <!--<property name="sortImportsInGroupAlphabetically" value="true"/>-->
+    <!--<property name="separateLineBetweenGroups" value="true"/>-->
+    <!--<property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>-->
     <!--</module>-->
+
+    <!--True Google style as described here:https://google.github.io/styleguide/javaguide.html#s3.3-import-statements -->
+    <module name="ImportOrder">
+      <property name="ordered" value="true"/>
+      <property name="separated" value="false"/>
+      <property name="option" value="bottom"/>
+      <property name="sortStaticImportsAlphabetically" value="true"/>
+    </module>
 
 
     <module name="MethodParamPad"/>
