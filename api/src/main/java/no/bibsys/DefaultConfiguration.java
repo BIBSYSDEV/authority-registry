@@ -21,7 +21,7 @@ public class DefaultConfiguration {
   public TableDriver getTableDriver() {
     AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
     DynamoDB dynamoDb = new DynamoDB(client);
-    return new TableDriver(client, dynamoDb);
+    return TableDriver.create(client, dynamoDb);
   }
 
 }
