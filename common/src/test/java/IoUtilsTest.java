@@ -11,11 +11,11 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 
-public class IOUtilsTest {
+public class IoUtilsTest {
 
 
     @Test
-    public void IOUtilsShouldReadTextFromResources() throws IOException {
+    public void ioUtilsShouldReadTextFromResources() throws IOException {
         Path path = Paths.get("txt", "singleLineInput.txt");
         IoUtils ioUtils = new IoUtils();
         List<String> list = ioUtils.resouceAsList(path);
@@ -29,7 +29,7 @@ public class IOUtilsTest {
 
 
     @Test
-    public void IOUtilsShouldReadJsonFiles() throws IOException {
+    public void ioUtilsShouldReadJsonFiles() throws IOException {
         Path path = Paths.get("json", "sample.json");
         IoUtils ioUtils = new IoUtils();
         String jsonString = ioUtils.resourceAsString(path);

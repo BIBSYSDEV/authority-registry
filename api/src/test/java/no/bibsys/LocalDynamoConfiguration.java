@@ -39,8 +39,8 @@ public class LocalDynamoConfiguration {
         AmazonDynamoDB client = DynamoDBEmbedded.create()
             .amazonDynamoDB();
 
-        DynamoDB dynamoDB = new DynamoDB(client);
-        return TableDriver.create(client, dynamoDB);
+        DynamoDB dynamoDb = new DynamoDB(client);
+        return TableDriver.create(client, dynamoDb);
     }
 
 }

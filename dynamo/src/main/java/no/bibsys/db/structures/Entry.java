@@ -19,7 +19,7 @@ public interface Entry extends TableDefinitions {
 
     /**
      * The number of attributes in key schema must match the number of attributesdefined in
-     * attribute definitions
+     * attribute definitions.
      *
      * @return A list of AttributeDefintions
      */
@@ -27,14 +27,14 @@ public interface Entry extends TableDefinitions {
     default List<AttributeDefinition> attributeDefinitions() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
         attributeDefinitions.add(new AttributeDefinition("id", "S"));
-//    attributeDefinitions.add(new AttributeDefinition("name","S"));
+        //    attributeDefinitions.add(new AttributeDefinition("name","S"));
         return attributeDefinitions;
     }
 
 
     /**
      * The number of attributes in key schema must match the number of attributesdefined in
-     * attribute definitions
+     * attribute definitions.
      *
      * @return A list of KeySchemaElement
      */
@@ -42,7 +42,7 @@ public interface Entry extends TableDefinitions {
     default List<KeySchemaElement> keySchema() {
         List<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
         keys.add(new KeySchemaElement("id", KeyType.HASH));
-//    keys.add(new KeySchemaElement("name", KeyType.RANGE));
+        //    keys.add(new KeySchemaElement("name", KeyType.RANGE));
         return keys;
     }
 

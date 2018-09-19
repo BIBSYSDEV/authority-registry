@@ -18,13 +18,13 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * This class demonstrates how to use DynamoDBEmbedded in JUnit tests
+ * This class demonstrates how to use DynamoDBEmbedded in JUnit tests.
  *
  * @author Alexander Pivovarov
  */
-public class DynamoDBEmbeddedTest {
+public class DynamoDbEmbeddedTest {
 
-    private static CreateTableResult createTable(AmazonDynamoDB ddb, String tableName,
+    private static CreateTableResult createTable(AmazonDynamoDB db, String tableName,
         String hashKeyName) {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
         attributeDefinitions.add(new AttributeDefinition(hashKeyName, ScalarAttributeType.S));
@@ -41,7 +41,7 @@ public class DynamoDBEmbeddedTest {
                 .withKeySchema(ks)
                 .withProvisionedThroughput(provisionedthroughput);
 
-        return ddb.createTable(request);
+        return db.createTable(request);
     }
 
     @Test

@@ -18,8 +18,8 @@ public class TableCreatorTest extends LocalDynamoTest implements IoTestUtils {
         TableCreator tableCreator = new TableCreator(tableDriver);
         tableCreator.createTable(tableName);
         ListTablesResult tables = tableCreator.getClient().listTables();
-        int numberOftables = tables.getTableNames().size();
-        assertThat(numberOftables, is(equalTo(1)));
+        int numberOfTables = tables.getTableNames().size();
+        assertThat(numberOfTables, is(equalTo(1)));
 
 
     }
