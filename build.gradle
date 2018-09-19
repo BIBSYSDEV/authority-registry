@@ -5,9 +5,8 @@ plugins {
     id 'checkstyle'
     id 'pmd'
     id "jacoco"
-//    id "com.github.spotbugs" version "1.6.3"
+    id "com.github.spotbugs" version "1.6.3"
 }
-
 
 repositories {
     mavenCentral()
@@ -32,7 +31,6 @@ task fatJar {
 
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'base'
     apply plugin: 'checkstyle'
 
     checkstyle {
@@ -41,7 +39,6 @@ allprojects {
         toolVersion '8.12'
     }
 
-
     tasks.withType(Checkstyle) {
         reports {
             xml.enabled false
@@ -49,16 +46,14 @@ allprojects {
             html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
         }
     }
-
-
 }
 
 subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
-//    apply plugin: "jacoco"
-//    apply plugin: "com.github.spotbugs"
+    apply plugin: "jacoco"
+    apply plugin: "com.github.spotbugs"
 
     repositories {
         mavenCentral()
@@ -95,42 +90,40 @@ subprojects {
         }
     }
 
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("${buildDir}/reports/jacoco")
+        }
+    }
 
-//    jacoco {
-//
-//        reportsDir = file("$buildDir/reports/jacoco/")
-//    }
-//
-//
-//
-//	jacocoTestCoverageVerification {
-//	    violationRules {
-//			rule {
-//	            limit {
-//	                counter = 'METHOD'
-//	                value = 'COVEREDRATIO'
-//	                minimum = 0.1 //TODO: Increase this when we start writing tests
-//	            }
-//            }
-//        }
-//	}
-//
-//    jacocoTestReport {
-//        reports {
-//            xml.enabled false
-//            csv.enabled false
-//            html.enabled true
-//            xml.destination file("${buildDir}/jacocoHtml")
-//        }
-//    }
+    jacoco {
+        toolVersion = "0.8.1"
+    }
+
+    jacocoTestCoverageVerification.dependsOn jacocoTestReport
+    check.dependsOn jacocoTestCoverageVerification
+
+	jacocoTestCoverageVerification {
+	    violationRules {
+			rule {
+	            limit {
+	                counter = 'METHOD'
+	                value = 'COVEREDRATIO'
+	                minimum = 0.1 //TODO: Increase this when we start writing tests
+	            }
+            }
+        }
+	}
 
 
-//
-//	tasks.withType(com.github.spotbugs.SpotBugsTask) {
-//	    reports {
-//	        xml.enabled false
-//	        html.enabled true
-//	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
-//	    }
-//	}
+
+	tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	    reports {
+	        xml.enabled false
+	        html.enabled true
+	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+	    }
+	}
 }
