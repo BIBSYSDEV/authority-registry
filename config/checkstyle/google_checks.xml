@@ -199,11 +199,18 @@
     <!--</module>-->
 
     <!--True Google style as described here:https://google.github.io/styleguide/javaguide.html#s3.3-import-statements -->
+    <!--<module name="ImportOrder">-->
+    <!--<property name="option" value="top"/>-->
+    <!--<property name="ordered" value="true"/>-->
+    <!--<property name="sortStaticImportsAlphabetically" value="true"/>-->
+    <!--<property name="separatedStaticGroups" value="true"/>-->
+    <!--</module>-->
+
     <module name="ImportOrder">
-      <property name="option" value="top"/>
       <property name="ordered" value="true"/>
-      <property name="separatedStaticGroups" value="true"/>
-      <!--<property name="sortStaticImportsAlphabetically" value="true"/>-->
+      <property name="separated" value="false"/>
+      <property name="option" value="top"/>
+      <property name="sortStaticImportsAlphabetically" value="true"/>
     </module>
 
 
