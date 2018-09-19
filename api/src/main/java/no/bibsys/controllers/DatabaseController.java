@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class DatabaseController {
 
 
-    final DatabaseManager databaseManager;
+    private transient final DatabaseManager databaseManager;
 
     @Autowired
     public DatabaseController(DatabaseManager databaseManager) {
