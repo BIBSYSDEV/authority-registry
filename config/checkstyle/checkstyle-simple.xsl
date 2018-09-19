@@ -51,7 +51,7 @@
   </xsl:template>
 
   <xsl:template match="file[error]">
-    <table bgcolor="#AAA5DD" border="1" cellpadding="2" cellspacing="0" width="95%">
+    <table bgcolor="#55BBDD" border="1" cellpadding="2" cellspacing="0" width="95%">
       <tr>
         <th>File:</th>
         <td>
@@ -59,7 +59,7 @@
         </td>
       </tr>
     </table>
-    <table bgcolor="#CCCCCC" border="1" cellpadding="2" cellspacing="0" width="95%">
+    <table bgcolor="#EEEEEE" border="1" cellpadding="2" cellspacing="0" width="95%">
       <tr>
         <th>Line Number</th>
         <th>Error Message</th>
