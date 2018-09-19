@@ -200,10 +200,10 @@
 
     <!--True Google style as described here:https://google.github.io/styleguide/javaguide.html#s3.3-import-statements -->
     <module name="ImportOrder">
+      <property name="option" value="top"/>
       <property name="ordered" value="true"/>
-      <property name="separated" value="false"/>
-      <property name="option" value="bottom"/>
-      <property name="sortStaticImportsAlphabetically" value="true"/>
+      <property name="separatedStaticGroups" value="true"/>
+      <!--<property name="sortStaticImportsAlphabetically" value="true"/>-->
     </module>
 
 
@@ -243,16 +243,16 @@
         value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
     </module>
 
-    <module name="JavadocMethod">
-      <property name="scope" value="public"/>
-      <property name="allowMissingParamTags" value="true"/>
-      <property name="allowMissingThrowsTags" value="true"/>
-      <property name="allowMissingReturnTag" value="true"/>
-      <property name="minLineCount" value="2"/>
-      <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="allowThrowsTagsForSubclasses" value="true"/>
+    <!--<module name="JavadocMethod">-->
+    <!--<property name="scope" value="public"/>-->
+    <!--<property name="allowMissingParamTags" value="true"/>-->
+    <!--<property name="allowMissingThrowsTags" value="true"/>-->
+    <!--<property name="allowMissingReturnTag" value="true"/>-->
+    <!--<property name="minLineCount" value="2"/>-->
+    <!--<property name="allowedAnnotations" value="Override, Test"/>-->
+    <!--<property name="allowThrowsTagsForSubclasses" value="true"/>-->
+    <!--</module>-->
 
-    </module>
     <module name="MethodName">
       <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
       <message key="name.invalidPattern"
