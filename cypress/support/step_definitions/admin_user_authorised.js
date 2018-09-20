@@ -1,3 +1,8 @@
+//  Scenario: An API admin user is authorised
+//    Given that an API admin user has a valid authentication token
+//    When they submit the authentication token
+//    Then they are authorised to access the administration APIs
+
 let url = "http://ada.bibsys.no/admin/ping";
 let authorised = 'not authorised';
 

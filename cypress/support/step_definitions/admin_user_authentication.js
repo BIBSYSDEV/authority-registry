@@ -1,3 +1,8 @@
+//  Scenario: An API admin user authenticates themselves
+//    Given that there is an API admin user with valid credentials
+//    When they provide these credentials
+//    Then they are authenticated and receive a valid authentication token
+
 let credentials = "";
 let authenticationUrl = "http://ada.bibsys.no/admin/ping"; // authentication service here
 let authenticated = 'not authenticated';

@@ -1,3 +1,9 @@
+//  Scenario: An API admin user deletes an existing, empty entity registry
+//    Given that the API admin user is authenticated
+//    And that there is an existing, empty entity registry with a schema
+//    When the API admin user request deletion of an entity registry
+//    Then the empty entity registry is deleted
+
 given('that there is an existing, empty entity registry with a schema', () => {
 	// create new empty registry
 	let entityRegistryUrl = 'http://ada.bibsys.no/admin/ping';

@@ -1,3 +1,10 @@
+//  Scenario: A registry admin user populates a registry
+//    Given that the registry admin user is authenticated
+//    And that there is an existing entity registry with a schema
+//    And that the registry admin user has a set of properly schema-formatted data
+//    When the registry admin user bulk uploads the data to the entity registry
+//    Then the data is available in the entity registry
+
 given('that the registry admin user has a set of properly schema-formatted data', () => {
 	cy.fixture('testDataBulk.json').as('bulkUpload')
 	// test against schema here?

@@ -38,7 +38,7 @@ Feature: Admin user features
     Then anonymous user can view the entity's data in the native database format
 
   Scenario: An anonymous user views API information
-    And that there is an existing entity registry with a schema
+    Given that there is an existing entity registry with a schema
     When an anonymous user requests the OpenAPI documentation
     Then the OpenAPI documentation is returned
 

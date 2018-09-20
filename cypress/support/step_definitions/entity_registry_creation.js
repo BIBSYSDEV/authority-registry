@@ -1,3 +1,11 @@
+//  Scenario: An API admin user creates a new entity registry
+//    Given that the API admin user is authenticated
+//    When the API admin user provides a properly formatted create-entity-registry-request providing information about:
+//      | Registry name              |
+//      | Registry admin users       |
+//      | Registry validation schema |
+//    Then an entity registry that accepts only valid data is created
+
 let createEntityRegistryRequest ={
 		name: "registry name",
 		adminUsers: ["user1", "user2"],
@@ -32,8 +40,8 @@ when('the {userType} user provides a properly formatted create-entity-registry-r
 	expect(createEntityRegistryRequest.validationSchema).to.not.be.undefined;
 	expect(createEntityRegistryRequest.validationSchema).to.be.a('string');
 	expect(createEntityRegistryRequest.validationSchema).to.have.length.above(0);
+	
 	expect(validateSchema(createEntityRegistryRequest.validationSchema)).to.be.true;
-
 })
 
 then('an entity registry that accepts only valid data is created', () =>{

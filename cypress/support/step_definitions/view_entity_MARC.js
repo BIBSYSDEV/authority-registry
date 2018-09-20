@@ -1,3 +1,13 @@
+//  Scenario: An anonymous user views an entity specifying a specific MARC format
+//    Given that there is an existing entity registry with a schema
+//    And that there is an entity in the registry
+//    When the anonymous user requests the entity specifying an Accept header with value:
+//      | application/marcxml+xml |
+//      | application/marc        |
+//      | application/mads+xml    |
+//      | application/marcxml     |
+//    Then anonymous user can view the data in the given MARC format
+
 when('the anonymous user requests the entity specifying an Accept header with value:',(dataTable) => {
 	
 	let rawTable = dataTable.rawTable;

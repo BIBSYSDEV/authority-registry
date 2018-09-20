@@ -1,3 +1,9 @@
+//  Scenario: An registry admin user adds a single entity to a registry
+//    Given that the registry admin user is authenticated
+//    And that there is an existing entity registry with a schema
+//    When the registry admin user requests the creation of a new entity with properly formatted data
+//    Then the entity is created
+
 let createEntityUrl = "http://ada.bibsys.no/admin/ping";
 let getEntityUrl = "http://ada.bibsys.no/admin/ping";
 
