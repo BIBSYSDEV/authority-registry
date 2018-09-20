@@ -2,7 +2,7 @@ package no.bibsys.responses;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 public class SimpleResponse {
 
@@ -47,9 +47,11 @@ public class SimpleResponse {
     }
 
     public String toGatewayResponse() throws JsonProcessingException {
-        String body = new JSONObject().put("message", getMessage()).toString();
-        GatewayResponse response = new GatewayResponse(body);
         ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> jsonObject = new HashMap<>();
+        jsonObject.put("message", getMessage());
+        String body = mapper.writeValueAsString(jsonObject);
+        GatewayResponse response = new GatewayResponse(body);
         return mapper.writeValueAsString(response);
 
     }

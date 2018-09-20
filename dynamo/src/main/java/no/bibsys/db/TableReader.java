@@ -7,22 +7,15 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 public class TableReader {
 
     private final transient TableDriver tableDriver;
-    private transient String tableName;
+    private final transient String tableName;
 
 
-    public TableReader(final TableDriver tableDriver) {
+    public TableReader(final TableDriver tableDriver, String tableName) {
         this.tableDriver = tableDriver;
+        this.tableName = tableName;
 
     }
 
-
-    public void setTableName(final String tableName) {
-        if (this.tableName == null) {
-            this.tableName = tableName;
-        } else {
-            throw new IllegalStateException("Cannot initialize tableName twice");
-        }
-    }
 
 
     public String getEntry(final String id) {

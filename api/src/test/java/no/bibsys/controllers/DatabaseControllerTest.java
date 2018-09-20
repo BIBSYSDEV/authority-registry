@@ -6,8 +6,10 @@ import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import no.bibsys.db.TableCreator;
+import no.bibsys.db.TableDriver;
 import no.bibsys.handlers.CreateRegistryRequest;
 import no.bibsys.testtemplates.LocalDynamoTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -19,11 +21,18 @@ public class DatabaseControllerTest extends LocalDynamoTest {
     DatabaseController databaseController;
 
     @Autowired
+    TableDriver tableDriver;
+
     TableCreator tableCreator;
+
+    @Before
+    public void init() {
+        tableCreator = new TableCreator(tableDriver);
+    }
 
     @Test
     @DirtiesContext
-    public void myControllerShouldCreateANewRegistry() throws InterruptedException {
+    public void databaseControllerShouldCreateANewRegistry() throws InterruptedException {
         CreateRegistryRequest registryRequest =
             new CreateRegistryRequest("MyControllerTestTable");
 
@@ -37,7 +46,7 @@ public class DatabaseControllerTest extends LocalDynamoTest {
 
     @Test(expected = TableAlreadyExistsException.class)
     @DirtiesContext
-    public void myControllerShouldThrowExceptionWhenTryingToCreateAnExistinTable()
+    public void databaseControllerShouldThrowExceptionWhenTryingToCreateAnExistinTable()
         throws InterruptedException {
         CreateRegistryRequest registryRequest =
             new CreateRegistryRequest("MyControllerTestTable");

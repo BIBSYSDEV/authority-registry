@@ -5,7 +5,9 @@ import no.bibsys.db.DatabaseManager;
 import no.bibsys.handlers.CreateRegistryRequest;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +33,15 @@ public class DatabaseController {
         databaseManager.createRegistry(tableName);
         return new SimpleResponse(
             String.format("A registry with name %s has been created", tableName));
+    }
+
+
+    @PutMapping(path = "/registry/{regName}/put", produces = "application/json;charset=UTF-8")
+    public SimpleResponse insertEntry(@PathVariable("regName") String registryName,
+        @RequestBody String request) {
+        databaseManager.insert(registryName, request);
+        return new SimpleResponse(
+            String.format("A new item has been inserted into %s ", registryName));
     }
 
 

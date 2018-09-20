@@ -1,6 +1,8 @@
 package no.bibsys.controllers;
 
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,28 @@ public class DatabaseControllerExcepctionHandler extends ResponseEntityException
         return handleExceptionInternal(ex, response,
             new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
+
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = TableNotFoundException.class)
+    public ResponseEntity<Object> tableDoesNotExist(TableNotFoundException ex,
+        WebRequest request) {
+        SimpleResponse response = new SimpleResponse("Table does not exist");
+        return handleExceptionInternal(ex, response,
+            new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(value = ConditionalCheckFailedException.class)
+    public ResponseEntity<Object> tableDoesNotExist(ConditionalCheckFailedException ex,
+        WebRequest request) {
+        SimpleResponse response = new SimpleResponse("Could not insert item");
+        return handleExceptionInternal(ex, response,
+            new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+
 }
 
 

@@ -2,8 +2,11 @@ package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.structures.Entry;
 
 public class TableWriter {
@@ -11,21 +14,13 @@ public class TableWriter {
 
     private final transient TableDriver tableDriver;
     private final transient ObjectMapper mapper;
-    private transient String tableName;
+    private final transient String tableName;
 
 
-    public TableWriter(final TableDriver tableDriver) {
+    public TableWriter(final TableDriver tableDriver, String tableName) {
         this.tableDriver = tableDriver;
+        this.tableName = tableName;
         mapper = new ObjectMapper();
-    }
-
-
-    public void setTableName(final String tableName) {
-        if (this.tableName == null) {
-            this.tableName = tableName;
-        } else {
-            throw new IllegalStateException("Cannot initialize tableName twice");
-        }
     }
 
 
@@ -34,10 +29,23 @@ public class TableWriter {
         insertJson(json);
     }
 
+
     public void insertJson(final String json) {
-        final Item item = Item.fromJSON(json);
-        final Table table = tableDriver.getTable(tableName);
-        table.putItem(item);
+        String id = "null";
+        try {
+            final Item item = Item.fromJSON(json);
+            id = item.asMap().getOrDefault("id", "null").toString();
+
+            final Table table = tableDriver.getTable(tableName);
+            PutItemSpec putItemSpec = new PutItemSpec()
+                .withItem(item)
+                .withConditionExpression(DynamoConstants.KEY_NOT_EXISTS);
+            table.putItem(putItemSpec);
+        } catch (ConditionalCheckFailedException e) {
+            throw new ItemExistsException(String.format("Item with id:%s already exits", id));
+        }
+
+
     }
 
 

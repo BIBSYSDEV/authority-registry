@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface Entry extends TableDefinitions {
 
+
     @DynamoDBHashKey(attributeName = "id")
     String getId();
 

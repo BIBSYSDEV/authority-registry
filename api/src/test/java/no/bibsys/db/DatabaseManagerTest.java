@@ -5,6 +5,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,28 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
         databaseManager.createRegistry(tableName);
 
+
+    }
+
+
+    @Test
+    @DirtiesContext
+    public void databaseManagerShouldInsertAJsonObjectIntoATable()
+        throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        String id = "InsertTestId";
+
+        ObjectNode root = mapper.getNodeFactory().objectNode();
+        root.put("id", id);
+        root.put("name", "InsertTestName");
+        String writeJson = mapper.writeValueAsString(root);
+        String tableName = "insertTest";
+        databaseManager.createRegistry(tableName);
+        databaseManager.insert(tableName, writeJson);
+
+        String readJson = databaseManager.readEntry(tableName, id);
+        ObjectNode actual = mapper.readValue(readJson, ObjectNode.class);
+        assertThat(actual, is(equalTo(root)));
 
     }
 

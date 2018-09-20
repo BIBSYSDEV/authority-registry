@@ -6,7 +6,6 @@ import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
 import no.bibsys.controllers.DatabaseController;
 import no.bibsys.controllers.DatabaseControllerExcepctionHandler;
 import no.bibsys.db.DatabaseManager;
-import no.bibsys.db.TableCreator;
 import no.bibsys.db.TableDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,15 +22,10 @@ public class LocalDynamoConfiguration {
     }
 
     @Bean
-    public DatabaseManager getDatabaseManager(TableCreator tableCreator) {
-        return new DatabaseManager(tableCreator);
+    public DatabaseManager getDatabaseManager(TableDriver tableDriver) {
+        return new DatabaseManager(tableDriver);
     }
 
-
-    @Bean
-    public TableCreator getTableCreator(TableDriver tableDriver) {
-        return new TableCreator(tableDriver);
-    }
 
     @Bean
     public TableDriver getTableDriver() {
