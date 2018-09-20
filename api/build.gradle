@@ -21,9 +21,6 @@ dependencies {
     compile project(":common")
     compile project(":dynamo")
 
-
-
-
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
 
     //spring boot libraries
@@ -31,7 +28,13 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 
     //connection to amazon
-    compile group: 'com.amazonaws.serverless', name: 'aws-serverless-java-container-spring', version: '1.1.4'
+    compile ('com.amazonaws.serverless:aws-serverless-java-container-spring:1.1.4') {
+        exclude group : 'com.fasterxml.jackson.dataformat'
+        exclude group : 'com.fasterxml.jackson.core'
+        exclude group : 'com.fasterxml.jackson.datatype'
+    }
+
+
     compile 'io.symphonia:lambda-logging:1.0.1'
 
 
