@@ -63,7 +63,7 @@ Feature: Admin user features
   Scenario: An anonymous user views an entity as HTML
     Given that there is an existing entity registry with a schema
     And that there is an entity in the registry
-    When the anonymous user requests the entity specifying an Accept header with value text.html
+    When the anonymous user requests the entity specifying an Accept header with value text/html
     Then anonymous user can view the data in the given format
 
   Scenario: An anonymous user views an entity specifying a specific MARC format
@@ -122,7 +122,7 @@ Feature: Admin user features
     Given that the API admin user is authenticated
     And that there is an existing, populated entity registry with a schema
     When the API admin user attempts to update the entity registry
-    Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
+    Then the API admin user receives information that they cannot update the entity registry until the populated data is deleted
 
   Scenario: An API admin user deletes populated data from an entity registry
     Given that the API admin user is authenticated

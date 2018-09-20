@@ -1,4 +1,4 @@
-when('the anonymous user requests the entity specifying an Accept header with value text.html', () => {
+when(/the anonymous user requests the entity specifying an Accept header with value text\/html/, () => {
 	
 })
 

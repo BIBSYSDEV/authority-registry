@@ -6,6 +6,6 @@ defineParameterType({
 	})
 
 given('that the {userType} user is authenticated',(userType) =>{
-	let authenticationToken = "authenticated";
-	cy.wrap(authenticationToken).as("authenticationToken")
+	let authenticationToken = userType.replace(' ', '_') + '_token';
+	cy.wrap(authenticationToken).as('authenticationToken')
 })

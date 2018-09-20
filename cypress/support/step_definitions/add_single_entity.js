@@ -1,46 +1,29 @@
-let entityRegistryUrl = "http://ada.bibsys.no/admin/ping";
 let createEntityUrl = "http://ada.bibsys.no/admin/ping";
-let getEntityUrl = "http://ada.bibsys.no/admin/ping"
-
-given('that there is an existing entity registry with a schema', () => {
-	// create entity registry here?
-	cy.fixture('registryTestSchema.json')
-	.then((testSchema) => {
-		cy.request({
-			url: entityRegistryUrl,
-			body: testSchema, 
-			headers: {
-				AuthToken: 'createTestRegistryAuthToken'
-			}
-		})
-	})
-})
+let getEntityUrl = "http://ada.bibsys.no/admin/ping";
 
 when('the registry admin user requests the creation of a new entity with properly formatted data', () =>{
+	cy.wrap('').as('returnId')
 	cy.fixture('entityTestData.json')
 	.then((testData) => {
-		cy.request({
-			url: createEntityUrl,
-			headers: {
-				AuthToken: cy.get('@authenticationToken')
-			},
-			body: testData
-		}).then((response) => {
-			// test return from create
-			cy.wrap('return.id').as('returnId')
+		cy.get('@authenticationToken').then((authToken) => {
+			cy.request({
+				url: createEntityUrl,
+				headers: {
+					Authorization: 'Token ' + authToken
+				},
+				body: testData
+			}).then((response) => {
+				// test return from create
+				cy.wrap('return.id').as('returnId')
+			})
 		})
 	})
 })
 
 then('the entity is created', () => {
-	cy.request({
-		url: getEntityUrl,
-//		url: getEntityUrl + cy.get('@returnId'),
-		headers: {
-			AuthToken: cy.get('@authenticationToken')
-		}
-	}).then((response) => {
-		// test that entity actually exists in registry
+	cy.get('@returnId').then((returnId) => {
+
+		cy.request(getEntityUrl)
+//		cy.request(getEntityUrl + returnId)
 	})
-	// destroy entity registry here?
 })
