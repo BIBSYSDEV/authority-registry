@@ -1,8 +1,12 @@
 package no.bibsys.controllers;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.handlers.CreateRegistryRequest;
+import no.bibsys.responses.PathResponse;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,11 +41,14 @@ public class DatabaseController {
 
 
     @PutMapping(path = "/registry/{regName}/put", produces = "application/json;charset=UTF-8")
-    public SimpleResponse insertEntry(@PathVariable("regName") String registryName,
-        @RequestBody String request) {
+    public PathResponse insertEntry(@PathVariable("regName") String registryName,
+        @RequestBody String request) throws IOException {
         databaseManager.insert(registryName, request);
-        return new SimpleResponse(
-            String.format("A new item has been inserted into %s ", registryName));
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(request);
+        String id = node.get("id").asText();
+        return new PathResponse(
+            String.format("/registry/%s/get/%s", registryName, id));
     }
 
 

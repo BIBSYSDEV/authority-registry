@@ -5,11 +5,13 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.Response.Status;
 import no.bibsys.handlers.CreateRegistryRequest;
+import no.bibsys.responses.PathResponse;
 import no.bibsys.responses.SimpleResponse;
 import no.bibsys.testtemplates.ApiTest;
 import org.apache.http.entity.ContentType;
@@ -33,6 +35,8 @@ public class DatabaseControllerApiTest extends ApiTest {
 
     private HttpHeaders httpHeaders;
 
+    String tableName = "DatabaseControllerAPITest";
+    private ObjectMapper mapper = new ObjectMapper();
 
     public void init() {
         httpHeaders = new HttpHeaders();
@@ -60,7 +64,7 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
-        String tableName = "createTableAPITest";
+
         ObjectMapper mapper = new ObjectMapper();
 
         CreateRegistryRequest request = new CreateRegistryRequest(tableName);
@@ -79,18 +83,74 @@ public class DatabaseControllerApiTest extends ApiTest {
 
     }
 
+
     @Test
     @DirtiesContext
     public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
         String tableName = "createTableAPITest";
         ObjectMapper mapper = new ObjectMapper();
-
         CreateRegistryRequest request = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(request);
+
         createTableRequest(requestJson).getResponse();
         MockHttpServletResponse response = createTableRequest(requestJson).getResponse();
         assertThat(response.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
     }
+
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldInsertEntryInTable() throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
+        String requestJson = mapper.writeValueAsString(createRequest);
+        createTableRequest(requestJson);
+
+        Entry entry = sampleEntry("entryId");
+        MockHttpServletResponse response = insertEntryRequest(tableName, entry.jsonString())
+            .getResponse();
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        String responseBodyJson = response.getContentAsString();
+        PathResponse pathResponse = mapper.readValue(responseBodyJson, PathResponse.class);
+        String expectedPath = String.format("/registry/%s/get/%s", tableName, entry.id);
+        assertThat(pathResponse.getPath(), is(equalTo(expectedPath)));
+    }
+
+
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldThrowExceptionOnDuplicateEntries() throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
+        String requestJson = mapper.writeValueAsString(createRequest);
+        createTableRequest(requestJson);
+
+        Entry entry = sampleEntry("entryId");
+        MockHttpServletResponse response1 = insertEntryRequest(tableName, entry.jsonString())
+            .getResponse();
+        assertThat(response1.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        MockHttpServletResponse response2 = insertEntryRequest(tableName, entry.jsonString())
+            .getResponse();
+        assertThat(response2.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
+        SimpleResponse response = mapper
+            .readValue(response2.getContentAsString(), SimpleResponse.class);
+        String expectedResponse = String.format("Item %s already exists", entry.id);
+        assertThat(response.getMessage(), is(equalTo(expectedResponse)));
+
+
+    }
+
+
+    private MvcResult insertEntryRequest(String registryName, String jsonBody)
+        throws Exception {
+        String path = String.format("/registry/%s/put", registryName);
+        return mockMvc.perform(put(path)
+            .contentType(ContentType.APPLICATION_JSON.toString())
+            .content(jsonBody)).andReturn();
+
+    }
+
 
     private MvcResult createTableRequest(String requestJson) throws Exception {
         return mockMvc.perform(post("/registry/create/")
