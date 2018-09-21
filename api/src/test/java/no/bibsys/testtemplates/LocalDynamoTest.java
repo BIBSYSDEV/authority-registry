@@ -12,6 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @DirtiesContext
 @ContextConfiguration(classes = {LocalDynamoConfiguration.class})
-public abstract class LocalDynamoTest {
+public abstract class LocalDynamoTest extends SampleData {
 
 }

@@ -12,6 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @WebMvcTest
 @DirtiesContext
 @ContextConfiguration(classes = {LocalDynamoConfiguration.class})
-public abstract class ApiTest {
+public abstract class ApiTest extends SampleData {
 
 }
