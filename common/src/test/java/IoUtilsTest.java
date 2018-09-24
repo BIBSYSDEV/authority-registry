@@ -37,9 +37,6 @@ public class IoUtilsTest {
         IoUtils ioUtils = new IoUtils();
         String jsonString = ioUtils.resourceAsString(path);
         JsonNode json = mapper.readTree(jsonString);
-
-        JsonNode node = json.get("body");
-
         assertThat(json.get("id").asInt(), is(equalTo(1)));
         assertThat(json.get("label").asText(), is(equalTo("TheLabel")));
         assertThat(json.get("body").get("message").asText(), is(equalTo("Hello world")));
