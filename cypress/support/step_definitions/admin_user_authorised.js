@@ -21,8 +21,8 @@ when('they submit the authentication token', () => {
 			}
 		})
 		.then((response) => {
-			authorised = 'authorised'
-				cy.wrap(authorised).as('authorised')
+			authorised = 'authorised';
+			cy.wrap(authorised).as('authorised');
 		})
 	})
 })
