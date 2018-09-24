@@ -46,7 +46,7 @@ public class DatabaseControllerApiTest extends ApiTest {
 
     @Test
     public void greetingShouldReturnDefaultMessage() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+
         SimpleResponse expected = new SimpleResponse("Invalid path");
 
         MvcResult result = mockMvc.perform(get("/hello"))
@@ -64,9 +64,6 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldSendSuccessWhenCreatingNonExistingTable() throws Exception {
-
-        ObjectMapper mapper = new ObjectMapper();
-
         CreateRegistryRequest request = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(request);
         SimpleResponse expected = new SimpleResponse(
@@ -88,7 +85,7 @@ public class DatabaseControllerApiTest extends ApiTest {
     @DirtiesContext
     public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
         String tableName = "createTableAPITest";
-        ObjectMapper mapper = new ObjectMapper();
+
         CreateRegistryRequest request = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(request);
 
@@ -100,8 +97,6 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldInsertEntryInTable() throws Exception {
-
-        ObjectMapper mapper = new ObjectMapper();
         CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(createRequest);
         createTableRequest(requestJson);
@@ -120,8 +115,6 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldThrowExceptionOnDuplicateEntries() throws Exception {
-
-        ObjectMapper mapper = new ObjectMapper();
         CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(createRequest);
         createTableRequest(requestJson);
