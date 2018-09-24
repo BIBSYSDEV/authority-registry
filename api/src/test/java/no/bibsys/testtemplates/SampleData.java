@@ -24,7 +24,7 @@ public abstract class SampleData {
     }
 
 
-    protected class Entry {
+    public static class Entry {
 
         public final String id;
 
