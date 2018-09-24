@@ -1,4 +1,4 @@
 #/bin/sh
 
-gradle clean build fatJar
+./gradlew clean build fatJar
 

@@ -1,15 +1,11 @@
 package no.bibsys.db;
 
 
-import no.bibsys.db.structures.SimpleEntry;
-
 public abstract class DynamoTest {
 
-  String tableName="itemTable";
-  SimpleEntry entry;
-  TableCreator tableCreator;
+    String tableName = "itemTable";
 
-  public abstract void init();
+    public abstract void init();
 
 
 }

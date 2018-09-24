@@ -1,49 +1,58 @@
 package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
-public  class TableDriver {
+public class TableDriver {
 
-  private AmazonDynamoDB client;
-  private DynamoDB dynamoDB;
-
-
-  public TableDriver(){};
+    private AmazonDynamoDB client;
+    private transient DynamoDB dynamoDb;
 
 
-  public TableDriver(AmazonDynamoDB client, DynamoDB dynamoDB) {
-    this.client = client;
-    this.dynamoDB = dynamoDB;
-  }
-
-  public AmazonDynamoDB getClient() {
-    return client;
-  }
-
-  public DynamoDB getDynamoDB() {
-    return dynamoDB;
-  }
-
-  public void setClient(AmazonDynamoDB client){
-
-    if(this.client==null){
-      this.client=client;
-      dynamoDB=new DynamoDB(client);
-    }
-    else{
-      throw  new IllegalStateException("Cannot set not null client ");
+    private TableDriver() {
     }
 
+    private TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+        this.client = client;
+        this.dynamoDb = dynamoDb;
+    }
 
-  }
+    /**
+     * Create default connection with DynamoDB.
+     *
+     * @return standard TableDriver
+     */
+    public static TableDriver create() {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        DynamoDB dynamoDb = new DynamoDB(client);
+        return create(client, dynamoDb);
+    }
 
+    /**
+     * Create custom connection with DynamoDB.
+     *
+     * @return customized TableDriver
+     */
+    public static TableDriver create(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+        if (client == null) {
+            throw new IllegalStateException("Cannot set null client ");
+        }
+        TableDriver tableDriver = new TableDriver(client, dynamoDb);
+        return tableDriver;
+    }
 
-  public Table getTable(String tableName){
-    return dynamoDB.getTable(tableName);
+    public AmazonDynamoDB getClient() {
+        return client;
+    }
 
-  }
+    public DynamoDB getDynamoDb() {
+        return dynamoDb;
+    }
 
+    public Table getTable(final String tableName) {
+        return dynamoDb.getTable(tableName);
 
+    }
 }

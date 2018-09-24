@@ -1,7 +1,11 @@
 .idea
-*/build/
 build/
 */out/
 .gradle
-/.classpath
-/.project
+.classpath
+.settings
+.project
+bin/
+.iml
+.metadata/
+.settings/
