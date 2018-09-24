@@ -1,6 +1,5 @@
 
-bootJar.enabled = false
-jar.enabled=true
+
 
 task zip( type: Zip, overwrite:true ) {
     archiveName = "cypressZip.zip"
