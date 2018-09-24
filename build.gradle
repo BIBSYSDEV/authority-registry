@@ -34,7 +34,7 @@ allprojects {
     apply plugin: 'checkstyle'
 
     checkstyle {
-        configFile = file('../config/checkstyle/google_checks.xml')
+        configFile = rootProject.resources.text.fromFile('config/checkstyle/google_checks.xml').asFile()
         showViolations = true
         toolVersion '8.12'
     }
@@ -111,7 +111,7 @@ subprojects {
 	    reports {
 	        xml.enabled false
 	        html.enabled true
-	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+	        html.stylesheet rootProject.resources.text.fromFile('config/spotbugs/spotbugs.xsl')
 	    }
 	}
 
@@ -119,6 +119,10 @@ subprojects {
     pmd {
         toolVersion = "6.7.0"
         ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+
         ignoreFailures = true
     }
+
+
+
 }
