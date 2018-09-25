@@ -47,5 +47,5 @@ Resources:
         GetResource:
           Type: Api
           Properties:
-            Path: /lola
+            Path: /{proxy+}
             Method: any
