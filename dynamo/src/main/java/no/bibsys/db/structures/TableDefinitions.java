@@ -6,11 +6,9 @@ import java.util.List;
 
 public interface TableDefinitions {
 
-  List<AttributeDefinition> attributeDefinitions();
-  List<KeySchemaElement> keySchema();
+    List<AttributeDefinition> attributeDefinitions();
 
-
-
+    List<KeySchemaElement> keySchema();
 
 
 }

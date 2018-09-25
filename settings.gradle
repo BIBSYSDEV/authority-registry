@@ -1,7 +1,6 @@
-
-rootProject.name= 'emne-test'
+rootProject.name = 'emne-test'
 include 'common'
-include 'hello'
+include 'api'
 include 'dynamo'
 include 'cypress'
 

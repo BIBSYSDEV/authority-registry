@@ -1,66 +1,65 @@
-
-
 plugins {
     id 'java'
     id 'base'
-    id 'org.springframework.boot' version '2.0.4.RELEASE'
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
     id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'checkstyle'
+    id 'pmd'
+    id "jacoco"
+    id "com.github.spotbugs" version "1.6.3"
 }
 
 repositories {
     mavenCentral()
 }
 
-def springVersion="2.0.4.RELEASE"
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = "4.10.1"
+}
 
-//root project has no executable
-bootJar.enabled = false
-
+jar.enabled = false
 
 dependencies {
-    compile project(":hello")
+    compile project(":api")
     compile project(":common")
     compile project(":cypress")
 }
 
-
-allprojects{
-    apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
-
-}
-
-task fatJar{
+task fatJar {
     println "Creating fat jars"
 }
 
-//task myZip(type:Zip){
-//    archiveName = "cypress.zip"
-//    destinationDir file("${buildDir}/cypressZip")
-//    from "${buildDir}/cypress"
-//}
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+        configFile = file('../config/checkstyle/google_checks.xml')
+        showViolations = true
+        toolVersion '8.12'
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+            html.enabled true
+            html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
+        }
+    }
+}
 
 subprojects {
-
-    bootJar.enabled=false
-
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
+    apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
+    apply plugin: "jacoco"
+    apply plugin: "com.github.spotbugs"
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        //json libraries
-        compile group: 'org.json', name: 'json', version: '20180130'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
-
-        //spring boot libraries
-        compile 'org.springframework.boot:spring-boot-starter-web'
-        testCompile 'org.springframework.boot:spring-boot-starter-test'
-        compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
         //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
@@ -68,27 +67,58 @@ subprojects {
         //libraries for more expressive testing
         testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 
+        //JUnit should be the same version as spring
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+
         shadowJar { zip64 true }
     }
 
-    task fatJar(dependsOn: shadowJar){}
+    task fatJar(dependsOn: shadowJar) {}
 
 
-//    test {
-//        useJUnitPlatform()
-//        testLogging {
-//            events "passed", "skipped", "failed"
-//            exceptionFormat "FULL"
-//            outputs.upToDateWhen {false}
-//            showStandardStreams = true
-//            reports.html.enabled=true
-//        }
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("${buildDir}/reports/jacoco")
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.8.1"
+    }
+
+//    jacocoTestCoverageVerification.dependsOn jacocoTestReport
+//    check.dependsOn jacocoTestCoverageVerification
+
+	jacocoTestCoverageVerification {
+	    violationRules {
+			rule {
+	            limit {
+	                counter = 'METHOD'
+	                value = 'COVEREDRATIO'
+	                minimum = 0.1 //TODO: Increase this when we start writing tests
+	            }
+            }
+        }
+	}
+
+    spotbugs {
+        toolVersion = '3.1.3'
+    }
+
+	tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	    reports {
+	        xml.enabled false
+	        html.enabled true
+	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+	    }
+	}
 
 
-//    }
-
+    pmd {
+        toolVersion = "6.7.0"
+        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+        ignoreFailures = true
+    }
 }
-
-
-
-

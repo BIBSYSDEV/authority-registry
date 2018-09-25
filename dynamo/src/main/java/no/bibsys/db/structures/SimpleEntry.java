@@ -5,36 +5,37 @@ import java.util.List;
 public class SimpleEntry implements Entry {
 
 
-  private  String id;
-  private  List<LanguageString> preferredLabels;
+    private String id;
+    private List<LanguageString> preferredLabels;
 
 
-  public SimpleEntry(){}
+    public SimpleEntry() {
+    }
 
-  public SimpleEntry(String id, List<LanguageString> preferredLabels) {
-    this.id = id;
-    this.preferredLabels = preferredLabels;
-  }
+    public SimpleEntry(final String id, final List<LanguageString> preferredLabels) {
+        this.id = id;
+        this.preferredLabels = preferredLabels;
+    }
 
-  @Override
-  public String getId() {
-    return this.id;
-  }
+    @Override
+    public String getId() {
+        return this.id;
+    }
 
-  @Override
-  public void setId(String id) {
-      this.id=id;
-  }
-
-
-  public List<LanguageString> getPreferredLabels() {
-    return this.preferredLabels;
-  }
+    @Override
+    public void setId(final String id) {
+        this.id = id;
+    }
 
 
-  public void setPreferredLabels(List<LanguageString> labels) {
-      this.preferredLabels=labels;
-  }
+    public List<LanguageString> getPreferredLabels() {
+        return this.preferredLabels;
+    }
+
+
+    public void setPreferredLabels(final List<LanguageString> labels) {
+        this.preferredLabels = labels;
+    }
 
 
 }
