@@ -15,7 +15,7 @@ Feature: Anonymous user features
   Scenario: An anonymous user submits a request to see if a resource is modified
     Given that there is an existing entity in the registry
     When the anonymous user requests the entity
-    Then the response contains an ETag Given a Last-Modified header
+    Then the response contains an ETag and a Last-Modified header
     
   Scenario: An anonymous user views an entity specifying an RDF serialization
     Given that there is an entity in the registry
@@ -56,4 +56,4 @@ Feature: Anonymous user features
       | native-uri   |
       | skos-uri     |
       | bibframe-uri |
-    Then anonymous user can view the data in the serialization Given profile requested
+    Then anonymous user can view the data in the serialization and profile requested
