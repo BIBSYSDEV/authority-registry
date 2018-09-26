@@ -1,5 +1,8 @@
 package no.bibsys.responses;
 
+/**
+ * Class representing a REST response containing the path of a created or updated resource.
+ */
 public class PathResponse {
 
     private String path;
