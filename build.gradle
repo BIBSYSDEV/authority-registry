@@ -32,6 +32,7 @@ task fatJar {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
 
     checkstyle {
         configFile = rootProject.resources.text.fromFile('config/checkstyle/google_checks.xml').asFile()
@@ -46,12 +47,21 @@ allprojects {
             html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
         }
     }
+
+
+    pmd {
+        toolVersion = "6.7.0"
+        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+
+        ignoreFailures = true
+    }
+    
+    
 }
 
 subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
-    apply plugin: 'pmd'
     apply plugin: "jacoco"
     apply plugin: "com.github.spotbugs"
 
@@ -116,12 +126,7 @@ subprojects {
 	}
 
 
-    pmd {
-        toolVersion = "6.7.0"
-        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
-
-        ignoreFailures = true
-    }
+    
 
 
 
