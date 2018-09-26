@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "install cypress dependencies..."
+      - apt-get update
+      - npm install cypress --save-dev
+      - apt-get install -y libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
+      - npm install --save-dev cypress-cucumber-preprocessor
+  pre_build:
+    commands:
+      - echo "pre_build step"
+  build:
+    commands:
+      - npx cypress run
+  post_build:
+    commands:
+      - echo "post_build step"

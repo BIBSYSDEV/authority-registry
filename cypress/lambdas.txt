@@ -1,0 +1,118 @@
+  Scenario: An API admin user authenticates themselves
+    credentials => authentication lambda => authentication token
+
+  Scenario: An API admin user is authorised
+    authenticationToken => authorisation lambda => ok 
+
+  Scenario: An API admin user creates a new entity registry
+    schema => schema validation lambda => ok
+    schema => entity registry creation lambda => entity registry metadata
+
+  Scenario: An registry admin user adds a single entity to a registry
+    authenticationToken => authorisation lambda => ok 
+    entity registry id => get entity registry lambda => ok 
+    entity data, entity registry id => entity creation lambda => entity id
+ 
+  Scenario: An anonymous user views an entity without specifying a format
+    entity registry id => get entity registry lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+    entity id => get entity => entity data
+
+  Scenario: An anonymous user views API information
+    entity registry id => get entity registry lambda => ok 
+    => get openAPI documentation lambda => openAPI documentation (link to swagger)
+
+  Scenario: An anonymous user submits a request to see if a resource is modified
+    entity registry id => get entity registry lambda => ok 
+    And that there is an existing entity in the registry
+    When the anonymous user requests the entity
+    entity id => get entity lambda => entity data 
+	- entity data header must contain ETag and Last-Modified
+    
+  Scenario: An anonymous user views an entity specifying an RDF serialization
+    entity registry id => get entity registry lambda => ok 
+    => list entities lambda => list of entities (?)
+    =>  entity registry size lambda => size of entity registry (?)
+      | application/ld+json     |
+      | application/n-triples   |
+      | application/rdf+xml     |
+      | application/turtle      |
+      | application/json        |
+      | application/rdf         |
+    - get entity lambda must Accept values in list above
+    entity id, serialization format => get entity lambda => entity data in given serialization 
+    
+
+  Scenario: An anonymous user views an entity as HTML
+    entity registry id => get entity registry lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+    When the anonymous user requests the entity specifying an Accept header with value text/html
+    entity id, content-type=text/html => get entity lambda => entity data in text/html
+
+  Scenario: An anonymous user views an entity specifying a specific MARC format
+    entity registry id => get entity registry lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+      | application/marcxml+xml |
+      | application/marc        |
+      | application/mads+xml    |
+      | application/marcxml     |
+    - get entity lambda must Accept values in list above
+    entity id, serialization format => get entity lambda => entity data in given MARC format 
+  
+  @NotMVP
+  Scenario: An anonymous user views an entity specifying a specific RDF serialization and a specific profile
+    Given that there is an existing entity registry with a schema
+    And that there is an entity in the registry
+    When the anonymous user requests the entity specifying an Accept header with value:
+      | application/ld+json     |
+      | application/n-triples   |
+      | application/rdf+xml     |
+      | application/turtle      |
+      | application/json        |
+      | application/rdf         |
+    And specifies an Accept-schema header with a value:
+      | native-uri   |
+      | skos-uri     |
+      | bibframe-uri |
+    Then anonymous user can view the data in the serialization and profile requested
+
+  Scenario: A registry admin user populates a registry
+    authenticationToken => authorisation lambda => ok 
+    entity registry id => get entity registry lambda => ok 
+    schema-formated data => validate data lambda => ok
+    schema-formated data => bulk upload data lambda => ok
+
+  Scenario: An API admin user deletes an existing, empty entity registry
+    authenticationToken => authorisation lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+    entity registry id => delete entity registry lambda => ok
+
+  Scenario: An API admin user updates an existing, empty entity registry
+    authenticationToken => authorisation lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+    When the API admin user updates the metadata and validation schemas of the entity registry
+    schema, entity registry id => update entity registry schema lambda => entity registry metadata
+
+  Scenario: An API admin user attempts to delete an existing, populated entity registry
+    authenticationToken => authorisation lambda => ok 
+    (entity registry id => list entities lambda => list of entities, size > 0)
+    entity registry id => entity registry size lambda => size of entity registry > 0
+    entity registry id => delete entity registry lambda => error message
+
+  Scenario: An API admin user attempts to update an existing, populated entity registry
+    authenticationToken => authorisation lambda => ok 
+    (entity registry id => list entities lambda => list of entities, size > 0)
+    entity registry id => entity registry size lambda => size of entity registry > 0
+    When the API admin user attempts to update the entity registry
+    entity registry id, schema => update entity registry lambda => error message
+
+  Scenario: An API admin user deletes populated data from an entity registry
+    authenticationToken => authorisation lambda => ok 
+    entity registry id => list entities lambda => list of entities, size == 0
+    entity registry id => entity registry size lambda => size of entity registry == 0
+    => delete entity registry data => ok
