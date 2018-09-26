@@ -11,7 +11,6 @@ import no.bibsys.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +29,7 @@ public class DatabaseController {
         this.databaseManager = databaseManager;
     }
 
+
     @PostMapping(path = "/registry/create", produces = "application/json;charset=UTF-8")
     public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
         throws InterruptedException, TableAlreadyExistsException {
@@ -40,8 +40,8 @@ public class DatabaseController {
     }
 
 
-    @PutMapping(path = "/registry/{regName}/put", produces = "application/json;charset=UTF-8")
-    public PathResponse insertEntry(@PathVariable("regName") String registryName,
+    @PostMapping(path = "/registry/{registryName}/", produces = "application/json;charset=UTF-8")
+    public PathResponse insertEntry(@PathVariable("registryName") String registryName,
         @RequestBody String request) throws IOException {
         databaseManager.insert(registryName, request);
         ObjectMapper mapper = new ObjectMapper();
