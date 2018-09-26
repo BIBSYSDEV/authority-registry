@@ -17,7 +17,13 @@ given('that there is an existing, populated entity registry with a schema', () =
 	createTestEntity();
 })
 
+given('that there is an existing, empty entity registry with a schema', () => {
+	createEmptyRegistry();
+})
+
+
 function createEmptyRegistry(){
+//	let entityRegistryUrl = "/registry/create";
 	let entityRegistryUrl = "http://ada.bibsys.no/admin/ping";
 	cy.wrap(entityRegistryUrl).as('entityRegistryUrl')
 	let entityGetUrl = "http://ada.bibsys.no/admin/ping";
@@ -35,13 +41,14 @@ function createEmptyRegistry(){
 		cy.fixture('registryTestSchema.json')
 		.then((testSchema) => {
 			cy.get('@registryName').then((registryName) => {
-				testSchema.name = registryName;
+				testSchema.registryName = registryName;
 				cy.request({
 					url: url,
 //					method: 'POST',
 					body: testSchema, 
 					headers: {
-						Authorization: 'Token API_admin_token'
+						Authorization: 'Token API_admin_token',
+						'content-type': 'application/json'
 					}
 				})
 			})
