@@ -39,10 +39,10 @@ public class TableWriter {
             final Table table = tableDriver.getTable(tableName);
             PutItemSpec putItemSpec = new PutItemSpec()
                 .withItem(item)
-                .withConditionExpression(DynamoConstants.KEY_NOT_EXISTS);
+                .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
             table.putItem(putItemSpec);
         } catch (ConditionalCheckFailedException e) {
-            throw new ItemExistsException(String.format("Item with id:%s already exits", id));
+            throw new ItemExistsException(String.format("Item with id:%s already exits", id), e);
         }
 
 

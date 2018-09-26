@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DatabaseManager {
 
-    private TableDriver tableDriver;
+    private final transient TableDriver tableDriver;
 
     @Autowired
     public DatabaseManager(TableDriver tableDriver) {
@@ -20,11 +20,11 @@ public class DatabaseManager {
     public void createRegistry(String tableName)
         throws InterruptedException, TableAlreadyExistsException {
         TableCreator tableCreator = new TableCreator(tableDriver);
-        if (!registryExists(tableName)) {
-            tableCreator.createTable(tableName);
-        } else {
+        if (registryExists(tableName)) {
             throw new TableAlreadyExistsException(
                 String.format("Registry %s already exists", tableName));
+        } else {
+            tableCreator.createTable(tableName);
         }
     }
 
@@ -52,10 +52,7 @@ public class DatabaseManager {
     }
 
 
-
-
-    boolean registryExists(String tableName) {
-
+    public boolean registryExists(String tableName) {
         return new TableCreator(tableDriver).tableExists(tableName);
     }
 

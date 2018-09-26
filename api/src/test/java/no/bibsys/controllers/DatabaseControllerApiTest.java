@@ -5,7 +5,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
@@ -107,7 +106,7 @@ public class DatabaseControllerApiTest extends ApiTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         String responseBodyJson = response.getContentAsString();
         PathResponse pathResponse = mapper.readValue(responseBodyJson, PathResponse.class);
-        String expectedPath = String.format("/registry/%s/get/%s", tableName, entry.id);
+        String expectedPath = String.format("/registry/%s/%s", tableName, entry.id);
         assertThat(pathResponse.getPath(), is(equalTo(expectedPath)));
     }
 
@@ -137,8 +136,8 @@ public class DatabaseControllerApiTest extends ApiTest {
 
     private MvcResult insertEntryRequest(String registryName, String jsonBody)
         throws Exception {
-        String path = String.format("/registry/%s/put", registryName);
-        return mockMvc.perform(put(path)
+        String path = String.format("/registry/%s/", registryName);
+        return mockMvc.perform(post(path)
             .contentType(ContentType.APPLICATION_JSON.toString())
             .content(jsonBody)).andReturn();
 
@@ -146,7 +145,7 @@ public class DatabaseControllerApiTest extends ApiTest {
 
 
     private MvcResult createTableRequest(String requestJson) throws Exception {
-        return mockMvc.perform(post("/registry/create/")
+        return mockMvc.perform(post("/registry")
             .contentType(ContentType.APPLICATION_JSON.toString())
             .content(requestJson))
             .andReturn();

@@ -30,7 +30,19 @@ public class DatabaseController {
     }
 
 
-    @PostMapping(path = "/registry/create", produces = "application/json;charset=UTF-8")
+    @PostMapping(path = "/registry/{registryName}", produces = "application/json;charset=UTF-8")
+    public PathResponse insertEntry(@PathVariable("registryName") String registryName,
+        @RequestBody String request) throws IOException {
+        databaseManager.insert(registryName, request);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(request);
+        String id = node.get("id").asText();
+        return new PathResponse(
+            String.format("/registry/%s/%s", registryName, id));
+    }
+
+
+    @PostMapping(path = "/registry", produces = "application/json;charset=UTF-8")
     public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
         throws InterruptedException, TableAlreadyExistsException {
         String tableName = request.getRegistryName();
@@ -39,17 +51,6 @@ public class DatabaseController {
             String.format("A registry with name %s has been created", tableName));
     }
 
-
-    @PostMapping(path = "/registry/{registryName}/", produces = "application/json;charset=UTF-8")
-    public PathResponse insertEntry(@PathVariable("registryName") String registryName,
-        @RequestBody String request) throws IOException {
-        databaseManager.insert(registryName, request);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(request);
-        String id = node.get("id").asText();
-        return new PathResponse(
-            String.format("/registry/%s/get/%s", registryName, id));
-    }
 
 
     @RequestMapping(value = "*", method = RequestMethod.GET)

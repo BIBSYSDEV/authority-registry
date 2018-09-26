@@ -3,6 +3,7 @@ package no.bibsys.responses;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * DO NOT USE WITH SPRINGBOOT POJO containing response object for API Gateway. This can be used when
@@ -28,14 +29,14 @@ public class GatewayResponse {
 
     public GatewayResponse(final String body) {
         this.body = body;
-        HashMap<String, String> map = defaultHeaders();
+        Map<String, String> map = defaultHeaders();
         this.headers = Collections.unmodifiableMap(map);
         this.statusCode = 200;
     }
 
 
-    public static HashMap<String, String> defaultHeaders() {
-        HashMap<String, String> map = new HashMap<>();
+    public static Map<String, String> defaultHeaders() {
+        Map<String, String> map = new ConcurrentHashMap<>();
         map.put("Content-Type", "application/json");
         return map;
     }

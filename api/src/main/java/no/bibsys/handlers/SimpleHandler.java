@@ -11,12 +11,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import no.bibsys.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimpleHandler implements RequestStreamHandler {
 
+
+    private static final Logger logger;
     private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     static {
+        logger = LoggerFactory.getLogger(SimpleHandler.class);
         try {
             handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(Application.class);
 
@@ -27,7 +32,8 @@ public class SimpleHandler implements RequestStreamHandler {
             //      });
         } catch (ContainerInitializationException e) {
             // if we fail here. We re-throw the exception to force another cold start
-            e.printStackTrace();
+            logger.error("Error while initializing Spring Boot application", e);
+//            e.printStackTrace();
             throw new RuntimeException("Could not initialize Spring Boot application", e);
         }
     }

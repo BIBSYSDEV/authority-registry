@@ -42,7 +42,7 @@ public class SimpleResponse {
         return message;
     }
 
-    public void setMessage(String message) {
+    public final void setMessage(String message) {
         this.message = message;
     }
 

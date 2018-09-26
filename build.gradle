@@ -53,7 +53,8 @@ allprojects {
         toolVersion = "6.7.0"
         ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
 
-        ignoreFailures = true
+        //TODO: set this to false as soon as possible
+        ignoreFailures = false
     }
     
     
