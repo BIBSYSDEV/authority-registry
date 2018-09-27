@@ -60,7 +60,7 @@ function createTestEntity(){
 	cy.wrap(entityId).as('entityId')
 
 	cy.get('@registryName').then((registryName) => {
-		entityAddUrl += registryName + '/put'; 
+//		entityAddUrl += registryName + '/put'; 
 
 		cy.fixture('entityTestData.json') // add testData to registry
 		.then((testData) => {
