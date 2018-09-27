@@ -34,9 +34,6 @@ function createEmptyRegistry(){
 	cy.wrap(randomRegistryName).as('registryName');
 
 	cy.get('@entityRegistryUrl').then((url) => {
-		// Destroy any existing test registry
-
-
 		// create new test registry
 		cy.fixture('registryTestSchema.json')
 		.then((testSchema) => {
@@ -58,17 +55,18 @@ function createEmptyRegistry(){
 
 function createTestEntity(){
 	let entityAddUrl = "http://ada.bibsys.no/admin/ping";
+//	let entityAddUrl = '/registry/';
 	let entityId = '0';
 	cy.wrap(entityId).as('entityId')
 
 	cy.get('@registryName').then((registryName) => {
-		// entiytAddUrl += registryName + '/': 
+		entityAddUrl += registryName + '/put'; 
 
 		cy.fixture('entityTestData.json') // add testData to registry
 		.then((testData) => {
 			cy.request({
 				url: entityAddUrl,
-//				method: 'POST',
+//				method: 'PUT',
 				body: testData,
 				headers: {
 					Authorization: 'Token API_admin_token'
