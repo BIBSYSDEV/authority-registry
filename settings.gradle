@@ -1,4 +1,4 @@
-rootProject.name = 'emne-test'
+rootProject.name = 'authority-registry'
 include 'common'
 include 'api'
 include 'dynamo'
