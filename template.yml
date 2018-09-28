@@ -27,6 +27,12 @@ Parameters:
     # API Gateway regional endpoints
 #    EndpointConfiguration: REGIONAL
 
+Outputs:   
+   ReadApiId:
+      Value: !GetAtt CreateDynamoTable.RootResourceId
+      Export:
+         Name: ReadApiId
+
 Resources:
   CreateDynamoTable:
     Type: AWS::Serverless::Function
