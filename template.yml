@@ -35,7 +35,7 @@ Outputs:
 
 Resources:
   RestApi:
-    Type: AWS::Serverless::Function
+    Type: AWS::Serverless::Api
     Properties:
       StageName: test
   EntityRegistry:
