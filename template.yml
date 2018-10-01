@@ -29,12 +29,16 @@ Parameters:
 
 Outputs:   
    ReadApiId:
-      Value: !GetAtt CreateDynamoTable.RootResourceId
+      Value: !GetAtt RestApi.RootResourceId
       Export:
          Name: ReadApiId
 
 Resources:
-  CreateDynamoTable:
+  RestApi:
+    Type: AWS:Serverless::Function
+    Properties:
+      StageName: test
+  EntityRegistry:
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.SimpleHandler::handleRequest
@@ -50,8 +54,9 @@ Resources:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Timeout: 60
       Events:
-        GetResource:
+        RestApiEvent:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: any
+            RestApiId: !Ref RestApi
