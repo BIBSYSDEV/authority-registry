@@ -29,7 +29,7 @@ Parameters:
 
 Outputs:   
    ReadApiId:
-      Value: !GetAtt GetResource.RootResourceId
+      Value: !GetAtt CreateDynamoTable.RootResourceId
       Export:
          Name: ReadApiId
 
