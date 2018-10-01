@@ -1,4 +1,7 @@
 version: 0.2
+env:
+  parameter-store:
+    CYPRESS_BASE_URL: restApiUrlParameter
 phases:
   install:
     commands:

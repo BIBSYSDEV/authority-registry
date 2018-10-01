@@ -60,3 +60,11 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+
+  RestApiUrlParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: "restApiUrlParameter"
+      Type: "String"
+      Value: !Join ['', ['https://', !GetAtt 'RestApi.RootResourceId', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
+      Description: "SSM Parameter for storing RestApi URL"
