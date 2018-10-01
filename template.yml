@@ -27,12 +27,6 @@ Parameters:
     # API Gateway regional endpoints
 #    EndpointConfiguration: REGIONAL
 
-Outputs:   
-   ReadApiId:
-      Value: !GetAtt RestApi.RootResourceId
-      Export:
-         Name: ReadApiId
-
 Resources:
   RestApi:
     Type: AWS::Serverless::Api
@@ -66,5 +60,5 @@ Resources:
     Properties:
       Name: "restApiUrlParameter"
       Type: "String"
-      Value: !Join ['', ['https://', !GetAtt 'RestApi.RootResourceId', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
       Description: "SSM Parameter for storing RestApi URL"
