@@ -25,7 +25,7 @@ given('that there is an existing, empty entity registry with a schema', () => {
 function createEmptyRegistry(){
 	let entityRegistryUrl = "/registry/create";
 	cy.wrap(entityRegistryUrl).as('entityRegistryUrl')
-	cy.wrap('https://www.unit.no').as('entityGetUrl'); 
+	cy.wrap('https://www.unit.no').as('entityGetUrl');
 
 	let uuid = require('uuid');
 	let randomRegistryName = uuid.v4();
