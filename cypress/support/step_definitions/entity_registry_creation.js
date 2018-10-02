@@ -12,7 +12,6 @@ let createEntityRegistryRequest ={
 //			'registryValidationSchema': 'schema'
 }
 
-//let createRegistryEndpoint = 'http://ada.bibsys.no/admin/ping'
 let createRegistryEndpoint = '/registry/create'
 
 	when('the API admin user provides a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{

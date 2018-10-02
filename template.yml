@@ -28,7 +28,11 @@ Parameters:
 #    EndpointConfiguration: REGIONAL
 
 Resources:
-  CreateDynamoTable:
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: test
+  EntityRegistry:
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.SimpleHandler::handleRequest
@@ -44,8 +48,17 @@ Resources:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Timeout: 60
       Events:
-        GetResource:
+        RestApiEvent:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: any
+            RestApiId: !Ref RestApi
+
+  RestApiUrlParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: "restApiUrlParameter"
+      Type: "String"
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
+      Description: "SSM Parameter for storing RestApi URL"

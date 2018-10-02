@@ -24,8 +24,8 @@ given('that there is an existing, empty entity registry with a schema', () => {
 
 function createEmptyRegistry(){
 	let entityRegistryUrl = "/registry/create";
-//	let entityRegistryUrl = "http://ada.bibsys.no/admin/ping";
 	cy.wrap(entityRegistryUrl).as('entityRegistryUrl')
+	cy.wrap('https://www.unit.no').as('entityGetUrl');
 
 	let uuid = require('uuid');
 	let randomRegistryName = uuid.v4();
@@ -52,19 +52,19 @@ function createEmptyRegistry(){
 }
 
 function createTestEntity(){
-//	let entityAddUrl = "http://ada.bibsys.no/admin/ping";
-	let entityAddUrl = '/registry/';
+//	let entityAddUrl = '/registry/';
+	let entityAddUrl = 'https://www.unit.no';
 	let entityId = '0';
 	cy.wrap(entityId).as('entityId')
 
 	cy.get('@registryName').then((registryName) => {
-		entityAddUrl += registryName + '/put'; 
+//		entityAddUrl += registryName; 
 
 		cy.fixture('entityTestData.json') // add testData to registry
 		.then((testData) => {
 			cy.request({
 				url: entityAddUrl,
-				method: 'PUT',
+//				method: 'POST',
 				body: testData,
 				headers: {
 					Authorization: 'Token API_admin_token'
