@@ -52,7 +52,7 @@ function createEmptyRegistry(){
 }
 
 function createTestEntity(){
-	let entityAddUrl = "http://ada.bibsys.no/admin/ping";
+	let entityAddUrl = "https://www.unit.no";
 //	let entityAddUrl = '/registry/';
 	let entityId = '0';
 	cy.wrap(entityId).as('entityId')
