@@ -8,12 +8,11 @@
 
 let createEntityRegistryRequest ={
 		'registryName': 'test'
-//		'registryAdminUsers': ['user1', 'user2'],
-//		'registryValidationSchema': 'schema'
+//			'registryAdminUsers': ['user1', 'user2'],
+//			'registryValidationSchema': 'schema'
 }
 
-let createRegistryEndpoint = 'https://www.unit.no'
-//	let createRegistryEndpoint = '/registry/create'
+let createRegistryEndpoint = '/registry/create'
 
 	when('the API admin user provides a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
 
@@ -26,7 +25,7 @@ let createRegistryEndpoint = 'https://www.unit.no'
 //		expect(createEntityRegistryRequest['registryAdminUsers']).to.have.length.above(0);
 //		expect(createEntityRegistryRequest['registryAdminUsers'][0]).to.be.a('string');
 //		expect(createEntityRegistryRequest['registryAdminUsers'][0]).to.have.length.above(0);
-//
+
 //		expect(createEntityRegistryRequest['registryValidationSchema']).to.be.a('string');
 //		expect(createEntityRegistryRequest['registryValidationSchema']).to.have.length.above(0);
 
@@ -42,7 +41,7 @@ let createRegistryEndpoint = 'https://www.unit.no'
 		let uuid = require('uuid');
 		let randomRegistryName = uuid.v4();
 		cy.wrap(randomRegistryName).as('registryName');
-		
+
 		createEntityRegistryRequest['registryName'] = randomRegistryName
 
 		cy.request({ 
@@ -52,7 +51,7 @@ let createRegistryEndpoint = 'https://www.unit.no'
 			headers: {
 				'content-type': 'application/json'
 			}
-			})
+		})
 		.then((response) => {
 //			expect(response.body['message']).to.contain(randomRegistryName)
 		})

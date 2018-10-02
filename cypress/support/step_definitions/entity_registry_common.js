@@ -64,7 +64,7 @@ function createTestEntity(){
 		.then((testData) => {
 			cy.request({
 				url: entityAddUrl,
-				method: 'POST',
+//				method: 'POST',
 				body: testData,
 				headers: {
 					Authorization: 'Token API_admin_token'
