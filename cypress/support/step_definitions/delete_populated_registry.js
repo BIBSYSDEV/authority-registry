@@ -5,7 +5,7 @@
 //    Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
 
 when('the API admin user attempts to delete the entity registry', () => {
-	let deleteRegistryUrl = 'http://ada.bibsys.no/admin/ping';
+	let deleteRegistryUrl = 'https://www.unit.no';
 
 	cy.get('@authenticationToken').then((authToken) =>{
 		cy.request({

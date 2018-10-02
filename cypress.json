@@ -1,4 +1,4 @@
 {
-	"baseUrl":"https://c47wmokaog.execute-api.eu-west-1.amazonaws.com/test/",
-	"responseTimeout": 60000
+	"responseTimeout": 60000,
+	"video": false
 }
