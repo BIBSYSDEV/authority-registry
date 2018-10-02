@@ -4,7 +4,7 @@
 //    Then the OpenAPI documentation is returned
 
 when('an anonymous user requests the OpenAPI documentation', () => {
-	let openApiDocumentationUrl = 'http://ada.bibsys.no/admin/ping';
+	let openApiDocumentationUrl = 'https://www.unit.no';
 	cy.request(openApiDocumentationUrl).then((response) => {
 		cy.wrap(response.body).as('documentation')
 	})

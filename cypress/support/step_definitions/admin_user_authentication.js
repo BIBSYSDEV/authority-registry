@@ -4,7 +4,7 @@
 //    Then they are authenticated and receive a valid authentication token
 
 let credentials = "";
-let authenticationUrl = "http://ada.bibsys.no/admin/ping"; // authentication service here
+let authenticationUrl = "https://www.unit.no"; // authentication service here
 let authenticated = 'not authenticated';
 
 given('that there is an API admin user with valid credentials', () => {

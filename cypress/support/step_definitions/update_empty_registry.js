@@ -5,7 +5,7 @@
 //    Then the entity registry is updated
 
 when('the API admin user updates the metadata and validation schemas of the entity registry', () => {
-	let registryUpdateUrl = 'http://ada.bibsys.no/admin/ping';
+	let registryUpdateUrl = 'https://www.unit.no';
 	cy.get('@authenticationToken').then((authToken) => {
 		cy.fixture('registryTestSchemaUpdated.json').then((updatedSchema) => {
 			cy.request({

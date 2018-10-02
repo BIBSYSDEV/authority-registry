@@ -12,7 +12,7 @@ let createEntityRegistryRequest ={
 //		'registryValidationSchema': 'schema'
 }
 
-let createRegistryEndpoint = 'http://ada.bibsys.no/admin/ping'
+let createRegistryEndpoint = 'https://www.unit.no'
 //	let createRegistryEndpoint = '/registry/create'
 
 	when('the API admin user provides a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
@@ -30,7 +30,7 @@ let createRegistryEndpoint = 'http://ada.bibsys.no/admin/ping'
 //		expect(createEntityRegistryRequest['registryValidationSchema']).to.be.a('string');
 //		expect(createEntityRegistryRequest['registryValidationSchema']).to.have.length.above(0);
 
-		let schemaValidationUrl = 'http://ada.bibsys.no/admin/ping';
+		let schemaValidationUrl = 'https://www.unit.no';
 		cy.request(schemaValidationUrl, createEntityRegistryRequest[attributeArray[2]])
 		.then((response) => {
 			expect(true).to.be.true;

@@ -3,7 +3,7 @@
 //    When they submit the authentication token
 //    Then they are authorised to access the administration APIs
 
-let url = "http://ada.bibsys.no/admin/ping";
+let url = "https://www.unit.no";
 let authorised = 'not authorised';
 
 given('that an API admin user has a valid authentication token', () => {
