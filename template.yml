@@ -1,32 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Example Pet Store API written with SpringBoot with the aws-serverless-java-container library
+Description: DynamoDB REST frontend
 
 Parameters:
   ProjectId:
     Type: String
     Description: AWS CodeStar projectID used to associate new resources to team members
-  Stage:
+  Branch:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-
-    # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
-    # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
-    #
-    # Globals:
-    #   Function:
-    #     AutoPublishAlias: live
-    #     DeploymentPreference:
-    #       Enabled: true
-    #       Type: Canary10Percent5Minutes
-
-
-
-    #Globals:
-    #  Api:
-    # API Gateway regional endpoints
-#    EndpointConfiguration: REGIONAL
-
 Resources:
   RestApi:
     Type: AWS::Serverless::Api
@@ -60,5 +42,5 @@ Resources:
     Properties:
       Name: "restApiUrlParameter"
       Type: "String"
-      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Branch]]
       Description: "SSM Parameter for storing RestApi URL"
