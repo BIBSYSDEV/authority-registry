@@ -27,7 +27,7 @@ Resources:
       # - CustomDynamoDB_Full_Access
       Role:
         Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+          !Join ['-',[!Ref ProjectId, !Ref Branch, 'LambdaTrustRole' ]]
       Timeout: 60
       Events:
         RestApiEvent:
