@@ -36,11 +36,21 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+Outputs:
+  ServerlessApiValue:
+    Description: URL for application
+    Value: !Sub
+    - 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${BranchValue}'
+    - { BranchValue: !Ref Branch }
+    Export:
+  Name: AppRestApi
 
-  RestApiUrlParameter:
-    Type: "AWS::SSM::Parameter"
-    Properties:
-      Name: "restApiUrlParameter"
-      Type: "String"
-      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Branch]]
-      Description: "SSM Parameter for storing RestApi URL"
+
+#
+#  RestApiUrlParameter:
+#    Type: "AWS::SSM::Parameter"
+#    Properties:
+#      Name: "restApiUrlParameter"
+#      Type: "String"
+#      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Branch]]
+#      Description: "SSM Parameter for storing RestApi URL"
