@@ -24,7 +24,7 @@ dependencies {
 
 
 
-    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.+'
 
     //spring boot libraries
     compile 'org.springframework.boot:spring-boot-starter-web'

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * DO NOT USE WITH SPRINGBOOT POJO containing response object for API Gateway. This can be used when
+ * DO NOT USE WITH SPRINGBOOT!! POJO containing response object for API Gateway. This can be used when
  * SpringBoot is NOT used
  */
 public class GatewayResponse {
