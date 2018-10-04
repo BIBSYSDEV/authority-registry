@@ -6,7 +6,7 @@ Parameters:
   ProjectId:
     Type: String
     Description: AWS CodeStar projectID used to associate new resources to team members
-  Stage:
+  Branch:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
 Resources:
@@ -42,5 +42,5 @@ Resources:
     Properties:
       Name: "restApiUrlParameter"
       Type: "String"
-      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Stage]]
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Branch]]
       Description: "SSM Parameter for storing RestApi URL"
