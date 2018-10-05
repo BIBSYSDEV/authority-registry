@@ -21,10 +21,6 @@ Resources:
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
-      #     Policies are inactive if there is a role attached to the lambda function
-      #Policies:
-      # - AWSLambdaBasicExecutionRole
-      # - CustomDynamoDB_Full_Access
       Role:
         Fn::ImportValue:
           !Join ['-',[!Ref ProjectId, !Ref Branch, 'LambdaTrustRole' ]]
