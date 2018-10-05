@@ -40,7 +40,7 @@ Outputs:
 #              - 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${BranchValue}'
 #              - { BranchValue: !Ref Branch }
     Export:
-  Name: AppRestApi
+      Name: AppRestApi
 
 
 #
