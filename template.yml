@@ -35,9 +35,10 @@ Resources:
 Outputs:
   ServerlessApiValue:
     Description: URL for application
-    Value: !Sub
-              - 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${BranchValue}'
-              - { BranchValue: !Ref Branch }
+    Value: "ServerlessAPiValue"
+#    Value: !Sub
+#              - 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${BranchValue}'
+#              - { BranchValue: !Ref Branch }
     Export:
   Name: AppRestApi
 
