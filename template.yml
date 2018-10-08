@@ -9,21 +9,59 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
+  PipelineLambdaTrustRolename:
+    Type: String
 Resources:
+  LambdaTrustRole:
+    Type: 'AWS::IAM::Role'
+    Description: A service role that will be assumed by the Lambda function
+    Properties:
+      RoleName: !Ref PipelineLambdaTrustRolename
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: 'sts:AssumeRole'
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - 'arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - 'logs:CreateLogGroup'
+            - 'logs:CreateLogStream'
+            - 'logs:PutLogEvents'
+            - 'dynamodb:CreateTable'
+            - 'dynamodb:DeleteTable'
+            - 'dynamodb:DescribeTable'
+            - "dynamodb:BatchGetItem"
+            - "dynamodb:BatchWriteItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            Effect: Allow
+            Resource: '*'
+          Version: 2012-10-17
+        PolicyName: LambdaWorkerPolicy
+
+
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: test
   EntityRegistry:
+    DependsOn:
+    - LambdaTrustRole
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.SimpleHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
-      Role:
-        Fn::ImportValue:
-          !Join ['-',[!Ref ProjectId, !Ref Stage, 'LambdaTrustRole' ]]
+      Role: !GetAtt LambdaTrustRole.Arn
       Timeout: 60
       Events:
         RestApiEvent:
