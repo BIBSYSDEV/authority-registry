@@ -68,7 +68,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
         Entry entry = sampleEntry("databaseManagerInsertTestId");
         databaseManager.createRegistry(tableName);
-        databaseManager.insert(tableName, entry.jsonString());
+        databaseManager.insertEntry(tableName, entry.jsonString());
         String readJson = databaseManager.readEntry(tableName, entry.id);
         ObjectNode actual = mapper.readValue(readJson, ObjectNode.class);
         ObjectNode expected = mapper.readValue(entry.jsonString(), ObjectNode.class);
@@ -84,11 +84,11 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         throws InterruptedException {
         Entry entry = sampleEntry("databaseManagerInsertTestId");
         databaseManager.createRegistry(tableName);
-        databaseManager.insert(tableName, entry.jsonString());
+        databaseManager.insertEntry(tableName, entry.jsonString());
         ObjectNode root2 = entry.root.deepCopy();
         root2.put("newText", "Some new stuff");
         Entry entry2 = new Entry(entry.id, root2);
-        databaseManager.insert(tableName, entry2.jsonString());
+        databaseManager.insertEntry(tableName, entry2.jsonString());
 
 
     }

@@ -29,7 +29,7 @@ public class DatabaseManager {
     }
 
 
-    public void insert(String tableName, String json) {
+    public void insertEntry(String tableName, String json) {
         if (registryExists(tableName)) {
             TableWriter tableWriter = new TableWriter(tableDriver, tableName);
             tableWriter.insertJson(json);

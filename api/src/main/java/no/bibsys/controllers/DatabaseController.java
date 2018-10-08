@@ -33,7 +33,7 @@ public class DatabaseController {
     @PostMapping(path = "/registry/{registryName}", produces = "application/json;charset=UTF-8")
     public PathResponse insertEntry(@PathVariable("registryName") String registryName,
         @RequestBody String request) throws IOException {
-        databaseManager.insert(registryName, request);
+        databaseManager.insertEntry(registryName, request);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(request);
         String id = node.get("id").asText();
