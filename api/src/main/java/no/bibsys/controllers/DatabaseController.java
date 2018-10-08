@@ -9,6 +9,7 @@ import no.bibsys.handlers.CreateRegistryRequest;
 import no.bibsys.responses.PathResponse;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +52,14 @@ public class DatabaseController {
             String.format("A registry with name %s has been created", tableName));
     }
 
+
+    @DeleteMapping(path = "/registry/{registryName}", produces = "application/json;charset=UTF-8")
+    public SimpleResponse deleteRegistry(@PathVariable String registryName) {
+
+        databaseManager.deleteRegistry(registryName);
+        return new SimpleResponse(
+            String.format("Registry %s has been deleted", registryName));
+    }
 
 
     @RequestMapping(value = "*", method = RequestMethod.GET)
