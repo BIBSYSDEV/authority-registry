@@ -1,7 +1,6 @@
 package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
@@ -19,16 +18,6 @@ public final class TableDriver {
         this.dynamoDb = dynamoDb;
     }
 
-    /**
-     * Create default connection with DynamoDB.
-     *
-     * @return standard TableDriver
-     */
-    public static TableDriver create() {
-        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-        DynamoDB dynamoDb = new DynamoDB(client);
-        return create(client, dynamoDb);
-    }
 
     /**
      * Create custom connection with DynamoDB.
@@ -53,6 +42,12 @@ public final class TableDriver {
 
     public Table getTable(final String tableName) {
         return dynamoDb.getTable(tableName);
+
+    }
+
+
+    public void deleteTable(final String tableName) {
+        client.deleteTable(tableName);
 
     }
 }

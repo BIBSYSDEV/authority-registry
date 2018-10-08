@@ -26,7 +26,7 @@ public class TableCreator {
     }
 
     public void deleteTable(final String tableName) {
-        tableDriver.getClient().deleteTable(tableName);
+        tableDriver.deleteTable(tableName);
     }
 
 

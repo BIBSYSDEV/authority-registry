@@ -3,6 +3,7 @@ package no.bibsys.controllers;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -84,7 +85,6 @@ public class DatabaseControllerApiTest extends ApiTest {
     @DirtiesContext
     public void databaseControllerShouldSendConflictWhenCreatingExistingTable() throws Exception {
         String tableName = "createTableAPITest";
-
         CreateRegistryRequest request = new CreateRegistryRequest(tableName);
         String requestJson = mapper.writeValueAsString(request);
 
@@ -96,9 +96,7 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldInsertEntryInTable() throws Exception {
-        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
-        String requestJson = mapper.writeValueAsString(createRequest);
-        createTableRequest(requestJson);
+        createTable(tableName);
 
         Entry entry = sampleEntry("entryId");
         MockHttpServletResponse response = insertEntryRequest(tableName, entry.jsonString())
@@ -114,9 +112,7 @@ public class DatabaseControllerApiTest extends ApiTest {
     @Test
     @DirtiesContext
     public void databaseControllerShouldThrowExceptionOnDuplicateEntries() throws Exception {
-        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
-        String requestJson = mapper.writeValueAsString(createRequest);
-        createTableRequest(requestJson);
+        createTable(tableName);
 
         Entry entry = sampleEntry("entryId");
         MockHttpServletResponse response1 = insertEntryRequest(tableName, entry.jsonString())
@@ -134,6 +130,47 @@ public class DatabaseControllerApiTest extends ApiTest {
     }
 
 
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldDeleteAnExistingRegistry() throws Exception {
+        createTable(tableName);
+
+        MvcResult result = mockMvc.perform(delete("/registry/" + tableName)
+            .contentType(ContentType.APPLICATION_JSON.toString())
+        ).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        SimpleResponse responseBody = mapper
+            .readValue(response.getContentAsString(), SimpleResponse.class);
+        SimpleResponse expected = new SimpleResponse(
+            String.format("Registry %s has been deleted", tableName));
+        assertThat(responseBody, is(equalTo(expected)));
+
+    }
+
+
+    @Test
+    @DirtiesContext
+    public void databaseControllerShouldThrowAnExcpetionWhenDeletingNonExistingRegistry()
+        throws Exception {
+
+        MvcResult result = mockMvc.perform(delete("/registry/" + tableName)
+            .contentType(ContentType.APPLICATION_JSON.toString())
+        ).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+        assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
+//        SimpleResponse responseBody=mapper.readValue(response.getContentAsString(),SimpleResponse.class);
+//        SimpleResponse expected=new SimpleResponse(String.format("Registry %s has been deleted",tableName));
+//        assertThat(responseBody,is(equalTo(expected)));
+
+    }
+
+
+
+
+
     private MvcResult insertEntryRequest(String registryName, String jsonBody)
         throws Exception {
         String path = String.format("/registry/%s/", registryName);
@@ -141,6 +178,13 @@ public class DatabaseControllerApiTest extends ApiTest {
             .contentType(ContentType.APPLICATION_JSON.toString())
             .content(jsonBody)).andReturn();
 
+    }
+
+
+    private MvcResult createTable(String tableName) throws Exception {
+        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
+        String requestJson = mapper.writeValueAsString(createRequest);
+        return createTableRequest(requestJson);
     }
 
 

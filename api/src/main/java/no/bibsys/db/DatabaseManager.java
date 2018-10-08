@@ -57,4 +57,15 @@ public class DatabaseManager {
     }
 
 
+    public void deleteRegistry(String tableName) {
+        TableCreator tableCreator = new TableCreator(tableDriver);
+        if (registryExists(tableName)) {
+            tableCreator.deleteTable(tableName);
+        } else {
+            throw new TableNotFoundException(
+                String.format("Registry %s does not exist", tableName));
+        }
+    }
+
+
 }
