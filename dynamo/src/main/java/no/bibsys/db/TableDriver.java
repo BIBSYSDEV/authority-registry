@@ -5,9 +5,9 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
-public class TableDriver {
+public final class TableDriver {
 
-    private AmazonDynamoDB client;
+    private transient AmazonDynamoDB client;
     private transient DynamoDB dynamoDb;
 
 

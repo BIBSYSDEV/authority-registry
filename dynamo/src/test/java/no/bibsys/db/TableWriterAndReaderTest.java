@@ -25,11 +25,12 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
     @Before
     public void init() {
         super.init();
-        tableReader = new TableReader(TableDriver.create(localClient, new DynamoDB(localClient)));
-        tableWriter = new TableWriter(TableDriver.create(localClient, new DynamoDB(localClient)));
+        tableReader = new TableReader(TableDriver.create(localClient, new DynamoDB(localClient)),
+            tableName);
+        tableWriter = new TableWriter(TableDriver.create(localClient, new DynamoDB(localClient)),
+            tableName);
         tableCreator = new TableCreator(TableDriver.create(localClient, new DynamoDB(localClient)));
-        tableReader.setTableName(tableName);
-        tableWriter.setTableName(tableName);
+
     }
 
 

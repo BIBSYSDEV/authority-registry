@@ -16,9 +16,10 @@ import org.slf4j.LoggerFactory;
 public class TableCreator {
 
 
-    private static Logger logger = LoggerFactory.getLogger(TableCreator.class);
+    private final static Logger logger = LoggerFactory.getLogger(TableCreator.class);
 
     private final transient TableDriver tableDriver;
+
 
     public TableCreator(final TableDriver tableDriver) {
         this.tableDriver = tableDriver;
@@ -29,7 +30,7 @@ public class TableCreator {
     }
 
 
-    AmazonDynamoDB getClient() {
+    public AmazonDynamoDB getClient() {
         return tableDriver.getClient();
     }
 

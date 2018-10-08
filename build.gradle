@@ -32,9 +32,10 @@ task fatJar {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
 
     checkstyle {
-        configFile = file('../config/checkstyle/google_checks.xml')
+        configFile = rootProject.resources.text.fromFile('config/checkstyle/google_checks.xml').asFile()
         showViolations = true
         toolVersion '8.12'
     }
@@ -46,12 +47,20 @@ allprojects {
             html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
         }
     }
+
+
+    pmd {
+        toolVersion = "6.7.0"
+        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+        ignoreFailures = false
+    }
+    
+    
 }
 
 subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'checkstyle'
-    apply plugin: 'pmd'
     apply plugin: "jacoco"
     apply plugin: "com.github.spotbugs"
 
@@ -111,14 +120,13 @@ subprojects {
 	    reports {
 	        xml.enabled false
 	        html.enabled true
-	        html.stylesheet resources.text.fromFile('../config/spotbugs/spotbugs.xsl')
+	        html.stylesheet rootProject.resources.text.fromFile('config/spotbugs/spotbugs.xsl')
 	    }
 	}
 
 
-    pmd {
-        toolVersion = "6.7.0"
-        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
-        ignoreFailures = true
-    }
+    
+
+
+
 }

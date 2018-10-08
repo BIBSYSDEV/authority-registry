@@ -1,4 +1,5 @@
-#/bin/sh
+#!/usr/bin/env bash
 
-./gradlew clean build fatJar
+
+./gradlew --build-cache clean build fatJar
 
