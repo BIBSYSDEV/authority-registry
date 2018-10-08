@@ -9,14 +9,14 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-  PipelineLambdaTrustRolename:
+  LambdaTrustRolename:
     Type: String
 Resources:
   LambdaTrustRole:
     Type: 'AWS::IAM::Role'
     Description: A service role that will be assumed by the Lambda function
     Properties:
-      RoleName: !Ref PipelineLambdaTrustRolename
+      RoleName: !Ref LambdaTrustRolename
       AssumeRolePolicyDocument:
         Statement:
         - Action: 'sts:AssumeRole'
