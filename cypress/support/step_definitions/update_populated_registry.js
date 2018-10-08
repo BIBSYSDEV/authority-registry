@@ -5,7 +5,7 @@
 //    Then the API admin user receives information that they cannot update the entity registry until the populated data is deleted
 
 when('the API admin user attempts to update the entity registry', () => {
-	let updateRegistryUrl = 'http://ada.bibsys.no/admin/ping';
+	let updateRegistryUrl = 'https://www.unit.no';
 
 	cy.get('@authenticationToken').then((authToken) => {
 		cy.fixture('registryTestSchemaUpdated').then((updatedSchema) => {

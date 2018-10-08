@@ -4,8 +4,8 @@
 //    When the registry admin user requests the creation of a new entity with properly formatted data
 //    Then the entity is created
 
-let createEntityUrl = "http://ada.bibsys.no/admin/ping";
-let getEntityUrl = "http://ada.bibsys.no/admin/ping";
+let createEntityUrl = "https://www.unit.no";
+let getEntityUrl = "https://www.unit.no";
 
 when('the registry admin user requests the creation of a new entity with properly formatted data', () =>{
 	cy.wrap('').as('returnId')

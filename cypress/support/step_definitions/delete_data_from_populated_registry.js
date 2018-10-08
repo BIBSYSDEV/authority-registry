@@ -5,7 +5,7 @@
 //    Then the API admin user receives information that the data is deleted
 
 when('the API admin user deletes the data in the entity registry', () => {
-	let deleteDataUrl = 'http://ada.bibsys.no/admin/ping';
+	let deleteDataUrl = 'https://www.unit.no';
 	cy.get('@authenticationToken').then((authToken) => {
 		cy.request({
 			url: deleteDataUrl,

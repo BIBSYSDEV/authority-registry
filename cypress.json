@@ -1,1 +1,4 @@
-{}
+{
+	"responseTimeout": 60000,
+	"video": false
+}
