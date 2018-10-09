@@ -19,12 +19,12 @@ public class DatabaseManager {
 
     public void createRegistry(String tableName)
         throws InterruptedException, TableAlreadyExistsException {
-        TableCreator tableCreator = new TableCreator(tableDriver);
+        TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             throw new TableAlreadyExistsException(
                 String.format("Registry %s already exists", tableName));
         } else {
-            tableCreator.createTable(tableName);
+            tableManager.createTable(tableName);
         }
     }
 
@@ -53,14 +53,20 @@ public class DatabaseManager {
 
 
     public boolean registryExists(String tableName) {
-        return new TableCreator(tableDriver).tableExists(tableName);
+        return new TableManager(tableDriver).tableExists(tableName);
     }
 
 
-    public void deleteRegistry(String tableName) {
-        TableCreator tableCreator = new TableCreator(tableDriver);
+    public void emptyRegistry(String tableName) throws InterruptedException {
+        TableManager tableManager = new TableManager(tableDriver);
+        tableManager.emptyTable(tableName);
+
+    }
+
+    public void deleteRegistry(String tableName) throws InterruptedException {
+        TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
-            tableCreator.deleteTable(tableName);
+            tableManager.deleteTable(tableName);
         } else {
             throw new TableNotFoundException(
                 String.format("Registry %s does not exist", tableName));

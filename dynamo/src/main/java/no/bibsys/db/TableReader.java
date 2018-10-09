@@ -2,6 +2,7 @@ package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import java.util.Optional;
 
 
 public class TableReader {
@@ -17,11 +18,11 @@ public class TableReader {
     }
 
 
-
-    public String getEntry(final String id) {
+    public Optional<String> getEntry(final String id) {
         final Table table = tableDriver.getDynamoDb().getTable(tableName);
-        final Item item = table.getItem("id", id);
-        return item.toJSON();
+        final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+        return itemOpt.map(item -> item.toJSON());
     }
+
 
 }

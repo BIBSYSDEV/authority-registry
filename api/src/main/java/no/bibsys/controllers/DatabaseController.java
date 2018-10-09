@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.handlers.CreateRegistryRequest;
+import no.bibsys.handlers.EditRegistryRequest;
+import no.bibsys.handlers.EmptyRegistryRequest;
 import no.bibsys.responses.PathResponse;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +46,27 @@ public class DatabaseController {
 
 
     @PostMapping(path = "/registry", produces = "application/json;charset=UTF-8")
-    public SimpleResponse createRegistry(@RequestBody CreateRegistryRequest request)
+    public SimpleResponse editRegistry(@RequestBody EditRegistryRequest request)
         throws InterruptedException, TableAlreadyExistsException {
+        EditRegistryRequest specific = request.specify();
+        if (specific instanceof CreateRegistryRequest) {
+            return createTable((CreateRegistryRequest) specific);
+        } else if (specific instanceof EmptyRegistryRequest) {
+            return emptyRegistry((EmptyRegistryRequest) specific);
+        }
+        return null;
+
+
+    }
+
+    private SimpleResponse emptyRegistry(EmptyRegistryRequest request) throws InterruptedException {
+        String registryName = request.getRegistryName();
+        databaseManager.emptyRegistry(registryName);
+        return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
+    }
+
+    private SimpleResponse createTable(CreateRegistryRequest request)
+        throws InterruptedException {
         String tableName = request.getRegistryName();
         databaseManager.createRegistry(tableName);
         return new SimpleResponse(
@@ -54,7 +75,8 @@ public class DatabaseController {
 
 
     @DeleteMapping(path = "/registry/{registryName}", produces = "application/json;charset=UTF-8")
-    public SimpleResponse deleteRegistry(@PathVariable String registryName) {
+    public SimpleResponse deleteRegistry(@PathVariable String registryName)
+        throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
         return new SimpleResponse(
