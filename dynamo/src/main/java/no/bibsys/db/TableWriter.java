@@ -31,9 +31,11 @@ public class TableWriter {
     }
 
 
-    public void deleteEntry(String id) {
+    public void deleteEntry(String id)  {
+
         Table table = tableDriver.getTable(tableName);
         table.deleteItem(new PrimaryKey("id", id));
+
 
     }
 

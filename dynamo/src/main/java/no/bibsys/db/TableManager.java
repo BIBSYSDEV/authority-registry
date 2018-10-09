@@ -7,16 +7,12 @@ import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.structures.ValidationSchemaEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class TableManager {
 
     public static final String VALIDATION_SCHEMA_TABLE = "VALIDATION_SCHEMAS";
 
-
-    private final static Logger logger = LoggerFactory.getLogger(TableManager.class);
 
     private final transient TableDriver tableDriver;
 
@@ -88,6 +84,11 @@ public class TableManager {
         } catch (ItemExistsException e) {
             throw new TableAlreadyExistsException(e.getMessage());
         }
+    }
+
+
+    public boolean tableExists(String tableName){
+        return this.tableDriver.tableExists(tableName);
     }
 
 

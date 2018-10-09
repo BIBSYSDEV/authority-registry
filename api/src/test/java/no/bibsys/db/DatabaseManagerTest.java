@@ -5,6 +5,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -25,15 +26,16 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
     private ObjectMapper mapper = new ObjectMapper();
     private String tableName = "DatabaseManagerTest";
+    private String validationSchema="validationSchema";
 
     @Test
     @DirtiesContext
     public void databaseManagerShouldCreateATable()
-        throws InterruptedException {
+        throws InterruptedException, JsonProcessingException {
 
         boolean existsBeforeCreation = databaseManager.registryExists(tableName);
 
-        databaseManager.createRegistry(tableName);
+        databaseManager.createRegistry(tableName,validationSchema);
         boolean existsAfterCreation = databaseManager.registryExists(tableName);
 
         assertThat(existsBeforeCreation, is(equalTo(false)));
@@ -45,17 +47,17 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     @Test(expected = TableAlreadyExistsException.class)
     @DirtiesContext
     public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
-        throws InterruptedException {
+        throws InterruptedException, JsonProcessingException {
 
         boolean existsBeforeCreation = databaseManager.registryExists(tableName);
         assertThat("The table should not exist before creation",
             existsBeforeCreation, is(equalTo(false)));
-        databaseManager.createRegistry(tableName);
+        databaseManager.createRegistry(tableName,validationSchema);
         boolean existsAfterCreation = databaseManager.registryExists(tableName);
         assertThat("The table should  exist before creation",
             existsAfterCreation, is(equalTo(true)));
 
-        databaseManager.createRegistry(tableName);
+        databaseManager.createRegistry(tableName,validationSchema);
 
 
     }
@@ -67,9 +69,9 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         throws IOException, InterruptedException {
 
         Entry entry = sampleEntry("databaseManagerInsertTestId");
-        databaseManager.createRegistry(tableName);
+        databaseManager.createRegistry(tableName,validationSchema);
         databaseManager.insertEntry(tableName, entry.jsonString());
-        String readJson = databaseManager.readEntry(tableName, entry.id);
+        String readJson = databaseManager.readEntry(tableName, entry.id).orElse(null);
         ObjectNode actual = mapper.readValue(readJson, ObjectNode.class);
         ObjectNode expected = mapper.readValue(entry.jsonString(), ObjectNode.class);
 
@@ -81,9 +83,9 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     @Test(expected = ItemExistsException.class)
     @DirtiesContext
     public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds()
-        throws InterruptedException {
+        throws InterruptedException, JsonProcessingException {
         Entry entry = sampleEntry("databaseManagerInsertTestId");
-        databaseManager.createRegistry(tableName);
+        databaseManager.createRegistry(tableName,validationSchema);
         databaseManager.insertEntry(tableName, entry.jsonString());
         ObjectNode root2 = entry.root.deepCopy();
         root2.put("newText", "Some new stuff");
@@ -94,12 +96,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     }
 
 
-    @Test
-    @DirtiesContext
-    public void databaseManagerShouldCheckIfARegistryExists()
-        throws InterruptedException, TableAlreadyExistsException {
-        databaseManagerShouldCreateATable();
-    }
+
 
 
 }

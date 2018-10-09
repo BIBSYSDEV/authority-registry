@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public final class TableDriver {
 
-    private static Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private transient AmazonDynamoDB client;
     private transient DynamoDB dynamoDb;
 
@@ -99,17 +99,19 @@ public final class TableDriver {
         logger.info("Deleting validation schema for table {}", tableName);
     }
 
-    protected void deleteNoCheckTable(final String tableName) throws InterruptedException {
+    public  void deleteNoCheckTable(final String tableName) throws InterruptedException {
         if (tableExists(tableName)) {
             client.deleteTable(tableName);
-            dynamoDb.getTable(tableName).waitForDelete();
+            if (tableExists(tableName)) {
+                dynamoDb.getTable(tableName).waitForDelete();
+            }
         } else {
             throw new TableNotFoundException(tableName);
         }
 
     }
 
-    protected void createTable(final String tableName, final TableDefinitions tableEntry)
+    public void createTable(final String tableName, final TableDefinitions tableEntry)
         throws InterruptedException {
 
         final List<AttributeDefinition> attributeDefinitions = tableEntry

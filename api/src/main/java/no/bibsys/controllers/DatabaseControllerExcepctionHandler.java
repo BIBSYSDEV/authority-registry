@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import no.bibsys.responses.SimpleResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,14 @@ public class DatabaseControllerExcepctionHandler extends ResponseEntityException
         SimpleResponse response = new SimpleResponse(String.format("Item %s already exists", id));
         return handleExceptionInternal(ex, response,
             new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> badRequest(BadRequestException e,WebRequest request){
+        SimpleResponse response=new SimpleResponse("Bad request");
+        return handleExceptionInternal(e,response,new HttpHeaders(), HttpStatus.BAD_REQUEST,request);
     }
 
     private String requestBody(WebRequest request) throws IOException {

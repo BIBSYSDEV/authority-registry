@@ -7,10 +7,7 @@ public class ValidationSchemaEntry implements Entry {
     private String validationSchema;
 
 
-    public ValidationSchemaEntry() {
-    }
-
-    ;
+    public ValidationSchemaEntry() { }
 
 
     public ValidationSchemaEntry(String id, String validationSchema) {
@@ -20,21 +17,21 @@ public class ValidationSchemaEntry implements Entry {
 
 
     @Override
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
     @Override
-    public void setId(String id) {
+    public final  void setId(String id) {
         this.id = id;
     }
 
 
-    public String getValidationSchema() {
+    public final String getValidationSchema() {
         return validationSchema;
     }
 
-    public void setValidationSchema(String validationSchema) {
+    public final void  setValidationSchema(String validationSchema) {
         this.validationSchema = validationSchema;
     }
 }

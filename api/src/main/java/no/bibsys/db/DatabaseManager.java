@@ -3,6 +3,8 @@ package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,14 @@ public class DatabaseManager {
     }
 
 
-    public void createRegistry(String tableName)
-        throws InterruptedException, TableAlreadyExistsException {
+    public void createRegistry(String tableName,String validationSchema)
+        throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
         TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             throw new TableAlreadyExistsException(
                 String.format("Registry %s already exists", tableName));
         } else {
-            tableManager.createTable(tableName);
+            tableManager.createRegistry(tableName,validationSchema);
         }
     }
 
@@ -40,7 +42,7 @@ public class DatabaseManager {
 
     }
 
-    public String readEntry(String tableName, String id) {
+    public Optional<String> readEntry(String tableName, String id) {
         if (registryExists(tableName)) {
             TableReader tableReader = new TableReader(tableDriver, tableName);
             return tableReader.getEntry(id);

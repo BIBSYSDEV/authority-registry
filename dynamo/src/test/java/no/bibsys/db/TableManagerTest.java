@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Optional;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
 import no.bibsys.utils.IoTestUtils;
@@ -20,10 +21,10 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
 
     @Test
     public void createTable() throws InterruptedException, JsonProcessingException {
-        TableManager tableManager = new TableManager(newTableDriver());
+        TableDriver tableDriver=newTableDriver();
+        TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(tableName, validationSchema);
         ListTablesResult tables = tableManager.getClient().listTables();
-        TableReader reader = new TableReader(tableDriver)
         int numberOfTables = tables.getTableNames().size();
 
         assertThat(numberOfTables, is(equalTo(2)));
@@ -45,13 +46,32 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
         tableManager.createRegistry(tableName, validationSchema);
-        tableManager.deleteTable(tableName);
-        int tables = tableManager.getClient().listTables().getTableNames().size();
 
         TableReader reader = new TableReader(newTableDriver(),
             TableManager.VALIDATION_SCHEMA_TABLE);
+        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
+
+        tableManager.deleteTable(tableName);
+        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(false)));
+
+        int tables = tableManager.getClient().listTables().getTableNames().size();
+
 
         assertThat(tables, is(equalTo(1)));
+    }
+
+
+    @Test(expected = TableNotFoundException.class)
+    public void tableManagerShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
+        throws InterruptedException, JsonProcessingException {
+        TableManager tableManager = new TableManager(newTableDriver());
+        tableManager.createRegistry(tableName, validationSchema);
+
+        tableManager.deleteTable(tableName+"blabla");
+
+        int tables = tableManager.getClient().listTables().getTableNames().size();
+
+        assertThat(tables, is(equalTo(2)));
     }
 
 
@@ -77,7 +97,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
 
     }
 
-    @Test(expected = TableNotFoundException.class)
+    @Test
     public void tableManagerShouldEmptyNonEmptyTables()
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
@@ -87,17 +107,21 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         tableWriter.insertEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
+        TableReader reader=new TableReader(tableDriver,TableManager.VALIDATION_SCHEMA_TABLE);
+        Optional<String> schema = reader.getEntry(tableName);
+        assertThat(schema.isPresent(),is(equalTo(true)));
+
 
     }
 
 
     @Test(expected = TableNotFoundException.class)
-    public void tableManagerShouldDeleteTableButNotSchemaWhen()
+    public void tableManagerShouldThrowAnExceptionWhenEmptyingANonExistentTable()
         throws InterruptedException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.emptyTable(tableName);
-//        assertThat();
+
 
     }
 

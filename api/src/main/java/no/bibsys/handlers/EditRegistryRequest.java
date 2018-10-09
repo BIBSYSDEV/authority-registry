@@ -6,8 +6,8 @@ public class EditRegistryRequest {
     public static final String EMPTY = "empty";
 
 
-    protected String action;
-    protected String registryName;
+    private String action;
+    private String registryName;
 
 
     public EditRegistryRequest() {
@@ -53,6 +53,12 @@ public class EditRegistryRequest {
 
     public final String getAction() {
         return action;
+    }
+
+
+    //TODO should PMD rule "Bean member should serialize" be disabled or not?
+    public final void setAction(String action){
+        this.action=action;
     }
 
     public final String getRegistryName() {

@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 
 public class TableNotEmptyException extends ConditionalCheckFailedException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructs a new ConditionalCheckFailedException with the specified error message.
      *
