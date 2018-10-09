@@ -17,6 +17,10 @@
 
   <rule ref="category/java/bestpractices.xml">
     <exclude name="SystemPrintln"/>
+
+    <!-- In TableManager we map ResourceNotFoundException to TableNotFoundException -->
+    <exclude name="PreserveStackTrace"/>
+
   </rule>
 
   <rule ref="category/java/codestyle.xml">
@@ -45,6 +49,7 @@
 
     <!-- Sometimes it is useful in debugging to assign the return value to a local variable  -->
     <exclude name="UnnecessaryLocalBeforeReturn"/>
+
 
   </rule>
 
