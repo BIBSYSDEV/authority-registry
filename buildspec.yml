@@ -18,3 +18,7 @@ phases:
 artifacts:
   files:
   - template-export.yml
+
+cache:
+  paths:
+  - '/root/.gradle/caches'
