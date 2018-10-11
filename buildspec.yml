@@ -21,4 +21,6 @@ artifacts:
 
 cache:
   paths:
-  - '/root/.gradle/caches'
+  - '/root/.gradle/caches/**/*'
+  - '.gradle/**/*'
+  - '/root/.gradle/wrapper/**/*'
