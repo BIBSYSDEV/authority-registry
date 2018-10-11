@@ -1,4 +1,4 @@
-package no.bibsys.responses;
+package no.bibsys.web.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,8 +9,7 @@ public class SimpleResponse {
     private String message;
 
 
-    public SimpleResponse() {
-    }
+    public SimpleResponse() {}
 
 
     public SimpleResponse(String message) {

@@ -1,4 +1,4 @@
-package no.bibsys.handlers;
+package no.bibsys.web.model;
 
 public class EditRegistryRequest {
 
@@ -10,8 +10,7 @@ public class EditRegistryRequest {
     private String registryName;
 
 
-    public EditRegistryRequest() {
-    }
+    public EditRegistryRequest() {}
 
 
     public EditRegistryRequest(String action) {
@@ -40,7 +39,7 @@ public class EditRegistryRequest {
             return false;
         }
         return registryName != null ? registryName.equals(that.registryName)
-            : that.registryName == null;
+                : that.registryName == null;
     }
 
     @Override
@@ -56,9 +55,9 @@ public class EditRegistryRequest {
     }
 
 
-    //TODO should PMD rule "Bean member should serialize" be disabled or not?
-    public final void setAction(String action){
-        this.action=action;
+    // TODO should PMD rule "Bean member should serialize" be disabled or not?
+    public final void setAction(String action) {
+        this.action = action;
     }
 
     public final String getRegistryName() {

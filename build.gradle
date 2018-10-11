@@ -44,7 +44,7 @@ allprojects {
         reports {
             xml.enabled false
             html.enabled true
-            html.stylesheet resources.text.fromFile('../config/checkstyle/checkstyle-simple.xsl')
+            html.stylesheet rootProject.resources.text.fromFile('config/checkstyle/checkstyle-simple.xsl')
         }
     }
 
@@ -52,6 +52,7 @@ allprojects {
     pmd {
         toolVersion = "6.7.0"
         ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+        ruleSets = []
         ignoreFailures = false
     }
     

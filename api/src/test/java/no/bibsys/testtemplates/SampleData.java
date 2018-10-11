@@ -5,13 +5,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-public abstract class SampleData {
+public class SampleData {
 
-    protected ObjectMapper mapper = new ObjectMapper();
+    public SampleData() {
+        // TODO Auto-generated constructor stub
+    }
 
-    protected Entry sampleEntry(String id) {
+    private final ObjectMapper mapper = new ObjectMapper();
 
-        ObjectNode root = mapper.getNodeFactory().objectNode();
+    public Entry sampleEntry(String id) {
+
+        ObjectNode root = getMapper().getNodeFactory().objectNode();
         root.put("id", id);
         root.put("label", "A random label");
         root.put("number", 5);
@@ -21,6 +25,11 @@ public abstract class SampleData {
         array.add(3);
 
         return new Entry(id, root);
+    }
+
+
+    public ObjectMapper getMapper() {
+        return mapper;
     }
 
 

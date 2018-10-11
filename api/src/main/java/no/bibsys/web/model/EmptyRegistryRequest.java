@@ -1,4 +1,4 @@
-package no.bibsys.handlers;
+package no.bibsys.web.model;
 
 public class EmptyRegistryRequest extends EditRegistryRequest {
 

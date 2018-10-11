@@ -1,10 +1,10 @@
-package no.bibsys.handlers;
+package no.bibsys.web.model;
 
 public class CreateRegistryRequest extends EditRegistryRequest {
 
 
 
-    private  String validationSchema;
+    private String validationSchema;
 
     public CreateRegistryRequest() {
         super(EditRegistryRequest.CREATE);
@@ -16,9 +16,9 @@ public class CreateRegistryRequest extends EditRegistryRequest {
     }
 
 
-    public CreateRegistryRequest(String registryName,String validationSchema){
-        super(EditRegistryRequest.CREATE,registryName);
-        this.validationSchema=validationSchema;
+    public CreateRegistryRequest(String registryName, String validationSchema) {
+        super(EditRegistryRequest.CREATE, registryName);
+        this.validationSchema = validationSchema;
     }
 
 

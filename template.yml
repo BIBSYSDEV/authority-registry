@@ -35,7 +35,7 @@ Resources:
   EntityRegistry:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: no.bibsys.handlers.SimpleHandler::handleRequest
+      Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
