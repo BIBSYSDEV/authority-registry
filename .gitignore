@@ -6,6 +6,6 @@ build/
 .settings
 .project
 bin/
-.iml
+*.iml
 .metadata/
 

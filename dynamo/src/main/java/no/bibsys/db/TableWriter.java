@@ -1,6 +1,7 @@
 package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
@@ -30,6 +31,15 @@ public class TableWriter {
     }
 
 
+    public void deleteEntry(String id)  {
+
+        Table table = tableDriver.getTable(tableName);
+        table.deleteItem(new PrimaryKey("id", id));
+
+
+    }
+
+
     public void insertJson(final String json) {
         String id = "null";
         try {
@@ -45,8 +55,6 @@ public class TableWriter {
             throw new ItemExistsException(String.format("Item with id:%s already exits", id), e);
         }
 
-
     }
-
 
 }

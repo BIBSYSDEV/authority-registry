@@ -9,7 +9,10 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-
+  CodeBucket:
+    Type: String
+    Description: S3 Bucket containing artifacts and source code.
+    
     # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
     # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
     #
@@ -35,7 +38,7 @@ Resources:
   EntityRegistry:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: no.bibsys.handlers.SimpleHandler::handleRequest
+      Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
@@ -58,7 +61,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: "restApiUrlParameter"
+      Name: !Join ['-', [!Ref 'ProjectId', "restApiUrlParameter"]]
       Type: "String"
-      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/Stage']]
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"

@@ -1,4 +1,4 @@
-package no.bibsys.responses;
+package no.bibsys.web.model;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,12 +16,11 @@ public class GatewayResponse {
     private int statusCode;
 
 
-    public GatewayResponse() {
-    }
+    public GatewayResponse() {}
 
 
     public GatewayResponse(final String body, final Map<String, String> headers,
-        final int statusCode) {
+            final int statusCode) {
         this.statusCode = statusCode;
         this.body = body;
         this.headers = Collections.unmodifiableMap(new HashMap<>(headers));

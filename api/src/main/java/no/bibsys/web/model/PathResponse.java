@@ -1,4 +1,4 @@
-package no.bibsys.responses;
+package no.bibsys.web.model;
 
 /**
  * Class representing a REST response containing the path of a created or updated resource.
@@ -8,8 +8,7 @@ public class PathResponse {
     private String path;
 
 
-    public PathResponse() {
-    }
+    public PathResponse() {}
 
     public PathResponse(String path) {
         this.path = path;
