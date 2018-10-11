@@ -9,7 +9,10 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-
+  CodeBucket:
+    Type: String
+    Description: S3 Bucket containing artifacts and source code.
+    
     # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
     # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
     #
