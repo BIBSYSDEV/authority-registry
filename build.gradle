@@ -56,7 +56,7 @@ subprojects {
     apply plugin: "com.github.spotbugs"
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
