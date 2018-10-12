@@ -30,6 +30,7 @@
     <exclude name="OnlyOneReturn"/>
     <exclude name="LocalVariableCouldBeFinal"/>
     <exclude name="MethodArgumentCouldBeFinal"/>
+    <exclude name="TooManyStaticImports"/>
 
     <!--<exclude name="BeanMembersShouldSerialize"/>-->
 
@@ -61,6 +62,7 @@
     <exclude name="LoosePackageCoupling"/>
     <exclude name="LawOfDemeter"/>
     <exclude name="DataClass"/>
+    <exclude name="ExcessiveImports"/>
 
     <!-- This rule does not allow the Lambda Handler to cast  the ContainerInitializationException
         to a RuntimeException.

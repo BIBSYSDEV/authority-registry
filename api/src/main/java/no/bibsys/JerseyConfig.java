@@ -2,6 +2,8 @@ package no.bibsys;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.HelloResource;
@@ -30,6 +32,9 @@ public class JerseyConfig extends ResourceConfig {
         register(ConditionalCheckFailedExceptionMapper.class);
         register(TableAlreadyExistsExceptionMapper.class);
         register(TableNotFoundExceptionMapper.class);
+        
+        register(OpenApiResource.class);
+        register(AcceptHeaderOpenApiResource.class);
     }
 
 }

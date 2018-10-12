@@ -1,8 +1,19 @@
 package no.bibsys.web;
 
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+
+
 import java.io.IOException;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -12,6 +23,9 @@ import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.web.model.CreateRegistryRequest;
 import no.bibsys.web.model.EditRegistryRequest;
@@ -23,16 +37,31 @@ import no.bibsys.web.model.SimpleResponse;
 public class DatabaseResource {
 
     private transient final static String CONTENT_TYPE = "application/json;charset=UTF-8";
-
+    
     private transient final DatabaseManager databaseManager;
 
     public DatabaseResource(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
 
+    //Fn::Sub: 
+    
     @POST
     @Path("/")
     @Produces(CONTENT_TYPE)
+    @Operation(
+            extensions = {
+                    @Extension(
+                            name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
+                            properties = {
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                            }
+                    )
+            }
+    )
     public SimpleResponse editRegistry(EditRegistryRequest request)
             throws InterruptedException, TableAlreadyExistsException {
         EditRegistryRequest specific = request.specify();
@@ -47,6 +76,19 @@ public class DatabaseResource {
     @PUT
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
+    @Operation(
+            extensions = {
+                    @Extension(
+                            name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
+                            properties = {
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.PUT),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                            }
+                    )
+            }
+    )
     public SimpleResponse putNewRegistry(@PathParam("registryName") String registryName,
             String validationSchema) throws InterruptedException, JsonProcessingException {
         return createTable(new CreateRegistryRequest(registryName, validationSchema));
@@ -57,6 +99,19 @@ public class DatabaseResource {
     @POST
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
+    @Operation(
+            extensions = {
+                    @Extension(
+                            name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
+                            properties = {
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                            }
+                    )
+            }
+    )
     public PathResponse insertEntry(@PathParam("registryName") String registryName, String request)
             throws IOException {
         databaseManager.insertEntry(registryName, request);
@@ -70,6 +125,19 @@ public class DatabaseResource {
     @DELETE
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
+    @Operation(
+            extensions = {
+                    @Extension(
+                            name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
+                            properties = {
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.DELETE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                            }
+                    )
+            }
+    )
     public SimpleResponse deleteRegistry(@PathParam("registryName") String registryName)
             throws InterruptedException {
 
