@@ -6,7 +6,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
 
 
@@ -59,7 +59,7 @@ public class DatabaseResource {
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),
                             }
                     )
             }
@@ -87,7 +87,7 @@ public class DatabaseResource {
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.PUT),
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),
                             }
                     )
             }
@@ -111,7 +111,7 @@ public class DatabaseResource {
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),
                             }
                     )
             }
@@ -138,7 +138,7 @@ public class DatabaseResource {
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.DELETE),
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),
                             }
                     )
             }
