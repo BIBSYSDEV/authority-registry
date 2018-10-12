@@ -44,8 +44,6 @@ public class DatabaseResource {
     public DatabaseResource(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
-
-    //Fn::Sub: 
     
     @POST
     @Path("/")
