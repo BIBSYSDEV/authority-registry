@@ -2,7 +2,6 @@ package no.bibsys.web;
 
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE;
@@ -12,6 +11,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 
 import java.io.IOException;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
@@ -48,13 +48,14 @@ public class DatabaseResource {
     
     @POST
     @Path("/")
+    @Consumes(CONTENT_TYPE)
     @Produces(CONTENT_TYPE)
     @Operation(
             extensions = {
                     @Extension(
                             name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
                             properties = {
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = "URI_PLACEHOLDER/registry"),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
@@ -75,13 +76,14 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}")
+    @Consumes(CONTENT_TYPE)
     @Produces(CONTENT_TYPE)
     @Operation(
             extensions = {
                     @Extension(
                             name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
                             properties = {
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = "URI_PLACEHOLDER/registry/{registryName}"),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.PUT),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
@@ -98,13 +100,14 @@ public class DatabaseResource {
 
     @POST
     @Path("/{registryName}")
+    @Consumes(CONTENT_TYPE)
     @Produces(CONTENT_TYPE)
     @Operation(
             extensions = {
                     @Extension(
                             name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
                             properties = {
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = "URI_PLACEHOLDER/registry/{registryName}"),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.POST),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),
@@ -124,13 +127,14 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}")
+    @Consumes(CONTENT_TYPE)
     @Produces(CONTENT_TYPE)
     @Operation(
             extensions = {
                     @Extension(
                             name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION,
                             properties = {
-                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                                    @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI, value = "URI_PLACEHOLDER/registry/{registryName}"),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD, value = HttpMethod.DELETE),
                                     @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE, value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTP_PROXY),

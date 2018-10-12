@@ -72,7 +72,7 @@ resolve {
 }
 
 
-
+// this task is necessary because OpenAPI does not support nested @Extension annotations
 task fixAws(type: Copy) {
     from("${buildDir}/openapi") {
         include "openapi.yaml"
