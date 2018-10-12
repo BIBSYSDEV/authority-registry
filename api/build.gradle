@@ -80,6 +80,6 @@ task fixAws(type: Copy) {
     into("${buildDir}/openapi-aws-modified")
     filter {
        String line -> line.replaceAll('URI_PLACEHOLDER',
-                                      '\n          Fn::Sub: arn:aws:apigateway:\\${AWS::Region}:lambda:path/2015-03-31/functions/\\${LambdaFunction.Arn}/invocations')
+                                      '\n          Fn::Sub: \"arn:aws:apigateway:\\${AWS::Region}:lambda:path/2015-03-31/functions/\\${LambdaFunction.Arn}/invocations\"')
    	}
 }
