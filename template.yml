@@ -36,11 +36,10 @@ Resources:
     Properties:
       StageName: !Ref Stage
       DefinitionBody:
-          'Fn::Transform':
-            Name: 'AWS::Include'
-            Parameters:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
-      
   EntityRegistry:
     Type: AWS::Serverless::Function
     Properties:
