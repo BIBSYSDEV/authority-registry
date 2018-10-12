@@ -40,7 +40,7 @@ Resources:
           Name: 'AWS::Include'
           Parameters:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
-  EntityRegistry:
+  LambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
