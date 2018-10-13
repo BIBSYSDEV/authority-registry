@@ -29,7 +29,8 @@ Resources:
       - 'arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole'
       Path: /
       Policies:
-      - PolicyDocument:
+      - PolicyName: LambdaWorkerPolicy
+        PolicyDocument:
           Statement:
           - Action:
             - 'logs:CreateLogGroup'
@@ -45,13 +46,14 @@ Resources:
             Effect: Allow
             Resource: '*'
           Version: 2012-10-17
-        PolicyName: LambdaWorkerPolicy
+
 
 
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: test
+
   EntityRegistry:
     DependsOn:
     - LambdaTrustRole
@@ -70,6 +72,7 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
