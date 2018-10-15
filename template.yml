@@ -56,7 +56,13 @@ Resources:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Timeout: 60
       Events:
-        RestApiEvent:
+        RootResource:
+          Type: Api
+          Properties:
+            Path: /
+            Method: any
+            RestApiId: !Ref RestApi
+        ApiResource:
           Type: Api
           Properties:
             Path: /{proxy+}
