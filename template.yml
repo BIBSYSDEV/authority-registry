@@ -66,7 +66,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: !Join ['-', [!Ref 'ProjectId', "restApiUrlParameter"]]
+      Name: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "apiUrl"]]
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
