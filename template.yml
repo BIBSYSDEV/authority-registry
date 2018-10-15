@@ -35,6 +35,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      Cors: "'*'"
       DefinitionBody:
         Fn::Transform:
           Name: 'AWS::Include'
