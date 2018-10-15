@@ -3,8 +3,8 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.web.CustomOpenApiResource;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.HelloResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -33,7 +33,7 @@ public class JerseyConfig extends ResourceConfig {
         register(TableAlreadyExistsExceptionMapper.class);
         register(TableNotFoundExceptionMapper.class);
         
-        register(OpenApiResource.class);
+        register(CustomOpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
     }
 
