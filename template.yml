@@ -35,8 +35,8 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
-      Cors: 
-        AllowOrigin: "'*'"
+#      Cors: 
+#        AllowOrigin: "'*'"
       DefinitionBody:
         Fn::Transform:
           Name: 'AWS::Include'
