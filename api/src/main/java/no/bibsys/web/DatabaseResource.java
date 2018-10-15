@@ -18,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,8 +43,8 @@ import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
 @Path("/registry")
-@Consumes("application/json;charset=UTF-8")
-@Produces("application/json;charset=UTF-8")
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 @OpenAPIDefinition(info = 
 @Info(
           title = "Entity Registry",
