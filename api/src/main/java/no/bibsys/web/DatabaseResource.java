@@ -97,7 +97,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.PUT),
+                    value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse putNewRegistry(
@@ -146,7 +146,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.DELETE),
+                    value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse deleteRegistry(
@@ -172,6 +172,5 @@ public class DatabaseResource {
         return new SimpleResponse(
                 String.format("A registry with name %s has been created", tableName));
     }
-
 
 }
