@@ -16,6 +16,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,6 +55,8 @@ import no.bibsys.web.model.SimpleResponse;
 )
 public class DatabaseResource {
 
+    private static final String STRING = "string";
+    private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
 
     public DatabaseResource(DatabaseManager databaseManager) {
@@ -97,11 +100,11 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse putNewRegistry(
-            @Parameter(in = ParameterIn.PATH, name = "registryName", required = true,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of new registry",
-                    schema = @Schema(type = "string")) String registryName,
+                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-                    content = @Content(schema = @Schema(type = "string"))) String validationSchema)
+                    content = @Content(schema = @Schema(type = STRING))) String validationSchema)
             throws InterruptedException, JsonProcessingException {
         return createTable(new CreateRegistryRequest(registryName, validationSchema));
 
@@ -120,11 +123,11 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public PathResponse insertEntry(
-            @Parameter(in = ParameterIn.PATH, name = "registryName", required = true,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to insert entity into",
-                    schema = @Schema(type = "string")) String registryName,
+                    schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to insert",
-                    content = @Content(schema = @Schema(type = "string"))) String entity)
+                    content = @Content(schema = @Schema(type = STRING))) String entity)
             throws IOException {
         databaseManager.insertEntry(registryName, entity);
         ObjectMapper mapper = new ObjectMapper();
@@ -146,9 +149,9 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse deleteRegistry(
-            @Parameter(in = ParameterIn.PATH, name = "registryName", required = true,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to delete",
-                    schema = @Schema(type = "string")) String registryName)
+                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
             throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
