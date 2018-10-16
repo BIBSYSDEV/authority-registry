@@ -84,7 +84,7 @@ Resources:
           BUCKET_NAME: !Ref SwaggerUIBucket
       Code:
         ZipFile: |
-          import requests
+          import urllib
           import boto3
           import tarfile
           import os
@@ -94,9 +94,7 @@ Resources:
             file = 'v3.19.3.tar.gz'
             bucketname = os.environ.get('BUCKET_NAME')
           
-            r = requests.get(url)
-            with open(file, "wb") as code:
-              code.write(r.content)
+            urllib.urlretrieve(url,file)
             
             tar = tarfile.open(file)
             tar.extractall()
