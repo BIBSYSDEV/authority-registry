@@ -15,12 +15,14 @@ when('the registry admin user requests the creation of a new entity with properl
 			cy.get('@authenticationToken').then((authToken) => {
 				cy.request({
 					url: createEntityUrl,
+					method: 'POST',
 					headers: {
 						Authorization: 'Token ' + authToken
 					},
 					body: testData
 				}).then((response) => {
 					// test return from create
+					cy.log(response.body)
 					cy.wrap('return.id').as('returnId')
 				})
 			})
@@ -30,7 +32,8 @@ when('the registry admin user requests the creation of a new entity with properl
 
 then('the entity is created', () => {
 	cy.get('@returnId').then((returnId) => {
-		let getEntityUrl = "/registry/" + registryName + "/" + returnId;
+//		let getEntityUrl = "/registry/" + registryName + "/" + returnId;
+		let getEntityUrl = "https://www.unit.no";
 
 		cy.request(getEntityUrl)
 	})
