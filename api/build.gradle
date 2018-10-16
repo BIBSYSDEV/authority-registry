@@ -1,8 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.0.5.RELEASE'
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "io.swagger.core.v3.swagger-gradle-plugin" version "2.0.5"
 }
-
 
 repositories {
     maven {
@@ -11,9 +9,7 @@ repositories {
 }
 
 apply plugin: 'java'
-
-
-
+apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
 dependencies {
     compile project(":common")
@@ -28,6 +24,9 @@ dependencies {
     }
     
     testCompile ('org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27')
+
+	compile ('io.swagger.core.v3:swagger-jaxrs2:2.0.5')
+	compile ('io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.5')
 
     //connection to amazon
     compile ('com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1')
@@ -56,7 +55,6 @@ test {
 }
 
 
-bootJar.enabled = false
 jar.enabled = false
 
 
@@ -65,3 +63,23 @@ shadowJar {
     exclude('org.apache.tomcat.embed:*')
 }
 
+resolve {
+    outputFormat = 'YAML'
+    prettyPrint = 'TRUE'
+    classpath = sourceSets.main.runtimeClasspath
+    resourcePackages = ['no.bibsys.web']
+    outputPath = "${buildDir}/openapi"
+}
+
+
+// this task is necessary because OpenAPI does not support nested @Extension annotations
+task fixAws(type: Copy) {
+    from("${buildDir}/openapi") {
+        include "openapi.yaml"
+    }
+    into("${buildDir}/openapi-aws-modified")
+    filter {
+       String line -> line.replaceAll('URI_PLACEHOLDER',
+                                      '\n          Fn::Sub: \"arn:aws:apigateway:\\${AWS::Region}:lambda:path/2015-03-31/functions/\\${LambdaFunction.Arn}/invocations\"')
+   	}
+}
