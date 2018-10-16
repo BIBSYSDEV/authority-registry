@@ -64,11 +64,54 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
-
   RestApiUrlParameter:
-    Type: "AWS::SSM::Parameter"
+    Type: AWS::SSM::Parameter
     Properties:
       Name: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "apiUrl"]]
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
+
+  SwaggerUIBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+  SetUpSwaggerUI:
+    Type: AWS::Lambda::Function
+    Properties:
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref SwaggerUIBucket
+      Code: >
+        import requests
+        import boto3
+        import tarfile
+        import os
+      
+        def handler(event, context):
+          url = 'https://github.com/swagger-api/swagger-ui/archive/'
+          file = 'v3.19.3.tar.gz'
+          bucketname = os.environ.get('BUCKET_NAME')
+        
+          r = requests.get(url)
+          with open(file, "wb") as code:
+            code.write(r.content)
+          
+          tar = tarfile.open(file)
+          tar.extractall()
+          tar.close
+          
+          s3 = boto3.resource('s3')          
+          s3.meta.client.copy('swagger-ui-3.19.3', bucketname, 'swagger-ui')
+   
+          return True
+      Handler: handler
+      Role:
+        Fn::ImportValue:
+          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Runtime: python3.6
+    DependsOn: SwaggerUIBucket  
+  SwaggerUI:
+    Type: Custom::SetUpSwaggerUI
+    Properties:
+      ServiceToken: !GetAtt SetUpSwaggerUI.Arn
