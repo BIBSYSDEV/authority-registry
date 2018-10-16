@@ -7,12 +7,12 @@
 //Then an entity registry that accepts only valid data is created
 
 let createEntityRegistryRequest ={
-		'registryName': 'test'
+		'registryName': 'test1'
 //			'registryAdminUsers': ['user1', 'user2'],
 //			'registryValidationSchema': 'schema'
 }
 
-let createRegistryEndpoint = '/registry/create'
+let createRegistryEndpoint = '/registry'
 
 	when('the API admin user provides a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
 
@@ -38,21 +38,21 @@ let createRegistryEndpoint = '/registry/create'
 	})
 
 	then('an entity registry that accepts only valid data is created', () =>{
-		let uuid = require('uuid');
-		let randomRegistryName = uuid.v4();
-		cy.wrap(randomRegistryName).as('registryName');
 
-		createEntityRegistryRequest['registryName'] = randomRegistryName
+		cy.get("@registryName").then((randomRegistryName) =>{
 
-		cy.request({ 
-			url: createRegistryEndpoint, 
-			body: createEntityRegistryRequest,
-//			method: 'POST',
-			headers: {
-				'content-type': 'application/json'
-			}
-		})
-		.then((response) => {
-//			expect(response.body['message']).to.contain(randomRegistryName)
+			createEntityRegistryRequest['registryName'] = randomRegistryName
+
+			cy.request({ 
+				url: createRegistryEndpoint + "/" + randomRegistryName, 
+				body: createEntityRegistryRequest,
+				method: 'PUT',
+				headers: {
+					'content-type': 'application/json'
+				}
+			})
+			.then((response) => {
+				expect(response.body['message']).to.contain(randomRegistryName)
+			})
 		})
 	})
