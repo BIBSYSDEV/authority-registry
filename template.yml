@@ -102,8 +102,6 @@ Resources:
             
             s3 = boto3.resource('s3')          
             s3.meta.client.copy('swagger-ui-3.19.3', bucketname, 'swagger-ui')
-     
-            return True
       Handler: index.handler
       Role:
         Fn::ImportValue:
