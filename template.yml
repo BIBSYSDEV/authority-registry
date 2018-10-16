@@ -64,6 +64,9 @@ Resources:
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
       Role: !GetAtt LambdaTrustRole.Arn
+      Environment:
+        Variables:
+          PROJECT_NAME: GERTUA
       Timeout: 60
       Events:
         RestApiEvent:
