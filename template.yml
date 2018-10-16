@@ -82,30 +82,31 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Ref SwaggerUIBucket
-      Code: >
-        import requests
-        import boto3
-        import tarfile
-        import os
-      
-        def handler(event, context):
-          url = 'https://github.com/swagger-api/swagger-ui/archive/'
-          file = 'v3.19.3.tar.gz'
-          bucketname = os.environ.get('BUCKET_NAME')
+      Code:
+        ZipFile: |
+          import requests
+          import boto3
+          import tarfile
+          import os
         
-          r = requests.get(url)
-          with open(file, "wb") as code:
-            code.write(r.content)
+          def handler(event, context):
+            url = 'https://github.com/swagger-api/swagger-ui/archive/'
+            file = 'v3.19.3.tar.gz'
+            bucketname = os.environ.get('BUCKET_NAME')
           
-          tar = tarfile.open(file)
-          tar.extractall()
-          tar.close
-          
-          s3 = boto3.resource('s3')          
-          s3.meta.client.copy('swagger-ui-3.19.3', bucketname, 'swagger-ui')
-   
-          return True
-      Handler: handler
+            r = requests.get(url)
+            with open(file, "wb") as code:
+              code.write(r.content)
+            
+            tar = tarfile.open(file)
+            tar.extractall()
+            tar.close
+            
+            s3 = boto3.resource('s3')          
+            s3.meta.client.copy('swagger-ui-3.19.3', bucketname, 'swagger-ui')
+     
+            return True
+      Handler: index.handler
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
