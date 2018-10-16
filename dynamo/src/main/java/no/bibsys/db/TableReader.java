@@ -2,33 +2,27 @@ package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import java.util.Optional;
 
 
 public class TableReader {
 
     private final transient TableDriver tableDriver;
-    private transient String tableName;
+    private final transient String tableName;
 
 
-    public TableReader(final TableDriver tableDriver) {
+    public TableReader(final TableDriver tableDriver, String tableName) {
         this.tableDriver = tableDriver;
+        this.tableName = tableName;
 
     }
 
 
-    public void setTableName(final String tableName) {
-        if (this.tableName == null) {
-            this.tableName = tableName;
-        } else {
-            throw new IllegalStateException("Cannot initialize tableName twice");
-        }
-    }
-
-
-    public String getEntry(final String id) {
+    public Optional<String> getEntry(final String id) {
         final Table table = tableDriver.getDynamoDb().getTable(tableName);
-        final Item item = table.getItem("id", id);
-        return item.toJSON();
+        final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+        return itemOpt.map(item -> item.toJSON());
     }
+
 
 }

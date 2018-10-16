@@ -2,17 +2,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import no.bibsys.utils.IoUtils;
-import org.json.JSONObject;
 import org.junit.Test;
 
 
 public class IoUtilsTest {
 
+
+    ObjectMapper mapper = new ObjectMapper();
 
     @Test
     public void ioUtilsShouldReadTextFromResources() throws IOException {
@@ -33,10 +36,10 @@ public class IoUtilsTest {
         Path path = Paths.get("json", "sample.json");
         IoUtils ioUtils = new IoUtils();
         String jsonString = ioUtils.resourceAsString(path);
-        JSONObject json = new JSONObject(jsonString);
-        assertThat(json.getInt("id"), is(equalTo(1)));
-        assertThat(json.getString("label"), is(equalTo("TheLabel")));
-        assertThat(json.getJSONObject("body").getString("message"), is(equalTo("Hello world")));
+        JsonNode json = mapper.readTree(jsonString);
+        assertThat(json.get("id").asInt(), is(equalTo(1)));
+        assertThat(json.get("label").asText(), is(equalTo("TheLabel")));
+        assertThat(json.get("body").get("message").asText(), is(equalTo("Hello world")));
     }
 
 }

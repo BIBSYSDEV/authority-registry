@@ -3,32 +3,31 @@ package no.bibsys.db;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
-import no.bibsys.testtemplates.LocalDynamoTest;
+import java.io.IOException;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
+import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.bibsys.db.exceptions.ItemExistsException;
+import no.bibsys.testtemplates.LocalDynamoTest;
+import no.bibsys.testtemplates.SampleData.Entry;
+
 
 public class DatabaseManagerTest extends LocalDynamoTest {
 
-    @Autowired
-    DatabaseManager databaseManager;
-
-
-    @Autowired
-    TableDriver tableDriver;
-
+    private ObjectMapper mapper = new ObjectMapper();
+    private static String TABLE_NAME = "DatabaseManagerTest";
+    private static String VALIDATION_SCHEMA = "validationSchema";
 
     @Test
-    @DirtiesContext
     public void databaseManagerShouldCreateATable()
-        throws InterruptedException {
-        String tableName = "DBManagerTest";
-        boolean existsBeforeCreation = databaseManager.registryExists(tableName);
+            throws InterruptedException, JsonProcessingException {
 
-        databaseManager.createRegistry(tableName);
-        boolean existsAfterCreation = databaseManager.registryExists(tableName);
+        boolean existsBeforeCreation = databaseManager.registryExists(TABLE_NAME);
+
+        databaseManager.createRegistry(TABLE_NAME, VALIDATION_SCHEMA);
+        boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
 
         assertThat(existsBeforeCreation, is(equalTo(false)));
         assertThat(existsAfterCreation, is(equalTo(true)));
@@ -37,30 +36,53 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
 
     @Test(expected = TableAlreadyExistsException.class)
-    @DirtiesContext
     public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
-        throws InterruptedException {
-        String tableName = "DBManagerTest";
-        boolean existsBeforeCreation = databaseManager.registryExists(tableName);
-        assertThat("The table should not exist before creation",
-            existsBeforeCreation, is(equalTo(false)));
-        databaseManager.createRegistry(tableName);
-        boolean existsAfterCreation = databaseManager.registryExists(tableName);
-        assertThat("The table should  exist before creation",
-            existsAfterCreation, is(equalTo(true)));
+            throws InterruptedException, JsonProcessingException {
 
-        databaseManager.createRegistry(tableName);
+        boolean existsBeforeCreation = databaseManager.registryExists(TABLE_NAME);
+        assertThat("The table should not exist before creation", existsBeforeCreation,
+                is(equalTo(false)));
+        databaseManager.createRegistry(TABLE_NAME, VALIDATION_SCHEMA);
+        boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
+        assertThat("The table should  exist before creation", existsAfterCreation,
+                is(equalTo(true)));
+
+        databaseManager.createRegistry(TABLE_NAME, VALIDATION_SCHEMA);
 
 
     }
 
 
     @Test
-    @DirtiesContext
-    public void databaseManagerShouldCheckIfARegistryExists()
-        throws InterruptedException, TableAlreadyExistsException {
-        databaseManagerShouldCreateATable();
+    public void databaseManagerShouldInsertAJsonObjectIntoATable()
+            throws IOException, InterruptedException {
+
+        Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
+        databaseManager.createRegistry(TABLE_NAME, VALIDATION_SCHEMA);
+        databaseManager.insertEntry(TABLE_NAME, entry.jsonString());
+        String readJson = databaseManager.readEntry(TABLE_NAME, entry.id).orElse(null);
+        ObjectNode actual = mapper.readValue(readJson, ObjectNode.class);
+        ObjectNode expected = mapper.readValue(entry.jsonString(), ObjectNode.class);
+
+        assertThat(actual, is(equalTo(expected)));
+
     }
+
+
+    @Test(expected = ItemExistsException.class)
+    public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds()
+            throws InterruptedException, JsonProcessingException {
+        Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
+        databaseManager.createRegistry(TABLE_NAME, VALIDATION_SCHEMA);
+        databaseManager.insertEntry(TABLE_NAME, entry.jsonString());
+        ObjectNode root2 = entry.root.deepCopy();
+        root2.put("newText", "Some new stuff");
+        Entry entry2 = new Entry(entry.id, root2);
+        databaseManager.insertEntry(TABLE_NAME, entry2.jsonString());
+
+
+    }
+
 
 
 }

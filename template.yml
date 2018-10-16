@@ -11,6 +11,9 @@ Parameters:
     Description: Deployment stage. E.g. test, prod, etc.
   LambdaTrustRolename:
     Type: String
+  CodeBucket:
+    Type: String
+    Description: S3 Bucket containing artifacts and source code.
 Resources:
   LambdaTrustRole:
     Type: 'AWS::IAM::Role'
@@ -59,7 +62,7 @@ Resources:
     - LambdaTrustRole
     Type: AWS::Serverless::Function
     Properties:
-      Handler: no.bibsys.handlers.SimpleHandler::handleRequest
+      Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
@@ -79,7 +82,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: !Join ['-', [!Ref ProjectId,"restApiUrlParameter"]]
+      Name: !Join ['-', [!Ref 'ProjectId', "restApiUrlParameter"]]
       Type: "String"
-      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/',!Ref Stage]]
+      Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"

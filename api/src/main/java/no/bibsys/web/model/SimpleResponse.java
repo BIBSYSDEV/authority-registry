@@ -1,16 +1,15 @@
-package no.bibsys.responses;
+package no.bibsys.web.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 public class SimpleResponse {
 
     private String message;
 
 
-    public SimpleResponse() {
-    }
+    public SimpleResponse() {}
 
 
     public SimpleResponse(String message) {
@@ -42,14 +41,16 @@ public class SimpleResponse {
         return message;
     }
 
-    public void setMessage(String message) {
+    public final void setMessage(String message) {
         this.message = message;
     }
 
     public String toGatewayResponse() throws JsonProcessingException {
-        String body = new JSONObject().put("message", getMessage()).toString();
-        GatewayResponse response = new GatewayResponse(body);
         ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> jsonObject = new HashMap<>();
+        jsonObject.put("message", getMessage());
+        String body = mapper.writeValueAsString(jsonObject);
+        GatewayResponse response = new GatewayResponse(body);
         return mapper.writeValueAsString(response);
 
     }

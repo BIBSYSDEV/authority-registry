@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Optional;
 import no.bibsys.utils.IoTestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,18 +19,21 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
 
     private TableReader tableReader;
     private TableWriter tableWriter;
-    private TableCreator tableCreator;
+    private TableManager tableManager;
 
+
+    private String validationSchema = "validationSchema";
 
     @Override
     @Before
     public void init() {
         super.init();
-        tableReader = new TableReader(TableDriver.create(localClient, new DynamoDB(localClient)));
-        tableWriter = new TableWriter(TableDriver.create(localClient, new DynamoDB(localClient)));
-        tableCreator = new TableCreator(TableDriver.create(localClient, new DynamoDB(localClient)));
-        tableReader.setTableName(tableName);
-        tableWriter.setTableName(tableName);
+        tableReader = new TableReader(TableDriver.create(localClient, new DynamoDB(localClient)),
+            tableName);
+        tableWriter = new TableWriter(TableDriver.create(localClient, new DynamoDB(localClient)),
+            tableName);
+        tableManager = new TableManager(TableDriver.create(localClient, new DynamoDB(localClient)));
+
     }
 
 
@@ -38,11 +42,12 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
 
         String json = resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
-        tableCreator.createTable(tableName);
+        tableManager.createRegistry(tableName, validationSchema);
         tableWriter.insertJson(json);
-        String output = tableReader.getEntry("id01");
-        Item outputItem = Item.fromJSON(output);
-        assertThat(outputItem, is(equalTo(inputItem)));
+        Optional<String> output = tableReader.getEntry("id01");
+        Optional<Item> outputItem = output.map(i -> Item.fromJSON(i));
+        assertThat(outputItem.isPresent(), is(equalTo(true)));
+        assertThat(outputItem.get(), is(equalTo(inputItem)));
 
     }
 
