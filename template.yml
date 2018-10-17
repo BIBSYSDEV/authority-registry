@@ -76,6 +76,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: PublicRead
+    DeletionPolicy: Retain
   SetUpSwaggerUI:
     Type: AWS::Lambda::Function
     Properties:
@@ -135,7 +136,7 @@ Resources:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Runtime: python3.6
       Timeout: 60
-    DependsOn: SwaggerUIBucket  
+    DependsOn: SwaggerUIBucket
   SwaggerUI:
     Type: Custom::SetUpSwaggerUI
     Properties:
