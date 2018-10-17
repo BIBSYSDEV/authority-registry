@@ -1,0 +1,8 @@
+{
+  "id": "ID",
+  "body": {
+    "name": "SCHEMA_NAME",
+    "timestamp": "TIMESTAMP",
+    "schema": "SCHEMA"
+  }
+}
