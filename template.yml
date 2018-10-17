@@ -75,6 +75,7 @@ Resources:
   SwaggerUIBucket:
     Type: AWS::S3::Bucket
     Properties:
+      BucketName: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "SwaggerUIBucket"]]
       AccessControl: PublicRead
     DeletionPolicy: Retain
   SetUpSwaggerUI:
