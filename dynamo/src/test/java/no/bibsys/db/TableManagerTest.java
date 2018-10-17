@@ -107,7 +107,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         tableWriter.insertEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
-        TableReader reader=new TableReader(tableDriver,"VALIDATION_SCHEMA_TABLE");
+        TableReader reader=new TableReader(tableDriver,"VALIDATION_SCHEMA_TABLE"); 
         Optional<String> schema = reader.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
 
