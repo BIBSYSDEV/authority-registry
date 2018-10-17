@@ -7,8 +7,8 @@ repositories {
 dependencies {
     compile project(":common")
 
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.398'
-    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.119'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.+'
+    testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.+'
 
     //library for using embedded DynamoDB during local tests
     testCompile group: 'com.almworks.sqlite4java', name: 'libsqlite4java-linux-amd64', version: '1.0.392'
