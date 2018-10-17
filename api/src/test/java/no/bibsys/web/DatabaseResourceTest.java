@@ -30,6 +30,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
+        System.setProperty("sqlite4java.library.path", "build/libs");
         return new JerseyConfig(new DatabaseManager(LocalDynamoDBHelper.getTableDriver()));
     }
 
