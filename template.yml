@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Example SpringBoot application that writes in a DynamoTable
+Description: DynamoDB REST frontend
 
 Parameters:
   ProjectId:
@@ -9,33 +9,54 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
+  LambdaTrustRolename:
+    Type: String
   CodeBucket:
     Type: String
     Description: S3 Bucket containing artifacts and source code.
-    
-    # Enable blue/green deployments using this Globals section. For instructions, see the AWS CodeStar User Guide:
-    # https://docs.aws.amazon.com/codestar/latest/userguide/how-to-modify-serverless-project.html?icmpid=docs_acs_rm_tr
-    #
-    # Globals:
-    #   Function:
-    #     AutoPublishAlias: live
-    #     DeploymentPreference:
-    #       Enabled: true
-    #       Type: Canary10Percent5Minutes
-
-
-
-    #Globals:
-    #  Api:
-    # API Gateway regional endpoints
-#    EndpointConfiguration: REGIONAL
-
 Resources:
+  LambdaTrustRole:
+    Type: 'AWS::IAM::Role'
+    Description: A service role that will be assumed by the Lambda function
+    Properties:
+      RoleName: !Ref LambdaTrustRolename
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: 'sts:AssumeRole'
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - 'arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole'
+      Path: /
+      Policies:
+      - PolicyName: LambdaWorkerPolicy
+        PolicyDocument:
+          Statement:
+          - Action:
+            - 'logs:CreateLogGroup'
+            - 'logs:CreateLogStream'
+            - 'logs:PutLogEvents'
+            - 'dynamodb:CreateTable'
+            - 'dynamodb:DeleteTable'
+            - 'dynamodb:DescribeTable'
+            - "dynamodb:BatchGetItem"
+            - "dynamodb:BatchWriteItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            Effect: Allow
+            Resource: '*'
+          Version: 2012-10-17
+
+
+
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
-#      Cors: 
+#      Cors:
 #        AllowOrigin: "'*'"
       DefinitionBody:
         Fn::Transform:
@@ -43,19 +64,15 @@ Resources:
           Parameters:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
   LambdaFunction:
+    DependsOn:
+      - LambdaTrustRole
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
-      #     Policies are inactive if there is a role attached to the lambda function
-      #Policies:
-      # - AWSLambdaBasicExecutionRole
-      # - CustomDynamoDB_Full_Access
-      Role:
-        Fn::ImportValue:
-          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Role: !GetAtt LambdaTrustRole.Arn
       Timeout: 60
       Events:
         ApiResource:
