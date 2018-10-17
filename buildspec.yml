@@ -3,7 +3,6 @@ version: 0.2
 phases:
   install:
     commands:
-    # Upgrade AWS CLI to the latest version
     - pip install --upgrade awscli
   pre_build:
     commands:
@@ -14,6 +13,8 @@ phases:
     - echo Build started on `date`
     - sh gradlew clean build fatJar
     - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
+    - sh gradlew api:resolve api:fixAws
+    - aws s3 cp api/build/openapi-aws-modified/openapi.yaml s3://$S3_BUCKET/
 artifacts:
   files:
   - template-export.yml

@@ -55,11 +55,17 @@ Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: test
-
-  EntityRegistry:
+      StageName: !Ref Stage
+#      Cors:
+#        AllowOrigin: "'*'"
+      DefinitionBody:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
+            Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
+  LambdaFunction:
     DependsOn:
-    - LambdaTrustRole
+      - LambdaTrustRole
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
@@ -69,7 +75,7 @@ Resources:
       Role: !GetAtt LambdaTrustRole.Arn
       Timeout: 60
       Events:
-        RestApiEvent:
+        ApiResource:
           Type: Api
           Properties:
             Path: /{proxy+}
@@ -79,7 +85,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: !Join ['-', [!Ref 'ProjectId', "restApiUrlParameter"]]
+      Name: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "apiUrl"]]
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
