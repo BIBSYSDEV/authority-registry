@@ -88,27 +88,34 @@ Resources:
           import boto3
           import tarfile
           import os
-        
-          def handler(event, context):
-            url = 'https://github.com/swagger-api/swagger-ui/archive/'
-            file = 'v3.19.3.tar.gz'
-            bucketname = os.environ.get('BUCKET_NAME')
           
-            r = requests.get(url)
-            with open(file, "wb") as code:
-              code.write(r.content)
-            
-            tar = tarfile.open(file)
-            tar.extractall()
-            tar.close
-            
-            s3 = boto3.resource('s3')          
-            s3.meta.client.copy('swagger-ui-3.19.3', bucketname, 'swagger-ui')
+          def handler(event, context):
+              version = '3.19.3'
+              url = 'https://github.com/swagger-api/swagger-ui/archive/v' + version + '.tar.gz'
+              file = '/tmp/swagger-ui.tar.gz'
+              bucket_name = os.environ.get('BUCKET_NAME')
+              
+              r = requests.get(url)
+              with open(file, "wb") as code:
+                code.write(r.content)
+              
+              tar = tarfile.open(file)
+              tar.extractall(path='/tmp/')
+              tar.close
+              
+              s3 = boto3.resource('s3')
+              path = '/tmp/swagger-ui-' + version
+              for subdir, dirs, files in os.walk(path):
+                  for file in files:
+                      full_path = os.path.join(subdir, file)
+                      with open(full_path, 'rb') as data:
+                          s3.Bucket(bucket_name).put_object(Key=full_path[len(path)+1:], Body=data)
       Handler: index.handler
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
       Runtime: python3.6
+      Timeout: 60
     DependsOn: SwaggerUIBucket  
   SwaggerUI:
     Type: Custom::SetUpSwaggerUI
