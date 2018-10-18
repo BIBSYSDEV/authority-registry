@@ -115,8 +115,8 @@ Resources:
           import json
           import magic
           
-          def sendResponse(event, context):
-              responseBody = {'Status': "SUCCESS",
+          def sendResponse(event, context, responseStatus):
+              responseBody = {'Status': responseStatus,
                               'PhysicalResourceId': context.log_stream_name,
                               'StackId': event['StackId'],
                               'RequestId': event['RequestId'],
@@ -132,6 +132,11 @@ Resources:
                   raise
           
           def handler(event, context):
+          
+              if event['RequestType'] == 'Delete':
+                sendResponse(event, context, 'SUCCESS')
+                return
+          
               version = '3.19.3'
               url = 'https://github.com/swagger-api/swagger-ui/archive/v' + version + '.tar.gz'
               file = '/tmp/swagger-ui.tar.gz'
@@ -154,7 +159,7 @@ Resources:
                       with open(full_path, 'rb') as data:
                           s3.Bucket(bucket_name).put_object(Key=full_path[len(path)+1:], Body=data, ContentType=content_type, ExtraArgs={'ACL':'public-read'})
               
-              sendResponse(event, context)
+              sendResponse(event, context, "SUCCESS")
       Handler: index.handler
       Role: !GetAtt LambdaTrustRole.Arn
       Runtime: python3.6
