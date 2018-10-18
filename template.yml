@@ -95,6 +95,8 @@ Resources:
     Properties:
       BucketName: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "swagger-ui"]]
       AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: 'index.html'
     DeletionPolicy: Retain
   SetUpSwaggerUI:
     DependsOn:
@@ -143,7 +145,7 @@ Resources:
               tar.close
               
               s3 = boto3.resource('s3')
-              path = '/tmp/swagger-ui-' + version
+              path = '/tmp/swagger-ui-' + version + '/dist'
               for subdir, dirs, files in os.walk(path):
                   for file in files:
                       full_path = os.path.join(subdir, file)
