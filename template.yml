@@ -46,6 +46,7 @@ Resources:
             - "dynamodb:BatchWriteItem"
             - "dynamodb:PutItem"
             - "dynamodb:GetItem"
+            - 's3:PutObject'
             Effect: Allow
             Resource: '*'
           Version: 2012-10-17
@@ -92,7 +93,7 @@ Resources:
   SwaggerUIBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', [!Ref 'ProjectId', "swagger", "ui"]]
+      BucketName: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "swagger-ui"]]
       AccessControl: PublicRead
     DeletionPolicy: Retain
   SetUpSwaggerUI:
@@ -159,3 +160,4 @@ Resources:
     Type: Custom::SetUpSwaggerUI
     Properties:
       ServiceToken: !GetAtt SetUpSwaggerUI.Arn
+      
