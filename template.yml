@@ -14,6 +14,9 @@ Parameters:
   CodeBucket:
     Type: String
     Description: S3 Bucket containing artifacts and source code.
+  Branch:
+    Type: String
+
 Resources:
   LambdaTrustRole:
     Type: 'AWS::IAM::Role'
@@ -73,7 +76,7 @@ Resources:
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
       Role: !GetAtt LambdaTrustRole.Arn
-      Timeout: 60
+      Timeout: 600
       Events:
         ApiResource:
           Type: Api
@@ -85,7 +88,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: !Join ['-', [!Ref 'ProjectId', !Ref 'Stage', "apiUrl"]]
+      Name: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref 'Stage', "apiUrl"]]
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
