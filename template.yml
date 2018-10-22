@@ -49,8 +49,7 @@ Resources:
             - "dynamodb:BatchWriteItem"
             - "dynamodb:PutItem"
             - "dynamodb:GetItem"
-            - 's3:PutObject'
-            - 's3:DeleteObject'
+            - 's3:*'
             Effect: Allow
             Resource: '*'
           Version: 2012-10-17
