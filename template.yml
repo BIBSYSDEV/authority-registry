@@ -103,11 +103,13 @@ Resources:
   SetUpSwaggerUI:
     DependsOn:
       - LambdaTrustRole
+      - RestApi
     Type: AWS::Lambda::Function
     Properties:
       Environment:
         Variables:
           BUCKET_NAME: !Ref SwaggerUIBucket
+          OAS_EXPORT_URL: !Join ['', 'https://apigateway.', !Ref 'AWS::Region', '.amazonaws.com/restapis/', !Ref 'RestApi', '/stages/', !Ref 'Stage', '/exports/oas30']
       Code:
         ZipFile: |
           from botocore.vendored import requests
