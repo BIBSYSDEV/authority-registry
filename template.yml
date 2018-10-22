@@ -140,7 +140,7 @@ Resources:
                 raise
           
           def download_spec(bucket_name):
-            data = client.get_export(restApiId=os.environ.get('RESTA_API_ID')
+            data = client.get_export(restApiId=os.environ.get('RESTA_API_ID'),
                               stageName=os.environ.get('STAGE_NAME'),
                               exportType='oas30',
                               accepts='application/yaml')
