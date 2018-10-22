@@ -140,11 +140,11 @@ Resources:
                 raise
           
           def download_spec(bucket_name):
-            data = client.get_export(restApiId=os.environ.get('REST_API_ID'),
+            response = client.get_export(restApiId=os.environ.get('REST_API_ID'),
                               stageName=os.environ.get('STAGE_NAME'),
                               exportType='oas30',
                               accepts='application/yaml')
-            s3.Bucket(bucket_name).put_object(Key=oas30.yaml, Body=data, ContentType='application/yaml', ACL='public-read')
+            s3.Bucket(bucket_name).put_object(Key=oas30.yaml, Body=response.body, ContentType='application/yaml', ACL='public-read')
             
           
           def empty_bucket(bucket_name):
