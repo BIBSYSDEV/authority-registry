@@ -109,8 +109,9 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Ref SwaggerUIBucket
+          WEBSITE_URL: !GetAtt SwaggerUIBucket.WebsiteURL
           REST_API_ID: !Ref RestApi
-          STAGE_NAME: !Ref Stage          
+          STAGE_NAME: !Ref Stage              
       Code:
         ZipFile: |
           from botocore.vendored import requests
@@ -143,6 +144,7 @@ Resources:
             response = client.get_export(restApiId=os.environ.get('REST_API_ID'),
                               stageName=os.environ.get('STAGE_NAME'),
                               exportType='oas30',
+                              parameters={'extensions':'apigateway'},
                               accepts='application/yaml')
             s3.Bucket(bucket_name).put_object(Key=oas30.yaml, Body=response.body, ContentType='application/yaml', ACL='public-read')
             
