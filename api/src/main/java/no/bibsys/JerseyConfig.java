@@ -5,6 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.web.CORSFilter;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.HelloResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -35,6 +36,7 @@ public class JerseyConfig extends ResourceConfig {
         
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
+        register(CORSFilter.class);
     }
 
 }

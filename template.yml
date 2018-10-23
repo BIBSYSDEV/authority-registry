@@ -59,7 +59,8 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
-      Cors: "'amazonaws.com'"
+# Waiting for open issue to be resolved: https://github.com/awslabs/serverless-application-model/issues/627
+#      Cors: "'amazonaws.com'"
       DefinitionBody:
         Fn::Transform:
           Name: 'AWS::Include'
