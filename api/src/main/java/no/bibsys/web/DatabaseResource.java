@@ -59,7 +59,7 @@ public class DatabaseResource {
     @Produces(CONTENT_TYPE)
     public PathResponse insertEntry(@PathParam("registryName") String registryName, String request)
             throws IOException {
-        databaseManager.insertEntry(registryName, request);
+        databaseManager.addEntry(registryName, request);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(request);
         String id = node.get("id").asText();
@@ -86,7 +86,7 @@ public class DatabaseResource {
     private SimpleResponse createTable(CreateRegistryRequest request)
             throws InterruptedException, JsonProcessingException {
         String tableName = request.getRegistryName();
-        databaseManager.createRegistry(tableName, request.getValidationSchema());
+        databaseManager.createRegistry(request);
         return new SimpleResponse(
                 String.format("A registry with name %s has been created", tableName));
     }

@@ -47,8 +47,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         TableManager tableManager = new TableManager(newTableDriver());
         tableManager.createRegistry(tableName, validationSchema);
 
-        TableReader reader = new TableReader(newTableDriver(),
-            TableManager.VALIDATION_SCHEMA_TABLE);
+        TableReader reader = new TableReader(newTableDriver(), TableManager.VALIDATION_SCHEMA_TABLE);
         assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
 
         tableManager.deleteTable(tableName);
@@ -83,7 +82,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         tableManager.createRegistry(tableName, validationSchema);
         ;
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
-        tableWriter.insertEntry(newSimpleEntry());
+        tableWriter.addEntry(newSimpleEntry());
         tableManager.deleteTable(tableName);
 
     }
@@ -104,14 +103,12 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(tableName, validationSchema);
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
-        tableWriter.insertEntry(new IdOnlyEntry("Id1"));
+        tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
         TableReader reader=new TableReader(tableDriver,TableManager.VALIDATION_SCHEMA_TABLE);
         Optional<String> schema = reader.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
-
-
     }
 
 

@@ -2,8 +2,6 @@ package no.bibsys.web.model;
 
 public class CreateRegistryRequest extends EditRegistryRequest {
 
-
-
     private String validationSchema;
 
     public CreateRegistryRequest() {
