@@ -9,7 +9,7 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-  LambdaTrustRolename:
+  LambdaTrustRoleArn:
     Type: String
   CodeBucket:
     Type: String
@@ -18,43 +18,6 @@ Parameters:
     Type: String
 
 Resources:
-  LambdaTrustRole:
-    Type: 'AWS::IAM::Role'
-    Description: A service role that will be assumed by the Lambda function
-    Properties:
-      RoleName: !Ref LambdaTrustRolename
-      AssumeRolePolicyDocument:
-        Statement:
-        - Action: 'sts:AssumeRole'
-          Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-      ManagedPolicyArns:
-      - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - 'arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole'
-      Path: /
-      Policies:
-      - PolicyName: LambdaWorkerPolicy
-        PolicyDocument:
-          Statement:
-          - Action:
-            - 'logs:CreateLogGroup'
-            - 'logs:CreateLogStream'
-            - 'logs:PutLogEvents'
-            - 'dynamodb:CreateTable'
-            - 'dynamodb:DeleteTable'
-            - 'dynamodb:DescribeTable'
-            - "dynamodb:BatchGetItem"
-            - "dynamodb:BatchWriteItem"
-            - "dynamodb:PutItem"
-            - "dynamodb:GetItem"
-            Effect: Allow
-            Resource: '*'
-          Version: 2012-10-17
-
-
-
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -68,14 +31,14 @@ Resources:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
   LambdaFunction:
     DependsOn:
-      - LambdaTrustRole
+
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       MemorySize: 1512
-      Role: !GetAtt LambdaTrustRole.Arn
+      Role: !Ref LambdaTrustRoleArn
       Timeout: 600
       Events:
         ApiResource:
@@ -88,7 +51,7 @@ Resources:
   RestApiUrlParameter:
     Type: "AWS::SSM::Parameter"
     Properties:
-      Name: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref 'Stage', "apiUrl"]]
+      Name: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiUrl"]]
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
