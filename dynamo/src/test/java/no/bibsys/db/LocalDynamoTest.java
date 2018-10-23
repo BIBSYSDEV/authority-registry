@@ -19,6 +19,8 @@ public abstract class LocalDynamoTest extends DynamoTest {
     @Before
     public void init() {
         System.setProperty("java.library.path", "native-libs");
+        System.setProperty("sqlite4java.library.path", "build/libs");
+        
         localClient = DynamoDBEmbedded.create().amazonDynamoDB();
 
     }

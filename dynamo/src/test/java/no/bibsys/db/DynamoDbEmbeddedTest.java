@@ -23,7 +23,10 @@ import org.junit.Test;
  * @author Alexander Pivovarov
  */
 public class DynamoDbEmbeddedTest {
-
+    {
+        System.setProperty("sqlite4java.library.path", "build/libs");
+    }
+    
     private static CreateTableResult createTable(AmazonDynamoDB db, String tableName,
         String hashKeyName) {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
