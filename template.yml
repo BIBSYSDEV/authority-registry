@@ -54,7 +54,7 @@ Resources:
             Effect: Allow
             Resource: '*'
           Version: 2012-10-17
-
+          
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -89,7 +89,8 @@ Resources:
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
-
+      
+# CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:
     Type: AWS::S3::Bucket
     Properties:
