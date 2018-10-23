@@ -20,6 +20,8 @@ import no.bibsys.web.model.SimpleResponse;
 @Path("/registry")
 public class DatabaseResource {
 
+    private static final String REGISTRY_NAME = "registryName";
+
     private transient final static String CONTENT_TYPE = "application/json;charset=UTF-8";
 
     private transient final DatabaseManager databaseManager;
@@ -39,7 +41,7 @@ public class DatabaseResource {
     @PUT
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
-    public SimpleResponse putNewRegistry(@PathParam("registryName") String registryName,
+    public SimpleResponse putNewRegistry(@PathParam(REGISTRY_NAME) String registryName,
             String validationSchema) throws InterruptedException, JsonProcessingException {
         return createTable(new EditRegistryRequest(registryName));
 
@@ -49,7 +51,7 @@ public class DatabaseResource {
     @POST
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
-    public PathResponse insertEntry(@PathParam("registryName") String registryName, String request)
+    public PathResponse insertEntry(@PathParam(REGISTRY_NAME) String registryName, String request)
             throws IOException {
         databaseManager.addEntry(registryName, request);
         ObjectMapper mapper = new ObjectMapper();
@@ -62,14 +64,19 @@ public class DatabaseResource {
     @DELETE
     @Path("/{registryName}")
     @Produces(CONTENT_TYPE)
-    public SimpleResponse deleteRegistry(@PathParam("registryName") String registryName)
+    public SimpleResponse deleteRegistry(@PathParam(REGISTRY_NAME) String registryName)
             throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }
 
-    private SimpleResponse emptyRegistry(String registryName) throws InterruptedException {
+    @DELETE
+    @Path("/{registryName}/empty")
+    @Produces(CONTENT_TYPE)
+    public SimpleResponse emptyRegistry(@PathParam(REGISTRY_NAME) String registryName)
+            throws InterruptedException {
+        
         databaseManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
     }

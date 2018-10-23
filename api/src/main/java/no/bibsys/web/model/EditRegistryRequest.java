@@ -1,18 +1,20 @@
 package no.bibsys.web.model;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class EditRegistryRequest {
 
     private String registryName;
-    private String[] label;
+    private List<String> label;
     private String license;
-    private String[] contributor;
-    private String[] creator;
+    private List<String> contributor;
+    private List<String> creator;
     private String description;
-    private String[] sameAs;
+    private List<String> sameAs;
 
     public EditRegistryRequest() {}
 
@@ -22,7 +24,7 @@ public class EditRegistryRequest {
     }
 
     public final String getRegistryName() {
-        return registryName;
+        return registryName == null?"":registryName;
     }
 
 
@@ -33,45 +35,39 @@ public class EditRegistryRequest {
     public Map<String, Object> createAttributeMap() {
 
         Map<String, Object> attributeMap = new ConcurrentHashMap<>();
-        if(label != null) {
-            attributeMap.put("label", label);
-        }
-        if(license != null) {
-            attributeMap.put("license", license);
-        }
-        if(contributor != null) {
-            attributeMap.put("contributor", contributor);
-        }
-        if(creator != null) {
-            attributeMap.put("creator", creator);
-        }
-        if(description != null) {
-            attributeMap.put("description", description);
-        }
-        if(sameAs != null) {
-            attributeMap.put("sameAs", sameAs);
-        }
+        attributeMap.put("label", getLabel());
+        attributeMap.put("license", getLicense());
+        attributeMap.put("contributor", getContributor());
+        attributeMap.put("creator", getCreator());
+        attributeMap.put("description", getDescription());
+        attributeMap.put("sameAs", getSameAs());
 
-        return attributeMap;
+        // attributeMap can't contain null, "" or empty lists
+        Map<String, Object> newAttributeMap = attributeMap.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> entry.getValue() instanceof String && !((String)entry.getValue()).isEmpty() || entry.getValue() instanceof List && !((List<?>)entry.getValue()).isEmpty())
+                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+        
+        return newAttributeMap;
     }
 
 
-    public String[] getLabel() {
+    public List<String> getLabel() {
         if(label == null) {
-            return new String[0];
+            return new ArrayList<String>();
         }else {
-            return Arrays.copyOf(label, label.length);
+            return new ArrayList<String>(label);
         }
     }
 
 
-    public void setLabel(String... label) {
-        this.label = Arrays.copyOf(label, label.length);
+    public void setLabel(List<String> label) {
+        this.label = new ArrayList<String>(label);
     }
 
 
     public String getLicense() {
-        return license;
+        return license == null?"":license;
     }
 
 
@@ -80,36 +76,36 @@ public class EditRegistryRequest {
     }
 
 
-    public String[] getContributor() {
+    public List<String> getContributor() {
         if(contributor == null) {
-            return new String[0];
+            return new ArrayList<String>();
         }else {
-            return Arrays.copyOf(contributor, contributor.length);
+            return new ArrayList<String>(contributor);
         }
     }
 
 
-    public void setContributor(String... contributor) {
-        this.contributor = Arrays.copyOf(contributor, contributor.length);
+    public void setContributor(List<String> contributor) {
+        this.contributor = new ArrayList<String>(contributor);
     }
 
 
-    public String[] getCreator() {
+    public List<String> getCreator() {
         if(creator == null) {
-            return new String[0];
+            return new ArrayList<String>();
         }else {
-            return Arrays.copyOf(creator, creator.length);
+            return new ArrayList<String>(creator);
         }
     }
 
 
-    public void setCreator(String... creator) {
-        this.creator = Arrays.copyOf(creator, creator.length);
+    public void setCreator(List<String> creator) {
+        this.creator = new ArrayList<String>(creator);
     }
 
 
     public String getDescription() {
-        return description;
+        return description == null?"":description;
     }
 
 
@@ -118,17 +114,16 @@ public class EditRegistryRequest {
     }
 
 
-    public String[] getSameAs() {
+    public List<String> getSameAs() {
         if(sameAs == null) {
-            return new String[0];
+            return new ArrayList<String>();
         }else {
-            return Arrays.copyOf(sameAs, sameAs.length);
+            return new ArrayList<String>(sameAs);
         }
     }
 
 
-    public void setSameAs(String... sameAs) {
-        this.sameAs = Arrays.copyOf(sameAs, sameAs.length);
+    public void setSameAs(List<String> sameAs) {
+        this.sameAs = new ArrayList<String>(sameAs);
     }
-
 }

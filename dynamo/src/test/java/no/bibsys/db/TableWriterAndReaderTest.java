@@ -21,9 +21,6 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
     private TableWriter tableWriter;
     private TableManager tableManager;
 
-
-    private String validationSchema = "validationSchema";
-
     @Override
     @Before
     public void init() {
@@ -42,7 +39,7 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
 
         String json = resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(tableName);
         tableWriter.addJson(json);
         Optional<String> output = tableReader.getEntry("id01");
         Optional<Item> outputItem = output.map(i -> Item.fromJSON(i));
