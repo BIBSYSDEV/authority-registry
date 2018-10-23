@@ -144,7 +144,8 @@ Resources:
                               exportType='oas30',
                               parameters={'extensions':'apigateway'},
                               accepts='application/json')
-            s3_client.put_object(Bucket=bucket_name, Key='oas30.json', Body=response['body'], ContentType=response['contentType'], ACL='public-read')
+            data = response['body'].read()
+            s3_client.put_object(Bucket=bucket_name, Key='oas30.json', Body=data, ContentType=response['contentType'], ACL='public-read')
             
           
           def empty_bucket(bucket_name):
