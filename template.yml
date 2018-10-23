@@ -143,8 +143,8 @@ Resources:
                               stageName=os.environ.get('STAGE_NAME'),
                               exportType='oas30',
                               parameters={'extensions':'apigateway'},
-                              accepts='application/yaml')
-            s3_client.put_object(Bucket=bucket_name, Key='oas30.yaml', Body=response.body, ContentType='application/yaml', ACL='public-read')
+                              accepts='application/json')
+            s3_client.put_object(Bucket=bucket_name, Key='oas30.json', Body=response['body'], ContentType=response['contentType'], ACL='public-read')
             
           
           def empty_bucket(bucket_name):
@@ -160,7 +160,7 @@ Resources:
           def replace_spec_in_index(path):
             with open(path + '/index.html', 'rw') as index_file:
               data = index_file.read().replace('https://petstore.swagger.io/v2/swagger.json', 
-                                                os.environ.get('WEBSITE_URL') + '/oas30.yaml')
+                                                os.environ.get('WEBSITE_URL') + '/oas30.json')
               index_file.write(data)
                           
           def handler(event, context):
