@@ -65,7 +65,7 @@ public class TableManager {
         }
     }
 
-    public void createRegistry(String tableName, String validationSchema)
+    public void createRegistry(String tableName)
         throws InterruptedException, JsonProcessingException {
         
         if(!tableExists(VALIDATION_SCHEMA_TABLE)) {

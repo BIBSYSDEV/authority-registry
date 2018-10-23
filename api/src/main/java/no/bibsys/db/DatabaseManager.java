@@ -16,7 +16,7 @@ import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import no.bibsys.web.model.CreateRegistryRequest;
+import no.bibsys.web.model.EditRegistryRequest;
 
 public class DatabaseManager {
 
@@ -40,17 +40,16 @@ public class DatabaseManager {
     }
 
 
-    public void createRegistry(CreateRegistryRequest request)
+    public void createRegistry(EditRegistryRequest request)
             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
         TableManager tableManager = new TableManager(tableDriver);
 
         String tableName = request.getRegistryName();
-        String validationSchema = request.getValidationSchema();
         if (registryExists(tableName)) {
             throw new TableAlreadyExistsException(
                     String.format("Registry %s already exists", tableName));
         } else {
-            tableManager.createRegistry(tableName, validationSchema);
+            tableManager.createRegistry(tableName);
             
             String timestamp = new Date().toString();
             String registryJson = String.format(registryJsonTemplate, tableName, timestamp);

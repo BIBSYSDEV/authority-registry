@@ -13,9 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.db.DatabaseManager;
-import no.bibsys.web.model.CreateRegistryRequest;
 import no.bibsys.web.model.EditRegistryRequest;
-import no.bibsys.web.model.EmptyRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
@@ -33,15 +31,9 @@ public class DatabaseResource {
     @POST
     @Path("/")
     @Produces(CONTENT_TYPE)
-    public SimpleResponse editRegistry(EditRegistryRequest request)
+    public SimpleResponse createRegistry(EditRegistryRequest request)
             throws InterruptedException, TableAlreadyExistsException {
-        EditRegistryRequest specific = request.specify();
-        if (specific instanceof EmptyRegistryRequest) {
-            return emptyRegistry((EmptyRegistryRequest) specific);
-        } else {
-            throw new BadRequestException();
-        }
-
+        throw new BadRequestException();
     }
 
     @PUT
@@ -49,7 +41,7 @@ public class DatabaseResource {
     @Produces(CONTENT_TYPE)
     public SimpleResponse putNewRegistry(@PathParam("registryName") String registryName,
             String validationSchema) throws InterruptedException, JsonProcessingException {
-        return createTable(new CreateRegistryRequest(registryName, validationSchema));
+        return createTable(new EditRegistryRequest(registryName));
 
     }
 
@@ -77,13 +69,12 @@ public class DatabaseResource {
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }
 
-    private SimpleResponse emptyRegistry(EmptyRegistryRequest request) throws InterruptedException {
-        String registryName = request.getRegistryName();
+    private SimpleResponse emptyRegistry(String registryName) throws InterruptedException {
         databaseManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
     }
 
-    private SimpleResponse createTable(CreateRegistryRequest request)
+    private SimpleResponse createTable(EditRegistryRequest request)
             throws InterruptedException, JsonProcessingException {
         String tableName = request.getRegistryName();
         databaseManager.createRegistry(request);
