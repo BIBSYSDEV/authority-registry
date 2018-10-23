@@ -159,7 +159,7 @@ Resources:
             bucket.delete()
           
           def replace_spec_in_index(path):
-            with open(path + '/index.html', 'rw') as index_file:
+            with open(path + '/index.html', 'r+') as index_file:
               data = index_file.read().replace('https://petstore.swagger.io/v2/swagger.json', 
                                                 os.environ.get('WEBSITE_URL') + '/oas30.json')
               index_file.write(data)
