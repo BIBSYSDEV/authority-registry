@@ -36,7 +36,6 @@ public class JerseyConfig extends ResourceConfig {
         
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
-        register(CORSFilter.class);
     }
 
 }
