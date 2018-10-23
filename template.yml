@@ -50,11 +50,10 @@ Resources:
             - "dynamodb:PutItem"
             - "dynamodb:GetItem"
             - 's3:*'
+            - 'apigateway:GET'
             Effect: Allow
             Resource: '*'
           Version: 2012-10-17
-
-
 
   RestApi:
     Type: AWS::Serverless::Api
