@@ -12,7 +12,9 @@
         "dynamodb:BatchGetItem",
         "dynamodb:BatchWriteItem",
         "dynamodb:PutItem",
-        "dynamodb:GetItem"
+        "dynamodb:GetItem",
+        "s3:*",
+        "apigateway:GET"
       ],
       "Resource": "*",
       "Effect"  : "Allow"
