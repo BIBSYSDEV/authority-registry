@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class SimpleResponse {
 
     private String message;
+    private int statusCode = 200;
 
 
     public SimpleResponse() {}
@@ -14,8 +15,14 @@ public class SimpleResponse {
 
     public SimpleResponse(String message) {
         setMessage(message);
+        setStatusCode(200);
     }
 
+    public SimpleResponse(String message, int statusCode) {
+        setMessage(message);
+        setStatusCode(200);
+    }
+    
 
     @Override
     public boolean equals(Object object) {
@@ -37,6 +44,25 @@ public class SimpleResponse {
     }
 
 
+    public String toGatewayResponse() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> jsonObject = new HashMap<>();
+        jsonObject.put("message", getMessage());
+        String body = mapper.writeValueAsString(jsonObject);
+        GatewayResponse response = new GatewayResponse(body, new HashMap<>(), statusCode);
+        return mapper.writeValueAsString(response);
+
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+    
+    
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+    
     public String getMessage() {
         return message;
     }
@@ -44,16 +70,4 @@ public class SimpleResponse {
     public final void setMessage(String message) {
         this.message = message;
     }
-
-    public String toGatewayResponse() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, String> jsonObject = new HashMap<>();
-        jsonObject.put("message", getMessage());
-        String body = mapper.writeValueAsString(jsonObject);
-        GatewayResponse response = new GatewayResponse(body);
-        return mapper.writeValueAsString(response);
-
-    }
-
-
 }
