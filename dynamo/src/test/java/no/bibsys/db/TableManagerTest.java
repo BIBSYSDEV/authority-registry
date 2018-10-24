@@ -16,13 +16,11 @@ import org.junit.Test;
 
 public class TableManagerTest extends LocalDynamoTest {
 
-    private String validationSchema = "validationSchema";
-
     @Test
     public void createTable() throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver=newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
         ListTablesResult tables = tableManager.getClient().listTables();
         int numberOfTables = tables.getTableNames().size();
 
@@ -35,8 +33,8 @@ public class TableManagerTest extends LocalDynamoTest {
         TableManager tableManager = new TableManager(newTableDriver());
         int tables = tableManager.getClient().listTables().getTableNames().size();
         assertThat(tables, is(equalTo(0)));
-        tableManager.createRegistry(tableName, validationSchema);
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
+        tableManager.createRegistry(template);
     }
 
 
@@ -44,10 +42,9 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldDeleteAnEmptyTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
 
-        TableReader reader = new TableReader(newTableDriver(),
-            TableManager.VALIDATION_SCHEMA_TABLE);
+        TableReader reader = new TableReader(newTableDriver(), TableManager.VALIDATION_SCHEMA_TABLE);
         assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
 
         tableManager.deleteTable(tableName);
@@ -64,7 +61,7 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
 
         tableManager.deleteTable(tableName+"blabla");
 
@@ -79,10 +76,10 @@ public class TableManagerTest extends LocalDynamoTest {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
         ;
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
-        tableWriter.insertEntry(newSimpleEntry());
+        tableWriter.addEntry(newSimpleEntry());
         tableManager.deleteTable(tableName);
 
     }
@@ -101,16 +98,14 @@ public class TableManagerTest extends LocalDynamoTest {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName, validationSchema);
+        tableManager.createRegistry(template);
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
-        tableWriter.insertEntry(new IdOnlyEntry("Id1"));
+        tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
         TableReader reader=new TableReader(tableDriver,TableManager.VALIDATION_SCHEMA_TABLE);
         Optional<String> schema = reader.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
-
-
     }
 
 

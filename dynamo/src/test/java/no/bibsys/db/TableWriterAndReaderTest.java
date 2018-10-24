@@ -21,9 +21,6 @@ public class TableWriterAndReaderTest extends LocalDynamoTest {
     private TableWriter tableWriter;
     private TableManager tableManager;
 
-
-    private String validationSchema = "validationSchema";
-
     @Override
     @Before
     public void init() {
@@ -38,12 +35,12 @@ public class TableWriterAndReaderTest extends LocalDynamoTest {
 
 
     @Test
-    public void insertJson() throws IOException, InterruptedException {
+    public void addJson() throws IOException, InterruptedException {
 
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
-        tableManager.createRegistry(tableName, validationSchema);
-        tableWriter.insertJson(json);
+        tableManager.createRegistry(template);
+        tableWriter.addJson(json);
         Optional<String> output = tableReader.getEntry("id01");
         Optional<Item> outputItem = output.map(i -> Item.fromJSON(i));
         assertThat(outputItem.isPresent(), is(equalTo(true)));

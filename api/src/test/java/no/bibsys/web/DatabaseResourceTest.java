@@ -3,21 +3,25 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.CreateRegistryRequest;
-import no.bibsys.web.model.EmptyRegistryRequest;
+import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
@@ -30,10 +34,14 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        System.setProperty("sqlite4java.library.path", "build/libs");
         return new JerseyConfig(new DatabaseManager(LocalDynamoDBHelper.getTableDriver()));
     }
 
+    @BeforeClass
+    public static void init() {
+        System.setProperty("sqlite4java.library.path", "build/libs");
+    }
+    
     @Test
     public void returnDefaultMessage() throws Exception {
 
@@ -140,15 +148,12 @@ public class DatabaseResourceTest extends JerseyTest {
         String entry = sampleData.sampleEntry("entryId").jsonString();
 
         insertEntryRequest(TABLE_NAME, entry);
-        EmptyRegistryRequest emptyRegistryRequest = new EmptyRegistryRequest(TABLE_NAME);
-        String jsonRequest = mapper.writeValueAsString(emptyRegistryRequest);
 
-        Response response = target("/registry/").request()
-                .post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON));
+        Response response = target(String.format("/registry/%s/empty", TABLE_NAME)).request()
+                .delete();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected =
-                new SimpleResponse(String.format("Registry %s has been emptied", TABLE_NAME));
+        SimpleResponse expected = new SimpleResponse(String.format("Registry %s has been emptied", TABLE_NAME));
         assertThat(actual, is(equalTo(expected)));
     }
 
@@ -161,15 +166,14 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     private Response createTable(String tableName) throws Exception {
-        CreateRegistryRequest createRequest = new CreateRegistryRequest(tableName);
-        createRequest.setValidationSchema("ValidationSchema");
+        EditRegistryRequest createRequest = new EditRegistryRequest(tableName);
         return createTableRequest(createRequest);
     }
 
 
-    private Response createTableRequest(CreateRegistryRequest request) throws Exception {
+    private Response createTableRequest(EditRegistryRequest request) throws Exception {
         return target("/registry/" + request.getRegistryName()).request()
-                .put(Entity.entity(request.getValidationSchema(), MediaType.APPLICATION_JSON));
+                .put(Entity.entity("", MediaType.APPLICATION_JSON));
     }
 
 

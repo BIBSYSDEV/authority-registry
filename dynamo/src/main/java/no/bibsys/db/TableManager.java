@@ -5,20 +5,19 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import no.bibsys.db.exceptions.ItemExistsException;
-import no.bibsys.db.structures.ValidationSchemaEntry;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 
 
 public class TableManager {
 
-    public static final String VALIDATION_SCHEMA_TABLE = "VALIDATION_SCHEMAS";
-
-
+    public static final String VALIDATION_SCHEMA_TABLE = "VALIDATION_SCHEMA_TABLE";
     private final transient TableDriver tableDriver;
-
+    private final transient ObjectMapper objectMapper;
 
     public TableManager(final TableDriver tableDriver) {
         this.tableDriver = tableDriver;
+        objectMapper = ObjectMapperHelper.getObjectMapper();
     }
 
     public void deleteTable(final String tableName) throws InterruptedException {
@@ -36,8 +35,6 @@ public class TableManager {
         return tableDriver.getClient();
     }
 
-
-
     /**
      * Creates new table.
      *
@@ -51,41 +48,34 @@ public class TableManager {
      * This method does not delete the validation schema of the table
      */
     public void emptyTable(final String tableName) throws InterruptedException {
-        if (!tableName.equals(VALIDATION_SCHEMA_TABLE) && tableDriver.tableExists(tableName)) {
+        if (tableDriver.tableExists(tableName)) {
             tableDriver.deleteNoCheckTable(tableName);
+            tableDriver.createTable(tableName);
         } else {
             throw new TableNotFoundException(tableName);
         }
     }
 
-
-    private void createValidationSchemaTable() throws InterruptedException {
-        tableDriver.createTable(VALIDATION_SCHEMA_TABLE, new ValidationSchemaEntry());
-    }
-
-
-    public void createRegistry(String tableName, String validationSchema)
+    public void createRegistry(EntityRegistryTemplate template)
         throws InterruptedException, JsonProcessingException {
-        if (!tableDriver.tableExists(VALIDATION_SCHEMA_TABLE)) {
-            createValidationSchemaTable();
+        
+        if(!tableExists(VALIDATION_SCHEMA_TABLE)) {
+            tableDriver.createTable(VALIDATION_SCHEMA_TABLE);
         }
-        insertValidationSchema(tableName, validationSchema);
-
-        tableDriver.createTable(tableName);
+        
+        String tableName = template.getId();
+        
+        if(!tableExists(tableName)) {
+            TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
+                        
+            writer.addJson(objectMapper.writeValueAsString(template));
+            
+            tableDriver.createTable(tableName);     
+        }else {
+            throw new TableAlreadyExistsException(String.format("Table %s already exists", tableName));
+        }
 
     }
-
-
-    private void insertValidationSchema(String tableName, String validationSchema)
-        throws JsonProcessingException {
-        TableWriter tableWriter = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
-        try {
-            tableWriter.insertEntry(new ValidationSchemaEntry(tableName, validationSchema));
-        } catch (ItemExistsException e) {
-            throw new TableAlreadyExistsException(e.getMessage());
-        }
-    }
-
 
     public boolean tableExists(String tableName){
         return this.tableDriver.tableExists(tableName);
