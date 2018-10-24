@@ -48,13 +48,13 @@ import no.bibsys.web.model.SimpleResponse;
 @Produces({MediaType.APPLICATION_JSON})
 @OpenAPIDefinition(info = 
 @Info(
-          title = "Entity Registry",
-          version = "0.0",
-          description = "API documentation for Entity Registry",
-          license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
-          contact = @Contact(url = "http://example.org", name = "Entity registry team", email = "entity@example.org")
-  )
-)
+        title = "Entity Registry",
+        version = "0.0",
+        description = "API documentation for Entity Registry",
+        license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
+        contact = @Contact(url = "http://example.org", name = "Entity registry team", email = "entity@example.org")
+        )
+        )
 public class DatabaseResource {
 
     private static final String STRING = "string";
@@ -71,16 +71,16 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.POST),
+            value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse createRegistry(@RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
                     implementation = EditRegistryRequest.class))) EditRegistryRequest request)
-            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+                            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
         return createTable(request);
     }
 
@@ -96,10 +96,10 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse getRegistryList()
-                            throws InterruptedException, TableAlreadyExistsException {
+            throws InterruptedException, TableAlreadyExistsException {
         return new SimpleResponse();
     }
-    
+
     @GET
     @Path("/{registryName}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
@@ -115,28 +115,29 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                            throws InterruptedException, TableAlreadyExistsException {
+                    throws InterruptedException, TableAlreadyExistsException {
         return new SimpleResponse("Not implemented", 501);
     }
-    
+
     @PUT
     @Path("/{registryName}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.POST),
+            value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse updateRegistryMetadata(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                    description = "Name of new registry",
-                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
+            description = "Name of new registry",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-                    content = @Content(schema = @Schema(type = STRING))) String validationSchema)
-            throws InterruptedException, JsonProcessingException {
+            content = @Content(schema = @Schema(
+                    implementation = EditRegistryRequest.class))) EditRegistryRequest request)
+                            throws InterruptedException, JsonProcessingException {
         return new SimpleResponse("Not implemented", 501);
     }
 
@@ -147,16 +148,16 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.POST),
+            value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                    description = "Name of registry to delete",
-                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-            throws InterruptedException {
+            description = "Name of registry to delete",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+                    throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
@@ -168,35 +169,77 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.POST),
+            value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse emptyRegistry(String registryName) throws InterruptedException {
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse emptyRegistry(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry to delete",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
         databaseManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
     }
 
-    
+    @GET
+    @Path("/{registryName}/schema")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse getRegistrySchema(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry to delete",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
+        return new SimpleResponse("Not implemented", 501);
+    }
+
+    @PUT
+    @Path("/{registryName}/schema")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse updateRegistrySchema(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry to delete",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
+            @RequestBody(description = "Validation schema",
+            content = @Content(schema = @Schema(type = STRING))) String validationSchema
+            ) throws InterruptedException {
+        return new SimpleResponse("Not implemented", 501);
+    }
+
+
     @POST
     @Path("/{registryName}/entity")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
                     value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
-                    value = HttpMethod.POST),
+            value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public PathResponse insertEntry(
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public PathResponse createEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                    description = "Name of registry to insert entity into",
-                    schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
-            @RequestBody(description = "Entity to insert",
-                    content = @Content(schema = @Schema(type = STRING))) String entity)
-            throws IOException {
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
+            @RequestBody(description = "Entity to create",
+            content = @Content(schema = @Schema(type = STRING))) String entity)
+                    throws IOException {
         databaseManager.insertEntry(registryName, entity);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(entity);
@@ -204,8 +247,95 @@ public class DatabaseResource {
         return new PathResponse(String.format("/registry/%s/%s", registryName, id));
     }
 
+    @GET
+    @Path("/{registryName}/entity")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse entitiesSummary(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName)
+                    throws IOException {
+        return new SimpleResponse("Not implemented", 501);
+    }
+
+    @GET
+    @Path("/{registryName}/entity/{entityId}")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse getEntity(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId)
+                    throws IOException {
+        return new SimpleResponse("Not implemented", 501);
+    }
+
+    @DELETE
+    @Path("/{registryName}/entity/{entityId}")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse deleteEntity(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId)
+                    throws IOException {
+        return new SimpleResponse("Not implemented", 501);
+    }
     
-    
+    @PUT
+    @Path("/{registryName}/entity/{entityId}")
+    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
+            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    public SimpleResponse updateEntity(
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
+            description = "Name of registry",
+            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId,
+            @RequestBody(description = "Entity to create",
+            content = @Content(schema = @Schema(type = STRING))) String entity)
+                    throws IOException {
+        return new SimpleResponse("Not implemented", 501);
+    }
+
+
+
 
     private SimpleResponse createTable(EditRegistryRequest request)
             throws InterruptedException, JsonProcessingException {
