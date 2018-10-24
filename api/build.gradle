@@ -12,7 +12,7 @@ apply plugin: 'java'
 apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
 dependencies {
-    compile project(":common")
+
     compile project(":dynamo")
 
 

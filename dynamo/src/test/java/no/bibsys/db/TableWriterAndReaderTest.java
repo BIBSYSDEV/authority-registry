@@ -9,12 +9,12 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
-import no.bibsys.utils.IoTestUtils;
+import no.bibsys.utils.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestUtils {
+public class TableWriterAndReaderTest extends LocalDynamoTest {
 
 
     private TableReader tableReader;
@@ -37,7 +37,7 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
     @Test
     public void addJson() throws IOException, InterruptedException {
 
-        String json = resourceAsString(Paths.get("json", "sample.json"));
+        String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
         tableManager.createRegistry(template);
         tableWriter.addJson(json);
