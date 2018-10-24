@@ -11,11 +11,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Optional;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
-import no.bibsys.utils.IoTestUtils;
 import org.junit.Test;
 
 
-public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
+public class TableManagerTest extends LocalDynamoTest {
 
     private String validationSchema = "validationSchema";
 

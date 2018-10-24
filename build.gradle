@@ -20,7 +20,6 @@ jar.enabled = false
 
 dependencies {
     compile project(":api")
-    compile project(":common")
     compile project(":cypress")
 }
 
