@@ -1,44 +1,19 @@
 package no.bibsys.db;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.EditRegistryRequest;
 
 public class DatabaseManager {
 
     private final transient TableDriver tableDriver;
-    private transient String registryJsonTemplate = "";
 
     public DatabaseManager(TableDriver tableDriver) {
         this.tableDriver = tableDriver;
-        
-        readRegistryJsonTemplate();
     }
-
-
-    private void readRegistryJsonTemplate() {
-        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(Paths.get("json", "registry.json").toString());
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")))){
-            registryJsonTemplate = String.join(" ", reader.lines().collect(Collectors.toList()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     public void createRegistry(EditRegistryRequest request)
             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
@@ -49,23 +24,20 @@ public class DatabaseManager {
             throw new TableAlreadyExistsException(
                     String.format("Registry %s already exists", tableName));
         } else {
-            tableManager.createRegistry(tableName);
             
-            String timestamp = new Date().toString();
-            String registryJson = String.format(registryJsonTemplate, tableName, timestamp);
-            addEntry(TableManager.VALIDATION_SCHEMA_TABLE, registryJson, request.createAttributeMap());
+            EntityRegistryTemplate template = new EntityRegistryTemplate();
+            template.setId(tableName);
+            request.parseEditRegistryRequest(template.getMetadata());
+            
+            tableManager.createRegistry(template);
         }
     }
-
+    
+    
     public void addEntry(String tableName, String json) {
-        addEntry(tableName, json, new HashMap<String, Object>());
-    }
-    
-    
-    public void addEntry(String tableName, String json, Map<String, Object> attributeMap) {
         if (registryExists(tableName)) {
             TableWriter tableWriter = new TableWriter(tableDriver, tableName);
-            tableWriter.addJson(json, attributeMap);
+            tableWriter.addJson(json);
         } else {
             throw new TableNotFoundException(
                     String.format("Registry %s does not exist", tableName));

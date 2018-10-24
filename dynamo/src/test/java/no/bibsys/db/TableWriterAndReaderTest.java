@@ -39,7 +39,7 @@ public class TableWriterAndReaderTest extends LocalDynamoTest implements IoTestU
 
         String json = resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
         tableWriter.addJson(json);
         Optional<String> output = tableReader.getEntry("id01");
         Optional<Item> outputItem = output.map(i -> Item.fromJSON(i));

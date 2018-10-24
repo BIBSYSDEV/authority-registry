@@ -21,7 +21,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
     public void createTable() throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver=newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
         ListTablesResult tables = tableManager.getClient().listTables();
         int numberOfTables = tables.getTableNames().size();
 
@@ -34,8 +34,8 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         TableManager tableManager = new TableManager(newTableDriver());
         int tables = tableManager.getClient().listTables().getTableNames().size();
         assertThat(tables, is(equalTo(0)));
-        tableManager.createRegistry(tableName);
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
+        tableManager.createRegistry(template);
     }
 
 
@@ -43,7 +43,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
     public void tableManagerShouldDeleteAnEmptyTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
 
         TableReader reader = new TableReader(newTableDriver(), TableManager.VALIDATION_SCHEMA_TABLE);
         assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
@@ -62,7 +62,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
     public void tableManagerShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
 
         tableManager.deleteTable(tableName+"blabla");
 
@@ -77,7 +77,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
         ;
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
         tableWriter.addEntry(newSimpleEntry());
@@ -99,7 +99,7 @@ public class TableManagerTest extends LocalDynamoTest implements IoTestUtils {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(tableName);
+        tableManager.createRegistry(template);
         TableWriter tableWriter = new TableWriter(tableDriver, tableName);
         tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);

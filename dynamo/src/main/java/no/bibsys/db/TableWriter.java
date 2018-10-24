@@ -1,10 +1,7 @@
 package no.bibsys.db;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
@@ -15,7 +12,6 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.structures.Entry;
 
@@ -46,26 +42,20 @@ public class TableWriter {
     }
     
     public void addJson(final String json) {
-        addJson(json, new HashMap<String, Object>());
-    }
-    
-    public void addJson(final String json, Map<String, Object> attributeMap) {
         String id = NULL;
         try {
             Item item = Item.fromJSON(json);
-            if(!attributeMap.isEmpty()) {
-               item = item.withMap("metadata", attributeMap);
-            }
             
             id = item.asMap().getOrDefault("id", NULL).toString();
 
             final Table table = tableDriver.getTable(tableName);
+            
             PutItemSpec putItemSpec = new PutItemSpec()
                 .withItem(item)
                 .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
             table.putItem(putItemSpec);
         } catch (ConditionalCheckFailedException e) {
-            throw new ItemExistsException(String.format("Item with id:%s already exits", id), e);
+            throw new ItemExistsException(String.format("Item with id:%s already exists", id), e);
         }
 
     }
