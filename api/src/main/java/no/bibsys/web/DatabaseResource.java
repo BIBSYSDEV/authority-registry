@@ -11,6 +11,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import java.io.IOException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -75,8 +76,12 @@ public class DatabaseResource {
     public SimpleResponse editRegistry(@RequestBody(
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
-                    implementation = EditRegistryRequest.class))) EditRegistryRequest request)
-                            throws InterruptedException, TableAlreadyExistsException {
+                    implementation = EditRegistryRequest.class))) EditRegistryRequest request,
+            @HeaderParam("phase") String phase)
+                            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+        if(phase != null) {
+            System.setProperty("phase", phase);
+        }
         return new SimpleResponse("Not implemented");
     }
 
@@ -96,10 +101,11 @@ public class DatabaseResource {
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-            content = @Content(schema = @Schema(type = STRING))) String validationSchema)
+            content = @Content(schema = @Schema(type = STRING))) String validationSchema,
+            @HeaderParam("phase") String phase)
                     throws InterruptedException, JsonProcessingException {
+        System.setProperty("phase", phase);
         return createTable(new EditRegistryRequest(registryName));
-
     }
 
 
@@ -119,7 +125,8 @@ public class DatabaseResource {
             description = "Name of registry to insert entity into",
             schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to insert",
-            content = @Content(schema = @Schema(type = STRING))) String entity)
+            content = @Content(schema = @Schema(type = STRING))) String entity,
+            @HeaderParam("phase") String phase)
                     throws IOException {
         databaseManager.addEntry(registryName, entity);
         ObjectMapper mapper = new ObjectMapper();
@@ -143,7 +150,8 @@ public class DatabaseResource {
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
+            @HeaderParam("phase") String phase)
                     throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
@@ -165,7 +173,8 @@ public class DatabaseResource {
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) 
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
+            @HeaderParam("phase") String phase) 
                     throws InterruptedException {
         databaseManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
@@ -175,8 +184,7 @@ public class DatabaseResource {
             throws InterruptedException, JsonProcessingException {
         String tableName = request.getRegistryName();
         databaseManager.createRegistry(request);
-        return new SimpleResponse(
-                String.format("A registry with name %s has been created", tableName));
+        return new SimpleResponse(String.format("A registry with name %s has been created", tableName));
     }
 
 }

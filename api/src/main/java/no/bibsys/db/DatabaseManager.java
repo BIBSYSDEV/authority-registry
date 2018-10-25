@@ -72,7 +72,7 @@ public class DatabaseManager {
         TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             
-            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.VALIDATION_SCHEMA_TABLE);
+            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.getValidationSchemaTable());
             schemaTableWriter.deleteEntry(tableName);
             
             tableManager.deleteTable(tableName);
