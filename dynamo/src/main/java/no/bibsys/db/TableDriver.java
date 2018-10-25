@@ -82,7 +82,7 @@ public final class TableDriver {
         long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
-            deleteValidationSchema(tableName);
+//            deleteValidationSchema(tableName);
         } else {
             throw new TableNotEmptyException(tableName);
         }
@@ -90,14 +90,13 @@ public final class TableDriver {
     }
 
 
-    /**
-     * Does nothing for now
-     *
-     * //TODO implement this function
-     */
-    private void deleteValidationSchema(String tableName) {
-        logger.info("Deleting validation schema for table {}", tableName);
-    }
+//    /**
+//     *  Deletes table metadata and validation schema
+//     */
+//    private void deleteValidationSchema(String tableName) {
+//        
+//        logger.info("Deleting validation schema for table {}", tableName);
+//    }
 
     public  void deleteNoCheckTable(final String tableName) throws InterruptedException {
         if (tableExists(tableName)) {

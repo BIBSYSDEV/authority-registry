@@ -5,22 +5,26 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import no.bibsys.db.exceptions.ItemExistsException;
-import no.bibsys.db.structures.ValidationSchemaEntry;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 
 
 public class TableManager {
 
+    public static final String VALIDATION_SCHEMA_TABLE = "VALIDATION_SCHEMA_TABLE";
     private final transient TableDriver tableDriver;
-
+    private final transient ObjectMapper objectMapper;
 
     public TableManager(final TableDriver tableDriver) {
         this.tableDriver = tableDriver;
+        objectMapper = ObjectMapperHelper.getObjectMapper();
     }
 
     public void deleteTable(final String tableName) throws InterruptedException {
         try {
             tableDriver.deleteTable(tableName);
+            TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
+            writer.deleteEntry(tableName);
         } catch (ResourceNotFoundException e) {
             throw new TableNotFoundException(e.getMessage());
         }
@@ -30,8 +34,6 @@ public class TableManager {
     public AmazonDynamoDB getClient() {
         return tableDriver.getClient();
     }
-
-
 
     /**
      * Creates new table.
@@ -48,14 +50,30 @@ public class TableManager {
     public void emptyTable(final String tableName) throws InterruptedException {
         if (tableDriver.tableExists(tableName)) {
             tableDriver.deleteNoCheckTable(tableName);
+            tableDriver.createTable(tableName);
         } else {
             throw new TableNotFoundException(tableName);
         }
     }
 
-    public void createRegistry(String tableName, String validationSchema)
+    public void createRegistry(EntityRegistryTemplate template)
         throws InterruptedException, JsonProcessingException {
-        tableDriver.createTable(tableName);
+        
+        if(!tableExists(VALIDATION_SCHEMA_TABLE)) {
+            tableDriver.createTable(VALIDATION_SCHEMA_TABLE);
+        }
+        
+        String tableName = template.getId();
+        
+        if(!tableExists(tableName)) {
+            TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
+                        
+            writer.addJson(objectMapper.writeValueAsString(template));
+            
+            tableDriver.createTable(tableName);     
+        }else {
+            throw new TableAlreadyExistsException(String.format("Table %s already exists", tableName));
+        }
 
     }
 
