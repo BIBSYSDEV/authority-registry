@@ -7,12 +7,29 @@
 
 when('the API admin user request deletion of an entity registry', () => {
 	// delete empty registry
-	let deleteRegistryUrl = 'https://www.unit.no';
-	cy.request(deleteRegistryUrl)
+	cy.get("@registryName").then((registryName) => {
+		let deleteRegistryUrl = '/registry/' + registryName;
+		cy.request({
+			url: deleteRegistryUrl,
+			method: "DELETE",
+			headers: {
+				'content-type': 'application/json'
+			}
+		})
+	})
 })
 
 then('the empty entity registry is deleted', () => {
 	// call registry
-	let registryHeartbeatUrl = 'https://www.unit.no';
-	expect(cy.request(registryHeartbeatUrl))
+	cy.get("@registryName").then((registryName) => {
+		
+		let registryHeartbeatUrl = '/registry/' + registryName;
+		cy.request({
+			url: registryHeartbeatUrl,
+			method: "DELETE",
+			failOnStatusCode: false
+		}).then((response) => {
+			expect(response.status).equals(404)
+		})
+	})
 })
