@@ -7,8 +7,7 @@ import java.util.HashMap;
 public class SimpleResponse {
 
     private String message;
-    private int statusCode = 200;
-
+    private int statusCode;
 
     public SimpleResponse() {}
 
@@ -20,7 +19,7 @@ public class SimpleResponse {
 
     public SimpleResponse(String message, int statusCode) {
         setMessage(message);
-        setStatusCode(200);
+        setStatusCode(statusCode);
     }
     
 
@@ -58,8 +57,7 @@ public class SimpleResponse {
         return statusCode;
     }
     
-    
-    public void setStatusCode(int statusCode) {
+    public final void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
     

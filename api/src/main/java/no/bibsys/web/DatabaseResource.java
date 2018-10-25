@@ -8,8 +8,9 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+
 import java.io.IOException;
-import javax.ws.rs.BadRequestException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,10 +21,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,9 +40,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import no.bibsys.db.DatabaseManager;
-import no.bibsys.web.model.CreateRegistryRequest;
 import no.bibsys.web.model.EditRegistryRequest;
-import no.bibsys.web.model.EmptyRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
@@ -57,6 +58,8 @@ import no.bibsys.web.model.SimpleResponse;
         )
 public class DatabaseResource {
 
+    private static final String ENTITY_ID = "entityId";
+    private static final String NOT_IMPLEMENTED = "Not implemented";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
@@ -116,7 +119,7 @@ public class DatabaseResource {
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException, TableAlreadyExistsException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
     @PUT
@@ -138,7 +141,7 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(
                     implementation = EditRegistryRequest.class))) EditRegistryRequest request)
                             throws InterruptedException, JsonProcessingException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
 
@@ -195,9 +198,9 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse getRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry to delete",
+            description = "Name of registry to get schema",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
     @PUT
@@ -213,12 +216,12 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse updateRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry to delete",
+            description = "Name of registry to update",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
             ) throws InterruptedException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
 
@@ -235,8 +238,8 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public PathResponse createEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
+            description = "Name of registry to add to",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to create",
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
@@ -260,10 +263,10 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse entitiesSummary(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName)
+            description = "Name of registry to get entity summary from",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws IOException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
     @GET
@@ -279,13 +282,13 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse getEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
-            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId)
+            description = "Name of registry to get entity from",
+            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
+            description = "Id of entity to get",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId)
                     throws IOException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
     @DELETE
@@ -301,13 +304,13 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse deleteEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
-            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId)
+            description = "Name of registry to delete entity from",
+            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
+            description = "Id of entity to delete",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId)
                     throws IOException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
     
     @PUT
@@ -323,15 +326,15 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse updateEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam("entityId") String registryName, 
-            @Parameter(in = ParameterIn.PATH, name = "entityId", required = true,
-            description = "Name of registry",
-            schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String entityId,
+            description = "Name of registry in which to update entity",
+            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
+            description = "Id of entity to be updated",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId,
             @RequestBody(description = "Entity to create",
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
-        return new SimpleResponse("Not implemented", 501);
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
 
