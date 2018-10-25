@@ -12,7 +12,6 @@ import no.bibsys.db.structures.EntityRegistryTemplate;
 
 public class TableManager {
 
-    private static final String VALIDATION_SCHEMA_TABLE = "VALIDATION_SCHEMA_TABLE";
     private final transient TableDriver tableDriver;
     private final transient ObjectMapper objectMapper;
 
@@ -84,8 +83,8 @@ public class TableManager {
     }
 
     public static String getValidationSchemaTable() {
-        String validationSchemaTableName = VALIDATION_SCHEMA_TABLE;
-        String phase = System.getProperty("phase");
+        String validationSchemaTableName = "VALIDATION_SCHEMA_TABLE";
+        String phase = System.getenv("phase");
         if("test".equals(phase)) {
             validationSchemaTableName = String.join("_", "TEST", validationSchemaTableName);
         }

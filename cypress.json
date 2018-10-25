@@ -1,5 +1,5 @@
 {
-	"baseUrl": "https://w51ddnpx7l.execute-api.eu-west-1.amazonaws.com/Stage",
+	"baseUrl": "https://zlqf9qlk4l.execute-api.eu-west-1.amazonaws.com/test",
 	"responseTimeout": 60000,
 	"video": false
 }

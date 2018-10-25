@@ -8,10 +8,11 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+
 import java.io.IOException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -19,10 +20,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,7 +57,6 @@ import no.bibsys.web.model.SimpleResponse;
         )
 public class DatabaseResource {
 
-    private static final String PHASE2 = "phase";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
@@ -77,13 +79,9 @@ public class DatabaseResource {
     public SimpleResponse editRegistry(@RequestBody(
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
-                    implementation = EditRegistryRequest.class))) EditRegistryRequest request,
-            @HeaderParam(PHASE2) String phase)
+                    implementation = EditRegistryRequest.class))) EditRegistryRequest request)
                             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
-        if(phase != null) {
-            System.setProperty(PHASE2, phase);
-        }
-        return new SimpleResponse("Not implemented");
+        return createTable(request);
     }
 
     @PUT
@@ -102,11 +100,10 @@ public class DatabaseResource {
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-            content = @Content(schema = @Schema(type = STRING))) String validationSchema,
-            @HeaderParam(PHASE2) String phase)
+            content = @Content(schema = @Schema(type = STRING))) String validationSchema)
                     throws InterruptedException, JsonProcessingException {
-        System.setProperty(PHASE2, phase);
         return createTable(new EditRegistryRequest(registryName));
+
     }
 
 
@@ -126,8 +123,7 @@ public class DatabaseResource {
             description = "Name of registry to insert entity into",
             schema = @Schema(type = "string")) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to insert",
-            content = @Content(schema = @Schema(type = STRING))) String entity,
-            @HeaderParam(PHASE2) String phase)
+            content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
         databaseManager.addEntry(registryName, entity);
         ObjectMapper mapper = new ObjectMapper();
@@ -151,8 +147,7 @@ public class DatabaseResource {
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-            @HeaderParam(PHASE2) String phase)
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException {
 
         databaseManager.deleteRegistry(registryName);
@@ -174,8 +169,7 @@ public class DatabaseResource {
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-            @HeaderParam(PHASE2) String phase) 
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) 
                     throws InterruptedException {
         databaseManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));

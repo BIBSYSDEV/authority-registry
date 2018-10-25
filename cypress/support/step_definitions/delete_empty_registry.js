@@ -13,6 +13,7 @@ when('the API admin user request deletion of an entity registry', () => {
 			url: deleteRegistryUrl,
 			method: "DELETE",
 			headers: {
+				'phase': 'test',
 				'content-type': 'application/json'
 			}
 		})
