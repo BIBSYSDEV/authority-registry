@@ -84,8 +84,8 @@ public class TableManager {
 
     public static String getValidationSchemaTable() {
         String validationSchemaTableName = "VALIDATION_SCHEMA_TABLE";
-        String phase = System.getenv("phase");
-        if("test".equals(phase)) {
+        String stage = System.getenv("STAGE_NAME");
+        if("test".equals(stage)) {
             validationSchemaTableName = String.join("_", "TEST", validationSchemaTableName);
         }
 
