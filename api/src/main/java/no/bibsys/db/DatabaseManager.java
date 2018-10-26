@@ -77,8 +77,7 @@ public class DatabaseManager {
             
             tableManager.deleteTable(tableName);
         } else {
-            throw new TableNotFoundException(
-                    String.format("Registry %s does not exist", tableName));
+            throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
         }
     }
 

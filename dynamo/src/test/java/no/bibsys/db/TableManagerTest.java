@@ -8,9 +8,13 @@ import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.util.Date;
 import java.util.Optional;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
+import no.bibsys.db.structures.Metadata;
+
 import org.junit.Test;
 
 
@@ -42,6 +46,10 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldDeleteAnEmptyTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
+        Metadata metadata = new Metadata();
+        metadata.setName(template.getId());
+        metadata.setCreateDate(new Date());
+        template.setMetadata(metadata);
         tableManager.createRegistry(template);
 
         TableReader reader = new TableReader(newTableDriver(), TableManager.VALIDATION_SCHEMA_TABLE);

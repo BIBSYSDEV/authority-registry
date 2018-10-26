@@ -9,6 +9,7 @@ import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.HelloResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
+import no.bibsys.web.exception.InterruptedExceptionMapper;
 import no.bibsys.web.exception.TableAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.TableNotFoundExceptionMapper;
 
@@ -32,6 +33,7 @@ public class JerseyConfig extends ResourceConfig {
         register(ConditionalCheckFailedExceptionMapper.class);
         register(TableAlreadyExistsExceptionMapper.class);
         register(TableNotFoundExceptionMapper.class);
+        register(InterruptedExceptionMapper.class);
         
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);

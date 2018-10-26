@@ -11,7 +11,7 @@ public class TableNotFoundExceptionMapper implements ExceptionMapper<TableNotFou
 
     @Override
     public Response toResponse(TableNotFoundException exception) {
-        return Response.status(Response.Status.NOT_FOUND).entity(new SimpleResponse("Table does not exist")).build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new SimpleResponse(exception.getMessage())).build();
     }
 
 }
