@@ -90,7 +90,7 @@ public class EditRegistryRequest {
     }
     
     public void parseEditRegistryRequest(Metadata metadata) {
-        metadata.setName(Optional.ofNullable(getRegistryName()).orElse(null));
+        metadata.setRegistryName(Optional.ofNullable(getRegistryName()).orElse(null));
         metadata.setLabel(Optional.ofNullable(getLabel()).orElse(null));
         metadata.setLicense(Optional.ofNullable(getLicense()).orElse(null));
         metadata.setContributor(Optional.ofNullable(getContributor()).orElse(null));

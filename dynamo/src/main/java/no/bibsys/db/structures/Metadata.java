@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Metadata {
 
-    private String name;
     private Date createDate;
     private String registryName;
     private List<String> label;
@@ -17,14 +16,6 @@ public class Metadata {
 
     public Metadata() {
         createDate = new Date();
-    }
-    
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
     
     public Date getCreateDate() {
