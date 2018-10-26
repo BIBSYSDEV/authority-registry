@@ -1,11 +1,15 @@
 package no.bibsys.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.db.structures.EntityRegistryTemplate;
 
 
@@ -15,6 +19,8 @@ public class TableManager {
     private final transient TableDriver tableDriver;
     private final transient ObjectMapper objectMapper;
 
+    Logger logger = LoggerFactory.getLogger(TableManager.class);
+    
     public TableManager(final TableDriver tableDriver) {
         this.tableDriver = tableDriver;
         objectMapper = ObjectMapperHelper.getObjectMapper();
@@ -22,7 +28,9 @@ public class TableManager {
 
     public void deleteTable(final String tableName){
         try {
+            logger.debug(String.format("Trying to delete %s", tableName));
             tableDriver.deleteTable(tableName);
+            logger.debug(String.format("%s deleted", tableName));
             TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
             writer.deleteEntry(tableName);
         } catch (ResourceNotFoundException e) {

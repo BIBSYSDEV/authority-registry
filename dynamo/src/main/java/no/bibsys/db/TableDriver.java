@@ -103,12 +103,10 @@ public final class TableDriver {
 
     public  void deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
-            client.deleteTable(tableName);
-            if (tableExists(tableName)) {
-                //                dynamoDb.getTable(tableName).waitForDelete();
-                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
-                TableUtils.deleteTableIfExists(client, deleteTableRequest);
-            }
+            logger.debug(String.format("%s exists, starting to delete.", tableName));
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
+            TableUtils.deleteTableIfExists(client, deleteTableRequest);
+            logger.debug(String.format("Finished deleging %s", tableName));
         } else {
             throw new TableNotFoundException(tableName);
         }
