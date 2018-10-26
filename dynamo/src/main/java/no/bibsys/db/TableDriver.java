@@ -106,7 +106,7 @@ public final class TableDriver {
             logger.debug(String.format("%s exists, starting to delete.", tableName));
             DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteTableRequest);
-            logger.debug(String.format("Finished deleging %s", tableName));
+            logger.debug(String.format("Finished deleting %s", tableName));
         } else {
             throw new TableNotFoundException(tableName);
         }
