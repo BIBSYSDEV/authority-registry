@@ -3,19 +3,14 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
@@ -30,7 +25,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private final static String TABLE_NAME = "DatabaseControllerAPITest";
     private final SampleData sampleData = new SampleData();
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected Application configure() {
