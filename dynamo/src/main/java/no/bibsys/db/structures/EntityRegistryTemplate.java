@@ -12,7 +12,7 @@ public class EntityRegistryTemplate {
     public EntityRegistryTemplate(String tableName) {
         this();
         id = tableName;
-        metadata.setName(tableName);
+        metadata.setRegistryName(tableName);
     }
 
     public String getId() {

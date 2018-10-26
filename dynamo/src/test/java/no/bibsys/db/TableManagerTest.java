@@ -47,7 +47,7 @@ public class TableManagerTest extends LocalDynamoTest {
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
         Metadata metadata = new Metadata();
-        metadata.setName(template.getId());
+        metadata.setRegistryName(template.getId());
         metadata.setCreateDate(new Date());
         template.setMetadata(metadata);
         tableManager.createRegistry(template);
