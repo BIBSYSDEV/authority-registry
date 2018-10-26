@@ -56,6 +56,28 @@ Resources:
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
 
+  RestApiUpAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "RestApiUpAlarm"]]
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 3
+      MetricName: HealthCheckStatus
+      Namespace: AWS/Route53
+      Period: 60
+      Statistic: Minimum
+      Treshold: 0.5
+      
+  HealthCheck:
+    DependsOn: 
+      - RestApi
+      - RestApiUpAlarm
+    Type: "AWS::Route53::HealthCheck"
+    Properties: 
+      HealthCheckConfig:
+        FullyQualifiedDomainName: !GetAtt RestApi.DistributionDomainName
+        Type: HTTPS
+
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:
     Type: AWS::S3::Bucket
