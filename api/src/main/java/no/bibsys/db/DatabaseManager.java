@@ -68,7 +68,7 @@ public class DatabaseManager {
 
     }
 
-    public void deleteRegistry(String tableName) throws InterruptedException {
+    public void deleteRegistry(String tableName) {
         TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             

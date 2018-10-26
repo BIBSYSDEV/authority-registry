@@ -20,7 +20,7 @@ public class TableManager {
         objectMapper = ObjectMapperHelper.getObjectMapper();
     }
 
-    public void deleteTable(final String tableName) throws InterruptedException {
+    public void deleteTable(final String tableName){
         try {
             tableDriver.deleteTable(tableName);
             TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);

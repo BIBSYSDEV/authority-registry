@@ -5,9 +5,12 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
+import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
 import java.util.List;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
@@ -78,7 +81,7 @@ public final class TableDriver {
     /**
      * Deletes a table and the validation schema associated with this table
      */
-    public void deleteTable(final String tableName) throws InterruptedException {
+    public void deleteTable(final String tableName) {
         long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
@@ -98,11 +101,13 @@ public final class TableDriver {
 //        logger.info("Deleting validation schema for table {}", tableName);
 //    }
 
-    public  void deleteNoCheckTable(final String tableName) throws InterruptedException {
+    public  void deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
             client.deleteTable(tableName);
             if (tableExists(tableName)) {
-                dynamoDb.getTable(tableName).waitForDelete();
+                //                dynamoDb.getTable(tableName).waitForDelete();
+                DeleteTableRequest deleteTableRequest = new DeleteTableRequest(tableName);
+                TableUtils.deleteTableIfExists(client, deleteTableRequest);
             }
         } else {
             throw new TableNotFoundException(tableName);
