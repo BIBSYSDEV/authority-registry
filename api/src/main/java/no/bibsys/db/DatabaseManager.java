@@ -21,6 +21,7 @@ public class DatabaseManager {
 
         String tableName = request.getRegistryName();
         if (registryExists(tableName)) {
+            deleteRegistry(tableName);
             throw new TableAlreadyExistsException(
                     String.format("Registry %s already exists", tableName));
         } else {
