@@ -19,7 +19,7 @@ public class TableManager {
     private final transient TableDriver tableDriver;
     private final transient ObjectMapper objectMapper;
 
-    Logger logger = LoggerFactory.getLogger(TableManager.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(TableManager.class);
     
     public TableManager(final TableDriver tableDriver) {
         this.tableDriver = tableDriver;
