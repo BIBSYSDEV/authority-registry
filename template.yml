@@ -75,7 +75,7 @@ Resources:
     Type: "AWS::Route53::HealthCheck"
     Properties: 
       HealthCheckConfig:
-        FullyQualifiedDomainName: !GetAtt RestApi.DistributionDomainName
+        FullyQualifiedDomainName: !Join ['', [!Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com']]
         Type: HTTPS
 
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
