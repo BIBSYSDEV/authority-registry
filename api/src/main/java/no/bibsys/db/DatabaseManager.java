@@ -21,7 +21,6 @@ public class DatabaseManager {
 
         String tableName = request.getRegistryName();
         if (registryExists(tableName)) {
-            deleteRegistry(tableName);
             throw new TableAlreadyExistsException(
                     String.format("Registry %s already exists", tableName));
         } else {
@@ -73,8 +72,8 @@ public class DatabaseManager {
         TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             
-            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.VALIDATION_SCHEMA_TABLE);
-            schemaTableWriter.deleteEntry(tableName);
+//            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.VALIDATION_SCHEMA_TABLE);
+//            schemaTableWriter.deleteEntry(tableName);
             
             tableManager.deleteTable(tableName);
         } else {
