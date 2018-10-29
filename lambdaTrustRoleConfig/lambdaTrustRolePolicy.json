@@ -4,17 +4,17 @@
   "Statement": [
     {
       "Action"  : [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "dynamodb:CreateTable",
-        "dynamodb:DeleteTable",
-        "dynamodb:DescribeTable",
-        "dynamodb:BatchGetItem",
-        "dynamodb:BatchWriteItem",
-        "dynamodb:PutItem",
-        "dynamodb:GetItem",
-        "s3:*",
+        //        "logs:CreateLogGroup",
+        //        "logs:CreateLogStream",
+        //        "logs:PutLogEvents",
+        //        "dynamodb:CreateTable",
+        //        "dynamodb:DeleteTable",
+        //        "dynamodb:DescribeTable",
+        //        "dynamodb:BatchGetItem",
+        //        "dynamodb:BatchWriteItem",
+        //        "dynamodb:PutItem",
+        //        "dynamodb:GetItem",
+        //        "s3:*",
         "apigateway:GET"
       ],
       "Resource": "*",
