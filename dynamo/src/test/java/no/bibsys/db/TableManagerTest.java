@@ -52,7 +52,7 @@ public class TableManagerTest extends LocalDynamoTest {
         template.setMetadata(metadata);
         tableManager.createRegistry(template);
 
-        TableReader reader = new TableReader(newTableDriver(), TableManager.VALIDATION_SCHEMA_TABLE);
+        TableReader reader = new TableReader(newTableDriver(), TableManager.getValidationSchemaTable());
         assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
 
         tableManager.deleteTable(tableName);
@@ -111,7 +111,7 @@ public class TableManagerTest extends LocalDynamoTest {
         tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
-        TableReader reader=new TableReader(tableDriver,"VALIDATION_SCHEMA_TABLE"); 
+        TableReader reader=new TableReader(tableDriver,TableManager.getValidationSchemaTable()); 
         Optional<String> schema = reader.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
     }

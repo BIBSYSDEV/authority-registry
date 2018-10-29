@@ -7,7 +7,7 @@
 //Then an entity registry that accepts only valid data is created
 
 let createEntityRegistryRequest ={
-		'registryName': 'test1'
+		'name': 'test1'
 //			'registryAdminUsers': ['user1', 'user2'],
 //			'registryValidationSchema': 'schema'
 }
@@ -18,8 +18,8 @@ let createRegistryEndpoint = '/registry'
 
 		let attributeArray = dataTable.rawTable;
 
-		expect(createEntityRegistryRequest['registryName']).to.be.a('string');
-		expect(createEntityRegistryRequest['registryName']).to.have.length.above(0);
+		expect(createEntityRegistryRequest['name']).to.be.a('string');
+		expect(createEntityRegistryRequest['name']).to.have.length.above(0);
 
 //		expect(createEntityRegistryRequest['registryAdminUsers']).to.be.a('array');
 //		expect(createEntityRegistryRequest['registryAdminUsers']).to.have.length.above(0);
@@ -41,7 +41,7 @@ let createRegistryEndpoint = '/registry'
 
 		cy.get("@registryName").then((randomRegistryName) =>{
 
-			createEntityRegistryRequest['registryName'] = randomRegistryName
+			createEntityRegistryRequest['name'] = randomRegistryName
 
 			cy.request({ 
 				url: createRegistryEndpoint + "/" + randomRegistryName, 

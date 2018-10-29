@@ -85,7 +85,6 @@ public final class TableDriver {
         long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
-//            deleteValidationSchema(tableName);
         } else {
             throw new TableNotEmptyException(tableName);
         }
@@ -125,9 +124,7 @@ public final class TableDriver {
             .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
                 new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
 
-        final Table table = dynamoDb.createTable(request);
-        table.waitForActive();
-
+        dynamoDb.createTable(request);
     }
 
 
@@ -136,5 +133,9 @@ public final class TableDriver {
         createTable(tableName, new IdOnlyEntry());
     }
 
-
+    public boolean isTableCreated(final String tableName) {
+        Table table = dynamoDb.getTable(tableName);
+        
+        return table != null;
+    }
 }

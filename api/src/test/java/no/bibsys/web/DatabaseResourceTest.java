@@ -14,8 +14,6 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
@@ -30,7 +28,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private final static String TABLE_NAME = "DatabaseControllerAPITest";
     private final SampleData sampleData = new SampleData();
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected Application configure() {
@@ -55,8 +52,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void sendSuccessWhenCreatingNonExistingTable() throws Exception {
-        SimpleResponse expected = new SimpleResponse(
-                String.format("A registry with name %s has been created", TABLE_NAME));
+        SimpleResponse expected = new SimpleResponse(String.format("A registry with name %s has been created", TABLE_NAME));
 
         Response response = createTable(TABLE_NAME);
 
@@ -172,8 +168,10 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     private Response createTableRequest(EditRegistryRequest request) throws Exception {
-        return target("/registry/" + request.getRegistryName()).request()
-                .put(Entity.entity("", MediaType.APPLICATION_JSON));
+        return target("/registry/" + request.getRegistryName())
+                .request()
+                .header("phase", "test")
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 
 
