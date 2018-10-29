@@ -102,7 +102,7 @@ public class DatabaseResource {
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema)
                     throws InterruptedException, JsonProcessingException {
-        return createTable(new EditRegistryRequest(registryName));
+        return createTable(new EditRegistryRequest(registryName)); 
 
     }
 
