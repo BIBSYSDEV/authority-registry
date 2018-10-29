@@ -60,13 +60,13 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "RestApiUpAlarm"]]
-      ComparisonOperator: GreaterThanThreshold
+      ComparisonOperator: LessThanThreshold
       EvaluationPeriods: 3
       MetricName: HealthCheckStatus
       Namespace: AWS/Route53
       Period: 60
       Statistic: Minimum
-      Threshold: 0.5
+      Threshold: 1
       
   HealthCheck:
     DependsOn: 
