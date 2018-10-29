@@ -8,7 +8,9 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+
 import java.io.IOException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HttpMethod;
@@ -18,10 +20,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,8 +80,8 @@ public class DatabaseResource {
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
                     implementation = EditRegistryRequest.class))) EditRegistryRequest request)
-                            throws InterruptedException, TableAlreadyExistsException {
-        return new SimpleResponse("Not implemented");
+                            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+        return createTable(request);
     }
 
     @PUT
@@ -98,7 +102,7 @@ public class DatabaseResource {
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema)
                     throws InterruptedException, JsonProcessingException {
-        return createTable(new EditRegistryRequest(registryName));
+        return createTable(new EditRegistryRequest(registryName)); 
 
     }
 
@@ -175,8 +179,7 @@ public class DatabaseResource {
             throws InterruptedException, JsonProcessingException {
         String tableName = request.getRegistryName();
         databaseManager.createRegistry(request);
-        return new SimpleResponse(
-                String.format("A registry with name %s has been created", tableName));
+        return new SimpleResponse(String.format("A registry with name %s has been created", tableName));
     }
 
 }

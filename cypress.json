@@ -1,5 +1,4 @@
 {
-	"baseUrl": "https://w51ddnpx7l.execute-api.eu-west-1.amazonaws.com/Stage",
-	"responseTimeout": 60000,
+	"responseTimeout": 120000,
 	"video": false
 }
