@@ -39,7 +39,6 @@ function createEmptyRegistry(){
 					method: 'PUT',
 					body: testSchema, 
 					headers: {
-						'phase': 'test',
 						Authorization: 'Token API_admin_token',
 						'content-type': 'application/json'
 					}
@@ -65,7 +64,6 @@ function createTestEntity(){
 				method: 'POST',
 				body: testData,
 				headers: {
-					'phase': 'test',
 					Authorization: 'Token API_admin_token',
 					'content-type': 'application/json'
 				}

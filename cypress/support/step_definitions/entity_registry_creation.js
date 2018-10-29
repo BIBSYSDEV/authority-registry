@@ -48,7 +48,6 @@ let createRegistryEndpoint = '/registry'
 				body: createEntityRegistryRequest,
 				method: 'PUT',
 				headers: {
-					'phase': 'test',
 					'content-type': 'application/json'
 				}
 			})
