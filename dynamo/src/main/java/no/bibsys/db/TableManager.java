@@ -29,8 +29,10 @@ public class TableManager {
     public void deleteTable(final String tableName){
         try {
             logger.debug(String.format("Trying to delete %s", tableName));
+            System.out.println(String.format("Trying to delete %s", tableName));
             tableDriver.deleteTable(tableName);
             logger.debug(String.format("%s deleted", tableName));
+            System.out.println(String.format("%s deleted", tableName));
             TableWriter writer = new TableWriter(tableDriver, VALIDATION_SCHEMA_TABLE);
             writer.deleteEntry(tableName);
         } catch (ResourceNotFoundException e) {
