@@ -78,11 +78,6 @@ public class DatabaseManager {
         TableManager tableManager = new TableManager(tableDriver);
         logger.debug(String.format("Deleting table %s", tableName));
         if (registryExists(tableName)) {
-            logger.debug(String.format("Deleting table %s from schema table", tableName));
-            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.VALIDATION_SCHEMA_TABLE);
-            schemaTableWriter.deleteEntry(tableName);
-            logger.debug(String.format("Schema table cleared"));
-            
             tableManager.deleteTable(tableName);
             logger.debug(String.format("Table %s deleted", tableName));
         } else {
