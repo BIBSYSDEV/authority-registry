@@ -7,7 +7,6 @@ import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
-import no.bibsys.web.HelloResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
 import no.bibsys.web.exception.TableAlreadyExistsExceptionMapper;
@@ -25,7 +24,6 @@ public class JerseyConfig extends ResourceConfig {
         DatabaseResource databaseController = new DatabaseResource(databaseManager);
 
         register(databaseController);
-        register(HelloResource.class);
         register(PingResource.class);
 
         register(JacksonFeature.class);

@@ -1,0 +1,28 @@
+  # Alarms are currently limited to N.Virginia stacks. Unless we deploy to that region in addition to the region we use this
+  # will not work. To use this sample code add it to template.yml (SAM).
+  RestApiUpAlarm:
+    DependsOn:
+      - HealthCheck
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "RestApiUpAlarm"]]
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 3
+      MetricName: HealthCheckStatus
+      Namespace: AWS/Route53
+      Dimensions:
+        - Name: HealthCheckId
+          Value: !Ref HealthCheck
+      Period: 60
+      Statistic: Minimum
+      Threshold: 1
+      
+  HealthCheck:
+    DependsOn: 
+      - RestApi
+    Type: "AWS::Route53::HealthCheck"
+    Properties: 
+      HealthCheckConfig:
+        FullyQualifiedDomainName: !Join ['', [!Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com']]
+        Type: HTTPS
+        ResourcePath: !Join ['', ['/', !Ref 'Stage', '/ping']]

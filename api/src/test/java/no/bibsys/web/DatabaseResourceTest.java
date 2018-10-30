@@ -37,13 +37,11 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
-    public void returnDefaultMessage() throws Exception {
+    public void pingReturnsStatusCodeOK() throws Exception {
 
-        SimpleResponse expected = new SimpleResponse("Hello");
+        Response response = target("/ping").request().get();
 
-        SimpleResponse actual = target("/hello").request().get(SimpleResponse.class);
-
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
 
