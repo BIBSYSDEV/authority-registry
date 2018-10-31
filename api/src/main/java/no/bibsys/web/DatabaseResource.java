@@ -55,7 +55,7 @@ import no.bibsys.web.model.SimpleResponse;
         contact = @Contact(url = "http://example.org", name = "Entity registry team", email = "entity@example.org")
         )
         )
-@SecurityScheme(name="apiKey", type=SecuritySchemeType.APIKEY, in=SecuritySchemeIn.HEADER)
+@SecurityScheme(name="apiKey", paramName="API_KEY", type=SecuritySchemeType.APIKEY, in=SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String STRING = "string";
