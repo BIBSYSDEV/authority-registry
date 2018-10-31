@@ -11,6 +11,7 @@ public abstract class LocalDynamoTest {
 
     @Before
     public void setUp() {
+        System.setProperty("sqlite4java.library.path", "build/libs");
         databaseManager = new DatabaseManager(LocalDynamoDBHelper.getTableDriver());
         sampleData = new SampleData();
     }

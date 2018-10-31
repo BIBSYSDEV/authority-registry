@@ -19,3 +19,24 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+beforeEach(function(){
+	let uuid = require('uuid');
+	let randomRegistryName = uuid.v4();
+	cy.wrap(randomRegistryName).as('registryName');
+})
+
+afterEach(function(){
+	cy.get("@registryName").then((registryName) => {
+		cy.log("removing DynamoDB table " + registryName)
+		let url = "/registry/" + registryName
+		cy.request({
+					url: url,
+					method: 'DELETE',
+					headers: {
+						Authorization: 'Token API_admin_token',
+						'content-type': 'application/json'
+					},
+					failOnStatusCode: false
+				}).then((response) => {})
+	})
+})

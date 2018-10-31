@@ -1,7 +1,8 @@
 version: 0.2
 env:
   parameter-store:
-    CYPRESS_BASE_URL: $PROJECT_ID-Test-apiUrl
+    CYPRESS_BASE_URL: $PROJECT_ID-$BRANCH-$STAGE-apiUrl
+
 phases:
   install:
     commands:
