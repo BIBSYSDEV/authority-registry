@@ -55,9 +55,11 @@ import no.bibsys.web.model.SimpleResponse;
         contact = @Contact(url = "http://example.org", name = "Entity registry team", email = "entity@example.org")
         )
         )
-@SecurityScheme(name="apiKey", paramName="API_KEY", type=SecuritySchemeType.APIKEY, in=SecuritySchemeIn.HEADER)
+@SecurityScheme(name=DatabaseResource.API_KEY, paramName=DatabaseResource.API_KEY_PARAM_NAME, type=SecuritySchemeType.APIKEY, in=SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
+    protected static final String API_KEY = "apiKey";
+    protected static final String API_KEY_PARAM_NAME = "API_KEY";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
@@ -77,7 +79,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    @SecurityRequirement(name="apiKey")
+    @SecurityRequirement(name=API_KEY)
     public SimpleResponse editRegistry(@RequestBody(
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
@@ -97,6 +99,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=API_KEY)
     public SimpleResponse putNewRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
@@ -120,6 +123,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=API_KEY)
     public PathResponse insertEntry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to insert entity into",
@@ -146,6 +150,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=API_KEY)
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
@@ -168,6 +173,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=API_KEY)
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
