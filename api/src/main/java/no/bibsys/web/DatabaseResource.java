@@ -9,6 +9,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
 import java.io.IOException;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HttpMethod;
@@ -43,7 +44,7 @@ import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 import no.bibsys.web.security.ApiKeyConstants;
-import no.bibsys.web.security.RequireApiAdmin;
+import no.bibsys.web.security.Roles;
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -80,7 +81,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RequireApiAdmin
+    @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse editRegistry(@RequestBody(
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
@@ -101,7 +102,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RequireApiAdmin
+    @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse putNewRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
@@ -126,7 +127,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RequireApiAdmin
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public PathResponse insertEntry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to insert entity into",
@@ -154,7 +155,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RequireApiAdmin
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
@@ -178,7 +179,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RequireApiAdmin
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",

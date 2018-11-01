@@ -158,6 +158,19 @@ public class DatabaseResourceTest extends JerseyTest {
         SimpleResponse expected = new SimpleResponse(String.format("Registry %s has been emptied", TABLE_NAME));
         assertThat(actual, is(equalTo(expected)));
     }
+    
+    @Test
+    public void wrongRoleShouldReturnForbidden() throws Exception {
+        String tableName = TABLE_NAME;
+        EditRegistryRequest request = new EditRegistryRequest(tableName);
+        Response response = target("/registry/" + request.getRegistryName())
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
+        
+        assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
+
+    }
 
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
