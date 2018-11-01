@@ -5,9 +5,12 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
+import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
 import java.util.List;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
@@ -82,7 +85,6 @@ public final class TableDriver {
         long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
-//            deleteValidationSchema(tableName);
         } else {
             throw new TableNotEmptyException(tableName);
         }
@@ -102,7 +104,12 @@ public final class TableDriver {
         if (tableExists(tableName)) {
             client.deleteTable(tableName);
             if (tableExists(tableName)) {
-                dynamoDb.getTable(tableName).waitForDelete();
+                DeleteTableRequest deleteRequest = new DeleteTableRequest();
+                deleteRequest.setTableName(tableName);
+                
+                TableUtils.deleteTableIfExists(client, deleteRequest);
+                
+//                dynamoDb.getTable(tableName).waitForDelete();
             }
         } else {
             throw new TableNotFoundException(tableName);
@@ -122,9 +129,7 @@ public final class TableDriver {
             .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
                 new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
 
-        final Table table = dynamoDb.createTable(request);
-        table.waitForActive();
-
+        dynamoDb.createTable(request);
     }
 
 
@@ -133,5 +138,9 @@ public final class TableDriver {
         createTable(tableName, new IdOnlyEntry());
     }
 
-
+    public boolean isTableCreated(final String tableName) {
+        Table table = dynamoDb.getTable(tableName);
+        
+        return table != null;
+    }
 }

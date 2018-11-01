@@ -41,6 +41,9 @@ Resources:
       MemorySize: 1512
       Role: !Ref LambdaTrustRoleArn
       Timeout: 600
+      Environment:
+        Variables:
+          STAGE_NAME: !Ref Stage
       Events:
         ApiResource:
           Type: Api

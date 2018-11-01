@@ -53,12 +53,12 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         
         databaseManager.createRegistry(createRequest);
         boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
-        boolean existsInSchemaTableAfterCreation = databaseManager.registryExists(TableManager.VALIDATION_SCHEMA_TABLE);
+        boolean existsInSchemaTableAfterCreation = databaseManager.registryExists(TableManager.getValidationSchemaTable());
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
         assertTrue(existsInSchemaTableAfterCreation);
 
-        Optional<String> entry = databaseManager.readEntry(TableManager.VALIDATION_SCHEMA_TABLE, TABLE_NAME);
+        Optional<String> entry = databaseManager.readEntry(TableManager.getValidationSchemaTable(), TABLE_NAME);
         assertTrue(entry.toString().contains(TABLE_NAME));
         assertTrue(entry.toString().contains("creator1"));
         assertTrue(entry.toString().contains("contributor2"));
