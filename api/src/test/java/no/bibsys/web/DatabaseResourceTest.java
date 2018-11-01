@@ -3,17 +3,14 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
@@ -40,13 +37,11 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
-    public void returnDefaultMessage() throws Exception {
+    public void pingReturnsStatusCodeOK() throws Exception {
 
-        SimpleResponse expected = new SimpleResponse("Hello");
+        Response response = target("/ping").request().get();
 
-        SimpleResponse actual = target("/hello").request().get(SimpleResponse.class);
-
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
 
