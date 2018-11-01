@@ -59,14 +59,6 @@ Resources:
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
 
-#  UsagePlan:
-#    Type: AWS::ApiGateway::UsagePlan
-#    Properties:
-#      ApiStages: 
-#      - ApiId: !Ref RestApi
-#        Stage: !Ref Stage
-
-
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:
     Type: AWS::S3::Bucket
