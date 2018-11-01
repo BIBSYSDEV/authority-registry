@@ -84,7 +84,9 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(
                     implementation = EditRegistryRequest.class))) EditRegistryRequest request)
                             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
-        return createTable(request);
+        
+        databaseManager.createRegistry(request);
+        return new SimpleResponse(String.format("A registry with name %s has been created", request.getRegistryName()));
     }
 
     @GET
@@ -98,9 +100,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse getRegistryList()
-            throws InterruptedException, TableAlreadyExistsException {
-        return new SimpleResponse();
+    public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException {
+        return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
     @GET
@@ -336,15 +337,4 @@ public class DatabaseResource {
                     throws IOException {
         return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
-
-
-
-
-    private SimpleResponse createTable(EditRegistryRequest request)
-            throws InterruptedException, JsonProcessingException {
-        databaseManager.createRegistry(request);
-        return new SimpleResponse(
-                String.format("A registry with name %s has been created", request.getRegistryName()));
-    }
-
 }

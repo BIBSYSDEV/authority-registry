@@ -2,12 +2,16 @@ package no.bibsys.db;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
@@ -77,6 +81,18 @@ public final class TableDriver {
         return exists;
     }
 
+    
+    /**
+     * Return number of items in table
+     * 
+     * @param tableName
+     * @return number of items
+     */
+    
+    public long tableSize(final String tableName) {
+    
+        return getTable(tableName).describe().getItemCount(); // Only updated every 6 hours!
+    }
 
     /**
      * Deletes a table and the validation schema associated with this table
