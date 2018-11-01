@@ -38,6 +38,12 @@ public class SimpleResponse {
     }
 
     @Override
+    public String toString() {
+        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + "]";
+    }
+
+
+    @Override
     public int hashCode() {
         return message != null ? message.hashCode() : 0;
     }

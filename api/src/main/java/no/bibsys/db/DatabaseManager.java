@@ -8,7 +8,6 @@ import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.web.model.EditRegistryRequest;
 
 public class DatabaseManager {
 
@@ -18,28 +17,23 @@ public class DatabaseManager {
         this.tableDriver = tableDriver;
     }
 
-    public void createRegistry(EditRegistryRequest request)
+    public void createRegistry(EntityRegistryTemplate request)
             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
         TableManager tableManager = new TableManager(tableDriver);
 
-        String tableName = request.getRegistryName();
+        String tableName = request.getId();
         if (registryExists(tableName)) {
             throw new TableAlreadyExistsException(
                     String.format("Registry %s already exists", tableName));
         } else {
-            
-            EntityRegistryTemplate template = new EntityRegistryTemplate();
-            template.setId(tableName);
-            request.parseEditRegistryRequest(template.getMetadata());
-            
-            tableManager.createRegistry(template);
+            tableManager.createRegistry(request);
         }
     }
     
     
     public void addEntry(String tableName, String json) {
         if (registryExists(tableName)) {
-            TableWriter tableWriter = new TableWriter(tableDriver, tableName);
+            EntityManager tableWriter = new EntityManager(tableDriver, tableName);
             tableWriter.addJson(json);
         } else {
             throw new TableNotFoundException(
@@ -50,8 +44,8 @@ public class DatabaseManager {
 
     public Optional<String> readEntry(String tableName, String id) {
         if (registryExists(tableName)) {
-            TableReader tableReader = new TableReader(tableDriver, tableName);
-            return tableReader.getEntry(id);
+            EntityManager entityManager = new EntityManager(tableDriver, tableName);
+            return entityManager.getEntry(id);
         } else {
             throw new TableNotFoundException(
                     String.format("Registry %s does not exist", tableName));
@@ -75,7 +69,7 @@ public class DatabaseManager {
         TableManager tableManager = new TableManager(tableDriver);
         if (registryExists(tableName)) {
             
-            TableWriter schemaTableWriter = new TableWriter(tableDriver, TableManager.getValidationSchemaTable());
+            EntityManager schemaTableWriter = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
             schemaTableWriter.deleteEntry(tableName);
             
             tableManager.deleteTable(tableName);
@@ -94,7 +88,13 @@ public class DatabaseManager {
         EntityRegistryTemplate template = new EntityRegistryTemplate();
         
         
+        
         return template;
+    }
+
+    public void updateRegistry(EntityRegistryTemplate request) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

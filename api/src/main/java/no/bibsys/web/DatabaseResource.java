@@ -41,7 +41,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import no.bibsys.db.DatabaseManager;
-import no.bibsys.web.model.EditRegistryRequest;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
@@ -83,11 +83,11 @@ public class DatabaseResource {
     public SimpleResponse createRegistry(@RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
-                    implementation = EditRegistryRequest.class))) EditRegistryRequest request)
+                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
         
         databaseManager.createRegistry(request);
-        return new SimpleResponse(String.format("A registry with name %s has been created", request.getRegistryName()));
+        return new SimpleResponse(String.format("A registry with name %s has been created", request.getId()));
     }
 
     @GET
@@ -123,11 +123,12 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws InterruptedException {
+                    throws InterruptedException, JsonProcessingException {
         
-        databaseManager.getRegistryMetadata(registryName);
+         EntityRegistryTemplate metadata = databaseManager.getRegistryMetadata(registryName);
+         ObjectMapper mapper = new ObjectMapper();
         
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+        return new SimpleResponse(mapper.writeValueAsString(metadata), 200);
     }
 
     @PUT
@@ -147,10 +148,10 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(
-                    implementation = EditRegistryRequest.class))) EditRegistryRequest request)
+                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, JsonProcessingException {
-        databaseManager.createRegistry(request);
-        return new SimpleResponse(String.format("A registry with name %s has been created", request.getRegistryName()));
+        databaseManager.updateRegistry(request);
+        return new SimpleResponse(String.format("Registry %s has been updated", request.getId()));
     }
 
 

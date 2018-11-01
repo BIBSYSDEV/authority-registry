@@ -2,6 +2,8 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
@@ -15,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.structures.Entry;
 
-public class TableWriter {
+public class EntityManager {
 
 
     private static final String NULL = "null";
@@ -24,12 +26,18 @@ public class TableWriter {
     private final transient String tableName;
 
 
-    public TableWriter(final TableDriver tableDriver, String tableName) {
+    public EntityManager(final TableDriver tableDriver, String tableName) {
         this.tableDriver = tableDriver;
         this.tableName = tableName;
         mapper = new ObjectMapper();
     }
 
+    public Optional<String> getEntry(final String id) {
+        final Table table = tableDriver.getDynamoDb().getTable(tableName);
+        final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+        return itemOpt.map(item -> item.toJSON());
+    }
+    
     public void deleteEntry(String id)  {
 
         Table table = tableDriver.getTable(tableName);

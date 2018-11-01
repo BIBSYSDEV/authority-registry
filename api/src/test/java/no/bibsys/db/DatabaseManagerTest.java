@@ -19,32 +19,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import no.bibsys.db.exceptions.ItemExistsException;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.EditRegistryRequest;
 
 
 public class DatabaseManagerTest extends LocalDynamoTest {
 
     private ObjectMapper mapper = new ObjectMapper();
     private static String TABLE_NAME = "DatabaseManagerTest";
-    private EditRegistryRequest createRequest = new EditRegistryRequest(TABLE_NAME);
+    private EntityRegistryTemplate createRequest = new EntityRegistryTemplate();
 
-    private EditRegistryRequest createTestEditRequest() {
-        EditRegistryRequest newCreateRequest = new EditRegistryRequest(TABLE_NAME);
-        newCreateRequest.setContributor(Arrays.asList(new String[] {"contributor1", "contributor2"}));
-        newCreateRequest.setCreator(Arrays.asList(new String[] {"creator1", "creator2"}));
-        newCreateRequest.setLabel(Arrays.asList(new String[] {"label1", "label2"}));
-        newCreateRequest.setSameAs(Arrays.asList(new String[] {"sameAs1", "sameAs2"}));
-        newCreateRequest.setDescription("description");
-        newCreateRequest.setLicense("license");
+    private EntityRegistryTemplate createTestEditRequest() {
+        EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
+        newCreateRequest.setId(TABLE_NAME);
+        newCreateRequest.getMetadata().setContributor(Arrays.asList(new String[] {"contributor1", "contributor2"}));
+        newCreateRequest.getMetadata().setCreator(Arrays.asList(new String[] {"creator1", "creator2"}));
+        newCreateRequest.getMetadata().setLabel(Arrays.asList(new String[] {"label1", "label2"}));
+        newCreateRequest.getMetadata().setSameAs(Arrays.asList(new String[] {"sameAs1", "sameAs2"}));
+        newCreateRequest.getMetadata().setDescription("description");
+        newCreateRequest.getMetadata().setLicense("license");
         
         return newCreateRequest;
     }
     
     @Before
     public void init() {
-        createRequest = new EditRegistryRequest(TABLE_NAME);
+        createRequest = new EntityRegistryTemplate();
+        createRequest.setId(TABLE_NAME);
     }
     
     @Test

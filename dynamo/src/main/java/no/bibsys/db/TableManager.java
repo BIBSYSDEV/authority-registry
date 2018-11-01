@@ -32,7 +32,7 @@ public class TableManager {
     public void deleteTable(final String tableName) throws InterruptedException {
         try {
             tableDriver.deleteTable(tableName);
-            TableWriter writer = new TableWriter(tableDriver, getValidationSchemaTable());
+            EntityManager writer = new EntityManager(tableDriver, getValidationSchemaTable());
             writer.deleteEntry(tableName);
         } catch (ResourceNotFoundException e) {
             throw new TableNotFoundException(e.getMessage());
@@ -75,7 +75,7 @@ public class TableManager {
         String tableName = template.getId();
 
         if(!tableExists(tableName)) {
-            TableWriter writer = new TableWriter(tableDriver, getValidationSchemaTable());
+            EntityManager writer = new EntityManager(tableDriver, getValidationSchemaTable());
 
             writer.addJson(objectMapper.writeValueAsString(template));
 

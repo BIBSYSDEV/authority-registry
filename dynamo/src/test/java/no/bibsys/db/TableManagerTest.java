@@ -47,11 +47,11 @@ public class TableManagerTest extends LocalDynamoTest {
         TableManager tableManager = new TableManager(newTableDriver());
         tableManager.createRegistry(template);
 
-        TableReader reader = new TableReader(newTableDriver(), TableManager.getValidationSchemaTable());
-        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
+        EntityManager entityManager = new EntityManager(newTableDriver(), TableManager.getValidationSchemaTable());
+        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(true)));
 
         tableManager.deleteTable(tableName);
-        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(false)));
+        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(false)));
 
         int tables = tableManager.getClient().listTables().getTableNames().size();
 
@@ -81,7 +81,7 @@ public class TableManagerTest extends LocalDynamoTest {
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(template);
         ;
-        TableWriter tableWriter = new TableWriter(tableDriver, tableName);
+        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
         tableWriter.addEntry(newSimpleEntry());
         tableManager.deleteTable(tableName);
 
@@ -102,12 +102,12 @@ public class TableManagerTest extends LocalDynamoTest {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(template);
-        TableWriter tableWriter = new TableWriter(tableDriver, tableName);
+        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
         tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
-        TableReader reader=new TableReader(tableDriver,TableManager.getValidationSchemaTable()); 
-        Optional<String> schema = reader.getEntry(tableName);
+        EntityManager entityManager = new EntityManager(tableDriver,TableManager.getValidationSchemaTable()); 
+        Optional<String> schema = entityManager.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
     }
 

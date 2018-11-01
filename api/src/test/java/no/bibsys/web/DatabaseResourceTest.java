@@ -17,9 +17,9 @@ import org.junit.Test;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 
@@ -155,7 +155,8 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test 
     public void getListOfRegistries() throws Exception {
-        createTable(TABLE_NAME);
+        EntityRegistryTemplate request = new EntityRegistryTemplate(TABLE_NAME);
+        createTableRequest(request);
         
         Response response = target("/registry")
                 .request()
@@ -166,6 +167,18 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(actual, is(equalTo(expected)));
     }
     
+    @Test
+    public void getRegistryMetadata() throws Exception {
+        createTable(TABLE_NAME);
+        
+        Response response = target(String.format("/registry/%s", TABLE_NAME))
+                .request()
+                .get();
+
+        SimpleResponse actual = response.readEntity(SimpleResponse.class);
+        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", TABLE_NAME), 200);
+        assertThat(actual, is(equalTo(expected)));
+    }
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
         String path = String.format("/registry/%s/entity", registryName);
@@ -175,12 +188,12 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     private Response createTable(String tableName) throws Exception {
-        EditRegistryRequest createRequest = new EditRegistryRequest(tableName);
+        EntityRegistryTemplate createRequest = new EntityRegistryTemplate(tableName);
         return createTableRequest(createRequest);
     }
 
 
-    private Response createTableRequest(EditRegistryRequest request) throws Exception {
+    private Response createTableRequest(EntityRegistryTemplate request) throws Exception {
         return target("/registry")
                 .request()
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));

@@ -23,7 +23,7 @@ public class TableDriverTest extends LocalDynamoTest{
         TableDriver driver = newTableDriver();
         try {
             driver.createTable("test");
-            TableWriter writer = new TableWriter(driver, "test");
+            EntityManager writer = new EntityManager(driver, "test");
             Path path = Paths.get("json/sample.json");
             
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString()), StandardCharsets.UTF_8))) {
