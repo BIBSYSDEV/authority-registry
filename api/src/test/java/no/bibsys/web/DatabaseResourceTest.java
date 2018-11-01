@@ -14,6 +14,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.DatabaseManager;
@@ -156,7 +158,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test 
     public void getListOfRegistries() throws Exception {
         EntityRegistryTemplate request = new EntityRegistryTemplate(TABLE_NAME);
-        createTableRequest(request);
+        createTable(request);
         
         Response response = target("/registry")
                 .request()
@@ -169,14 +171,21 @@ public class DatabaseResourceTest extends JerseyTest {
     
     @Test
     public void getRegistryMetadata() throws Exception {
-        createTable(TABLE_NAME);
+        
+        EntityRegistryTemplate template = new EntityRegistryTemplate(TABLE_NAME);
+        
+        ObjectMapper mapper = new ObjectMapper();
+        String templateJson = mapper.writeValueAsString(template);
+        
+        createTable(template);
         
         Response response = target(String.format("/registry/%s", TABLE_NAME))
                 .request()
                 .get();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", TABLE_NAME), 200);
+        
+        SimpleResponse expected = new SimpleResponse(templateJson, 200);
         assertThat(actual, is(equalTo(expected)));
     }
 
@@ -189,11 +198,11 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private Response createTable(String tableName) throws Exception {
         EntityRegistryTemplate createRequest = new EntityRegistryTemplate(tableName);
-        return createTableRequest(createRequest);
+        return createTable(createRequest);
     }
 
 
-    private Response createTableRequest(EntityRegistryTemplate request) throws Exception {
+    private Response createTable(EntityRegistryTemplate request) throws Exception {
         return target("/registry")
                 .request()
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));

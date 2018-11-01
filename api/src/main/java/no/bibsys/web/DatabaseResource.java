@@ -123,7 +123,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws InterruptedException, JsonProcessingException {
+                    throws InterruptedException, IOException {
         
          EntityRegistryTemplate metadata = databaseManager.getRegistryMetadata(registryName);
          ObjectMapper mapper = new ObjectMapper();
