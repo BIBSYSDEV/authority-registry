@@ -2,8 +2,10 @@ package no.bibsys.web.model;
 
 import java.util.List;
 import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.bibsys.db.structures.Metadata;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EditRegistryRequest {
 
     private String registryName;

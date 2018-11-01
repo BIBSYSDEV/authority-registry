@@ -59,7 +59,7 @@ import no.bibsys.web.model.SimpleResponse;
 public class DatabaseResource {
 
     protected static final String API_KEY = "apiKey";
-    protected static final String API_KEY_PARAM_NAME = "x-api-key";
+    protected static final String API_KEY_PARAM_NAME = "x-api-key"; // the paramName must have this name to be recognized during import
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
