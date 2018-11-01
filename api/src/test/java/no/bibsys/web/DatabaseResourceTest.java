@@ -168,7 +168,7 @@ public class DatabaseResourceTest extends JerseyTest {
     
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
-        String path = String.format("/registry/%s/", registryName);
+        String path = String.format("/registry/%s/entity", registryName);
         return target(path).request().post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
