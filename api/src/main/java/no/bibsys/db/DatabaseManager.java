@@ -1,9 +1,12 @@
 package no.bibsys.db;
 
+import java.util.List;
 import java.util.Optional;
+
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.EditRegistryRequest;
 
@@ -79,6 +82,19 @@ public class DatabaseManager {
         } else {
             throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
         }
+    }
+
+    public List<String> getRegistryList() {
+        TableManager tableManager = new TableManager(tableDriver);
+        return tableManager.listRegistries();
+    }
+
+    public EntityRegistryTemplate getRegistryMetadata(String registryName) {
+        
+        EntityRegistryTemplate template = new EntityRegistryTemplate();
+        
+        
+        return template;
     }
 
 }

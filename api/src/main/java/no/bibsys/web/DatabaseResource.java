@@ -10,6 +10,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -100,8 +101,11 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+    public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+        
+        List<String> registryList = databaseManager.getRegistryList();
+        ObjectMapper mapper = new ObjectMapper();
+        return new SimpleResponse(mapper.writeValueAsString(registryList), 200);
     }
 
     @GET
@@ -119,7 +123,10 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws InterruptedException, TableAlreadyExistsException {
+                    throws InterruptedException {
+        
+        databaseManager.getRegistryMetadata(registryName);
+        
         return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
 
@@ -142,7 +149,8 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(
                     implementation = EditRegistryRequest.class))) EditRegistryRequest request)
                             throws InterruptedException, JsonProcessingException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+        databaseManager.createRegistry(request);
+        return new SimpleResponse(String.format("A registry with name %s has been created", request.getRegistryName()));
     }
 
 

@@ -1,7 +1,16 @@
 package no.bibsys.db;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -91,5 +100,29 @@ public class TableManager {
 
         return validationSchemaTableName;
     }
-    
+
+    public List<String> listRegistries() {
+        ScanRequest scanRequest = new ScanRequest()
+                .withTableName(getValidationSchemaTable());
+
+        ScanResult scanResult = null;
+        List<String> registryNameList = new ArrayList<>(); 
+        do {
+            if(scanResult != null) {
+                scanRequest.setExclusiveStartKey(scanResult.getLastEvaluatedKey());
+            }
+
+            scanResult = tableDriver.getClient()
+                    .scan(scanRequest);
+            List<Map<String,AttributeValue>> items = scanResult
+                    .getItems();
+            registryNameList.addAll(items.stream()
+                    .map(entry -> entry.get("id").getS())
+                    .collect(Collectors.toList()));
+            
+        } while (scanResult.getLastEvaluatedKey() != null);
+
+        return registryNameList;
+    }
+
 }

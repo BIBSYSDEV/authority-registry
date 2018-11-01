@@ -153,6 +153,19 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(actual, is(equalTo(expected)));
     }
 
+    @Test 
+    public void getListOfRegistries() throws Exception {
+        createTable(TABLE_NAME);
+        
+        Response response = target("/registry")
+                .request()
+                .get();
+
+        SimpleResponse actual = response.readEntity(SimpleResponse.class);
+        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", TABLE_NAME), 200);
+        assertThat(actual, is(equalTo(expected)));
+    }
+    
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
         String path = String.format("/registry/%s/", registryName);
@@ -168,10 +181,9 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     private Response createTableRequest(EditRegistryRequest request) throws Exception {
-        return target("/registry/" + request.getRegistryName())
+        return target("/registry")
                 .request()
-                .header("phase", "test")
-                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 
 
