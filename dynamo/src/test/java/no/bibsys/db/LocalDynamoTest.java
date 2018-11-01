@@ -1,13 +1,16 @@
 package no.bibsys.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-import java.util.ArrayList;
-import java.util.List;
+
 import no.bibsys.db.structures.LanguageString;
 import no.bibsys.db.structures.SimpleEntry;
-import org.junit.Before;
 
 
 public abstract class LocalDynamoTest extends DynamoTest {
