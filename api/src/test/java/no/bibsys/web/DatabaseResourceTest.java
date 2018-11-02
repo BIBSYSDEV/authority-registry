@@ -168,7 +168,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void wrongRoleShouldReturnForbidden() throws Exception {
         String tableName = TABLE_NAME;
-        EditRegistryRequest request = new EditRegistryRequest(tableName);
+        EntityRegistryTemplate request = new EntityRegistryTemplate(tableName);
         Response response = target("/registry")
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
