@@ -23,7 +23,6 @@ import no.bibsys.db.DatabaseManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
 import no.bibsys.web.security.ApiKeyConstants;
