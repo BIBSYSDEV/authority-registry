@@ -26,7 +26,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -230,8 +232,10 @@ public class DatabaseResource {
     public SimpleResponse getRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
+        
+        String schemaAsJson = databaseManager.getSchemaAsJson(registryName);
+        return new SimpleResponse(schemaAsJson);
     }
 
     @PUT
@@ -247,14 +251,15 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
-    public SimpleResponse updateRegistrySchema(
+    public PathResponse updateRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to update",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
-            ) throws InterruptedException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+            ) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
+        databaseManager.addSchemaJson(registryName, validationSchema);
+        return new PathResponse(String.format("/registry/%s/schema", registryName));
     }
 
 

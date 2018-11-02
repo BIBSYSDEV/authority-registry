@@ -83,6 +83,37 @@ public class DatabaseManager {
         }
     }
 
+    public String getSchemaAsJson(String registryName) throws JsonParseException, JsonMappingException, IOException {
+
+        if(!registryExists(registryName)) {
+            throw new TableNotFoundException(String.format("Could not find a registry with name %s", registryName));
+        }
+        
+        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
+        Optional<String> entry = entityManager.getEntry(registryName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        EntityRegistryTemplate registryTemplate = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
+        
+        String schema = Optional.ofNullable(registryTemplate.getSchema()).orElse("");
+        return schema;
+    }
+    
+    public void addSchemaJson(String registryName, String schemaAsJson) throws JsonParseException, JsonMappingException, IOException {
+        if(!registryExists(registryName)) {
+            throw new TableNotFoundException(String.format("Could not find a registry with name %s", registryName));
+        }
+        
+        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
+        Optional<String> entry = entityManager.getEntry(registryName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        EntityRegistryTemplate registryTemplate = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
+
+        registryTemplate.setSchema(schemaAsJson);
+        updateRegistry(registryTemplate);
+    }
+
     public List<String> getRegistryList() {
         TableManager tableManager = new TableManager(tableDriver);
         return tableManager.listRegistries();
@@ -106,5 +137,6 @@ public class DatabaseManager {
         tableManager.updateRegistryMetadata(request);
         
     }
+
 
 }
