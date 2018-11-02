@@ -1,8 +1,0 @@
-{
-  "id": "ID",
-  "body": {
-    "name": "TABLENAME",
-    "timestamp": "TIMESTAMP",
-    "schema": "SCHEMA"
-  }
-}
