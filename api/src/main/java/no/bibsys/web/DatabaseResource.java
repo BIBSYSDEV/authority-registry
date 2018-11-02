@@ -11,6 +11,7 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -257,7 +258,7 @@ public class DatabaseResource {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(entity);
         String id = node.get("id").asText();
-        return new PathResponse(String.format("/registry/%s/%s", registryName, id));
+        return new PathResponse(String.format("/registry/%s/entity/%s", registryName, id));
     }
 
     @GET
@@ -276,7 +277,9 @@ public class DatabaseResource {
             description = "Name of registry to get entity summary from",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws IOException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+        String entityJson = "";
+        
+        return new SimpleResponse(entityJson);
     }
 
     @GET
@@ -298,7 +301,16 @@ public class DatabaseResource {
             description = "Id of entity to get",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId)
                     throws IOException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+        String entityJson = "";
+        
+        Optional<String> entry = databaseManager.readEntry(registryName, entityId);
+        if(entry.isPresent()) {
+            entityJson = entry.get();
+        }else {
+            return new SimpleResponse(String.format("Entity with id %s not found in %s", entityId, registryName), 404);
+        }
+        
+        return new SimpleResponse(entityJson);
     }
 
     @DELETE

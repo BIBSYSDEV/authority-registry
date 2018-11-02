@@ -87,9 +87,17 @@ public class TableManager {
     }
 
     public boolean tableExists(String tableName){
+        
         return this.tableDriver.tableExists(tableName);
     }
 
+    public boolean registryExists(String tableName){
+        
+        EntityManager entityManager = new EntityManager(tableDriver, getValidationSchemaTable());
+        
+        return this.tableDriver.tableExists(tableName)&&entityManager.getEntry(tableName).isPresent();
+    }
+    
     public static String getValidationSchemaTable() {
         String validationSchemaTableName = "VALIDATION_SCHEMA_TABLE";
         String stage = System.getenv("STAGE_NAME");
@@ -122,6 +130,19 @@ public class TableManager {
         } while (scanResult.getLastEvaluatedKey() != null);
 
         return registryNameList;
+    }
+
+    public void updateRegistryMetadata(EntityRegistryTemplate request) throws TableNotFoundException, JsonProcessingException{
+
+        if(!tableExists(request.getId())) {
+            throw new TableNotFoundException(String.format("No registry with name %s exists", request.getId()));
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        
+        EntityManager entityManager = new EntityManager(tableDriver, getValidationSchemaTable());
+        entityManager.updateJson(mapper.writeValueAsString(request));
+        
     }
 
 }

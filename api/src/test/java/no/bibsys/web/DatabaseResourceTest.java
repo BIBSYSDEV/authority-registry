@@ -40,7 +40,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public static void init() {
         System.setProperty("sqlite4java.library.path", "build/libs");
     }
-    
+
     @Test
     public void returnDefaultMessage() throws Exception {
 
@@ -76,11 +76,11 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void insertEntryInTable() throws Exception {
         createTable(TABLE_NAME);
+        
         Entry entry = sampleData.sampleEntry("entryId");
-        PathResponse expected =
-                new PathResponse(String.format("/registry/%s/%s", TABLE_NAME, entry.id));
-
         Response response = insertEntryRequest(TABLE_NAME, entry.jsonString());
+        
+        PathResponse expected = new PathResponse(String.format("/registry/%s/entity/%s", TABLE_NAME, entry.id));
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         PathResponse actual = response.readEntity(PathResponse.class);
@@ -100,12 +100,12 @@ public class DatabaseResourceTest extends JerseyTest {
         Response response2 = insertEntryRequest(TABLE_NAME, entry.jsonString());
         assertThat(response2.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
 
-         SimpleResponse expected =
-         new SimpleResponse(String.format("Item already exists"));
-        
-         SimpleResponse actual = response2.readEntity(SimpleResponse.class);
-        
-         assertThat(actual, is(equalTo(expected)));
+        SimpleResponse expected =
+                new SimpleResponse(String.format("Item already exists"));
+
+        SimpleResponse actual = response2.readEntity(SimpleResponse.class);
+
+        assertThat(actual, is(equalTo(expected)));
 
 
     }
@@ -132,10 +132,10 @@ public class DatabaseResourceTest extends JerseyTest {
         Response response = target("/registry/" + TABLE_NAME).request().delete();
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
 
-         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-         SimpleResponse expected =
-         new SimpleResponse("Table does not exist");
-         assertThat(actual, is(equalTo(expected)));
+        SimpleResponse actual = response.readEntity(SimpleResponse.class);
+        SimpleResponse expected =
+                new SimpleResponse("Table does not exist");
+        assertThat(actual, is(equalTo(expected)));
 
     }
 
@@ -158,8 +158,8 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test 
     public void getListOfRegistries() throws Exception {
         EntityRegistryTemplate request = new EntityRegistryTemplate(TABLE_NAME);
-        createTable(request);
-        
+        createRegistry(request);
+
         Response response = target("/registry")
                 .request()
                 .get();
@@ -168,25 +168,41 @@ public class DatabaseResourceTest extends JerseyTest {
         SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", TABLE_NAME), 200);
         assertThat(actual, is(equalTo(expected)));
     }
-    
+
     @Test
     public void getRegistryMetadata() throws Exception {
-        
+
         EntityRegistryTemplate template = new EntityRegistryTemplate(TABLE_NAME);
-        
+
         ObjectMapper mapper = new ObjectMapper();
         String templateJson = mapper.writeValueAsString(template);
-        
-        createTable(template);
-        
+
+        createRegistry(template);
+
         Response response = target(String.format("/registry/%s", TABLE_NAME))
                 .request()
                 .get();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        
+
         SimpleResponse expected = new SimpleResponse(templateJson, 200);
         assertThat(actual, is(equalTo(expected)));
+    }
+
+    @Test
+    public void getEntity() throws Exception {
+        String tableName = "getEntity";
+        EntityRegistryTemplate template = new EntityRegistryTemplate(tableName);
+        createRegistry(template);
+
+        Entry entry = sampleData.sampleEntry("entryId");
+        Response response = insertEntryRequest(tableName, entry.jsonString());
+
+        String entityPath = response.readEntity(PathResponse.class).getPath();
+        String entityId = entityPath.substring(entityPath.lastIndexOf("/") + 1);
+        
+        Response readEntityResponse = readEntity(tableName, entityId);
+        
     }
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
@@ -198,15 +214,19 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private Response createTable(String tableName) throws Exception {
         EntityRegistryTemplate createRequest = new EntityRegistryTemplate(tableName);
-        return createTable(createRequest);
+        return createRegistry(createRequest);
     }
 
 
-    private Response createTable(EntityRegistryTemplate request) throws Exception {
+    private Response createRegistry(EntityRegistryTemplate request) throws Exception {
         return target("/registry")
                 .request()
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
-
-
+    
+    private Response readEntity(String registryName, String entityId) throws Exception {
+        return target(String.format("/registry/%s/entity/%s", registryName, entityId))
+                .request()
+                .get();
+    }
 }

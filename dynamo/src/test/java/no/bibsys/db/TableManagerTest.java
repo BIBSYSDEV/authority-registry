@@ -5,16 +5,21 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
-import java.util.Optional;
 import no.bibsys.db.exceptions.TableNotEmptyException;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.db.structures.IdOnlyEntry;
-import org.junit.Test;
 
 
 public class TableManagerTest extends LocalDynamoTest {
@@ -146,5 +151,35 @@ public class TableManagerTest extends LocalDynamoTest {
         
     }
 
+    @Test 
+    public void tableManagerShouldUpdateARegistry() throws InterruptedException, IOException {
+        TableDriver tableDriver = newTableDriver();
+        TableManager tableManager = new TableManager(tableDriver);
+        String testId = "test";
+        template.setId(testId);
+        String descriptionBefore = "Test of update before";
+        template.getMetadata().setDescription(descriptionBefore);
+        tableManager.createRegistry(template);
+        
+        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
+        Optional<String> entry = entityManager.getEntry(testId);
+        
+        assertTrue(entry.isPresent());
 
+        ObjectMapper mapper = new ObjectMapper();
+        EntityRegistryTemplate entity = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
+        assertThat(entity.getMetadata().getDescription(), is(equalTo(descriptionBefore)));
+        
+        EntityRegistryTemplate template2 = new EntityRegistryTemplate(testId);
+        String descriptionAfter = "Test of update after";
+        template2.getMetadata().setDescription(descriptionAfter);
+        entityManager.updateJson(mapper.writeValueAsString(template2));
+        
+        Optional<String> entry2 = entityManager.getEntry(testId);
+        assertTrue(entry2.isPresent());
+        EntityRegistryTemplate entity2 = mapper.readValue(entry2.get(), EntityRegistryTemplate.class);
+        assertThat(entity2.getMetadata().getDescription(), is(equalTo(descriptionAfter)));
+        
+        
+    }
 }
