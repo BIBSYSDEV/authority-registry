@@ -8,9 +8,8 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
-
 import java.io.IOException;
-
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HttpMethod;
@@ -20,16 +19,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -38,10 +37,14 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
+import no.bibsys.web.security.ApiKeyConstants;
+import no.bibsys.web.security.Roles;
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -55,6 +58,7 @@ import no.bibsys.web.model.SimpleResponse;
         contact = @Contact(url = "http://example.org", name = "Entity registry team", email = "entity@example.org")
         )
         )
+@SecurityScheme(name=ApiKeyConstants.API_KEY, paramName=ApiKeyConstants.API_KEY_PARAM_NAME, type=SecuritySchemeType.APIKEY, in=SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String STRING = "string";
@@ -76,6 +80,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse editRegistry(@RequestBody(
             description = "Request object to edit existing registry",
             content = @Content(schema = @Schema(
@@ -95,6 +101,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse putNewRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
@@ -118,6 +126,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public PathResponse insertEntry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to insert entity into",
@@ -144,6 +154,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse deleteRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
@@ -166,6 +178,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",

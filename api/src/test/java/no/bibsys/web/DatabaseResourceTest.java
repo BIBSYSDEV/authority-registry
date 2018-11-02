@@ -13,12 +13,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
+import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.model.EditRegistryRequest;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
+import no.bibsys.web.security.ApiKeyConstants;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -28,7 +30,8 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
-        return new JerseyConfig(new DatabaseManager(LocalDynamoDBHelper.getTableDriver()));
+        JerseyConfig config = new JerseyConfig(new DatabaseManager(LocalDynamoDBHelper.getTableDriver()), new MockEnvironmentReader());
+        return config;
     }
 
     @BeforeClass
@@ -108,7 +111,10 @@ public class DatabaseResourceTest extends JerseyTest {
     public void deleteAnExistingRegistry() throws Exception {
         createTable(TABLE_NAME);
 
-        Response response = target("/registry/" + TABLE_NAME).request().delete();
+        Response response = target("/registry/" + TABLE_NAME)
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
@@ -122,7 +128,10 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void returnErrorWhenDeletingNonExistingRegistry() throws Exception {
 
-        Response response = target("/registry/" + TABLE_NAME).request().delete();
+        Response response = target("/registry/" + TABLE_NAME)
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .delete();
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
 
          SimpleResponse actual = response.readEntity(SimpleResponse.class);
@@ -140,18 +149,36 @@ public class DatabaseResourceTest extends JerseyTest {
 
         insertEntryRequest(TABLE_NAME, entry);
 
-        Response response = target(String.format("/registry/%s/empty", TABLE_NAME)).request()
+        Response response = target(String.format("/registry/%s/empty", TABLE_NAME))
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
                 .delete();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
         SimpleResponse expected = new SimpleResponse(String.format("Registry %s has been emptied", TABLE_NAME));
         assertThat(actual, is(equalTo(expected)));
     }
+    
+    @Test
+    public void wrongRoleShouldReturnForbidden() throws Exception {
+        String tableName = TABLE_NAME;
+        EditRegistryRequest request = new EditRegistryRequest(tableName);
+        Response response = target("/registry/" + request.getRegistryName())
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
+        
+        assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
+
+    }
 
 
     private Response insertEntryRequest(String registryName, String jsonBody) {
         String path = String.format("/registry/%s/", registryName);
-        return target(path).request().post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
+        return target(path)
+                .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
 
@@ -165,7 +192,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response createTableRequest(EditRegistryRequest request) throws Exception {
         return target("/registry/" + request.getRegistryName())
                 .request()
-                .header("phase", "test")
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
                 .put(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 

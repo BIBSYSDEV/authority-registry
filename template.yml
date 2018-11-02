@@ -17,8 +17,8 @@ Parameters:
   Branch:
     Type: String
     Description: Repository branch name.
-Resources:
 
+Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -31,8 +31,6 @@ Resources:
           Parameters:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
   LambdaFunction:
-    DependsOn:
-
     Type: AWS::Serverless::Function
     Properties:
       Handler: no.bibsys.handlers.StreamLambdaHandler::handleRequest
