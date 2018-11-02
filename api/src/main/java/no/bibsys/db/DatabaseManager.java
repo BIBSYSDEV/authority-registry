@@ -26,9 +26,8 @@ public class DatabaseManager {
         TableManager tableManager = new TableManager(tableDriver);
 
         String tableName = request.getId();
-        if (registryExists(tableName)) {
-            throw new TableAlreadyExistsException(
-                    String.format("Registry %s already exists", tableName));
+        if (tableExists(tableName)) {
+            throw new TableAlreadyExistsException(String.format("Registry %s already exists", tableName));
         } else {
             tableManager.createRegistry(request);
         }
@@ -36,32 +35,34 @@ public class DatabaseManager {
     
     
     public void addEntry(String tableName, String json) {
-        if (registryExists(tableName)) {
+        if (tableExists(tableName)) {
             EntityManager tableWriter = new EntityManager(tableDriver, tableName);
             tableWriter.addJson(json);
         } else {
-            throw new TableNotFoundException(
-                    String.format("Registry %s does not exist", tableName));
+            throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
         }
 
     }
 
     public Optional<String> readEntry(String tableName, String id) {
-        if (registryExists(tableName)) {
+        if (tableExists(tableName)) {
             EntityManager entityManager = new EntityManager(tableDriver, tableName);
             return entityManager.getEntry(id);
         } else {
-            throw new TableNotFoundException(
-                    String.format("Registry %s does not exist", tableName));
+            throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
         }
 
     }
 
 
     public boolean registryExists(String tableName) {
-        return new TableManager(tableDriver).tableExists(tableName);
+        return new TableManager(tableDriver).registryExists(tableName);
     }
 
+    public boolean tableExists(String tableName) {
+        return new TableManager(tableDriver).tableExists(tableName);
+    }
+    
 
     public void emptyRegistry(String tableName) throws InterruptedException {
         TableManager tableManager = new TableManager(tableDriver);
@@ -99,8 +100,10 @@ public class DatabaseManager {
         return template;
     }
 
-    public void updateRegistry(EntityRegistryTemplate request) {
-        // TODO Auto-generated method stub
+    public void updateRegistry(EntityRegistryTemplate request) throws TableNotFoundException, JsonProcessingException {
+        
+        TableManager tableManager = new TableManager(tableDriver);
+        tableManager.updateRegistryMetadata(request);
         
     }
 

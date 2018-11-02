@@ -50,7 +50,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void databaseManagerShouldCreateATable()
+    public void databaseManagerShouldCreateATable() 
             throws InterruptedException, JsonProcessingException {
 
         boolean existsBeforeCreation = databaseManager.registryExists(TABLE_NAME);
@@ -59,10 +59,8 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         
         databaseManager.createRegistry(createRequest);
         boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
-        boolean existsInSchemaTableAfterCreation = databaseManager.registryExists(TableManager.getValidationSchemaTable());
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
-        assertTrue(existsInSchemaTableAfterCreation);
 
         Optional<String> entry = databaseManager.readEntry(TableManager.getValidationSchemaTable(), TABLE_NAME);
         assertTrue(entry.toString().contains(TABLE_NAME));
