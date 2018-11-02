@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
+import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.SampleData;
@@ -168,10 +169,10 @@ public class DatabaseResourceTest extends JerseyTest {
     public void wrongRoleShouldReturnForbidden() throws Exception {
         String tableName = TABLE_NAME;
         EditRegistryRequest request = new EditRegistryRequest(tableName);
-        Response response = target("/registry/" + request.getRegistryName())
+        Response response = target("/registry")
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
-                .put(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
         
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
 
@@ -203,6 +204,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response response = target(String.format("/registry/%s", TABLE_NAME))
                 .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
                 .get();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
@@ -224,6 +226,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String entityId = entityPath.substring(entityPath.lastIndexOf("/") + 1);
         
         Response readEntityResponse = readEntity(tableName, entityId);
+        assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         
     }
 
@@ -246,6 +249,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response createRegistry(EntityRegistryTemplate request) throws Exception {
         return target("/registry")
                 .request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
     
@@ -253,6 +257,6 @@ public class DatabaseResourceTest extends JerseyTest {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId))
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .get();
     }
 }

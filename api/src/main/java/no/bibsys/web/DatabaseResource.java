@@ -8,9 +8,11 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,14 +24,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -38,10 +44,14 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
+import no.bibsys.web.security.ApiKeyConstants;
+import no.bibsys.web.security.Roles;
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -86,7 +96,7 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
-        
+
         databaseManager.createRegistry(request);
         return new SimpleResponse(String.format("A registry with name %s has been created", request.getId()));
     }
@@ -103,7 +113,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
-        
+
         List<String> registryList = databaseManager.getRegistryList();
         ObjectMapper mapper = new ObjectMapper();
         return new SimpleResponse(mapper.writeValueAsString(registryList), 200);
@@ -121,16 +131,16 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN})
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getRegistryMetadata(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException, IOException {
-        
-         EntityRegistryTemplate metadata = databaseManager.getRegistryMetadata(registryName);
-         ObjectMapper mapper = new ObjectMapper();
-        
+
+        EntityRegistryTemplate metadata = databaseManager.getRegistryMetadata(registryName);
+        ObjectMapper mapper = new ObjectMapper();
+
         return new SimpleResponse(mapper.writeValueAsString(metadata), 200);
     }
 
@@ -215,6 +225,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
@@ -233,6 +245,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse updateRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to update",
@@ -255,6 +269,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public PathResponse createEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to add to",
@@ -286,7 +302,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws IOException {
         String entityJson = "";
-        
+
         return new SimpleResponse(entityJson);
     }
 
@@ -301,23 +317,25 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity from",
-            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
             description = "Id of entity to get",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId)
+            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId)
                     throws IOException {
         String entityJson = "";
-        
+
         Optional<String> entry = databaseManager.readEntry(registryName, entityId);
         if(entry.isPresent()) {
             entityJson = entry.get();
         }else {
             return new SimpleResponse(String.format("Entity with id %s not found in %s", entityId, registryName), 404);
         }
-        
+
         return new SimpleResponse(entityJson);
     }
 
@@ -332,6 +350,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse deleteEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete entity from",
@@ -342,7 +362,7 @@ public class DatabaseResource {
                     throws IOException {
         return new SimpleResponse(NOT_IMPLEMENTED, 501);
     }
-    
+
     @PUT
     @Path("/{registryName}/entity/{entityId}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
@@ -354,6 +374,8 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse updateEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry in which to update entity",
