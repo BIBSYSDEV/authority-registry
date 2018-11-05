@@ -22,12 +22,11 @@ import no.bibsys.web.security.Roles;
 public class InitLambdaHandler implements RequestHandler<String, String> {
 
     private final transient String apiKeyTableName;
-    private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDB;
     private final transient AuthenticationService authenticationService;
     
     public InitLambdaHandler() {
-        client = AmazonDynamoDBClientBuilder.standard().build();
+        final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         dynamoDB = new DynamoDB(client);
         apiKeyTableName = new EnvironmentReader().getEnvForName(ApiKeyConstants.API_KEY_TABLE_NAME).orElse("entity-registry-api-keys");
         authenticationService = new AuthenticationService(client, apiKeyTableName);
