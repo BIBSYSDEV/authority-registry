@@ -18,7 +18,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.web.security.ApiKeyConstants;
 
-public class InitLambdaHandler implements RequestHandler<Request, String> {
+public class InitLambdaHandler implements RequestHandler<String, String> {
 
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
@@ -32,7 +32,7 @@ public class InitLambdaHandler implements RequestHandler<Request, String> {
     
     
     @Override
-    public String handleRequest(Request input, Context context) {
+    public String handleRequest(String input, Context context) {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
         attributeDefinitions.add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
 
@@ -55,7 +55,7 @@ public class InitLambdaHandler implements RequestHandler<Request, String> {
         }
         
         return table.getTableName();
-            
+
     }
 
 }
