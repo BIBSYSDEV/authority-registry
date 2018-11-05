@@ -34,7 +34,10 @@ public class InitLambdaHandler implements RequestHandler<String, String> {
     public String handleRequest(String input, Context context) {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
         attributeDefinitions.add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
-
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Roles").withAttributeType("SS"));
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Active").withAttributeType("BOOL"));
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Modified").withAttributeType("S"));
+        
         List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
         keySchema.add(new KeySchemaElement().withAttributeName("Key").withKeyType(KeyType.HASH));
         
