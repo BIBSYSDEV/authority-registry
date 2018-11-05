@@ -23,5 +23,9 @@ public final class DynamoDBHelper {
         DynamoDB dynamoDb = new DynamoDB(client);
         return TableDriver.create(client, dynamoDb);
     }
+    
+    public static AmazonDynamoDB getAmazonDynamoDB() {
+        return AmazonDynamoDBClientBuilder.standard().build();
+    }
 
 }
