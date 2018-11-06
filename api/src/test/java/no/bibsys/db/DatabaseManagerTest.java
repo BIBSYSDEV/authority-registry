@@ -30,7 +30,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     private EntityRegistryTemplate createTestEditRequest(String tableName) {
         EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
         newCreateRequest.setId(tableName);
-        newCreateRequest.getMetadata().setContributor(Arrays.asList(new String[] {"contributor1", "contributor2"}));
+       (Arrays.asList("contributor1", "contributor2")
         newCreateRequest.getMetadata().setCreator(Arrays.asList(new String[] {"creator1", "creator2"}));
         newCreateRequest.getMetadata().setLabel(Arrays.asList(new String[] {"label1", "label2"}));
         newCreateRequest.getMetadata().setSameAs(Arrays.asList(new String[] {"sameAs1", "sameAs2"}));
