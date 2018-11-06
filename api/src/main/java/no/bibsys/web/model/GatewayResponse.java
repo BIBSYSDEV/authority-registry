@@ -22,7 +22,9 @@ public class GatewayResponse {
     public GatewayResponse(final String body, final Map<String, String> headers, final int statusCode) {
         this.statusCode = statusCode;
         this.body = body;
-        if(headers.isEmpty()) {
+   public GatewayResponse(final String body, final int statusCode){
+         this(body, defaultHeaders(),statusCode)
+   }
             this.headers = Collections.unmodifiableMap(defaultHeaders());
         }else {
             this.headers = Collections.unmodifiableMap(new HashMap<>(headers));
