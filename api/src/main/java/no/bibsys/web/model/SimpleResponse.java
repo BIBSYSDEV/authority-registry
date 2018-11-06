@@ -7,15 +7,21 @@ import java.util.HashMap;
 public class SimpleResponse {
 
     private String message;
-
+    private int statusCode;
 
     public SimpleResponse() {}
 
 
     public SimpleResponse(String message) {
         setMessage(message);
+        setStatusCode(200);
     }
 
+    public SimpleResponse(String message, int statusCode) {
+        setMessage(message);
+        setStatusCode(statusCode);
+    }
+    
 
     @Override
     public boolean equals(Object object) {
@@ -32,11 +38,35 @@ public class SimpleResponse {
     }
 
     @Override
+    public String toString() {
+        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + "]";
+    }
+
+
+    @Override
     public int hashCode() {
         return message != null ? message.hashCode() : 0;
     }
 
 
+    public String toGatewayResponse() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> jsonObject = new HashMap<>();
+        jsonObject.put("message", getMessage());
+        String body = mapper.writeValueAsString(jsonObject);
+        GatewayResponse response = new GatewayResponse(body, new HashMap<>(), statusCode);
+        return mapper.writeValueAsString(response);
+
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+    
+    public final void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+    
     public String getMessage() {
         return message;
     }
@@ -44,16 +74,4 @@ public class SimpleResponse {
     public final void setMessage(String message) {
         this.message = message;
     }
-
-    public String toGatewayResponse() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, String> jsonObject = new HashMap<>();
-        jsonObject.put("message", getMessage());
-        String body = mapper.writeValueAsString(jsonObject);
-        GatewayResponse response = new GatewayResponse(body);
-        return mapper.writeValueAsString(response);
-
-    }
-
-
 }

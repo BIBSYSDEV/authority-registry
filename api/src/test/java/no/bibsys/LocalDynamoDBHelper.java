@@ -12,12 +12,17 @@ public class LocalDynamoDBHelper {
         // TODO Auto-generated constructor stub
     }
 
+    private static TableDriver tableDriver = null;
     public static TableDriver getTableDriver() {
+        
         System.setProperty("java.library.path", "native-libs");
-        AmazonDynamoDB client = DynamoDBEmbedded.create().amazonDynamoDB();
+        if(tableDriver == null) {
+            AmazonDynamoDB client = DynamoDBEmbedded.create().amazonDynamoDB();
 
-        DynamoDB dynamoDb = new DynamoDB(client);
-        return TableDriver.create(client, dynamoDb);
+            DynamoDB dynamoDb = new DynamoDB(client);
+            tableDriver = TableDriver.create(client, dynamoDb);
+        }
+        return tableDriver; 
     }
 
 }
