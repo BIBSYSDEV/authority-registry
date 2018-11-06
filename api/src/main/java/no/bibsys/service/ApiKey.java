@@ -18,8 +18,13 @@ public class ApiKey {
     private boolean active;
     private Date modified;
     
+    public ApiKey() {
+        // TODO Auto-generated constructor stub
+    }
+    
     public ApiKey(String... roles) {
         this.roles = Arrays.asList(roles);
+        this.active = true;
     }
     
     @DynamoDBHashKey(attributeName = "Key")

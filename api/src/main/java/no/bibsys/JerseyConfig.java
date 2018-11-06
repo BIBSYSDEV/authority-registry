@@ -3,9 +3,13 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.TableDriver;
+import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -17,19 +21,19 @@ import no.bibsys.web.security.AuthenticationFilter;
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
-        this(new DatabaseManager(DynamoDBHelper.getTableDriver()), new EnvironmentReader());
+        this(DynamoDBHelper.getClient(), new EnvironmentReader());
     }
 
-    public JerseyConfig(DatabaseManager databaseManager, EnvironmentReader environmentReader) {
+    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         super();
-
-        register(new DatabaseResource(databaseManager));
+        
+        register(new DatabaseResource(new DatabaseManager(TableDriver.create(client, new DynamoDB(client)))));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
-
-        register(new AuthenticationFilter(environmentReader));
+        
+        register(new AuthenticationFilter(new AuthenticationService(client, environmentReader)));
         
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);
