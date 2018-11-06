@@ -2,6 +2,8 @@ package no.bibsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -24,6 +26,7 @@ public class AuthenticationService {
     private final transient DynamoDBMapperConfig config;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
+    private final transient Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     
     public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         mapper = new DynamoDBMapper(client);
@@ -79,6 +82,18 @@ public class AuthenticationService {
     public void setUpInitialApiKeys() {
         createApiKey(Roles.API_ADMIN);
         createApiKey(Roles.REGISTRY_ADMIN);
+    }
+
+    public String deleteApiKeyTable() {
+        
+        Table table = dynamoDB.getTable(apiKeyTableName);
+        try {
+            table.delete();
+            table.waitForDelete();
+        } catch (Exception e) {
+            logger.error("Error deleting api keys table", e);
+        }
+        return table.getTableName();
     }
     
 }

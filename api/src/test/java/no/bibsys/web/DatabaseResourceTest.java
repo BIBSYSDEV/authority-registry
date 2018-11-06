@@ -52,8 +52,6 @@ public class DatabaseResourceTest extends JerseyTest {
     @BeforeClass
     public static void init() {
         System.setProperty("sqlite4java.library.path", "build/libs");
-        
-
     }
     
     @Test
