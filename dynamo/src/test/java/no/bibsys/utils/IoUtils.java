@@ -6,29 +6,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IoUtils {
 
     public static InputStream resourceAsStream(Path path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString());
-
     }
 
     public static List<String> resouceAsList(Path path) throws IOException {
-        try (InputStreamReader isr = new InputStreamReader(resourceAsStream(path),
-            StandardCharsets.UTF_8)) {
-            try (BufferedReader reader = new BufferedReader(isr)) {
-                List<String> result = new ArrayList<>();
-                String line = reader.readLine();
-                while (line != null) {
-                    result.add(line);
-                    line = reader.readLine();
-                }
-
-                return result;
-            }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream(path), StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.toList());
         }
     }
 

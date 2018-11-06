@@ -14,5 +14,4 @@ public class LocalDynamoDBHelper {
         System.setProperty("java.library.path", "native-libs");
         return DynamoDBEmbedded.create().amazonDynamoDB();
     }
-
 }

@@ -17,18 +17,14 @@ import org.junit.Test;
 public class TableWriterAndReaderTest extends LocalDynamoTest {
 
 
-    private TableReader tableReader;
-    private TableWriter tableWriter;
+    private EntityManager entityManager;
     private TableManager tableManager;
 
     @Override
     @Before
     public void init() {
         super.init();
-        tableReader = new TableReader(TableDriver.create(localClient, new DynamoDB(localClient)),
-            tableName);
-        tableWriter = new TableWriter(TableDriver.create(localClient, new DynamoDB(localClient)),
-            tableName);
+        entityManager = new EntityManager(TableDriver.create(localClient, new DynamoDB(localClient)), tableName);
         tableManager = new TableManager(TableDriver.create(localClient, new DynamoDB(localClient)));
 
     }
@@ -40,8 +36,8 @@ public class TableWriterAndReaderTest extends LocalDynamoTest {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
         tableManager.createRegistry(template);
-        tableWriter.addJson(json);
-        Optional<String> output = tableReader.getEntry("id01");
+        entityManager.addJson(json);
+        Optional<String> output = entityManager.getEntry("id01");
         Optional<Item> outputItem = output.map(i -> Item.fromJSON(i));
         assertThat(outputItem.isPresent(), is(equalTo(true)));
         assertThat(outputItem.get(), is(equalTo(inputItem)));
