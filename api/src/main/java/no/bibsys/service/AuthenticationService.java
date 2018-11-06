@@ -26,7 +26,7 @@ public class AuthenticationService {
     private final transient DynamoDBMapperConfig config;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
-    private final transient Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+    private final static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     
     public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         mapper = new DynamoDBMapper(client);
