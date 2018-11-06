@@ -37,7 +37,7 @@ public class DatabaseManager {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode tree = objectMapper.readTree(json);
         ((ObjectNode)tree).put("id", entityId);
-        String updatedJson = tree.toString();
+        String updatedJson = objectMapper.writeValueAsString(tree);
         return updatedJson;
     }
 
