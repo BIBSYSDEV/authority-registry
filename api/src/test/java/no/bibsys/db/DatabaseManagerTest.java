@@ -25,23 +25,19 @@ import no.bibsys.testtemplates.SampleData.Entry;
 
 public class DatabaseManagerTest extends LocalDynamoTest {
 
-    private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper()
+    private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
 
     private EntityRegistryTemplate createTestEditRequest(String tableName) {
         EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
         newCreateRequest.setId(tableName);
-       (Arrays.asList("contributor1", "contributor2")
-        newCreateRequest.getMetadata().setCreator(Arrays.asList(new String[] {"creator1", "creator2"}));
-        newCreateRequest.getMetadata().setLabel(Arrays.asList(new String[] {"label1", "label2"}));
-        newCreateRequest.getMetadata().setSameAs(Arrays.asList(new String[] {"sameAs1", "sameAs2"}));
+        newCreateRequest.getMetadata().setContributor(Arrays.asList("contributor1", "contributor2"));
+        newCreateRequest.getMetadata().setCreator(Arrays.asList("creator1", "creator2"));
+        newCreateRequest.getMetadata().setLabel(Arrays.asList("label1", "label2"));
+        newCreateRequest.getMetadata().setSameAs(Arrays.asList("sameAs1", "sameAs2"));
         newCreateRequest.getMetadata().setDescription("description");
         newCreateRequest.getMetadata().setLicense("license");
         
         return newCreateRequest;
-    }
-    
-    @Before
-    public void init() {
     }
     
     @Test
@@ -59,6 +55,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         assertTrue(existsAfterCreation);
 
         Optional<String> entry = databaseManager.getEntry(TableManager.getValidationSchemaTable(), tableName);
+        assertThat(entry.isPresent(), is(equalTo(true)));
         assertTrue(entry.toString().contains(tableName));
         assertTrue(entry.toString().contains("creator1"));
         assertTrue(entry.toString().contains("contributor2"));
