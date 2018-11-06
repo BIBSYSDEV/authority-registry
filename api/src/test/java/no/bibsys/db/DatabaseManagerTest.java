@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
@@ -63,6 +62,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         assertTrue(entry.toString().contains("sameAs2"));
         assertTrue(entry.toString().contains("description"));
         assertTrue(entry.toString().contains("license"));
+        
     }
 
 
