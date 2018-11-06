@@ -163,7 +163,6 @@ public class TableManagerTest extends LocalDynamoTest {
         
         EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
         Optional<String> entry = entityManager.getEntry(testId);
-        
         assertTrue(entry.isPresent());
 
         ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
