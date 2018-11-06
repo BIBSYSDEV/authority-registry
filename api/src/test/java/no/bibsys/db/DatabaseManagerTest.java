@@ -25,7 +25,7 @@ import no.bibsys.testtemplates.SampleData.Entry;
 
 public class DatabaseManagerTest extends LocalDynamoTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper()
 
     private EntityRegistryTemplate createTestEditRequest(String tableName) {
         EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
