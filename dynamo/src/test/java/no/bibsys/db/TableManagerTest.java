@@ -166,7 +166,7 @@ public class TableManagerTest extends LocalDynamoTest {
         
         assertTrue(entry.isPresent());
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
         EntityRegistryTemplate entity = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
         assertThat(entity.getMetadata().getDescription(), is(equalTo(descriptionBefore)));
         

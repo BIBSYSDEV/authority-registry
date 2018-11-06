@@ -124,8 +124,6 @@ public final class TableDriver {
                 deleteRequest.setTableName(tableName);
                 
                 TableUtils.deleteTableIfExists(client, deleteRequest);
-                
-//                dynamoDb.getTable(tableName).waitForDelete();
             }
         } else {
             throw new TableNotFoundException(tableName);
