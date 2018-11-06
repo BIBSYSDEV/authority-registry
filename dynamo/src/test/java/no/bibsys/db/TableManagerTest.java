@@ -155,7 +155,7 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldUpdateARegistry() throws InterruptedException, IOException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        String testId = "test";
+        String testId = "testUpdateRegistry";
         template.setId(testId);
         String descriptionBefore = "Test of update before";
         template.getMetadata().setDescription(descriptionBefore);
@@ -179,7 +179,5 @@ public class TableManagerTest extends LocalDynamoTest {
         assertTrue(entry2.isPresent());
         EntityRegistryTemplate entity2 = mapper.readValue(entry2.get(), EntityRegistryTemplate.class);
         assertThat(entity2.getMetadata().getDescription(), is(equalTo(descriptionAfter)));
-        
-        
     }
 }

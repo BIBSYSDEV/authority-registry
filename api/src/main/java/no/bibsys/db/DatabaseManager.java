@@ -1,17 +1,13 @@
 package no.bibsys.db;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.bibsys.db.structures.EntityRegistryTemplate;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class DatabaseManager {
 
@@ -21,30 +17,36 @@ public class DatabaseManager {
         this.tableDriver = tableDriver;
     }
 
-    public void createRegistry(EntityRegistryTemplate request)
-            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
-        TableManager tableManager = new TableManager(tableDriver);
-
-        String tableName = request.getId();
-        if (tableExists(tableName)) {
-            throw new TableAlreadyExistsException(String.format("Registry %s already exists", tableName));
-        } else {
-            tableManager.createRegistry(request);
-        }
-    }
     
-    
-    public void addEntry(String tableName, String json) {
+    public String addEntry(final String tableName, final String json) throws IOException {
+        
         if (tableExists(tableName)) {
+            String entityId = createEntityId();
+            String updatedJson = addIdToJson(json, entityId);
             EntityManager tableWriter = new EntityManager(tableDriver, tableName);
-            tableWriter.addJson(json);
+            tableWriter.addJson(updatedJson);
+            
+            return entityId;
         } else {
             throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
         }
 
     }
 
-    public Optional<String> readEntry(String tableName, String id) {
+    private String addIdToJson(final String json, final String entityId) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode tree = objectMapper.readTree(json);
+        ((ObjectNode)tree).put("id", entityId);
+        String updatedJson = tree.toString();
+        return updatedJson;
+    }
+
+    private String createEntityId() {
+        String entitiyId = UUID.randomUUID().toString();
+        return entitiyId;
+    }
+
+    public Optional<String> getEntry(String tableName, String id) {
         if (tableExists(tableName)) {
             EntityManager entityManager = new EntityManager(tableDriver, tableName);
             return entityManager.getEntry(id);
@@ -54,89 +56,19 @@ public class DatabaseManager {
 
     }
 
+    public void deleteEntity(String registryName, String entityId) {
 
-    public boolean registryExists(String tableName) {
-        return new TableManager(tableDriver).registryExists(tableName);
+        EntityManager entityManager = new EntityManager(tableDriver, registryName);
+        entityManager.deleteEntry(entityId);
+        
+    }
+
+    public String updateEntity(String registryName, String entity) {
+        EntityManager entityManager = new EntityManager(tableDriver, registryName);
+        return entityManager.updateJson(entity);
     }
 
     public boolean tableExists(String tableName) {
         return new TableManager(tableDriver).tableExists(tableName);
     }
-    
-
-    public void emptyRegistry(String tableName) throws InterruptedException {
-        TableManager tableManager = new TableManager(tableDriver);
-        tableManager.emptyTable(tableName);
-
-    }
-
-    public void deleteRegistry(String tableName) throws InterruptedException {
-        TableManager tableManager = new TableManager(tableDriver);
-        if (registryExists(tableName)) {
-            
-            EntityManager schemaTableWriter = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
-            schemaTableWriter.deleteEntry(tableName);
-            
-            tableManager.deleteTable(tableName);
-        } else {
-            throw new TableNotFoundException(String.format("Registry %s does not exist", tableName));
-        }
-    }
-
-    public String getSchemaAsJson(String registryName) throws JsonParseException, JsonMappingException, IOException {
-
-        if(!registryExists(registryName)) {
-            throw new TableNotFoundException(String.format("Could not find a registry with name %s", registryName));
-        }
-        
-        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
-        Optional<String> entry = entityManager.getEntry(registryName);
-
-        ObjectMapper mapper = new ObjectMapper();
-        EntityRegistryTemplate registryTemplate = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
-        
-        String schema = Optional.ofNullable(registryTemplate.getSchema()).orElse("");
-        return schema;
-    }
-    
-    public void addSchemaJson(String registryName, String schemaAsJson) throws JsonParseException, JsonMappingException, IOException {
-        if(!registryExists(registryName)) {
-            throw new TableNotFoundException(String.format("Could not find a registry with name %s", registryName));
-        }
-        
-        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
-        Optional<String> entry = entityManager.getEntry(registryName);
-
-        ObjectMapper mapper = new ObjectMapper();
-        EntityRegistryTemplate registryTemplate = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
-
-        registryTemplate.setSchema(schemaAsJson);
-        updateRegistry(registryTemplate);
-    }
-
-    public List<String> getRegistryList() {
-        TableManager tableManager = new TableManager(tableDriver);
-        return tableManager.listRegistries();
-    }
-
-    public EntityRegistryTemplate getRegistryMetadata(String registryName) throws JsonParseException, JsonMappingException, IOException {
-        
-        EntityRegistryTemplate template = new EntityRegistryTemplate();
-        
-        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
-        Optional<String> entry = entityManager.getEntry(registryName);
-        ObjectMapper mapper = new ObjectMapper();
-        template = mapper.readValue(entry.get() , EntityRegistryTemplate.class);
-        
-        return template;
-    }
-
-    public void updateRegistry(EntityRegistryTemplate request) throws TableNotFoundException, JsonProcessingException {
-        
-        TableManager tableManager = new TableManager(tableDriver);
-        tableManager.updateRegistryMetadata(request);
-        
-    }
-
-
 }

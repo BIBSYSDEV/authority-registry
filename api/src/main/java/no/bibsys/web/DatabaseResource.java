@@ -49,6 +49,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.PathResponse;
 import no.bibsys.web.model.SimpleResponse;
@@ -71,13 +72,14 @@ import no.bibsys.web.security.Roles;
 public class DatabaseResource {
 
     private static final String ENTITY_ID = "entityId";
-    private static final String NOT_IMPLEMENTED = "Not implemented";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private transient final DatabaseManager databaseManager;
+    private transient final RegistryManager registryManager;
 
-    public DatabaseResource(DatabaseManager databaseManager) {
+    public DatabaseResource(DatabaseManager databaseManager, RegistryManager registryManager) {
         this.databaseManager = databaseManager;
+        this.registryManager = registryManager;
     }
 
     @POST
@@ -99,7 +101,7 @@ public class DatabaseResource {
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
 
-        databaseManager.createRegistry(request);
+        registryManager.createRegistry(request);
         return new SimpleResponse(String.format("A registry with name %s has been created", request.getId()));
     }
 
@@ -116,7 +118,7 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
 
-        List<String> registryList = databaseManager.getRegistryList();
+        List<String> registryList = registryManager.getRegistries();
         ObjectMapper mapper = new ObjectMapper();
         return new SimpleResponse(mapper.writeValueAsString(registryList), 200);
     }
@@ -140,7 +142,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException, IOException {
 
-        EntityRegistryTemplate metadata = databaseManager.getRegistryMetadata(registryName);
+        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
         ObjectMapper mapper = new ObjectMapper();
 
         return new SimpleResponse(mapper.writeValueAsString(metadata), 200);
@@ -167,7 +169,7 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, JsonProcessingException {
-        databaseManager.updateRegistry(request);
+        registryManager.updateRegistry(request);
         return new SimpleResponse(String.format("Registry %s has been updated", request.getId()));
     }
 
@@ -191,7 +193,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException {
 
-        databaseManager.deleteRegistry(registryName);
+        registryManager.deleteRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }
 
@@ -212,7 +214,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
-        databaseManager.emptyRegistry(registryName);
+        registryManager.emptyRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been emptied", registryName));
     }
 
@@ -234,7 +236,7 @@ public class DatabaseResource {
             description = "Name of registry to get schema",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
         
-        String schemaAsJson = databaseManager.getSchemaAsJson(registryName);
+        String schemaAsJson = registryManager.getSchemaAsJson(registryName);
         return new SimpleResponse(schemaAsJson);
     }
 
@@ -258,7 +260,7 @@ public class DatabaseResource {
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
             ) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
-        databaseManager.addSchemaJson(registryName, validationSchema);
+        registryManager.setSchemaJson(registryName, validationSchema);
         return new PathResponse(String.format("/registry/%s/schema", registryName));
     }
 
@@ -276,18 +278,16 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
-    public PathResponse createEntity(
+    public SimpleResponse createEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to add to",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to create",
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
-        databaseManager.addEntry(registryName, entity);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(entity);
-        String id = node.get("id").asText();
-        return new PathResponse(String.format("/registry/%s/entity/%s", registryName, id));
+        String entityId = databaseManager.addEntry(registryName, entity);
+        
+        return new SimpleResponse(String.format("/registry/%s/entity/%s", registryName, entityId));
     }
 
     @GET
@@ -334,7 +334,7 @@ public class DatabaseResource {
                     throws IOException {
         String entityJson = "";
 
-        Optional<String> entry = databaseManager.readEntry(registryName, entityId);
+        Optional<String> entry = databaseManager.getEntry(registryName, entityId);
         if(entry.isPresent()) {
             entityJson = entry.get();
         }else {
@@ -356,16 +356,18 @@ public class DatabaseResource {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse deleteEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete entity from",
-            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
             description = "Id of entity to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId)
+            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId)
                     throws IOException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+        databaseManager.deleteEntity(registryName, entityId);
+        
+        return new SimpleResponse(String.format("Entity with id %s is deleted from %s", entityId, registryName));
     }
 
     @PUT
@@ -384,13 +386,16 @@ public class DatabaseResource {
     public SimpleResponse updateEntity(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry in which to update entity",
-            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String registryName, 
-            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
-            description = "Id of entity to be updated",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String entityId,
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @RequestBody(description = "Entity to create",
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
-        return new SimpleResponse(NOT_IMPLEMENTED, 501);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(entity);
+        String entityId = node.get("id").asText();
+        databaseManager.updateEntity(registryName, entity);
+        
+        return new SimpleResponse(String.format("Entity with id %s in %s has been updated", entityId, registryName));
     }
 }

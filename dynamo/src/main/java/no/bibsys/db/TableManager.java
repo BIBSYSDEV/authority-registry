@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.TableCollection;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
@@ -91,11 +93,18 @@ public class TableManager {
         return this.tableDriver.tableExists(tableName);
     }
 
-    public boolean registryExists(String tableName){
+    public boolean registryExists(String tableName) throws InterruptedException{
         
+
+        if(!tableExists(getValidationSchemaTable())) {
+            tableDriver.createTable(getValidationSchemaTable());
+        }
+
         EntityManager entityManager = new EntityManager(tableDriver, getValidationSchemaTable());
         
-        return this.tableDriver.tableExists(tableName)&&entityManager.getEntry(tableName).isPresent();
+        boolean tableExists = this.tableDriver.tableExists(tableName);
+        boolean present = entityManager.getEntry(tableName).isPresent();
+        return tableExists&&present;
     }
     
     public static String getValidationSchemaTable() {
@@ -108,6 +117,14 @@ public class TableManager {
         return validationSchemaTableName;
     }
 
+    public List<String> listAllTables(){
+        TableCollection<ListTablesResult> tables = tableDriver.getDynamoDb().listTables();
+        List<String> tableList = new ArrayList<>();
+        tables.forEach(table -> tableList.add(table.getTableName()));
+        
+        return tableList;
+    }
+    
     public List<String> listRegistries() {
         ScanRequest scanRequest = new ScanRequest()
                 .withTableName(getValidationSchemaTable());

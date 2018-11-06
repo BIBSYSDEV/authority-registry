@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
@@ -72,7 +73,9 @@ public final class TableDriver {
     public boolean tableExists(final String tableName) {
         boolean exists = false;
         try {
-            exists = getTable(tableName).describe().getTableStatus() != null;
+            Table table = getTable(tableName);
+            TableDescription describe = getTable(tableName).describe();
+            exists = describe.getTableStatus() != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
             logger.warn("Table {} does not exist", tableName);
         }
