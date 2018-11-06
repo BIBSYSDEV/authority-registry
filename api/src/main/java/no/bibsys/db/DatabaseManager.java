@@ -34,10 +34,10 @@ public class DatabaseManager {
     }
 
     private String addIdToJson(final String json, final String entityId) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
         JsonNode tree = objectMapper.readTree(json);
         ((ObjectNode)tree).put("id", entityId);
-        String updatedJson = tree.toString();
+        String updatedJson = objectMapper.writeValueAsString(tree);
         return updatedJson;
     }
 
