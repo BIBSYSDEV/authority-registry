@@ -1,25 +1,24 @@
 package no.bibsys.db;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
-
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
+import org.junit.Test;
 
 
 public class DatabaseManagerTest extends LocalDynamoTest {
@@ -40,8 +39,8 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void databaseManagerShouldCreateATable() 
-            throws InterruptedException, JsonProcessingException {
+    public void databaseManagerShouldCreateATable()
+        throws InterruptedException, IOException {
 
         String tableName = "createATable";
         boolean existsBeforeCreation = registryManager.registryExists(tableName);
@@ -54,14 +53,26 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         assertTrue(existsAfterCreation);
 
         Optional<String> entry = databaseManager.getEntry(TableManager.getValidationSchemaTable(), tableName);
+
         assertThat(entry.isPresent(), is(equalTo(true)));
-        assertTrue(entry.toString().contains(tableName));
-        assertTrue(entry.toString().contains("creator1"));
-        assertTrue(entry.toString().contains("contributor2"));
-        assertTrue(entry.toString().contains("label1"));
-        assertTrue(entry.toString().contains("sameAs2"));
-        assertTrue(entry.toString().contains("description"));
-        assertTrue(entry.toString().contains("license"));
+
+        JsonNode root = mapper.readTree(entry.get());
+
+        assertThat(root.get("id").asText(), is(equalTo(tableName)));
+
+        assertThat(root.get("metadata").get("creator").get(0).asText(), is(equalTo("creator1")));
+        assertThat(root.get("metadata").get("creator").get(1).asText(), is(equalTo("creator2")));
+        assertThat(root.get("metadata").get("contributor").get(0).asText(),
+            is(equalTo("contributor1")));
+        assertThat(root.get("metadata").get("contributor").get(1).asText(),
+            is(equalTo("contributor2")));
+        assertThat(root.get("metadata").get("label").get(0).asText(), is(equalTo("label1")));
+        assertThat(root.get("metadata").get("label").get(1).asText(), is(equalTo("label2")));
+        assertThat(root.get("metadata").get("sameAs").get(0).asText(), is(equalTo("sameAs1")));
+        assertThat(root.get("metadata").get("sameAs").get(1).asText(), is(equalTo("sameAs2")));
+        assertThat(root.get("metadata").get("description").asText(), is(equalTo("description")));
+        assertThat(root.get("metadata").get("license").asText(), is(equalTo("license")));
+        assertThat(root.get("metadata").get("createDate").asLong(), is(greaterThan(0L)));
         
     }
 

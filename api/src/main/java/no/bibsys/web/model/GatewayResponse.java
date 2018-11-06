@@ -22,7 +22,7 @@ public class GatewayResponse {
         this.statusCode = statusCode;
         this.body = body;
 
-        this.headers = Collections.unmodifiableMap(defaultHeaders());
+        this.headers = Collections.unmodifiableMap(headers);
     }
     
     public GatewayResponse(final String body, final int statusCode){
