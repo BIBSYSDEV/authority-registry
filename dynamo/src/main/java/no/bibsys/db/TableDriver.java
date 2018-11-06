@@ -1,10 +1,5 @@
 package no.bibsys.db;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -16,10 +11,12 @@ import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-
+import java.util.List;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
 import no.bibsys.db.structures.TableDefinitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class TableDriver {
 
@@ -143,7 +140,7 @@ public final class TableDriver {
         final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
             .withKeySchema(keySchema)
             .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
-                new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
+                new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
         dynamoDb.createTable(request);
     }
