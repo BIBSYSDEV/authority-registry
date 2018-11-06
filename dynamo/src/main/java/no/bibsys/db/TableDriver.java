@@ -73,7 +73,6 @@ public final class TableDriver {
     public boolean tableExists(final String tableName) {
         boolean exists = false;
         try {
-            Table table = getTable(tableName);
             TableDescription describe = getTable(tableName).describe();
             exists = describe.getTableStatus() != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {

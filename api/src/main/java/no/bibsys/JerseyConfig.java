@@ -19,7 +19,7 @@ import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
 
-    private static final TableDriver TABLE_DRIVER = LocalDynamoDBHelper.getTableDriver();
+    private static final TableDriver TABLE_DRIVER = DynamoDBHelper.getTableDriver();
 
     public JerseyConfig() {
         this(new DatabaseManager(TABLE_DRIVER), new RegistryManager(TABLE_DRIVER), new EnvironmentReader());
