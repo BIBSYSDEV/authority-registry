@@ -8,7 +8,11 @@ Parameters:
     Description: AWS CodeStar projectID used to associate new resources to team members
   Stage:
     Type: String
+#    Default: test
     Description: Deployment stage. E.g. test, prod, etc.
+#    AllowedValues: 
+#      - prod
+#      - test
   LambdaTrustRoleArn:
     Type: String
   CodeBucket:
@@ -56,6 +60,19 @@ Resources:
       Type: "String"
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
+
+  InitFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: no.bibsys.handlers.InitLambdaHandler::handleRequest
+      Runtime: java8
+      CodeUri: api/build/libs/api-fat.jar
+      MemorySize: 1512
+      Role: !Ref LambdaTrustRoleArn
+      Timeout: 600
+      Environment:
+        Variables:
+          API_KEY_TABLE_NAME: !Join ['-', [!Ref ProjectId, !Ref Branch, !Ref Stage, "apiKeys"]]
 
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:

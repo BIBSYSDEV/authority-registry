@@ -6,26 +6,17 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
-import no.bibsys.EnvironmentReader;
+import no.bibsys.service.ApiKey;
+import no.bibsys.service.AuthenticationService;
 
 @Provider
 @PreMatching
 public class AuthenticationFilter implements ContainerRequestFilter {
     
-    private final transient EnvironmentReader environmentReader;
+    private final transient AuthenticationService authenticationService;
     
-    public AuthenticationFilter(EnvironmentReader environmentReader) {
-        this.environmentReader = environmentReader;
-    }
-    
-    public boolean isOneOfApiAdminApiKeys(String apiKeyinHeader) {
-        String apiKey = environmentReader.getEnvForName(ApiKeyConstants.API_ADMIN_API_KEY).orElse("fallback-api-admin-api-key");
-        return apiKeyinHeader.equals(apiKey);
-    }
-    
-    public boolean isOneOfRegistryAdminApiKeys(String apiKeyInHeader) {
-        String apiKey = environmentReader.getEnvForName(ApiKeyConstants.REGISTRY_ADMIN_API_KEY).orElse("fallback-registry-admin-api-key");
-        return apiKeyInHeader.equals(apiKey);
+    public AuthenticationFilter(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
     
     @Override
@@ -33,10 +24,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         
         Optional<String> apiKeyInHeader = Optional.ofNullable(requestContext.getHeaderString(ApiKeyConstants.API_KEY_PARAM_NAME));
         
-        if (apiKeyInHeader.isPresent() && isOneOfApiAdminApiKeys(apiKeyInHeader.get())) {
-            requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
-        } else if (apiKeyInHeader.isPresent() && isOneOfRegistryAdminApiKeys(apiKeyInHeader.get())) {
-            requestContext.setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
+        if (apiKeyInHeader.isPresent()) {
+            ApiKey apiKey = authenticationService.getApiKey(apiKeyInHeader.get());
+            if (apiKey.isActive() && apiKey.getRoles().contains(Roles.API_ADMIN)) {
+                requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
+            } else if (apiKey.isActive() && apiKey.getRoles().contains(Roles.REGISTRY_ADMIN)) {
+                requestContext.setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
+            }
         }
     }
 
