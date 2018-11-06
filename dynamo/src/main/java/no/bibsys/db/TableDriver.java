@@ -8,9 +8,9 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-
 import java.util.List;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
@@ -70,13 +70,26 @@ public final class TableDriver {
     public boolean tableExists(final String tableName) {
         boolean exists = false;
         try {
-            exists = getTable(tableName).describe().getTableStatus() != null;
+            TableDescription describe = getTable(tableName).describe();
+            exists = describe.getTableStatus() != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
             logger.warn("Table {} does not exist", tableName);
         }
         return exists;
     }
 
+    
+    /**
+     * Return number of items in table
+     * 
+     * @param tableName
+     * @return number of items
+     */
+    
+    public long tableSize(final String tableName) {
+    
+        return getTable(tableName).describe().getItemCount(); // Only updated every 6 hours!
+    }
 
     /**
      * Deletes a table and the validation schema associated with this table
@@ -108,8 +121,6 @@ public final class TableDriver {
                 deleteRequest.setTableName(tableName);
                 
                 TableUtils.deleteTableIfExists(client, deleteRequest);
-                
-//                dynamoDb.getTable(tableName).waitForDelete();
             }
         } else {
             throw new TableNotFoundException(tableName);
@@ -127,7 +138,7 @@ public final class TableDriver {
         final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
             .withKeySchema(keySchema)
             .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
-                new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
+                new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
         dynamoDb.createTable(request);
     }

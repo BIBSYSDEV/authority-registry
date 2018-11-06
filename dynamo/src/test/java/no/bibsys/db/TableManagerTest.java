@@ -3,15 +3,23 @@ package no.bibsys.db;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
 
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.db.exceptions.TableNotEmptyException;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.db.structures.IdOnlyEntry;
-import org.junit.Test;
 
 
 public class TableManagerTest extends LocalDynamoTest {
@@ -44,11 +52,11 @@ public class TableManagerTest extends LocalDynamoTest {
         TableManager tableManager = new TableManager(newTableDriver());
         tableManager.createRegistry(template);
 
-        TableReader reader = new TableReader(newTableDriver(), TableManager.getValidationSchemaTable());
-        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(true)));
+        EntityManager entityManager = new EntityManager(newTableDriver(), TableManager.getValidationSchemaTable());
+        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(true)));
 
         tableManager.deleteTable(tableName);
-        assertThat(reader.getEntry(tableName).isPresent(),is(equalTo(false)));
+        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(false)));
 
         int tables = tableManager.getClient().listTables().getTableNames().size();
 
@@ -78,7 +86,7 @@ public class TableManagerTest extends LocalDynamoTest {
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(template);
         ;
-        TableWriter tableWriter = new TableWriter(tableDriver, tableName);
+        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
         tableWriter.addEntry(newSimpleEntry());
         tableManager.deleteTable(tableName);
 
@@ -99,12 +107,12 @@ public class TableManagerTest extends LocalDynamoTest {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.createRegistry(template);
-        TableWriter tableWriter = new TableWriter(tableDriver, tableName);
+        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
         tableWriter.addEntry(new IdOnlyEntry("Id1"));
         tableManager.emptyTable(tableName);
 
-        TableReader reader=new TableReader(tableDriver,TableManager.getValidationSchemaTable()); 
-        Optional<String> schema = reader.getEntry(tableName);
+        EntityManager entityManager = new EntityManager(tableDriver,TableManager.getValidationSchemaTable()); 
+        Optional<String> schema = entityManager.getEntry(tableName);
         assertThat(schema.isPresent(),is(equalTo(true)));
     }
 
@@ -119,7 +127,56 @@ public class TableManagerTest extends LocalDynamoTest {
 
     }
 
+    @Test
+    public void tableManagerShouldListAllRegistries() throws JsonProcessingException, InterruptedException {
+        TableDriver tableDriver = newTableDriver();
+        TableManager tableManager = new TableManager(tableDriver);
+        template.setId("test");
+        tableManager.createRegistry(template);
+        template.setId("test1");
+        tableManager.createRegistry(template);
+        template.setId("test2");
+        tableManager.createRegistry(template);
+        template.setId("test3");
+        tableManager.createRegistry(template);
+        template.setId("test4");
+        tableManager.createRegistry(template);
+        
+        List<String> registries = tableManager.listRegistries();
+        assertTrue(registries.contains("test"));
+        assertTrue(registries.contains("test1"));
+        assertTrue(registries.contains("test2"));
+        assertTrue(registries.contains("test3"));
+        assertTrue(registries.contains("test4"));
+        
+    }
 
+    @Test 
+    public void tableManagerShouldUpdateARegistry() throws InterruptedException, IOException {
+        TableDriver tableDriver = newTableDriver();
+        TableManager tableManager = new TableManager(tableDriver);
+        String testId = "testUpdateRegistry";
+        template.setId(testId);
+        String descriptionBefore = "Test of update before";
+        template.getMetadata().setDescription(descriptionBefore);
+        tableManager.createRegistry(template);
+        
+        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
+        Optional<String> entry = entityManager.getEntry(testId);
+        assertTrue(entry.isPresent());
 
-
+        ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
+        EntityRegistryTemplate entity = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
+        assertThat(entity.getMetadata().getDescription(), is(equalTo(descriptionBefore)));
+        
+        EntityRegistryTemplate template2 = new EntityRegistryTemplate(testId);
+        String descriptionAfter = "Test of update after";
+        template2.getMetadata().setDescription(descriptionAfter);
+        entityManager.updateJson(mapper.writeValueAsString(template2));
+        
+        Optional<String> entry2 = entityManager.getEntry(testId);
+        assertTrue(entry2.isPresent());
+        EntityRegistryTemplate entity2 = mapper.readValue(entry2.get(), EntityRegistryTemplate.class);
+        assertThat(entity2.getMetadata().getDescription(), is(equalTo(descriptionAfter)));
+    }
 }
