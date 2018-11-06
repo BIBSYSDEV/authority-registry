@@ -19,7 +19,6 @@ public abstract class LocalDynamoTest {
         System.setProperty("sqlite4java.library.path", "build/libs");
 
         final AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
-        databaseManager = new DatabaseManager(TableDriver.create(client, new DynamoDB(client)));
 
         TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
         databaseManager = new DatabaseManager(tableDriver);
