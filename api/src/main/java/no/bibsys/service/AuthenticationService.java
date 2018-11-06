@@ -33,7 +33,7 @@ public class AuthenticationService {
         
         config = DynamoDBMapperConfig
                 .builder()
-                .withTableNameOverride(TableNameOverride.withTableNameReplacement(getApiKeyTableName()))
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
     }
     

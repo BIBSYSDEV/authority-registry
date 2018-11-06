@@ -26,12 +26,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         
         if (apiKeyInHeader.isPresent()) {
             ApiKey apiKey = authenticationService.getApiKey(apiKeyInHeader.get());
-            if (apiKey.isActive()) {
-                if (apiKey.getRoles().contains(Roles.API_ADMIN)) {
-                    requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
-                } else if (apiKey.getRoles().contains(Roles.REGISTRY_ADMIN)) {
-                    requestContext.setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
-                }
+            if (apiKey.isActive() && apiKey.getRoles().contains(Roles.API_ADMIN)) {
+                requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
+            } else if (apiKey.isActive() && apiKey.getRoles().contains(Roles.REGISTRY_ADMIN)) {
+                requestContext.setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
             }
         }
     }
