@@ -2,6 +2,10 @@ package no.bibsys.db.structures;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import no.bibsys.db.ObjectMapperHelper;
+
 public class SimpleEntry implements Entry {
 
 
@@ -37,5 +41,7 @@ public class SimpleEntry implements Entry {
         this.preferredLabels = labels;
     }
 
-
+    public String asJson() throws JsonProcessingException {
+        return ObjectMapperHelper.getObjectMapper().writeValueAsString(this);
+    }
 }

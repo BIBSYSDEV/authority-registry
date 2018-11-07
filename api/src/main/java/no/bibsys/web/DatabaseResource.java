@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.PathResponse;
@@ -74,11 +74,11 @@ public class DatabaseResource {
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
-    private transient final DatabaseManager databaseManager;
     private transient final RegistryManager registryManager;
+    private transient final EntityManager entityManager;
 
-    public DatabaseResource(DatabaseManager databaseManager, RegistryManager registryManager) {
-        this.databaseManager = databaseManager;
+    public DatabaseResource(RegistryManager registryManager, EntityManager entityManager) {
+        this.entityManager = entityManager;
         this.registryManager = registryManager;
     }
 
@@ -285,7 +285,7 @@ public class DatabaseResource {
             @RequestBody(description = "Entity to create",
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
-        String entityId = databaseManager.addEntry(registryName, entity);
+        String entityId = entityManager.addEntity(registryName, entity);
         
         return new SimpleResponse(String.format("/registry/%s/entity/%s", registryName, entityId));
     }
@@ -334,7 +334,7 @@ public class DatabaseResource {
                     throws IOException {
         String entityJson = "";
 
-        Optional<String> entry = databaseManager.getEntry(registryName, entityId);
+        Optional<String> entry = entityManager.getEntity(registryName, entityId);
         if(entry.isPresent()) {
             entityJson = entry.get();
         }else {
@@ -365,7 +365,7 @@ public class DatabaseResource {
             description = "Id of entity to delete",
             schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId)
                     throws IOException {
-        databaseManager.deleteEntity(registryName, entityId);
+        entityManager.deleteEntity(registryName, entityId);
         
         return new SimpleResponse(String.format("Entity with id %s is deleted from %s", entityId, registryName));
     }
@@ -394,7 +394,7 @@ public class DatabaseResource {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(entity);
         String entityId = node.get("id").asText();
-        databaseManager.updateEntity(registryName, entity);
+        entityManager.updateEntity(registryName, entity);
         
         return new SimpleResponse(String.format("Entity with id %s in %s has been updated", entityId, registryName));
     }

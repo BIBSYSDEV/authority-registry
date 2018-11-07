@@ -28,21 +28,21 @@ public class TableManagerTest extends LocalDynamoTest {
     public void createTable() throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver=newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(template);
-        ListTablesResult tables = tableManager.getClient().listTables();
-        int numberOfTables = tables.getTableNames().size();
+        tableManager.createTable(template.getId());
+        List<String> tables = tableManager.listTables();
+        int numberOfTables = tables.size();
 
-        assertThat(numberOfTables, is(equalTo(2)));
+        assertThat(numberOfTables, is(equalTo(1)));
     }
 
     @Test(expected = TableAlreadyExistsException.class)
     public void tableManagerShouldThrowExceptionWhenCreatingAnExistingTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        int tables = tableManager.getClient().listTables().getTableNames().size();
+        int tables = tableManager.listTables().size();
         assertThat(tables, is(equalTo(0)));
-        tableManager.createRegistry(template);
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
+        tableManager.createTable(template.getId());
     }
 
 
@@ -50,18 +50,12 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldDeleteAnEmptyTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(template);
-
-        EntityManager entityManager = new EntityManager(newTableDriver(), TableManager.getValidationSchemaTable());
-        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(true)));
+        tableManager.createTable(template.getId());
 
         tableManager.deleteTable(tableName);
-        assertThat(entityManager.getEntry(tableName).isPresent(),is(equalTo(false)));
+        int tables = tableManager.listTables().size();
 
-        int tables = tableManager.getClient().listTables().getTableNames().size();
-
-
-        assertThat(tables, is(equalTo(1)));
+        assertThat(tables, is(equalTo(0)));
     }
 
 
@@ -69,13 +63,13 @@ public class TableManagerTest extends LocalDynamoTest {
     public void tableManagerShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
         throws InterruptedException, JsonProcessingException {
         TableManager tableManager = new TableManager(newTableDriver());
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
 
         tableManager.deleteTable(tableName+"blabla");
 
-        int tables = tableManager.getClient().listTables().getTableNames().size();
+        int tables = tableManager.listTables().size();
 
-        assertThat(tables, is(equalTo(2)));
+        assertThat(tables, is(equalTo(1)));
     }
 
 
@@ -84,12 +78,12 @@ public class TableManagerTest extends LocalDynamoTest {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(template);
-        ;
-        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
-        tableWriter.addEntry(newSimpleEntry());
-        tableManager.deleteTable(tableName);
+        tableManager.createTable(template.getId());
 
+        ItemDriver itemDriver = newItemDriver();
+        ItemManager itemManager = new ItemManager(itemDriver);
+        itemManager.addJson(template.getId(), newSimpleEntry().asJson());
+        tableManager.deleteTable(tableName);
     }
 
     @Test(expected = TableNotFoundException.class)
@@ -98,7 +92,6 @@ public class TableManagerTest extends LocalDynamoTest {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.deleteTable(tableName);
-
     }
 
     @Test
@@ -106,14 +99,14 @@ public class TableManagerTest extends LocalDynamoTest {
         throws InterruptedException, JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
-        tableManager.createRegistry(template);
-        EntityManager tableWriter = new EntityManager(tableDriver, tableName);
-        tableWriter.addEntry(new IdOnlyEntry("Id1"));
+        tableManager.createTable(template.getId());
+        ItemManager tableWriter = new ItemManager(newItemDriver());
+        tableWriter.addJson(template.getId(), new IdOnlyEntry("Id1").asJson());
         tableManager.emptyTable(tableName);
 
-        EntityManager entityManager = new EntityManager(tableDriver,TableManager.getValidationSchemaTable()); 
-        Optional<String> schema = entityManager.getEntry(tableName);
-        assertThat(schema.isPresent(),is(equalTo(true)));
+        boolean actual = tableManager.tableExists(tableName);
+        boolean expected = true;
+        assertThat(actual, is(equalTo(expected)));
     }
 
 
@@ -123,60 +116,29 @@ public class TableManagerTest extends LocalDynamoTest {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         tableManager.emptyTable(tableName);
-
-
     }
 
     @Test
-    public void tableManagerShouldListAllRegistries() throws JsonProcessingException, InterruptedException {
+    public void tableManagerShouldListAllTables() throws JsonProcessingException, InterruptedException {
         TableDriver tableDriver = newTableDriver();
         TableManager tableManager = new TableManager(tableDriver);
         template.setId("test");
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
         template.setId("test1");
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
         template.setId("test2");
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
         template.setId("test3");
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
         template.setId("test4");
-        tableManager.createRegistry(template);
+        tableManager.createTable(template.getId());
         
-        List<String> registries = tableManager.listRegistries();
-        assertTrue(registries.contains("test"));
-        assertTrue(registries.contains("test1"));
-        assertTrue(registries.contains("test2"));
-        assertTrue(registries.contains("test3"));
-        assertTrue(registries.contains("test4"));
+        List<String> tables = tableManager.listTables();
+        assertTrue(tables.contains("test"));
+        assertTrue(tables.contains("test1"));
+        assertTrue(tables.contains("test2"));
+        assertTrue(tables.contains("test3"));
+        assertTrue(tables.contains("test4"));
         
-    }
-
-    @Test 
-    public void tableManagerShouldUpdateARegistry() throws InterruptedException, IOException {
-        TableDriver tableDriver = newTableDriver();
-        TableManager tableManager = new TableManager(tableDriver);
-        String testId = "testUpdateRegistry";
-        template.setId(testId);
-        String descriptionBefore = "Test of update before";
-        template.getMetadata().setDescription(descriptionBefore);
-        tableManager.createRegistry(template);
-        
-        EntityManager entityManager = new EntityManager(tableDriver, TableManager.getValidationSchemaTable());
-        Optional<String> entry = entityManager.getEntry(testId);
-        assertTrue(entry.isPresent());
-
-        ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
-        EntityRegistryTemplate entity = mapper.readValue(entry.get(), EntityRegistryTemplate.class);
-        assertThat(entity.getMetadata().getDescription(), is(equalTo(descriptionBefore)));
-        
-        EntityRegistryTemplate template2 = new EntityRegistryTemplate(testId);
-        String descriptionAfter = "Test of update after";
-        template2.getMetadata().setDescription(descriptionAfter);
-        entityManager.updateJson(mapper.writeValueAsString(template2));
-        
-        Optional<String> entry2 = entityManager.getEntry(testId);
-        assertTrue(entry2.isPresent());
-        EntityRegistryTemplate entity2 = mapper.readValue(entry2.get(), EntityRegistryTemplate.class);
-        assertThat(entity2.getMetadata().getDescription(), is(equalTo(descriptionAfter)));
     }
 }

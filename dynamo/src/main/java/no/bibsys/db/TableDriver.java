@@ -8,9 +8,12 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 import no.bibsys.db.exceptions.TableNotEmptyException;
 import no.bibsys.db.structures.IdOnlyEntry;
@@ -33,7 +36,6 @@ public final class TableDriver {
         this.dynamoDb = dynamoDb;
     }
 
-
     /**
      * Create custom connection with DynamoDB.
      *
@@ -47,17 +49,8 @@ public final class TableDriver {
         return tableDriver;
     }
 
-    public AmazonDynamoDB getClient() {
-        return client;
-    }
-
-    public DynamoDB getDynamoDb() {
-        return dynamoDb;
-    }
-
     public Table getTable(final String tableName) {
         return dynamoDb.getTable(tableName);
-
     }
 
 
@@ -78,48 +71,38 @@ public final class TableDriver {
         return exists;
     }
 
-    
+
     /**
      * Return number of items in table
      * 
      * @param tableName
      * @return number of items
      */
-    
+
     public long tableSize(final String tableName) {
-    
+
         return getTable(tableName).describe().getItemCount(); // Only updated every 6 hours!
     }
 
     /**
      * Deletes a table and the validation schema associated with this table
      */
-    public void deleteTable(final String tableName) throws InterruptedException {
+    public void deleteTable(final String tableName) {
         long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
         } else {
             throw new TableNotEmptyException(tableName);
         }
-
     }
 
-
-//    /**
-//     *  Deletes table metadata and validation schema
-//     */
-//    private void deleteValidationSchema(String tableName) {
-//        
-//        logger.info("Deleting validation schema for table {}", tableName);
-//    }
-
-    public  void deleteNoCheckTable(final String tableName) throws InterruptedException {
+    public  void deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
             client.deleteTable(tableName);
             if (tableExists(tableName)) {
                 DeleteTableRequest deleteRequest = new DeleteTableRequest();
                 deleteRequest.setTableName(tableName);
-                
+
                 TableUtils.deleteTableIfExists(client, deleteRequest);
             }
         } else {
@@ -128,30 +111,42 @@ public final class TableDriver {
 
     }
 
-    public void createTable(final String tableName, final TableDefinitions tableEntry)
-        throws InterruptedException {
+    public void createTable(final String tableName, final TableDefinitions tableEntry) {
 
-        final List<AttributeDefinition> attributeDefinitions = tableEntry
-            .attributeDefinitions();
-        final List<KeySchemaElement> keySchema = tableEntry.keySchema();
+        if(!tableExists(tableName)){
 
-        final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
-            .withKeySchema(keySchema)
-            .withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
-                new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
-        dynamoDb.createTable(request);
+            final List<AttributeDefinition> attributeDefinitions = tableEntry.attributeDefinitions();
+            final List<KeySchemaElement> keySchema = tableEntry.keySchema();
+
+            final CreateTableRequest request = new CreateTableRequest()
+                    .withTableName(tableName)
+                    .withKeySchema(keySchema)
+                    .withAttributeDefinitions(attributeDefinitions)
+                    .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(10L).withWriteCapacityUnits(10L));
+
+            TableUtils.createTableIfNotExists(client, request);
+        }else {
+            throw new TableAlreadyExistsException(String.format("A table with name %s already exists", tableName));
+        }
     }
 
 
-    public void createTable(final String tableName) throws InterruptedException {
+    public void createTable(final String tableName) {
 
         createTable(tableName, new IdOnlyEntry());
     }
 
     public boolean isTableCreated(final String tableName) {
         Table table = dynamoDb.getTable(tableName);
-        
+
         return table != null;
+    }
+
+    public List<String> listTables(){
+        List<String> tableList = new ArrayList<>();
+        dynamoDb.listTables().forEach(table -> tableList.add(table.getTableName()));
+
+        return tableList;
     }
 }
