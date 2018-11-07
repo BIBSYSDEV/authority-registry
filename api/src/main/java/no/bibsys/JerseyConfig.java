@@ -3,12 +3,14 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
+import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -19,22 +21,24 @@ import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
 
-    private static final TableDriver TABLE_DRIVER = DynamoDBHelper.getTableDriver();
-
     public JerseyConfig() {
-        this(new DatabaseManager(TABLE_DRIVER), new RegistryManager(TABLE_DRIVER), new EnvironmentReader());
+        this(DynamoDBHelper.getClient(), new EnvironmentReader());
     }
 
-    public JerseyConfig(DatabaseManager databaseManager, RegistryManager registryManager, EnvironmentReader environmentReader) {
+    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {        
         super();
 
+        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
+        DatabaseManager databaseManager = new DatabaseManager(tableDriver);
+        RegistryManager registryManager = new RegistryManager(tableDriver);
+        
         register(new DatabaseResource(databaseManager, registryManager));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
-
-        register(new AuthenticationFilter(environmentReader));
+        
+        register(new AuthenticationFilter(new AuthenticationService(client, environmentReader)));
         
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);

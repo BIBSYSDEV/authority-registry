@@ -3,43 +3,48 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
 import java.util.UUID;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.TableCollection;
 import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
-import no.bibsys.db.DatabaseManager;
-import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.model.SimpleResponse;
 import no.bibsys.web.security.ApiKeyConstants;
+import no.bibsys.web.security.Roles;
 
 
 public class DatabaseResourceTest extends JerseyTest {
 
     private final SampleData sampleData = new SampleData();
-
+    private String apiAdminKey;
+    private String registryAdminKey;
+    
     @Override
     protected Application configure() {
-        TableDriver tableDriver = LocalDynamoDBHelper.getTableDriver();
+        AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
+        EnvironmentReader environmentReader = new MockEnvironmentReader();
+        
+        JerseyConfig config = new JerseyConfig(client, environmentReader);
+        
+        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
         TableCollection<ListTablesResult> listTables = tableDriver.getDynamoDb().listTables();
         
         listTables.forEach(table -> {
@@ -50,10 +55,17 @@ public class DatabaseResourceTest extends JerseyTest {
                 e.printStackTrace();
             }
         });
-        JerseyConfig config = new JerseyConfig(new DatabaseManager(tableDriver), new RegistryManager(tableDriver), new MockEnvironmentReader());
+        
+        AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
+        authenticationService.createApiKeyTable();
+        
+        apiAdminKey = authenticationService.createApiKey(Roles.API_ADMIN);
+        registryAdminKey = authenticationService.createApiKey(Roles.REGISTRY_ADMIN);    
+        
+        
         return config;
     }
-
+    
     @BeforeClass
     public static void init() {
         System.setProperty("sqlite4java.library.path", "build/libs");
@@ -114,7 +126,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response response = target("/registry/" + tableName)
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
@@ -132,7 +144,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String tableName = UUID.randomUUID().toString();
         Response response = target("/registry/" + tableName)
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
 
@@ -154,7 +166,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response response = target(String.format("/registry/%s/empty", tableName))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
@@ -168,8 +180,9 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate request = new EntityRegistryTemplate(tableName);
         Response response = target("/registry")
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+        
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
 
@@ -203,7 +216,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response response = target(String.format("/registry/%s", tableName))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .get();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
@@ -281,7 +294,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String path = String.format("/registry/%s/entity", registryName);
         return target(path)
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
@@ -296,28 +309,28 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response createRegistry(EntityRegistryTemplate request) throws Exception {
         return target("/registry")
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));
     }
 
     private Response readEntity(String registryName, String entityId) throws Exception {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .get();
     }
 
     private Response putSchema(String registryName, String schemaAsJson) throws Exception {
         return target(String.format("/registry/%s/schema", registryName))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
                 .put(Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
     private Response readSchema(String registryName) throws Exception {
         return target(String.format("/registry/%s/schema", registryName))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_REGISTRY_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .get();
     }
 
@@ -325,7 +338,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String path = String.format("/registry/%s/entity/%s", registryName, entityId);
         return target(path)
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .put(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
@@ -334,7 +347,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         return target(String.format("/registry/%s/entity/%s", registryName, entityId))
                 .request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, MockEnvironmentReader.TEST_API_ADMIN_API_KEY)
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
     }
 }
