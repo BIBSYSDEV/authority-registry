@@ -13,6 +13,9 @@ Parameters:
 #    AllowedValues: 
 #      - prod
 #      - test
+#  DomainName:
+#    Type: String
+#    Default: test
   LambdaTrustRoleArn:
     Type: String
   CodeBucket:
@@ -21,6 +24,10 @@ Parameters:
   Branch:
     Type: String
     Description: Repository branch name.
+
+Conditions:
+  CreateProdResources:
+    Fn::Equals: [!Ref Stage, 'final']
 
 Resources:
   RestApi:
@@ -73,6 +80,21 @@ Resources:
       Environment:
         Variables:
           API_KEY_TABLE_NAME: !Join ['-', [!Ref ProjectId, !Ref Branch, !Ref Stage, "apiKeys"]]
+
+  ProdDomainName:
+    Condition : CreateProdResources
+    Type: AWS::ApiGateway::DomainName
+    Properties: 
+      CertificateArn: String
+      DomainName: String
+  
+  ProdDomainBasePathMapping:
+    Condition : CreateProdResources
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref ProdDomainName
+      RestApiId: !Ref RestApi
+      Stage: !Ref Stage
 
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:
