@@ -3,7 +3,6 @@ package no.bibsys.db;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ItemManager {
 
@@ -27,5 +26,9 @@ public class ItemManager {
 
     public Optional<String> updateJson(final String tableName, final String json) {
         return itemDriver.updateItem(tableName, json);
+    }
+
+    public boolean itemExists(String tableName, String id) {
+        return itemDriver.itemExists(tableName, id);
     }
 }

@@ -49,6 +49,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.db.EntityManager;
+import no.bibsys.db.ObjectMapperHelper;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.PathResponse;
@@ -116,10 +117,10 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse getRegistryList() throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+    public SimpleResponse getRegistryList() throws InterruptedException, JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
         return new SimpleResponse(mapper.writeValueAsString(registryList), 200);
     }
 

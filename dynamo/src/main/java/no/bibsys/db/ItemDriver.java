@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -25,7 +24,7 @@ public final class ItemDriver {
     
     private static final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
     private static final String NULL = "null";
-    private transient DynamoDB dynamoDb;
+    private transient final DynamoDB dynamoDb;
 
 
     private ItemDriver(final DynamoDB dynamoDb) {
@@ -111,6 +110,16 @@ public final class ItemDriver {
 
         Table table = dynamoDb.getTable(tableName);
         table.deleteItem(new PrimaryKey("id", id));
+    }
+
+    public boolean itemExists(String tableName, String id) {
+
+        try {
+            getItem(tableName, id);
+        }catch(NoItemException nie) {
+            return false;
+        }
+        return true;
     }
 
 

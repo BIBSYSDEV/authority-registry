@@ -3,25 +3,30 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import java.util.List;
 import java.util.UUID;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.TableCollection;
-import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.TableDriver;
+import no.bibsys.db.TableManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
@@ -45,16 +50,10 @@ public class DatabaseResourceTest extends JerseyTest {
         JerseyConfig config = new JerseyConfig(client, environmentReader);
         
         TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
-        TableCollection<ListTablesResult> listTables = tableDriver.getDynamoDb().listTables();
+        TableManager tableManager = new TableManager(tableDriver);
+        List<String> listTables = tableManager.listTables();
         
-        listTables.forEach(table -> {
-            table.delete();
-            try {
-                table.waitForDelete();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        listTables.forEach(tableManager::deleteTable);
         
         AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
         authenticationService.createApiKeyTable();
