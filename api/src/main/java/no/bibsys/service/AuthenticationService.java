@@ -2,6 +2,7 @@ package no.bibsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -24,11 +25,13 @@ public class AuthenticationService {
     
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
+    private final transient EnvironmentReader environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
     private final static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     
     public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
         
@@ -80,8 +83,18 @@ public class AuthenticationService {
     }
     
     public void setUpInitialApiKeys() {
-        createApiKey(Roles.API_ADMIN);
-        createApiKey(Roles.REGISTRY_ADMIN);
+        Optional<String> stage = environmentReader.getEnvForName("STAGE_NAME");
+        if (stage.isPresent() && stage.get().equals("test")) {
+            ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
+            apiAdminApiKey.setKey("testApiAdminApiKey");
+            mapper.save(apiAdminApiKey, config);
+            ApiKey registryAdminapiKey = new ApiKey(Roles.REGISTRY_ADMIN);
+            registryAdminapiKey.setKey("testRegistryAdminApiKey");
+            mapper.save(registryAdminapiKey, config);
+        } else {
+            createApiKey(Roles.API_ADMIN);
+            createApiKey(Roles.REGISTRY_ADMIN);
+        }
     }
 
     public String deleteApiKeyTable() {
