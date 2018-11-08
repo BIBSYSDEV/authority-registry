@@ -10,12 +10,15 @@ import java.nio.file.Paths;
 import no.bibsys.amazon.handlers.events.CodePipelineEvent;
 import no.bibsys.amazon.handlers.responses.SimpleResponse;
 import no.bibsys.utils.IoUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class InitHandlerTest {
 
 
+    //TODO create Integration.class template
     @Test
+    @Ignore
     public void InitHandlerShouldReturnThePipelineId() throws IOException, URISyntaxException {
         InitHandler initHandler = new InitHandler();
         String eventJson = IoUtils
