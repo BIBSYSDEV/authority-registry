@@ -1,33 +1,45 @@
 package no.bibsys;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.RegistryManager;
+import no.bibsys.db.TableDriver;
+import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.DatabaseResource;
-import no.bibsys.web.HelloResource;
+import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
 import no.bibsys.web.exception.TableAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.TableNotFoundExceptionMapper;
+import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
-        this(new DatabaseManager(DynamoDBHelper.getTableDriver()));
+        this(DynamoDBHelper.getClient(), new EnvironmentReader());
     }
 
-    public JerseyConfig(DatabaseManager databaseManager) {
+    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {        
         super();
 
-        DatabaseResource databaseController = new DatabaseResource(databaseManager);
+        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
+        DatabaseManager databaseManager = new DatabaseManager(tableDriver);
+        RegistryManager registryManager = new RegistryManager(tableDriver);
+        
+        register(new DatabaseResource(databaseManager, registryManager));
+        register(PingResource.class);
 
-        register(databaseController);
-        register(HelloResource.class);
-
+        register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
-
+        
+        register(new AuthenticationFilter(new AuthenticationService(client, environmentReader)));
+        
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);
         register(TableAlreadyExistsExceptionMapper.class);

@@ -1,4 +1,4 @@
-package no.bibsys.amazon.handlers;
+package no.bibsys.handlers;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;

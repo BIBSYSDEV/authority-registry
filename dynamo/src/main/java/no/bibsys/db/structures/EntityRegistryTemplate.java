@@ -1,9 +1,14 @@
 package no.bibsys.db.structures;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class EntityRegistryTemplate {
 
     private String id;
     private Metadata metadata;
+    private String schema;
     
     public EntityRegistryTemplate() {
         metadata = new Metadata();
@@ -31,4 +36,16 @@ public class EntityRegistryTemplate {
         this.metadata = metadata;
     }
     
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityRegistryTemplate [id=" + id + ", metadata=" + metadata + "]";
+    }
 }

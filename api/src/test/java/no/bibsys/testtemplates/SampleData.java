@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class SampleData {
 
     public SampleData() {
-        // TODO Auto-generated constructor stub
     }
 
     private final ObjectMapper mapper = new ObjectMapper();

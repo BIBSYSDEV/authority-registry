@@ -1,76 +1,79 @@
 package no.bibsys.db;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import no.bibsys.db.exceptions.ItemExistsException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
+import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.EditRegistryRequest;
+import org.junit.Test;
 
 
 public class DatabaseManagerTest extends LocalDynamoTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private static String TABLE_NAME = "DatabaseManagerTest";
-    private EditRegistryRequest createRequest = new EditRegistryRequest(TABLE_NAME);
+    private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
 
-    private EditRegistryRequest createTestEditRequest() {
-        EditRegistryRequest newCreateRequest = new EditRegistryRequest(TABLE_NAME);
-        newCreateRequest.setContributor(Arrays.asList(new String[] {"contributor1", "contributor2"}));
-        newCreateRequest.setCreator(Arrays.asList(new String[] {"creator1", "creator2"}));
-        newCreateRequest.setLabel(Arrays.asList(new String[] {"label1", "label2"}));
-        newCreateRequest.setSameAs(Arrays.asList(new String[] {"sameAs1", "sameAs2"}));
-        newCreateRequest.setDescription("description");
-        newCreateRequest.setLicense("license");
+    private EntityRegistryTemplate createTestEditRequest(String tableName) {
+        EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
+        newCreateRequest.setId(tableName);
+        newCreateRequest.getMetadata().setContributor(Arrays.asList("contributor1", "contributor2"));
+        newCreateRequest.getMetadata().setCreator(Arrays.asList("creator1", "creator2"));
+        newCreateRequest.getMetadata().setLabel(Arrays.asList("label1", "label2"));
+        newCreateRequest.getMetadata().setSameAs(Arrays.asList("sameAs1", "sameAs2"));
+        newCreateRequest.getMetadata().setDescription("description");
+        newCreateRequest.getMetadata().setLicense("license");
         
         return newCreateRequest;
     }
     
-    @Before
-    public void init() {
-        createRequest = new EditRegistryRequest(TABLE_NAME);
-    }
-    
     @Test
     public void databaseManagerShouldCreateATable()
-            throws InterruptedException, JsonProcessingException {
+        throws InterruptedException, IOException {
 
-        boolean existsBeforeCreation = databaseManager.registryExists(TABLE_NAME);
+        String tableName = "createATable";
+        boolean existsBeforeCreation = registryManager.registryExists(tableName);
         
-        createRequest = createTestEditRequest();
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         
-        databaseManager.createRegistry(createRequest);
-        boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
-        boolean existsInSchemaTableAfterCreation = databaseManager.registryExists(TableManager.VALIDATION_SCHEMA_TABLE);
+        registryManager.createRegistry(createRequest);
+        boolean existsAfterCreation = registryManager.registryExists(tableName);
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
-        assertTrue(existsInSchemaTableAfterCreation);
 
-        Optional<String> entry = databaseManager.readEntry(TableManager.VALIDATION_SCHEMA_TABLE, TABLE_NAME);
-        assertTrue(entry.toString().contains(TABLE_NAME));
-        assertTrue(entry.toString().contains("creator1"));
-        assertTrue(entry.toString().contains("contributor2"));
-        assertTrue(entry.toString().contains("label1"));
-        assertTrue(entry.toString().contains("sameAs2"));
-        assertTrue(entry.toString().contains("description"));
-        assertTrue(entry.toString().contains("license"));
+        Optional<String> entry = databaseManager.getEntry(TableManager.getValidationSchemaTable(), tableName);
+
+        assertThat(entry.isPresent(), is(equalTo(true)));
+
+        JsonNode root = mapper.readTree(entry.get());
+
+        assertThat(root.get("id").asText(), is(equalTo(tableName)));
+
+        assertThat(root.get("metadata").get("creator").get(0).asText(), is(equalTo("creator1")));
+        assertThat(root.get("metadata").get("creator").get(1).asText(), is(equalTo("creator2")));
+        assertThat(root.get("metadata").get("contributor").get(0).asText(),
+            is(equalTo("contributor1")));
+        assertThat(root.get("metadata").get("contributor").get(1).asText(),
+            is(equalTo("contributor2")));
+        assertThat(root.get("metadata").get("label").get(0).asText(), is(equalTo("label1")));
+        assertThat(root.get("metadata").get("label").get(1).asText(), is(equalTo("label2")));
+        assertThat(root.get("metadata").get("sameAs").get(0).asText(), is(equalTo("sameAs1")));
+        assertThat(root.get("metadata").get("sameAs").get(1).asText(), is(equalTo("sameAs2")));
+        assertThat(root.get("metadata").get("description").asText(), is(equalTo("description")));
+        assertThat(root.get("metadata").get("license").asText(), is(equalTo("license")));
+        assertThat(root.get("metadata").get("createDate").asLong(), is(greaterThan(0L)));
+        
     }
 
 
@@ -78,15 +81,17 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
             throws InterruptedException, JsonProcessingException {
 
-        boolean existsBeforeCreation = databaseManager.registryExists(TABLE_NAME);
+        String tableName = "tabelAlreadyExists";
+        boolean existsBeforeCreation = registryManager.registryExists(tableName );
         assertThat("The table should not exist before creation", existsBeforeCreation,
                 is(equalTo(false)));
-        databaseManager.createRegistry(createRequest);
-        boolean existsAfterCreation = databaseManager.registryExists(TABLE_NAME);
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
+        registryManager.createRegistry(createRequest );
+        boolean existsAfterCreation = registryManager.registryExists(tableName);
         assertThat("The table should  exist before creation", existsAfterCreation,
                 is(equalTo(true)));
 
-        databaseManager.createRegistry(createRequest);
+        registryManager.createRegistry(createRequest);
 
 
     }
@@ -96,27 +101,41 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     public void databaseManagerShouldInsertAJsonObjectIntoATable()
             throws IOException, InterruptedException {
 
+        String tableName = "insertJsonObject";
         Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
-        databaseManager.createRegistry(createRequest);
-        databaseManager.addEntry(TABLE_NAME, entry.jsonString());
-        String readJson = databaseManager.readEntry(TABLE_NAME, entry.id).orElse(null);
-        ObjectNode actual = mapper.readValue(readJson, ObjectNode.class);
-        ObjectNode expected = mapper.readValue(entry.jsonString(), ObjectNode.class);
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
+        registryManager.createRegistry(createRequest );
+        String entityId = databaseManager.addEntry(tableName , entry.jsonString());
+        String readJson = databaseManager.getEntry(tableName, entityId).orElse(null);
+        String actual = mapper.readValue(readJson, ObjectNode.class).get("id").asText();
 
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(actual, is(equalTo(entityId)));
 
     }
 
 
-    @Test(expected = ItemExistsException.class)
-    public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds()
+    @Test(expected = TableAlreadyExistsException.class)
+    public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds() 
             throws InterruptedException, JsonProcessingException {
+        String tableName = "tableAlreadyExists";
         Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
-        databaseManager.createRegistry(createRequest);
-        databaseManager.addEntry(TABLE_NAME, entry.jsonString());
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
+        registryManager.createRegistry(createRequest );
+        registryManager.addRegistry(tableName, entry.jsonString());
         ObjectNode root2 = entry.root.deepCopy();
         root2.put("newText", "Some new stuff");
         Entry entry2 = new Entry(entry.id, root2);
-        databaseManager.addEntry(TABLE_NAME, entry2.jsonString());
+        registryManager.addRegistry(tableName, entry2.jsonString());
+    }
+    
+    @Test
+    public void databaseManagerAddSchemaToRegistry() throws TableAlreadyExistsException, InterruptedException, IOException {
+        String tableName = "addSchemaToRegistry";
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
+        registryManager.createRegistry(createRequest);
+        String schemaAsJson = "JSON validation schema";
+        registryManager.setSchemaJson(tableName, schemaAsJson);
+        
+        assertThat(registryManager.getSchemaAsJson(tableName), is(equalTo(schemaAsJson)));
     }
 }

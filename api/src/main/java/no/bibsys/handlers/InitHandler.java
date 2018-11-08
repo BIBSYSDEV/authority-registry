@@ -1,4 +1,4 @@
-package no.bibsys.amazon.handlers;
+package no.bibsys.handlers;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import java.io.IOException;
