@@ -8,8 +8,6 @@ Parameters:
   Stage:
     Type: String
     Description: Deployment stage. E.g. test, prod, etc.
-  LambdaTrustRoleArn:
-    Type: String
   CodeBucket:
     Type: String
     Description: S3 Bucket containing artifacts and source code.
