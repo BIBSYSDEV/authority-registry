@@ -21,6 +21,7 @@ jar.enabled = false
 dependencies {
     compile project(":api")
     compile project(":cypress")
+    compile project(":init")
 }
 
 task fatJar {
@@ -68,6 +69,7 @@ subprojects {
 
     dependencies {
 
+       
         //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 

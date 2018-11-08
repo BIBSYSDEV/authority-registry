@@ -29,7 +29,6 @@ dependencies {
 	compile ('io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.5')
 
     //connection to amazon
-    compile ('com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1')
 	compile ('com.amazonaws:aws-lambda-java-core:1.2.0')
 
     compile ('io.symphonia:lambda-logging:1.0.1')
