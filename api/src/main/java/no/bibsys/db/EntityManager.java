@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.amazonaws.services.dynamodbv2.model.TableNotFoundException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import no.bibsys.web.exception.RegistryNotFoundException;
 
 public class EntityManager {
 
@@ -28,7 +29,7 @@ public class EntityManager {
             
             return entityId;
         } else {
-            throw new TableNotFoundException(String.format("Registry %s does not exist", registryName));
+            throw new RegistryNotFoundException(String.format("Registry %s does not exist", registryName));
         }
 
     }
@@ -37,7 +38,7 @@ public class EntityManager {
         if (tableExists(registryName)) {
             return itemManager.getItem(registryName, id);
         } else {
-            throw new TableNotFoundException(String.format("Registry %s does not exist", registryName));
+            throw new RegistryNotFoundException(String.format("Registry %s does not exist", registryName));
         }
 
     }

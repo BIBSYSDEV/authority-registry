@@ -25,7 +25,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -100,7 +99,7 @@ public class DatabaseResource {
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
-                            throws InterruptedException, TableAlreadyExistsException, JsonProcessingException {
+                            throws InterruptedException, JsonProcessingException {
 
         registryManager.createRegistry(request);
         return new SimpleResponse(String.format("A registry with name %s has been created", request.getId()));
@@ -117,7 +116,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse getRegistryList() throws InterruptedException, JsonProcessingException {
+    public SimpleResponse getRegistryList() throws JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
         ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
@@ -141,7 +140,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws InterruptedException, IOException {
+                    throws IOException {
 
         EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
         ObjectMapper mapper = new ObjectMapper();
