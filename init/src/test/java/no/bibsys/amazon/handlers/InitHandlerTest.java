@@ -2,15 +2,13 @@ package no.bibsys.amazon.handlers;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
-import com.amazonaws.serverless.proxy.internal.testutils.MockLambdaContext;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import no.bibsys.amazon.handlers.events.CodePipelineEvent;
+import no.bibsys.amazon.handlers.responses.SimpleResponse;
 import no.bibsys.utils.IoUtils;
 import org.junit.Test;
 
@@ -18,16 +16,15 @@ public class InitHandlerTest {
 
 
     @Test
-    public void InitHandlerShouldReturnThePipelineId() throws IOException {
+    public void InitHandlerShouldReturnThePipelineId() throws IOException, URISyntaxException {
         InitHandler initHandler = new InitHandler();
-        InputStream input = IoUtils
-            .resourceAsStream(Paths.get("events", "mock_codePipeline_event.json"));
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream out = new PipedOutputStream(in);
-        initHandler.handleRequest(input, out, new MockLambdaContext());
+        String eventJson = IoUtils
+            .resourceAsString(Paths.get("events", "mock_codePipeline_event.json"));
+        CodePipelineEvent event = CodePipelineEvent.create(eventJson);
+        SimpleResponse output = initHandler
+            .processInput(event, null);
 
-        String outputString = IoUtils.streamToString(in);
-        assertThat(outputString.hashCode(), is(not(equalTo(true))));
+        assertThat(output.getMessage(), is((equalTo("a0a4b321-beb6-4da6-a595-dab82e23de40"))));
     }
 
 }

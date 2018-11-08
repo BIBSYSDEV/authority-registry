@@ -100,7 +100,7 @@ Resources:
   Init:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: no.bibsys.handler.InitHandler::handleRequest
+      Handler: no.bibsys.amazon.handlers.InitHandler::handleRequest
       FunctionName: !Ref InitFunctionName
       Runtime: java8
       Environment:
@@ -113,7 +113,7 @@ Resources:
           STAGE: !Ref Stage
           SWAGGER_ORG: 'axthosarouris'
 
-      CodeUri: build/libs/pipeline-fat.jar
+      CodeUri: init/build/libs/init-all.jar
       Policies:
         Version: '2012-10-17'
         Statement:
