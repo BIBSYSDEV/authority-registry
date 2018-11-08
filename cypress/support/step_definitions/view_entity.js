@@ -5,16 +5,18 @@
 //    Then anonymous user can view the entity's data in the native database format
 
 when('the anonymous user requests the entity', () => {
-	let getEntityUrl = 'https://www.unit.no';
+	let getEntityUrl = '/registry/' + registryName + '/entity/';
 	cy.wrap('').as('response')
-	cy.get('@entityId').then((entityId) => getEntityUrl += entityId)
-	cy.request(getEntityUrl).then((response) => {
-		cy.wrap(response).as('response')
+	cy.get('@entityId').then((entityId) => {
+		getEntityUrl += entityId
+		cy.request(getEntityUrl).then((response) => {
+			cy.wrap(response).as('response')
+		})
 	})
 })
 
 then("anonymous user can view the entity's data in the native database format", () => {
 	cy.get('@response').then((entityData) => {
-//		expect(entityData.body.name).to.be.equal('test')
+		expect(entityData.body['metadata'].name).to.be.equal('name')
 	})
 })

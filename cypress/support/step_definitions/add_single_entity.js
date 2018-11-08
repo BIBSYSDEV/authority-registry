@@ -7,7 +7,7 @@
 
 when('the registry admin user requests the creation of a new entity with properly formatted data', () =>{
 	cy.get("@registryName").then((registryName) => {
-		let createEntityUrl = "/registry/" + registryName;
+		let createEntityUrl = "/registry/" + registryName + "/entity";
 
 		cy.wrap('').as('returnId')
 		cy.fixture('entityTestData.json')
@@ -32,8 +32,7 @@ when('the registry admin user requests the creation of a new entity with properl
 
 then('the entity is created', () => {
 	cy.get('@returnId').then((returnId) => {
-//		let getEntityUrl = "/registry/" + registryName + "/" + returnId;
-		let getEntityUrl = "https://www.unit.no";
+		let getEntityUrl = "/registry/" + registryName + "/entity/" + returnId;
 
 		cy.request(getEntityUrl)
 	})

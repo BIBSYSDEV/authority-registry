@@ -5,7 +5,7 @@
 //Then the API admin user receives information that the data is deleted
 
 when('the API admin user deletes the data in the entity registry', () => {
-	let deleteDataUrl = '/registry';
+	let deleteDataUrl = '/registry/';
 	cy.get('@authenticationToken').then((authToken) => {
 		cy.get("@registryName").then((registryName) => {
 			let deleteRequest = {
@@ -13,8 +13,8 @@ when('the API admin user deletes the data in the entity registry', () => {
 					"action": "EMPTY"
 			};
 			cy.request({
-				url: deleteDataUrl,
-				method: "POST",
+				url: deleteDataUrl + registryName + '/empty',
+				method: "DELETE",
 				body: deleteRequest,
 				headers: {
 					Authorization: 'Token ' + authToken
