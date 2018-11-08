@@ -12,8 +12,7 @@ Parameters:
 #    AllowedValues:
 #      - prod
 #      - test
-  LambdaTrustRoleArn:
-    Type: String
+
   CodeBucket:
     Type: String
     Description: S3 Bucket containing artifacts and source code.
