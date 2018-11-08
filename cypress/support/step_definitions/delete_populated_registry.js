@@ -1,25 +1,27 @@
-//  Scenario: An API admin user attempts to delete an existing, populated entity registry
-//    Given that the API admin user is authenticated
-//    And that there is an existing, populated entity registry with a schema
-//    When the API admin user attempts to delete the entity registry
-//    Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
+//Scenario: An API admin user attempts to delete an existing, populated entity registry
+//Given that the API admin user is authenticated
+//And that there is an existing, populated entity registry with a schema
+//When the API admin user attempts to delete the entity registry
+//Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
 
 when('the API admin user attempts to delete the entity registry', () => {
-	let deleteRegistryUrl = 'https://www.unit.no';
 
-	cy.get('@authenticationToken').then((authToken) =>{
-		cy.request({
-			url: deleteRegistryUrl,
-			headers: {
-				Authorization: 'Token ' + authToken
-			},
-			failOnStatusCode: true
-		}).then((response) => {
-			expect(response.status).to.equals(200)
-			cy.wrap('Error deleting registry, registry not empty').as('errorMessage')
-//			expect(response.status).to.not.equals(200)
-//			cy.wrap(response.body).as('errorMessage')
-			
+	cy.get("@registryName").then((registryName) => {
+
+		let deleteRegistryUrl = '/registry/' + registryName;
+
+		cy.get('@authenticationToken').then((authToken) =>{
+			cy.request({
+				url: deleteRegistryUrl,
+				method: 'DELETE',
+				headers: {
+					Authorization: 'Token ' + authToken
+				},
+				failOnStatusCode: true
+			}).then((response) => {
+				expect(response.status).to.equals(403)
+				cy.wrap('Error deleting registry, registry not empty').as('errorMessage')
+			})
 		})
 	})
 })

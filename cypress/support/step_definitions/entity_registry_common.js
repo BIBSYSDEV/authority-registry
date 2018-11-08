@@ -25,13 +25,12 @@ given('that there is an existing, empty entity registry with a schema', () => {
 function createEmptyRegistry(){
 	let entityRegistryUrl = "/registry/";
 	cy.wrap(entityRegistryUrl).as('entityRegistryUrl');
-	cy.wrap('https://www.unit.no').as('entityGetUrl');
 
-	cy.get('@entityRegistryUrl').then((url) => {
-		// create new test registry
-		cy.fixture('registryTestSchema.json')
-		.then((testSchema) => {
-			cy.get('@registryName').then((registryName) => {
+	cy.get('@registryName').then((registryName) => {
+		cy.get('@entityRegistryUrl').then((url) => {
+			// create new test registry
+			cy.fixture('registryTestSchema.json')
+			.then((testSchema) => {
 				testSchema.registryName = registryName;
 				let url = entityRegistryUrl + registryName
 				cy.request({
@@ -49,26 +48,24 @@ function createEmptyRegistry(){
 }
 
 function createTestEntity(){
-	let entityAddUrl = '/registry/';
-//	let entityAddUrl = 'https://www.unit.no';
-	let entityId = '0';
-	cy.wrap(entityId).as('entityId')
 
 	cy.get('@registryName').then((registryName) => {
-		entityAddUrl += registryName; 
+		let entityAddUrl = '/registry/' + registryName + '/entity';
 
-		cy.fixture('entityTestData.json') // add testData to registry
-		.then((testData) => {
-			cy.request({
-				url: entityAddUrl,
-				method: 'POST',
-				body: testData,
-				headers: {
-					Authorization: 'Token API_admin_token',
-					'content-type': 'application/json'
-				}
-			}).then((response) => {
-				cy.wrap(entityId).as('entityId')
+		cy.get('@entityId').then((entityId) => {
+			cy.fixture('entityTestData.json') // add testData to registry
+			.then((testData) => {
+				testData.id = entityId
+				cy.request({
+					url: entityAddUrl,
+					method: 'POST',
+					body: testData,
+					headers: {
+						Authorization: 'Token API_admin_token',
+						'content-type': 'application/json'
+					}
+				}).then((response) => {
+				})
 			})
 		})
 	})

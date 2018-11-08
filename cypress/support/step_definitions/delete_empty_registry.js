@@ -26,7 +26,7 @@ then('the empty entity registry is deleted', () => {
 		let registryHeartbeatUrl = '/registry/' + registryName;
 		cy.request({
 			url: registryHeartbeatUrl,
-			method: "DELETE",
+			method: "GET",
 			failOnStatusCode: false
 		}).then((response) => {
 			expect(response.status).equals(404)
