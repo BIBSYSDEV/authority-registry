@@ -13,6 +13,7 @@
         "dynamodb:BatchWriteItem",
         "dynamodb:PutItem",
         "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
         "dynamodb:DeleteItem",
         "s3:*",
         "apigateway:GET"

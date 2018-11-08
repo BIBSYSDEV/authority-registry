@@ -73,6 +73,7 @@ Resources:
       Environment:
         Variables:
           API_KEY_TABLE_NAME: !Join ['-', [!Ref ProjectId, !Ref Branch, !Ref Stage, "apiKeys"]]
+          STAGE_NAME: !Ref Stage
 
   # CustomResource backed by Lambda in Python for setting up SwaggerUI in S3
   SwaggerUIBucket:

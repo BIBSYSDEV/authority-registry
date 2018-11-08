@@ -85,16 +85,16 @@ public class AuthenticationService {
     public void setUpInitialApiKeys() {
         Optional<String> stage = environmentReader.getEnvForName("STAGE_NAME");
         if (stage.isPresent() && stage.get().equals("test")) {
-            saveApiKey(new TestApiKey("testApiAdminApiKey", Roles.API_ADMIN));
-            saveApiKey(new TestApiKey("testRegistryAdminApiKey", Roles.REGISTRY_ADMIN));
+            ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
+            apiAdminApiKey.setKey("testApiAdminApiKey");
+            mapper.save(apiAdminApiKey, config);
+            ApiKey registryAdminapiKey = new ApiKey(Roles.REGISTRY_ADMIN);
+            registryAdminapiKey.setKey("testRegistryAdminApiKey");
+            mapper.save(registryAdminapiKey, config);
         } else {
             createApiKey(Roles.API_ADMIN);
             createApiKey(Roles.REGISTRY_ADMIN);
         }
-    }
-    
-    public void saveApiKey(ApiKey apiKey) {
-        mapper.save(apiKey, config);
     }
 
     public String deleteApiKeyTable() {
@@ -107,6 +107,10 @@ public class AuthenticationService {
             logger.error("Error deleting api keys table", e);
         }
         return table.getTableName();
+    }
+    
+    public void saveApiKey(ApiKey apiKey) {
+        mapper.save(apiKey, config);
     }
     
 }

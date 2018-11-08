@@ -14,7 +14,6 @@ import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
-import no.bibsys.service.TestApiKey;
 import no.bibsys.web.security.Roles;
 
 public class AuthenticationServiceTest {
@@ -86,9 +85,10 @@ public class AuthenticationServiceTest {
         authenticationService.createApiKeyTable();
         String key = "test";
         
-        TestApiKey testApiKey = new TestApiKey(key, Roles.API_ADMIN);
-        authenticationService.saveApiKey(testApiKey);
-        Assert.assertEquals(key, testApiKey.getKey());
+        ApiKey apiKey = new ApiKey(Roles.API_ADMIN);
+        apiKey.setKey(key);
+        authenticationService.saveApiKey(apiKey);
+        Assert.assertEquals(key, apiKey.getKey());
     }
 
 
