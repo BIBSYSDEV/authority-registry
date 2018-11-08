@@ -30,6 +30,8 @@ dependencies {
 
     //connection to amazon
 	compile ('com.amazonaws:aws-lambda-java-core:1.2.0')
+    compile ('com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1')
+
 
     compile ('io.symphonia:lambda-logging:1.0.1')
 
