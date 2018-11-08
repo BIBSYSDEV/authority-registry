@@ -2,7 +2,6 @@ package no.bibsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -22,6 +21,8 @@ import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
 public class AuthenticationService {
+    
+    private final static String TEST_STAGE_NAME = "test";
     
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
@@ -83,8 +84,7 @@ public class AuthenticationService {
     }
     
     public void setUpInitialApiKeys() {
-        Optional<String> stage = environmentReader.getEnvForName("STAGE_NAME");
-        if (stage.isPresent() && stage.get().equals("test")) {
+        if (environmentReader.getStageName().equals(TEST_STAGE_NAME)) {
             ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
             apiAdminApiKey.setKey("testApiAdminApiKey");
             mapper.save(apiAdminApiKey, config);
