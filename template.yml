@@ -97,3 +97,33 @@ Resources:
       Value: !Join ['', ['https://', !Ref 'RestApi', '.execute-api.', !Ref 'AWS::Region', '.amazonaws.com/', !Ref 'Stage']]
       Description: "SSM Parameter for storing RestApi URL"
 
+  Init:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: no.bibsys.handler.InitHandler::handleRequest
+      FunctionName: !Ref InitFunctionName
+      Runtime: java8
+      Environment:
+        Variables:
+          API_ID: "small-api"
+          API_VERSION: "1.0"
+          OWNER: "BIBSYSDEV"
+          BRANCH: !Ref Branch
+          REPOSITORY: 'authority-registry-infrastructure'
+          STAGE: !Ref Stage
+          SWAGGER_ORG: 'axthosarouris'
+
+      CodeUri: build/libs/pipeline-fat.jar
+      Policies:
+        Version: '2012-10-17'
+        Statement:
+        - Action:
+          - secretsmanager:GetSecretValue
+          - lambda:InvokeFunction
+          - codepipeline:PutJobFailureResult
+          - codepipeline:PutJobSuccessResult
+          - apigateway:*
+          Effect: Allow
+          Resource: "*"
+      MemorySize: 1500
+      Timeout: 900
