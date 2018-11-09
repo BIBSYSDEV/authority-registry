@@ -271,6 +271,7 @@ public class DatabaseResourceTest extends JerseyTest {
         Entry updatedEntry = updatedSampleData.sampleEntry();
         updatedEntry.root.remove("label");
         String updatedLabel = "An updated label";
+        updatedEntry.root.put("id", generatedId);
         updatedEntry.root.put("label", updatedLabel);
 
         String updatedJson = updatedEntry.jsonString();
