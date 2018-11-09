@@ -83,7 +83,10 @@ public final class TableDriver {
 
     public long tableSize(final String tableName) {
 
-        return getTable(tableName).describe().getItemCount();
+        ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
+        ScanResult result = client.scan(scanRequest);
+        Integer itemCount = result.getScannedCount();
+        return itemCount;
     }
 
     public boolean deleteTable(final String tableName) {
@@ -95,17 +98,15 @@ public final class TableDriver {
         ScanResult result = client.scan(scanRequest);
         Integer itemCount = result.getScannedCount();
         if (itemCount == 0) {
-            deleteNoCheckTable(tableName);
-            return true;
+            return deleteNoCheckTable(tableName);
         } else {
             return false;
         }
     }
 
-    public boolean deleteNoCheckTable(final String tableName) {
+    private boolean deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
-
             TableUtils.deleteTableIfExists(client, deleteRequest);
             return true;
         }
