@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -17,13 +14,8 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 
-import no.bibsys.db.exceptions.ItemExistsException;
-import no.bibsys.db.exceptions.NoItemException;
-
 public final class ItemDriver {
-    
-    private static final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
-    private static final String NULL = "null";
+
     private transient final DynamoDB dynamoDb;
 
 
@@ -41,37 +33,51 @@ public final class ItemDriver {
         return tableDriver;
     }
 
-    public Table getTable(final String tableName) {
-        return dynamoDb.getTable(tableName);
-    }
+    /**
+     * Add item to table
+     * @param tableName
+     * @param itemJson
+     * @return true if item is added
+     */
+    public boolean addItem(String tableName, String itemJson) {
 
-    public Optional<String> addItem(String tableName, String itemJson) {
-        String id = NULL;
-        try {
-            Item item = Item.fromJSON(itemJson);
+        boolean success = false;
+        Item item = Item.fromJSON(itemJson);
+        String id = item.asMap().getOrDefault("id", "").toString();
+        if(!id.isEmpty()) {
+            try {
 
-            id = item.asMap().getOrDefault("id", NULL).toString();
+                final Table table = dynamoDb.getTable(tableName);
 
-            final Table table = dynamoDb.getTable(tableName);
-
-            PutItemSpec putItemSpec = new PutItemSpec()
-                    .withItem(item)
-                    .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
-            table.putItem(putItemSpec);
-            
-            return Optional.ofNullable(item.toJSON()); 
-        } catch (ConditionalCheckFailedException e) {
-            logger.warn(String.format("Item with id:%s already exists", id));
-            throw new ItemExistsException(String.format("Item with id:%s already exists", id), e);
+                PutItemSpec putItemSpec = new PutItemSpec()
+                        .withItem(item)
+                        .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
+                table.putItem(putItemSpec);
+                success = true;
+            } catch (ConditionalCheckFailedException e) {
+                success = false;
+            }
         }
+
+        return success;
     }
 
+    
+    /**
+     * Update item already in a table. 
+     * @param tableName
+     * @param itemJson
+     * @return
+     */
     public Optional<String> updateItem(String tableName, String itemJson) {
-        String id = NULL;
         final Item item = Item.fromJSON(itemJson);
-        id = item.asMap().getOrDefault("id", NULL).toString();
+        String id = item.asMap().getOrDefault("id", "").toString();
 
-        if(getItem(tableName, id).isPresent()) {
+        if(id.isEmpty()) {
+            return Optional.ofNullable("");
+        }
+        
+        if(itemExists(tableName, id)) {
 
             final Table table = dynamoDb.getTable(tableName);
 
@@ -89,8 +95,7 @@ public final class ItemDriver {
             Item returnItem = table.updateItem(putItemSpec).getItem();
             return Optional.ofNullable(returnItem.toJSON());
         } else {
-            logger.warn(String.format("Item with id:%s does not exist", id));
-            throw new NoItemException(String.format("Item with id %s does not exist", id));
+            return Optional.ofNullable("");
         }
     }
 
@@ -98,14 +103,9 @@ public final class ItemDriver {
     public Optional<String> getItem(String tableName, String id) {
         final Table table = dynamoDb.getTable(tableName);
         final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
-        if(itemOpt.isPresent()) {
-            return itemOpt.map(item -> item.toJSON());
-        } else {
-            logger.warn(String.format("Item with id:%s does not exist", id));
-            throw new NoItemException(String.format("Item with id %s does not exist", id));
-        }
+        return itemOpt.map(item -> item.toJSON());
     }
-    
+
     public void deleteItem(String tableName, String id)  {
 
         Table table = dynamoDb.getTable(tableName);
@@ -114,13 +114,6 @@ public final class ItemDriver {
 
     public boolean itemExists(String tableName, String id) {
 
-        try {
-            getItem(tableName, id);
-        }catch(NoItemException nie) {
-            return false;
-        }
-        return true;
+        return getItem(tableName, id).isPresent();
     }
-
-
 }

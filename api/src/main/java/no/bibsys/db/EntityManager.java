@@ -8,55 +8,42 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import no.bibsys.web.exception.RegistryNotFoundException;
-
 public class EntityManager {
 
-    private final transient TableManager tableManager;
-    private final transient ItemManager itemManager;
+    private final transient ItemDriver itemManager;
 
-    public EntityManager(TableManager tableManager, ItemManager itemManager) {
-        this.tableManager = tableManager;
+    public EntityManager(ItemDriver itemManager) {
         this.itemManager = itemManager;
     }
     
-    public String addEntity(final String registryName, final String json) throws IOException {
+    public Optional<String> addEntity(final String registryName, final String json) throws IOException {
         
-        if (tableExists(registryName)) {
-            String entityId = createEntityId();
-            String updatedJson = addIdToJson(json, entityId);
-            itemManager.addJson(registryName, updatedJson);
-            
-            return entityId;
-        } else {
-            throw new RegistryNotFoundException(String.format("Registry %s does not exist", registryName));
-        }
+        String entityId = createEntityId();
+        String updatedJson = addIdToJson(json, entityId);
+        itemManager.addItem(registryName, updatedJson);
+
+        return Optional.ofNullable(entityId);
 
     }
 
     public Optional<String> getEntity(String registryName, String id) {
-        if (tableExists(registryName)) {
-            return itemManager.getItem(registryName, id);
-        } else {
-            throw new RegistryNotFoundException(String.format("Registry %s does not exist", registryName));
-        }
-
+        return itemManager.getItem(registryName, id);
     }
 
     public void deleteEntity(String registryName, String entityId) {
 
-        itemManager.deleteEntry(registryName, entityId);
+        itemManager.deleteItem(registryName, entityId);
         
     }
 
     public Optional<String> updateEntity(String registryName, String entity) {
-        return itemManager.updateJson(registryName, entity);
+        return itemManager.updateItem(registryName, entity);
     }
 
-    private boolean tableExists(String tableName) {
-        return tableManager.tableExists(tableName);
+    public boolean entityExists(String registryName, String entity) {
+        return itemManager.itemExists(registryName, entity);
     }
-
+    
     private String addIdToJson(final String json, final String entityId) throws IOException {
         ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
         JsonNode tree = objectMapper.readTree(json);

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -20,7 +21,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.exception.RegistryAlreadyExistsException;
 
 
 public class DatabaseManagerTest extends LocalDynamoTest {
@@ -75,7 +75,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     }
 
 
-    @Test(expected = RegistryAlreadyExistsException.class)
+    @Test
     public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
             throws InterruptedException, JsonProcessingException {
 
@@ -103,16 +103,16 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         registryManager.createRegistry(createRequest );
-        String entityId = entityManager.addEntity(tableName , entry.jsonString());
-        String readJson = entityManager.getEntity(tableName, entityId).orElse(null);
+        Optional<String> entityId = entityManager.addEntity(tableName , entry.jsonString());
+        String readJson = entityManager.getEntity(tableName, entityId.get()).orElse(null);
         String actual = mapper.readValue(readJson, ObjectNode.class).get("id").asText();
 
-        assertThat(actual, is(equalTo(entityId)));
+        assertThat(actual, is(equalTo(entityId.get())));
 
     }
 
 
-    @Test(expected = RegistryAlreadyExistsException.class)
+    @Test
     public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds() 
             throws InterruptedException, JsonProcessingException {
         String tableName = "tableAlreadyExists";
@@ -134,6 +134,6 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         String schemaAsJson = "JSON validation schema";
         registryManager.setSchemaJson(tableName, schemaAsJson);
         
-        assertThat(registryManager.getSchemaAsJson(tableName), is(equalTo(schemaAsJson)));
+        assertThat(registryManager.getSchemaAsJson(tableName).get(), is(equalTo(schemaAsJson)));
     }
 }

@@ -1,42 +1,110 @@
 package no.bibsys.db;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-public class TableDriverTest extends LocalDynamoTest{
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+
+public class TableDriverTest extends LocalDynamoTest {
 
     @Test
-    public void test() {
-        TableDriver driver = newTableDriver();
-        String testTable = "test";
-        driver.createTable(testTable);
-        ItemDriver writer = newItemDriver();
-        Path path = Paths.get("json/sample.json");
+    public void createTable() {
+        TableDriver tableDriver = newTableDriver();
+        tableDriver.createTable(template.getId());
+        List<String> tables = tableDriver.listTables();
+        int numberOfTables = tables.size();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString()), StandardCharsets.UTF_8))) {
-            List<String> jsonLines = reader.lines().collect(Collectors.toList());
-            String json = String.join(" ", jsonLines);
-            writer.addItem(testTable, json);
-            writer.addItem(testTable,json.replace("id01", "id02"));
-            writer.addItem(testTable,json.replace("id01", "id03"));
-            writer.addItem(testTable,json.replace("id01", "id04"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        assertThat(numberOfTables, is(equalTo(1)));
+    }
 
-        long tableSize = driver.tableSize(testTable);
-        assertThat(tableSize, is(equalTo(4L)));
+    public void tableDriverWillNotCreateAnExistingTable() {
+        TableDriver tableDriver = newTableDriver();
+        int tables = tableDriver.listTables().size();
+        assertThat(tables, is(equalTo(0)));
+
+        tableDriver.createTable(template.getId());
+        boolean createDuplicateTable = tableDriver.createTable(template.getId());
+        assertThat(createDuplicateTable, is(equalTo(false)));
+        
+        tables = tableDriver.listTables().size();
+        assertThat(tables, is(equalTo(1)));
+    }
+
+
+    @Test
+    public void tableDriverShouldDeleteAnEmptyTable()
+        throws InterruptedException, JsonProcessingException {
+        TableDriver tableDriver = newTableDriver();
+        tableDriver.createTable(template.getId());
+
+        boolean deleteTable = tableDriver.deleteTable(tableName);
+        assertThat(deleteTable, equalTo(true));
+
+        int tables = tableDriver.listTables().size();
+        assertThat(tables, is(equalTo(0)));
+    }
+
+    @Test
+    public void tableDriverShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
+        throws InterruptedException, JsonProcessingException {
+        TableDriver tableDriver = newTableDriver();
+        tableDriver.createTable(template.getId());
+
+        boolean deleteTable = tableDriver.deleteTable(tableName+"blabla");
+        assertThat(deleteTable, equalTo(false));
+        
+        int tables = tableDriver.listTables().size();
+
+        assertThat(tables, is(equalTo(1)));
+    }
+
+    @Test
+    public void tableDriverShouldNotDeleteNonEmptyTable()
+        throws InterruptedException, JsonProcessingException {
+        TableDriver tableDriver = newTableDriver();
+        tableDriver.createTable(template.getId());
+
+        ItemDriver itemDriver = newItemDriver();
+        itemDriver.addItem(template.getId(), newSimpleEntry().asJson());
+        boolean deleteTable = tableDriver.deleteTable(tableName);
+        assertThat(deleteTable, equalTo(false));
+    }
+
+    @Test
+    public void tableDriverFailsOnDeletingNonExistingTable()
+        throws InterruptedException {
+        TableDriver tableDriver = newTableDriver();
+        boolean deleteTable = tableDriver.deleteTable(tableName);
+        assertThat(deleteTable, equalTo(false));
+    }
+
+    @Test
+    public void tableDriverShouldListAllTables() throws JsonProcessingException, InterruptedException {
+        TableDriver tableDriver = newTableDriver();
+        template.setId("test");
+        tableDriver.createTable(template.getId());
+        template.setId("test1");
+        tableDriver.createTable(template.getId());
+        template.setId("test2");
+        tableDriver.createTable(template.getId());
+        template.setId("test3");
+        tableDriver.createTable(template.getId());
+        template.setId("test4");
+        tableDriver.createTable(template.getId());
+        
+        List<String> tables = tableDriver.listTables();
+        assertTrue(tables.contains("test"));
+        assertTrue(tables.contains("test1"));
+        assertTrue(tables.contains("test2"));
+        assertTrue(tables.contains("test3"));
+        assertTrue(tables.contains("test4"));
+        
     }
 }

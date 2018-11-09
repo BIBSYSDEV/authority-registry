@@ -8,10 +8,8 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.ItemDriver;
-import no.bibsys.db.ItemManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
-import no.bibsys.db.TableManager;
 
 public abstract class LocalDynamoTest {
 
@@ -25,10 +23,10 @@ public abstract class LocalDynamoTest {
 
         final AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
 
-        TableManager tableManager = new TableManager(TableDriver.create(client, new DynamoDB(client)));
-        ItemManager itemManager = new ItemManager(ItemDriver.create(new DynamoDB(client)));
+        TableDriver tableManager = TableDriver.create(client, new DynamoDB(client));
+        ItemDriver itemManager = ItemDriver.create(new DynamoDB(client));
         registryManager = new RegistryManager(tableManager, itemManager);
-        entityManager = new EntityManager(tableManager, itemManager);
+        entityManager = new EntityManager(itemManager);
 
         sampleData = new SampleData();
     }

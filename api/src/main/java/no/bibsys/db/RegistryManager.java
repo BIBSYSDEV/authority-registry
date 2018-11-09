@@ -11,38 +11,30 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.web.exception.RegistryAlreadyExistsException;
-import no.bibsys.web.exception.RegistryNotFoundException;
 
 public class RegistryManager {
 
-    private final transient TableManager tableManager;
-    private final transient ItemManager itemManager;
+    private final transient TableDriver tableManager;
+    private final transient ItemDriver itemManager;
     private final transient ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
 
-    public RegistryManager(TableManager tableManager, ItemManager itemManager) {
+    public RegistryManager(TableDriver tableManager, ItemDriver itemManager) {
         this.tableManager = tableManager;
         this.itemManager = itemManager;
     }
 
-    public void createRegistry(EntityRegistryTemplate request) throws RegistryAlreadyExistsException, JsonProcessingException, InterruptedException {
+    public void createRegistry(EntityRegistryTemplate request) throws JsonProcessingException {
         String registryName = request.getId();
         String json = objectMapper.writeValueAsString(request);
         addRegistry(registryName, json);
     }
 
-    public void addRegistry(String registryName, String json) throws JsonProcessingException, InterruptedException{
+    public void addRegistry(String registryName, String json) throws JsonProcessingException{
 
-        if(!tableManager.tableExists(getValidationSchemaTable())) {
-            tableManager.createTable(getValidationSchemaTable());
-        }
+        tableManager.createTable(getValidationSchemaTable());
 
-        if (!registryExists(registryName)) {
-            itemManager.addJson(getValidationSchemaTable(), json);
-            tableManager.createTable(registryName);
-        } else {
-            throw new RegistryAlreadyExistsException(String.format("Registry %s already exists", registryName));
-        }
+        itemManager.addItem(getValidationSchemaTable(), json);
+        tableManager.createTable(registryName);
 
     }
 
@@ -51,25 +43,17 @@ public class RegistryManager {
     }
 
     public void emptyRegistry(String tableName) {
-        tableManager.emptyTable(tableName);
+        tableManager.deleteTable(tableName);
+        tableManager.createTable(tableName);
     }
 
     public void deleteRegistry(String tableName) {
-        if (registryExists(tableName)) {
 
-            itemManager.deleteEntry(getValidationSchemaTable(), tableName);
-
-            tableManager.deleteTable(tableName);
-        } else {
-            throw new RegistryNotFoundException(String.format("Registry %s does not exist", tableName));
-        }
+        itemManager.deleteItem(getValidationSchemaTable(), tableName);
+        tableManager.deleteTable(tableName);
     }
 
-    public String getSchemaAsJson(String registryName) throws JsonParseException, JsonMappingException, IOException, InterruptedException {
-
-        if(!registryExists(registryName)) {
-            throw new RegistryNotFoundException(String.format("Could not find a registry with name %s", registryName));
-        }
+    public Optional<String> getSchemaAsJson(String registryName) throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 
         Optional<String> registrySchemaItem = itemManager.getItem(getValidationSchemaTable(), registryName);
 
@@ -77,14 +61,10 @@ public class RegistryManager {
         EntityRegistryTemplate registryTemplate = mapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
 
         String schema = Optional.ofNullable(registryTemplate.getSchema()).orElse("");
-        return schema;
+        return Optional.ofNullable(schema);
     }
 
     public void setSchemaJson(String registryName, String schemaAsJson) throws JsonParseException, JsonMappingException, IOException, InterruptedException {
-        if(!registryExists(registryName)) {
-            throw new RegistryNotFoundException(String.format("Could not find a registry with name %s", registryName));
-        }
-
         Optional<String> registrySchemaItem = itemManager.getItem(getValidationSchemaTable(), registryName);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -115,7 +95,7 @@ public class RegistryManager {
     public void updateRegistry(EntityRegistryTemplate request) throws JsonProcessingException {
 
         String json = objectMapper.writeValueAsString(request);
-        itemManager.updateJson(getValidationSchemaTable(), json);
+        itemManager.updateItem(getValidationSchemaTable(), json);
 
     }
 
