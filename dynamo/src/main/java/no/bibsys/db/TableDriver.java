@@ -14,6 +14,9 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
+import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
@@ -88,8 +91,9 @@ public final class TableDriver {
         if(!tableExists(tableName)) {
             return false;
         }
-        
-        long itemCount = dynamoDb.getTable(tableName).describe().getItemCount();
+        ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
+        ScanResult result = client.scan(scanRequest);
+        Integer itemCount = result.getScannedCount();
         if (itemCount == 0) {
             deleteNoCheckTable(tableName);
             return true;
