@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class TableDriverTest extends LocalDynamoTest {
 
     @Test
-    public void createTable() {
+    public void createTableSucceeds() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
         List<String> tables = tableDriver.listTables();
@@ -24,7 +24,8 @@ public class TableDriverTest extends LocalDynamoTest {
         assertThat(numberOfTables, is(equalTo(1)));
     }
 
-    public void tableDriverWillNotCreateAnExistingTable() {
+    @Test
+    public void createTableWithAnExistingTableFails() {
         TableDriver tableDriver = newTableDriver();
         int tables = tableDriver.listTables().size();
         assertThat(tables, is(equalTo(0)));
@@ -39,8 +40,7 @@ public class TableDriverTest extends LocalDynamoTest {
 
 
     @Test
-    public void tableDriverShouldDeleteAnEmptyTable()
-        throws InterruptedException, JsonProcessingException {
+    public void deleteTableOnEmptyTableSucceeds() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -52,8 +52,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void tableDriverShouldThrowAnExceptionWhenDeletingAnNonExistingTable()
-        throws InterruptedException, JsonProcessingException {
+    public void deleteTableOnNonExistingTableFails()  {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -66,8 +65,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void tableDriverShouldNotDeleteNonEmptyTable()
-        throws InterruptedException, JsonProcessingException {
+    public void deleteTableOnNonEmptyTableFails() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -77,16 +75,9 @@ public class TableDriverTest extends LocalDynamoTest {
         assertThat(deleteTable, equalTo(false));
     }
 
-    @Test
-    public void tableDriverFailsOnDeletingNonExistingTable()
-        throws InterruptedException {
-        TableDriver tableDriver = newTableDriver();
-        boolean deleteTable = tableDriver.deleteTable(tableName);
-        assertThat(deleteTable, equalTo(false));
-    }
 
     @Test
-    public void tableDriverShouldListAllTables() throws JsonProcessingException, InterruptedException {
+    public void listTableListsAllTables() {
         TableDriver tableDriver = newTableDriver();
         template.setId("test");
         tableDriver.createTable(template.getId());

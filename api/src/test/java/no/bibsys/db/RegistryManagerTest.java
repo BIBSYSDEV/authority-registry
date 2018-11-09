@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.amazonaws.services.dynamodbv2.model.TableAlreadyExistsException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +22,7 @@ import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
 
 
-public class DatabaseManagerTest extends LocalDynamoTest {
+public class RegistryManagerTest extends LocalDynamoTest {
 
     private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
 
@@ -41,7 +40,7 @@ public class DatabaseManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void registryManagerCreatesANewRegistry()
+    public void createRegistryCreatesANewRegistry()
         throws InterruptedException, IOException {
 
         String tableName = "createARegistry";
@@ -49,14 +48,21 @@ public class DatabaseManagerTest extends LocalDynamoTest {
         
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         
-        registryManager.createRegistry(createRequest);
+        registryManager.createRegistryFromTemplate(createRequest);
         boolean existsAfterCreation = registryManager.registryExists(tableName);
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
+    }
+    
+    @Test
+    public void addMetadataToExistingRegistrySucceeds() throws IOException {
+        
+        String tableName = "addMetadataRegistry";
 
-        assertThat(registryManager.registryExists(tableName), is(equalTo(true)));
-
-        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(tableName);
+        EntityRegistryTemplate testEditRequest = createTestEditRequest(tableName);
+        registryManager.createRegistryFromTemplate(testEditRequest);
+        registryManager.updateRegistryMetadata(testEditRequest);
+        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(tableName); 
         
         assertThat(metadata.getId(), is(equalTo(tableName)));
 
@@ -76,61 +82,43 @@ public class DatabaseManagerTest extends LocalDynamoTest {
 
 
     @Test
-    public void databaseManagerShouldThrowAnExceptionWhenTryingToCreateAnExistingTable()
-            throws InterruptedException, JsonProcessingException {
+    public void createRegistryWhenRegistryAlreadyExistsFails() throws JsonProcessingException {
 
-        String tableName = "tabelAlreadyExists";
+        String tableName = "tableAlreadyExists";
         boolean existsBeforeCreation = registryManager.registryExists(tableName );
         assertThat("The table should not exist before creation", existsBeforeCreation,
                 is(equalTo(false)));
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
-        registryManager.createRegistry(createRequest );
+        registryManager.createRegistryFromTemplate(createRequest );
         boolean existsAfterCreation = registryManager.registryExists(tableName);
         assertThat("The table should  exist before creation", existsAfterCreation,
                 is(equalTo(true)));
 
-        registryManager.createRegistry(createRequest);
-
-
-    }
-
-
-    @Test
-    public void databaseManagerShouldInsertAJsonObjectIntoATable()
-            throws IOException, InterruptedException {
-
-        String tableName = "insertJsonObject";
-        Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
-        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
-        registryManager.createRegistry(createRequest );
-        Optional<String> entityId = entityManager.addEntity(tableName , entry.jsonString());
-        String readJson = entityManager.getEntity(tableName, entityId.get()).orElse(null);
-        String actual = mapper.readValue(readJson, ObjectNode.class).get("id").asText();
-
-        assertThat(actual, is(equalTo(entityId.get())));
-
-    }
-
-
-    @Test
-    public void databaseManagerShouldThrowExceptionForInsertingDuplicateIds() 
-            throws InterruptedException, JsonProcessingException {
-        String tableName = "tableAlreadyExists";
-        Entry entry = sampleData.sampleEntry("databaseManagerInsertTestId");
-        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
-        registryManager.createRegistry(createRequest );
-        registryManager.addRegistry(tableName, entry.jsonString());
-        ObjectNode root2 = entry.root.deepCopy();
-        root2.put("newText", "Some new stuff");
-        Entry entry2 = new Entry(entry.id, root2);
-        registryManager.addRegistry(tableName, entry2.jsonString());
+        registryManager.createRegistryFromTemplate(createRequest);
     }
     
     @Test
-    public void databaseManagerAddSchemaToRegistry() throws TableAlreadyExistsException, InterruptedException, IOException {
+    public void emptyRegistrySucceeds() throws IOException {
+        
+        String tableName = "emptyRegistry";
+        EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
+        registryManager.createRegistryFromTemplate(createRequest);
+        Entry entry = sampleData.sampleEntry();
+        Optional<String> entityId = entityManager.addEntity(tableName , entry.jsonString());
+        boolean entityExists = entityManager.entityExists(tableName, entityId.get());
+        assertThat(entityExists, equalTo(true));
+        
+        registryManager.emptyRegistry(tableName);
+        boolean entityExistAfterEmpty = entityManager.entityExists(tableName, entityId.get());
+        assertThat(entityExistAfterEmpty, equalTo(false));
+    }
+
+
+    @Test
+    public void databaseManagerAddSchemaToRegistry() throws IOException, InterruptedException {
         String tableName = "addSchemaToRegistry";
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
-        registryManager.createRegistry(createRequest);
+        registryManager.createRegistryFromTemplate(createRequest);
         String schemaAsJson = "JSON validation schema";
         registryManager.setSchemaJson(tableName, schemaAsJson);
         

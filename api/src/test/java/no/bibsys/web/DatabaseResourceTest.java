@@ -102,7 +102,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String tableName = UUID.randomUUID().toString();
         createTable(tableName);
 
-        Entry entry = sampleData.sampleEntry("entryId");
+        Entry entry = sampleData.sampleEntry();
         SimpleResponse response = insertEntryRequest(tableName, entry.jsonString()).readEntity(SimpleResponse.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK)));
@@ -153,7 +153,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void emptyAnExistingTable() throws Exception {
         String tableName =UUID.randomUUID().toString();
         createTable(tableName );
-        String entry = sampleData.sampleEntry("entryId").jsonString();
+        String entry = sampleData.sampleEntry().jsonString();
 
         insertEntryRequest(tableName, entry);
 
@@ -224,7 +224,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(tableName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry("entryId");
+        Entry entry = sampleData.sampleEntry();
         Response response = insertEntryRequest(tableName, entry.jsonString());
 
         String entityPath = response.readEntity(SimpleResponse.class).getMessage();
@@ -241,7 +241,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry("entryId");
+        Entry entry = sampleData.sampleEntry();
         insertEntryRequest(registryName, entry.jsonString());
 
         String schemaAsJson = "Schema as Json";
@@ -260,7 +260,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry("entityId");
+        Entry entry = sampleData.sampleEntry();
         Response writeResponse = insertEntryRequest(registryName, entry.jsonString());
         SimpleResponse simpleResponse = writeResponse.readEntity(SimpleResponse.class);
         String path = simpleResponse.getMessage();
@@ -268,7 +268,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         SampleData updatedSampleData = new SampleData();
 
-        Entry updatedEntry = updatedSampleData.sampleEntry(generatedId);
+        Entry updatedEntry = updatedSampleData.sampleEntry();
         updatedEntry.root.remove("label");
         String updatedLabel = "An updated label";
         updatedEntry.root.put("label", updatedLabel);

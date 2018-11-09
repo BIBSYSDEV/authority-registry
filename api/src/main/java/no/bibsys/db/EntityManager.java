@@ -20,7 +20,10 @@ public class EntityManager {
         
         String entityId = createEntityId();
         String updatedJson = addIdToJson(json, entityId);
-        itemManager.addItem(registryName, updatedJson);
+        boolean addItemSuccess = itemManager.addItem(registryName, updatedJson);
+        if(!addItemSuccess) {
+            return Optional.empty();
+        }
 
         return Optional.ofNullable(entityId);
 
@@ -30,9 +33,9 @@ public class EntityManager {
         return itemManager.getItem(registryName, id);
     }
 
-    public void deleteEntity(String registryName, String entityId) {
+    public boolean deleteEntity(String registryName, String entityId) {
 
-        itemManager.deleteItem(registryName, entityId);
+        return itemManager.deleteItem(registryName, entityId);
         
     }
 

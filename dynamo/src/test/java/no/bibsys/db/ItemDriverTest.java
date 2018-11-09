@@ -6,6 +6,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void addAndGetItem() throws IOException {
+    public void addItemAndGetItemToExistingTableSucceeds() throws IOException {
 
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
@@ -47,9 +48,22 @@ public class ItemDriverTest extends LocalDynamoTest {
         assertThat(itemExists, equalTo(true));
 
     }
+    
+    @Test 
+    public void addItemToNonExistingTableFails() throws IOException {
+        String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
+        boolean addItem = itemDriver.addItem("nonExistingTable", json);
+        assertThat(addItem, equalTo(false));
+    }
+    
+    @Test 
+    public void getItemToNonExistingTableFails() throws IOException {
+        Optional<String> addItem = itemDriver.getItem("nonExistingTable", "id01");
+        assertThat(addItem.isPresent(), equalTo(false));
+    }
 
     @Test 
-    public void deleteItem() throws IOException {
+    public void deleteItemWithExistingItemSucceeds() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
@@ -59,8 +73,16 @@ public class ItemDriverTest extends LocalDynamoTest {
         assertThat(itemExists, equalTo(false));
     }
     
+    @Test 
+    public void deleteItemWithNonExistingItemFails() throws IOException {
+        tableDriver.createTable(template.getId());
+        boolean deleteItem = itemDriver.deleteItem(template.getId(), "id01");
+        
+        assertThat(deleteItem, equalTo(false));
+    }
+    
     @Test
-    public void updateItem() throws IOException {
+    public void updateItemWithExistingItemSucceeds() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
@@ -72,5 +94,39 @@ public class ItemDriverTest extends LocalDynamoTest {
         
         Optional<String> item = itemDriver.getItem(template.getId(), "id01");
         assertThat(item.get().contains(updatedLabel), equalTo(true));
+    }
+    
+    @Test(expected = NoSuchElementException.class)
+    public void updateItemWithNonExistingItemFails() throws IOException {
+        tableDriver.createTable(template.getId());
+        
+        String updateJson = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
+        String updatedLabel = "The updated label";
+        updateJson = updateJson.replace("The label", updatedLabel);
+        updateJson = updateJson.replace("ID01", "notAnExistingId");
+        itemDriver.updateItem(template.getId(), updateJson);
+        
+        Optional<String> item = itemDriver.getItem(template.getId(), "id01");
+        assertThat(item.get().contains(updatedLabel), equalTo(false));
+    }
+    
+    @Test
+    public void itemExistsWithExistingItemSucceeds() throws IOException {
+        String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
+        tableDriver.createTable(template.getId());
+        itemDriver.addItem(template.getId(), json);
+        
+        boolean itemExists = itemDriver.itemExists(template.getId(), "id01");
+        assertThat(itemExists, equalTo(true));
+    }
+    
+    @Test
+    public void itemExistsWithExistingItemFails() throws IOException {
+        String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
+        tableDriver.createTable(template.getId());
+        itemDriver.addItem(template.getId(), json);
+        
+        boolean itemExists = itemDriver.itemExists(template.getId(), "nonExistingId");
+        assertThat(itemExists, equalTo(false));
     }
 }

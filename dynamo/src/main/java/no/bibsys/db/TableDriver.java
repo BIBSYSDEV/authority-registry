@@ -66,7 +66,8 @@ public final class TableDriver {
         boolean exists = false;
         try {
             TableDescription describe = getTable(tableName).describe();
-            exists = describe.getTableStatus() != null;
+            String tableStatus = describe.getTableStatus();
+            exists = tableStatus != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
             logger.warn("Table {} does not exist", tableName);
         }
@@ -84,24 +85,43 @@ public final class TableDriver {
     public long tableSize(final String tableName) {
 
         ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
-        ScanResult result = client.scan(scanRequest);
-        Integer itemCount = result.getScannedCount();
+        Integer itemCount = 0;
+        ScanResult result = null;
+        do {
+            if(result != null){
+                scanRequest.setExclusiveStartKey(result.getLastEvaluatedKey());
+            }
+
+            result = client.scan(scanRequest);
+            itemCount += result.getScannedCount();
+        } while(result.getLastEvaluatedKey() != null);
         return itemCount;
     }
 
-    public boolean deleteTable(final String tableName) {
-        
+    public boolean emptyTable(final String tableName) {
+
         if(!tableExists(tableName)) {
             return false;
         }
-        ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
-        ScanResult result = client.scan(scanRequest);
-        Integer itemCount = result.getScannedCount();
-        if (itemCount == 0) {
+        boolean emptyResult = deleteNoCheckTable(tableName);
+        return emptyResult&&createTable(tableName);
+    }
+
+    public boolean deleteTable(final String tableName) {
+
+        if(!tableExists(tableName)) {
+            return false;
+        }
+        
+        if (isEmpty(tableName)) {
             return deleteNoCheckTable(tableName);
         } else {
             return false;
         }
+    }
+
+    private boolean isEmpty(final String tableName) {
+        return tableSize(tableName) == 0;
     }
 
     private boolean deleteNoCheckTable(final String tableName) {

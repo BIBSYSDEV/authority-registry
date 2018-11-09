@@ -111,7 +111,7 @@ public class DatabaseResource {
                 response = new SimpleResponse(String.format("A registry with name %s already exists", request.getId()), Status.CONFLICT);
             }else {
 
-                registryManager.createRegistry(request);
+                registryManager.createRegistryFromTemplate(request);
                 response = new SimpleResponse(String.format("A registry with name %s has been created", request.getId()));
             }
         }
@@ -192,7 +192,7 @@ public class DatabaseResource {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
         }
 
-        registryManager.updateRegistry(request);
+        registryManager.updateRegistryMetadata(request);
         return new SimpleResponse(String.format("Registry %s has been updated", request.getId()), Status.ACCEPTED);
     }
 

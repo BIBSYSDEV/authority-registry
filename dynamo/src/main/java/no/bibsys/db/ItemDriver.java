@@ -12,6 +12,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 
 public final class ItemDriver {
@@ -54,7 +55,7 @@ public final class ItemDriver {
                         .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
                 table.putItem(putItemSpec);
                 success = true;
-            } catch (ConditionalCheckFailedException e) {
+            } catch (ConditionalCheckFailedException | ResourceNotFoundException e) {
                 success = false;
             }
         }
@@ -62,7 +63,7 @@ public final class ItemDriver {
         return success;
     }
 
-    
+
     /**
      * Update item already in a table. 
      * @param tableName
@@ -74,9 +75,9 @@ public final class ItemDriver {
         String id = item.asMap().getOrDefault("id", "").toString();
 
         if(id.isEmpty()) {
-            return Optional.ofNullable("");
+            return Optional.empty();
         }
-        
+
         if(itemExists(tableName, id)) {
 
             final Table table = dynamoDb.getTable(tableName);
@@ -95,21 +96,30 @@ public final class ItemDriver {
             Item returnItem = table.updateItem(putItemSpec).getItem();
             return Optional.ofNullable(returnItem.toJSON());
         } else {
-            return Optional.ofNullable("");
+            return Optional.empty();
         }
     }
 
 
     public Optional<String> getItem(String tableName, String id) {
         final Table table = dynamoDb.getTable(tableName);
-        final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
-        return itemOpt.map(item -> item.toJSON());
+        try {
+            final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+            return itemOpt.map(item -> item.toJSON());
+        }catch(ResourceNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
-    public void deleteItem(String tableName, String id)  {
+    public boolean deleteItem(String tableName, String id)  {
 
         Table table = dynamoDb.getTable(tableName);
-        table.deleteItem(new PrimaryKey("id", id));
+        if(itemExists(tableName, id)) {
+            table.deleteItem(new PrimaryKey("id", id));
+            return true;
+        }
+
+        return false;
     }
 
     public boolean itemExists(String tableName, String id) {
