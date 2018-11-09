@@ -27,7 +27,7 @@ public class SimpleResponse {
         setStatus(status);
     }
 
-    public final Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -36,7 +36,33 @@ public class SimpleResponse {
         this.status = status;
     }
 
-    
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof SimpleResponse)) {
+            return false;
+        }
+
+        SimpleResponse that = (SimpleResponse) object;
+
+        return message != null ? message.equals(that.message) : that.message == null;
+    }
+
+
+    @Override
+    public String toString() {
+        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + ", status=" + status + "]";
+    }
+
+
+    @Override
+    public int hashCode() {
+        return message != null ? message.hashCode() : 0;
+    }
+
+
     public String toGatewayResponse() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         HashMap<String, String> jsonObject = new HashMap<>();
@@ -62,11 +88,4 @@ public class SimpleResponse {
     public final void setMessage(String message) {
         this.message = message;
     }
-
-
-    @Override
-    public String toString() {
-        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + ", status=" + status + "]";
-    }
-
 }
