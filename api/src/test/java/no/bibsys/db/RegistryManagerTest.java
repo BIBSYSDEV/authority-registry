@@ -36,7 +36,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void createRegistryRegistryNotExistingRegistryExists()
+    public void createRegistry_RegistryNotExisting_RegistryExists()
         throws InterruptedException, IOException {
 
         String tableName = "createARegistry";
@@ -51,7 +51,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void updateMetadataAddMetadataToExistingRegistryMetadataUpdated() throws IOException {
+    public void updateMetadata_RegistryExisting_MetadataUpdated() throws IOException {
         
         String tableName = "addMetadataRegistry";
 
@@ -78,7 +78,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
 
     @Test
-    public void createRegistryWhenRegistryAlreadyExistsReturnsFalse() throws JsonProcessingException {
+    public void createRegistry_RegistryAlreadyExists_ReturnsFalse() throws JsonProcessingException {
 
         String tableName = "tableAlreadyExists";
         boolean existsBeforeCreation = registryManager.registryExists(tableName );
@@ -95,7 +95,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void emptyRegistrySucceeds() throws IOException {
+    public void emptyRegistry_RegistryExists_RegistryIsEmpty() throws IOException {
         
         String tableName = "emptyRegistry";
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
@@ -109,10 +109,9 @@ public class RegistryManagerTest extends LocalDynamoTest {
         boolean entityExistAfterEmpty = entityManager.entityExists(tableName, entityId.get());
         assertThat(entityExistAfterEmpty, equalTo(false));
     }
-
-
+    
     @Test
-    public void createRegistryFromTemplateRegistryDoesNotExistRegistryExists() throws IOException, InterruptedException {
+    public void createRegistryFromTemplate_RegistryDoesNotExist_RegistryExists() throws IOException, InterruptedException {
         String tableName = "addSchemaToRegistry";
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         registryManager.createRegistryFromTemplate(createRequest);

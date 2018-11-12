@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class TableDriverTest extends LocalDynamoTest {
 
     @Test
-    public void createTableAddsOneTable() {
+    public void createTable_TableNotExisting_AddsTable() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
         List<String> tables = tableDriver.listTables();
@@ -25,7 +25,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void createTableWithAnExistingTableReturnsFalse() {
+    public void createTable_TableExists_ReturnsFalse() {
         TableDriver tableDriver = newTableDriver();
         int tables = tableDriver.listTables().size();
         assertThat(tables, is(equalTo(0)));
@@ -40,7 +40,7 @@ public class TableDriverTest extends LocalDynamoTest {
 
 
     @Test
-    public void deleteTableOnEmptyTableReturnsTrue() {
+    public void deleteTable_EmptyTable_ReturnsTrue() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -52,7 +52,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTableOnNonExistingTableReturnsFalse()  {
+    public void deleteTable_TableNotExisting_ReturnsFalse()  {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -65,7 +65,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTableOnNonEmptyTableReturnsFalse() throws JsonProcessingException {
+    public void deleteTable_TableNotEmpty_ReturnsFalse() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -77,7 +77,7 @@ public class TableDriverTest extends LocalDynamoTest {
 
 
     @Test
-    public void listTableListsAllTables() {
+    public void listTable_FiveExistingTables_ListsAllFiveTables() {
         TableDriver tableDriver = newTableDriver();
         template.setId("test");
         tableDriver.createTable(template.getId());

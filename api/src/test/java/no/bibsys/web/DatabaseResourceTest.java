@@ -69,7 +69,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void pingReturnsStatusCodeOK() throws Exception {
+    public void ping_ReturnsStatusCodeOK() throws Exception {
 
         Response response = target("/ping").request().get();
 
@@ -78,7 +78,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void createRegistryWhenCreatingNonExistingRegistryReturnsStatusOK() throws Exception {
+    public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
         String ragistryName = UUID.randomUUID().toString();
         SimpleResponse expected = new SimpleResponse(String.format("A registry with name %s has been created", ragistryName));
 
@@ -90,7 +90,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void createRegistryWhenCreatingExistingRegistryReturnsStatusCONFLICT() throws Exception {
+    public void createRegistry_RegistryAlreadyExists_ReturnsStatusCONFLICT() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
         SimpleResponse response = createRegistry(registryName).readEntity(SimpleResponse.class);
@@ -98,7 +98,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void insertEntityInRegistryWhenRegistryExistReturnsStatusOK() throws Exception {
+    public void insertEntity_RegistryExist_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
 
@@ -113,7 +113,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void deleteRegistryExistingRegistryReturnsStatusOK() throws Exception {
+    public void deleteRegistry_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName );
 
@@ -132,7 +132,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void deleteRegistryWhenNonExistingRegistryReturnsStatusNOTFOUND() throws Exception {
+    public void deleteRegistry_RegistryNotExisting_ReturnsStatusNOTFOUND() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
         Response response = target("/registry/" + registryName)
@@ -150,7 +150,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void emptyAnExistingRegistryExistingRegistryReturnsStatusOK() throws Exception {
+    public void emptyRegistry_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName =UUID.randomUUID().toString();
         createRegistry(registryName );
         String entry = sampleData.sampleEntry().jsonString();
@@ -167,7 +167,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void callEndpointWrongRoleReturnsStatusForbidden() throws Exception {
+    public void callEndpoint_WrongRole_ReturnsStatusForbidden() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate request = new EntityRegistryTemplate(registryName);
         Response response = target("/registry")
@@ -180,23 +180,8 @@ public class DatabaseResourceTest extends JerseyTest {
 
     }
 
-    @Test 
-    public void getListOfRegistriesReturnsListOFRegistries() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate request = new EntityRegistryTemplate(registryName );
-        createRegistry(request);
-
-        Response response = target("/registry")
-                .request()
-                .get();
-
-        SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", registryName), Status.OK);
-        assertThat(actual, is(equalTo(expected)));
-    }
-
     @Test
-    public void getRegistryMetadataFromExistingRegistryReturnsMetadata() throws Exception {
+    public void getRegistryMetadata_RegistryExists_ReturnsMetadata() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName );
@@ -218,7 +203,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getEntityFromExistingRegistryReturnsStatusOK() throws Exception {
+    public void getEntity_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
@@ -235,7 +220,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void putRegistrySchemaInExistingRegsitryReturnsStatusOK() throws Exception {
+    public void putRegistrySchema_RegsitryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
@@ -253,7 +238,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void updateEntity() throws Exception {
+    public void updateEntity_EntityExists_ReturnsUpdatedEntity() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
