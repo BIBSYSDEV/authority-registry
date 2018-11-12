@@ -78,11 +78,11 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void sendSuccessWhenCreatingNonExistingTable() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        SimpleResponse expected = new SimpleResponse(String.format("A registry with name %s has been created", tableName));
+    public void createRegistryWhenCreatingNonExistingRegistryReturnsStatusOK() throws Exception {
+        String ragistryName = UUID.randomUUID().toString();
+        SimpleResponse expected = new SimpleResponse(String.format("A registry with name %s has been created", ragistryName));
 
-        SimpleResponse response = createTable(tableName).readEntity(SimpleResponse.class);
+        SimpleResponse response = createRegistry(ragistryName).readEntity(SimpleResponse.class);
 
         assertThat(response.getStatusCode(), is(equalTo(Status.OK.getStatusCode())));
         assertThat(response, is(equalTo(expected)));
@@ -90,34 +90,34 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void sendConflictWhenCreatingExistingTable() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        createTable(tableName);
-        SimpleResponse response = createTable(tableName).readEntity(SimpleResponse.class);
+    public void createRegistryWhenCreatingExistingRegistryReturnsStatusCONFLICT() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
+        SimpleResponse response = createRegistry(registryName).readEntity(SimpleResponse.class);
         assertThat(response.getStatusCode(), is(equalTo(Status.CONFLICT.getStatusCode())));
     }
 
     @Test
-    public void insertEntryInTable() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        createTable(tableName);
+    public void insertEntityInRegistryWhenRegistryExistReturnsStatusOK() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
 
         Entry entry = sampleData.sampleEntry();
-        SimpleResponse response = insertEntryRequest(tableName, entry.jsonString()).readEntity(SimpleResponse.class);
+        SimpleResponse response = insertEntryRequest(registryName, entry.jsonString()).readEntity(SimpleResponse.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK)));
         String entityId = response.getMessage().substring(response.getMessage().lastIndexOf("/") + 1);
 
-        SimpleResponse readResponse = readEntity(tableName, entityId).readEntity(SimpleResponse.class);
+        SimpleResponse readResponse = readEntity(registryName, entityId).readEntity(SimpleResponse.class);
         assertThat(readResponse.getStatus(), is(equalTo(Status.OK)));
     }
 
     @Test
-    public void deleteAnExistingRegistry() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        createTable(tableName );
+    public void deleteRegistryExistingRegistryReturnsStatusOK() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName );
 
-        Response response = target("/registry/" + tableName)
+        Response response = target("/registry/" + registryName)
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
@@ -125,17 +125,17 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
         SimpleResponse expected =
-                new SimpleResponse(String.format("Registry %s has been deleted", tableName));
+                new SimpleResponse(String.format("Registry %s has been deleted", registryName));
         assertThat(actual, is(equalTo(expected)));
 
     }
 
 
     @Test
-    public void returnErrorWhenDeletingNonExistingRegistry() throws Exception {
+    public void deleteRegistryWhenNonExistingRegistryReturnsStatusNOTFOUND() throws Exception {
 
-        String tableName = UUID.randomUUID().toString();
-        Response response = target("/registry/" + tableName)
+        String registryName = UUID.randomUUID().toString();
+        Response response = target("/registry/" + registryName)
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
@@ -143,34 +143,33 @@ public class DatabaseResourceTest extends JerseyTest {
         SimpleResponse readResponse = response.readEntity(SimpleResponse.class);
         assertThat(readResponse.getStatus(), is(equalTo(Status.NOT_FOUND)));
 
-        SimpleResponse expected = new SimpleResponse(String.format("Registry with name %s does not exist", tableName), Status.NOT_FOUND);
+        SimpleResponse expected = new SimpleResponse(String.format("Registry with name %s does not exist", registryName), Status.NOT_FOUND);
         assertThat(readResponse, is(equalTo(expected)));
 
     }
 
 
     @Test
-    public void emptyAnExistingTable() throws Exception {
-        String tableName =UUID.randomUUID().toString();
-        createTable(tableName );
+    public void emptyAnExistingRegistryExistingRegistryReturnsStatusOK() throws Exception {
+        String registryName =UUID.randomUUID().toString();
+        createRegistry(registryName );
         String entry = sampleData.sampleEntry().jsonString();
 
-        insertEntryRequest(tableName, entry);
+        insertEntryRequest(registryName, entry);
 
-        Response response = target(String.format("/registry/%s/empty", tableName))
+        Response response = target(String.format("/registry/%s/empty", registryName))
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected = new SimpleResponse(String.format("Registry %s has been emptied", tableName));
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(actual.getStatus(), is(equalTo(Status.OK)));
     }
 
     @Test
-    public void wrongRoleShouldReturnForbidden() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        EntityRegistryTemplate request = new EntityRegistryTemplate(tableName);
+    public void callEndpointWrongRoleReturnsStatusForbidden() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate request = new EntityRegistryTemplate(registryName);
         Response response = target("/registry")
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
@@ -182,9 +181,9 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test 
-    public void getListOfRegistries() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        EntityRegistryTemplate request = new EntityRegistryTemplate(tableName );
+    public void getListOfRegistriesReturnsListOFRegistries() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate request = new EntityRegistryTemplate(registryName );
         createRegistry(request);
 
         Response response = target("/registry")
@@ -192,22 +191,22 @@ public class DatabaseResourceTest extends JerseyTest {
                 .get();
 
         SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", tableName), Status.OK);
+        SimpleResponse expected = new SimpleResponse(String.format("[\"%s\"]", registryName), Status.OK);
         assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
-    public void getRegistryMetadata() throws Exception {
+    public void getRegistryMetadataFromExistingRegistryReturnsMetadata() throws Exception {
 
-        String tableName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(tableName );
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName );
 
         ObjectMapper mapper = new ObjectMapper();
         String templateJson = mapper.writeValueAsString(template);
 
         createRegistry(template);
 
-        Response response = target(String.format("/registry/%s", tableName))
+        Response response = target(String.format("/registry/%s", registryName))
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .get();
@@ -219,24 +218,24 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getEntity() throws Exception {
-        String tableName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(tableName);
+    public void getEntityFromExistingRegistryReturnsStatusOK() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
         Entry entry = sampleData.sampleEntry();
-        Response response = insertEntryRequest(tableName, entry.jsonString());
+        Response response = insertEntryRequest(registryName, entry.jsonString());
 
         String entityPath = response.readEntity(SimpleResponse.class).getMessage();
         String entityId = entityPath.substring(entityPath.lastIndexOf("/") + 1);
 
-        Response readEntityResponse = readEntity(tableName, entityId);
+        Response readEntityResponse = readEntity(registryName, entityId);
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
     }
 
     @Test
-    public void putRegistrySchema() throws Exception {
+    public void putRegistrySchemaInExistingRegsitryReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
@@ -295,8 +294,8 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
 
-    private Response createTable(String tableName) throws Exception {
-        EntityRegistryTemplate createRequest = new EntityRegistryTemplate(tableName);
+    private Response createRegistry(String registryName) throws Exception {
+        EntityRegistryTemplate createRequest = new EntityRegistryTemplate(registryName);
         return createRegistry(createRequest);
     }
 

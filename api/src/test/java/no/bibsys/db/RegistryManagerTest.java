@@ -14,8 +14,6 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
@@ -23,8 +21,6 @@ import no.bibsys.testtemplates.SampleData.Entry;
 
 
 public class RegistryManagerTest extends LocalDynamoTest {
-
-    private ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
 
     private EntityRegistryTemplate createTestEditRequest(String tableName) {
         EntityRegistryTemplate newCreateRequest = new EntityRegistryTemplate();
@@ -40,7 +36,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void createRegistryCreatesANewRegistry()
+    public void createRegistryRegistryNotExistingRegistryExists()
         throws InterruptedException, IOException {
 
         String tableName = "createARegistry";
@@ -55,7 +51,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
     
     @Test
-    public void addMetadataToExistingRegistrySucceeds() throws IOException {
+    public void updateMetadataAddMetadataToExistingRegistryMetadataUpdated() throws IOException {
         
         String tableName = "addMetadataRegistry";
 
@@ -82,7 +78,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
 
     @Test
-    public void createRegistryWhenRegistryAlreadyExistsFails() throws JsonProcessingException {
+    public void createRegistryWhenRegistryAlreadyExistsReturnsFalse() throws JsonProcessingException {
 
         String tableName = "tableAlreadyExists";
         boolean existsBeforeCreation = registryManager.registryExists(tableName );
@@ -94,7 +90,8 @@ public class RegistryManagerTest extends LocalDynamoTest {
         assertThat("The table should  exist before creation", existsAfterCreation,
                 is(equalTo(true)));
 
-        registryManager.createRegistryFromTemplate(createRequest);
+        boolean createRegistryFromTemplate = registryManager.createRegistryFromTemplate(createRequest);
+        assertThat(createRegistryFromTemplate, equalTo(false));
     }
     
     @Test
@@ -115,7 +112,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
 
     @Test
-    public void databaseManagerAddSchemaToRegistry() throws IOException, InterruptedException {
+    public void createRegistryFromTemplateRegistryDoesNotExistRegistryExists() throws IOException, InterruptedException {
         String tableName = "addSchemaToRegistry";
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         registryManager.createRegistryFromTemplate(createRequest);

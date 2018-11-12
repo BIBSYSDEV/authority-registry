@@ -8,8 +8,6 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
@@ -17,7 +15,7 @@ import no.bibsys.testtemplates.SampleData.Entry;
 public class EntityManagerTest extends LocalDynamoTest{
 
     @Test
-    public void addEntityToEmptyRegistrySucceeds() throws IOException {
+    public void addEntityToEmptyRegistryReturnsTrue() throws IOException {
         
         String tableName = "addEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
@@ -33,7 +31,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
 
     @Test
-    public void addEntityToNonExistingRegistryFails() throws IOException {
+    public void addEntityToNonExistingRegistryReturnsFalse() throws IOException {
         String tableName = "addEntityNoRegistry";
         Entry entry = sampleData.sampleEntry();
         Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
@@ -41,7 +39,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void deleteEntityToExistingEntitySucceeds() throws IOException {
+    public void deleteEntityToExistingEntityReturnsTrue() throws IOException {
         String tableName = "deleteEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -55,7 +53,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void deleteEntityToNonExistingEntityFails() throws IOException {
+    public void deleteEntityToNonExistingEntityReturnsFalse() throws IOException {
         String tableName = "deleteEntityNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -66,7 +64,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void deleteEntityToNonExistingRegistryFails() throws IOException {
+    public void deleteEntityToNonExistingRegistryReturnsFalse() throws IOException {
         String tableName = "deleteEntityNoRegistry";
         
         String entityId = "nonExistingEntityId";
@@ -75,7 +73,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void entityExistsToExistingEntitySucceeds() throws IOException {
+    public void entityExistsToExistingEntityReturnsTrue() throws IOException {
         String tableName = "entityExists";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -88,7 +86,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void entityExistsToNonExistingEntityFails() throws IOException {
+    public void entityExistsToNonExistingEntityReturnsFalse() throws IOException {
         String tableName = "entityExistsNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -99,7 +97,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void entityExistsToNonExistingRegistryFails() throws IOException {
+    public void entityExistsToNonExistingRegistryReturnsFalse() throws IOException {
         String tableName = "entityExistsNoRegistry";
         
         String entityId = "nonExistingEntity";
@@ -108,7 +106,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void getEntityToExistingEntitySucceeds() throws IOException {
+    public void getEntityToExistingEntitReturnsTrue() throws IOException {
         String tableName = "getEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -121,7 +119,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void getEntityToNonExistingEntityFails() throws IOException {
+    public void getEntityToNonExistingEntityReturnsFalse() throws IOException {
         String tableName = "getEntityNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -132,7 +130,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void getEntityToNonExistingRegistryFails() throws IOException {
+    public void getEntityToNonExistingRegistryReturnsFalse() throws IOException {
         String tableName = "getEntityNoRegistry";
         
         String entityId = "nonExistingEntityId";
@@ -141,7 +139,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
 
     @Test
-    public void updateEntityToExistingEntitySucceeds() throws IOException {
+    public void updateEntityToExistingEntityReturnsTrue() throws IOException {
         String tableName = "updateEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -164,7 +162,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void updateEntityToNonExistingEntityFails() throws IOException {
+    public void updateEntityToNonExistingEntityReturnsFalse() throws IOException {
         String tableName = "updateEntityNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
@@ -180,7 +178,7 @@ public class EntityManagerTest extends LocalDynamoTest{
     }
     
     @Test
-    public void updateEntityToNonExistingRegistryFails() {
+    public void updateEntityToNonExistingRegistryReturnsFalse() {
         String tableName = "updateEntityNoRegistry";
         
         String entityId = "nonExistingEntityId";

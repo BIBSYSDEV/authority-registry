@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class TableDriverTest extends LocalDynamoTest {
 
     @Test
-    public void createTableSucceeds() {
+    public void createTableAddsOneTable() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
         List<String> tables = tableDriver.listTables();
@@ -25,7 +25,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void createTableWithAnExistingTableFails() {
+    public void createTableWithAnExistingTableReturnsFalse() {
         TableDriver tableDriver = newTableDriver();
         int tables = tableDriver.listTables().size();
         assertThat(tables, is(equalTo(0)));
@@ -40,7 +40,7 @@ public class TableDriverTest extends LocalDynamoTest {
 
 
     @Test
-    public void deleteTableOnEmptyTableSucceeds() {
+    public void deleteTableOnEmptyTableReturnsTrue() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -52,7 +52,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTableOnNonExistingTableFails()  {
+    public void deleteTableOnNonExistingTableReturnsFalse()  {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 
@@ -65,7 +65,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTableOnNonEmptyTableFails() throws JsonProcessingException {
+    public void deleteTableOnNonEmptyTableReturnsFalse() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createTable(template.getId());
 

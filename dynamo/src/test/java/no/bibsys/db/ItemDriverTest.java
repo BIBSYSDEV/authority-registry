@@ -33,7 +33,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void addItemAndGetItemToExistingTableSucceeds() throws IOException {
+    public void addItemAndGetItemToExistingTableItemExistsInTable() throws IOException {
 
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         Item inputItem = Item.fromJSON(json);
@@ -50,20 +50,20 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test 
-    public void addItemToNonExistingTableFails() throws IOException {
+    public void addItemToNonExistingTableReturnsFalse() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         boolean addItem = itemDriver.addItem("nonExistingTable", json);
         assertThat(addItem, equalTo(false));
     }
     
     @Test 
-    public void getItemToNonExistingTableFails() throws IOException {
+    public void getItemToNonExistingTableReturnsFalse() throws IOException {
         Optional<String> addItem = itemDriver.getItem("nonExistingTable", "id01");
         assertThat(addItem.isPresent(), equalTo(false));
     }
 
     @Test 
-    public void deleteItemWithExistingItemSucceeds() throws IOException {
+    public void deleteItemWithExistingItemRemovesItemFromTable() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
@@ -74,7 +74,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test 
-    public void deleteItemWithNonExistingItemFails() throws IOException {
+    public void deleteItemWithNonExistingItemReturnsFalse() throws IOException {
         tableDriver.createTable(template.getId());
         boolean deleteItem = itemDriver.deleteItem(template.getId(), "id01");
         
@@ -82,7 +82,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test
-    public void updateItemWithExistingItemSucceeds() throws IOException {
+    public void updateItemWithExistingItemUpdatesValuesInItem() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
@@ -97,7 +97,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test(expected = NoSuchElementException.class)
-    public void updateItemWithNonExistingItemFails() throws IOException {
+    public void updateItemWithNonExistingItemReturnsFalse() throws IOException {
         tableDriver.createTable(template.getId());
         
         String updateJson = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
@@ -111,7 +111,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test
-    public void itemExistsWithExistingItemSucceeds() throws IOException {
+    public void itemExistsWithExistingItemReturnsTrue() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
@@ -121,7 +121,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test
-    public void itemExistsWithExistingItemFails() throws IOException {
+    public void itemExistsWithExistingItemReturnsFalse() throws IOException {
         String json = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
         tableDriver.createTable(template.getId());
         itemDriver.addItem(template.getId(), json);
