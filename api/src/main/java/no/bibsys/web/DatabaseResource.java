@@ -9,28 +9,8 @@ import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATI
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
-
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,6 +27,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.ObjectMapperHelper;
 import no.bibsys.db.RegistryManager;
@@ -240,7 +235,7 @@ public class DatabaseResource {
     public SimpleResponse emptyRegistry(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException {
+                schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
@@ -266,7 +261,8 @@ public class DatabaseResource {
     public SimpleResponse getRegistrySchema(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
+                schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+        throws IOException {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
@@ -295,7 +291,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
-            ) throws InterruptedException, JsonParseException, JsonMappingException, IOException {
+    ) throws IOException {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
@@ -351,8 +347,7 @@ public class DatabaseResource {
     public SimpleResponse entitiesSummary(
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity summary from",
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws IOException {
+                schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
@@ -380,8 +375,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
             description = "Id of entity to get",
-            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId)
-                    throws IOException {
+                schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
@@ -418,8 +412,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
             description = "Id of entity to delete",
-            schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId)
-                    throws IOException {
+                schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
         }
@@ -454,8 +447,7 @@ public class DatabaseResource {
             description = "Id of entity to be updated",
             schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, 
             @RequestBody(description = "Entity to update",
-            content = @Content(schema = @Schema(type = STRING))) String entity)
-                    throws IOException {
+                content = @Content(schema = @Schema(type = STRING))) String entity) {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
