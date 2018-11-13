@@ -25,7 +25,7 @@ public class RegistryManager {
         return createRegistryFromJson(registryName, json);
     }
 
-    public boolean createRegistryFromJson(String registryName, String json) throws JsonProcessingException{
+    public boolean createRegistryFromJson(String registryName, String json) {
 
         if(!tableDriver.tableExists(getValidationSchemaTable())) {
             tableDriver.createTable(getValidationSchemaTable());
