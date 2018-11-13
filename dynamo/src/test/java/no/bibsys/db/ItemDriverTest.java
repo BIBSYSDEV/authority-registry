@@ -4,18 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
+import no.bibsys.utils.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-
-import no.bibsys.utils.IoUtils;
 
 
 public class ItemDriverTest extends LocalDynamoTest {
@@ -59,9 +56,9 @@ public class ItemDriverTest extends LocalDynamoTest {
         boolean addItem = itemDriver.addItem("nonExistingTable", entityId, json);
         assertThat(addItem, equalTo(false));
     }
-    
-    @Test 
-    public void getItem_TableNotExisting_ReturnsFalse() throws IOException {
+
+    @Test
+    public void getItem_TableNotExisting_ReturnsFalse() {
         Optional<String> addItem = itemDriver.getItem("nonExistingTable", "id01");
         assertThat(addItem.isPresent(), equalTo(false));
     }
@@ -76,17 +73,17 @@ public class ItemDriverTest extends LocalDynamoTest {
         boolean itemExists = itemDriver.itemExists(template.getId(), "id01");
         assertThat(itemExists, equalTo(false));
     }
-    
-    @Test 
-    public void deleteItem_ItemNotExisting_ReturnsFalse() throws IOException {
+
+    @Test
+    public void deleteItem_ItemNotExisting_ReturnsFalse() {
         tableDriver.createTable(template.getId());
         boolean deleteItem = itemDriver.deleteItem(template.getId(), "id01");
         
         assertThat(deleteItem, equalTo(false));
     }
-    
-    @Test 
-    public void deleteItem_TableNotExisting_ReturnsFalse() throws IOException {
+
+    @Test
+    public void deleteItem_TableNotExisting_ReturnsFalse() {
         boolean deleteItem = itemDriver.deleteItem(NON_EXISTING_TABLE, "id01");
         
         assertThat(deleteItem, equalTo(false));
@@ -143,7 +140,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     }
     
     @Test
-    public void itemExists_ItemNotExisting_ReturnsFalse() throws IOException {
+    public void itemExists_ItemNotExisting_ReturnsFalse() {
         tableDriver.createTable(template.getId());
         boolean itemExists = itemDriver.itemExists(template.getId(), NON_EXISTING_ID);
         assertThat(itemExists, equalTo(false));

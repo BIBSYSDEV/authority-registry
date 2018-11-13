@@ -7,17 +7,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
-
-import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
+import org.junit.Test;
 
 
 public class RegistryManagerTest extends LocalDynamoTest {
@@ -37,7 +34,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     
     @Test
     public void createRegistry_RegistryNotExisting_RegistryExists()
-        throws InterruptedException, IOException {
+        throws IOException {
 
         String tableName = "createARegistry";
         boolean existsBeforeCreation = registryManager.registryExists(tableName);

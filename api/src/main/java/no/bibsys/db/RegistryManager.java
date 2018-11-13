@@ -1,8 +1,6 @@
 package no.bibsys.db;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
@@ -72,7 +70,7 @@ public class RegistryManager {
         return Optional.ofNullable(schema);
     }
 
-    public void setSchemaJson(String registryName, String schemaAsJson) throws JsonParseException, JsonMappingException, IOException {
+    public void setSchemaJson(String registryName, String schemaAsJson) throws IOException {
         Optional<String> registrySchemaItem = itemDriver.getItem(getValidationSchemaTable(), registryName);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -92,11 +90,9 @@ public class RegistryManager {
     public EntityRegistryTemplate getRegistryMetadata(String registryName) throws IOException {
 
         EntityRegistryTemplate template = new EntityRegistryTemplate();
-
         Optional<String> entry = itemDriver.getItem(getValidationSchemaTable(), registryName);
         ObjectMapper mapper = new ObjectMapper();
         template = mapper.readValue(entry.get() , EntityRegistryTemplate.class);
-
         return template;
     }
 
