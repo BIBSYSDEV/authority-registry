@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class IoUtils {
 
@@ -24,6 +25,17 @@ public class IoUtils {
     public static String resourceAsString(Path path) throws IOException {
         List<String> lines = resouceAsList(path);
         return String.join(" ", lines);
+    }
+
+
+    public static String streamToString(InputStream stream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            Optional<String> resultOpt = reader.lines()
+                .reduce((s1, s2) -> String.format("%s%n%s", s1, s2));
+            return resultOpt
+                .orElseThrow(() -> new IOException("Error converting InputStream to String"));
+
+        }
     }
 
 

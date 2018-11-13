@@ -14,6 +14,7 @@ apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 dependencies {
 
     compile project(":dynamo")
+    compile project(":init")
 
 
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.+'
@@ -29,8 +30,9 @@ dependencies {
 	compile ('io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.5')
 
     //connection to amazon
-    compile ('com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1')
 	compile ('com.amazonaws:aws-lambda-java-core:1.2.0')
+    compile ('com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1')
+
 
     compile ('io.symphonia:lambda-logging:1.0.1')
 
