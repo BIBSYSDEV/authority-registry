@@ -2,27 +2,22 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: DynamoDB REST frontend
 
+
 Parameters:
   ProjectId:
     Type: String
   Stage:
     Type: String
-#    Default: test
     Description: Deployment stage. E.g. test, prod, etc.
-#    AllowedValues:
-#      - prod
-#      - test
-
-  CodeBucket:
-    Type: String
-    Description: S3 Bucket containing artifacts and source code.
   Branch:
     Type: String
-    Description: Repository branch name.
+  CodeBucket:
+    Type: String
   InitFunctionName:
     Type: String
   DestroyFunctionName:
     Type:  String
+
 
 Resources:
   RestApi:
@@ -47,7 +42,7 @@ Resources:
         Version: '2012-10-17'
         Statement:
         - Action:
-          - logs:CreateLogGroup:
+          - logs:CreateLogGroup
           - logs:CreateLogStream
           - logs:PutLogEvents
           - dynamodb:CreateTable
@@ -67,12 +62,13 @@ Resources:
           Resource: "*"
           #     //The rest of the policies are for all lambda functions
           Effect: Allow
-        - Action:
+        - Effect: Allow
+          Action:
           - logs:CreateLogGroup
           - logs:CreateLogStream
           - logs:PutLogEvents
           Resource: "*"
-          Effect: Allow
+
         - Effect: Allow
           Action:
           - s3:GetObject
