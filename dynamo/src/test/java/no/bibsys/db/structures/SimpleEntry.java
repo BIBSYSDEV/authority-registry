@@ -1,12 +1,10 @@
 package no.bibsys.db.structures;
 
-import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import java.util.List;
 import no.bibsys.db.ObjectMapperHelper;
 
-public class SimpleEntry implements Entry {
+public class SimpleEntry implements DynamoDbEntry {
 
 
     private String id;
