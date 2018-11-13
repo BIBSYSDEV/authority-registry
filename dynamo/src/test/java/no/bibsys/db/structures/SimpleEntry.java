@@ -2,7 +2,7 @@ package no.bibsys.db.structures;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
-import no.bibsys.db.ObjectMapperHelper;
+import no.bibsys.db.JsonUtils;
 
 public class SimpleEntry implements DynamoDbEntry {
 
@@ -40,6 +40,6 @@ public class SimpleEntry implements DynamoDbEntry {
     }
 
     public String asJson() throws JsonProcessingException {
-        return ObjectMapperHelper.getObjectMapper().writeValueAsString(this);
+        return JsonUtils.getObjectMapper().writeValueAsString(this);
     }
 }

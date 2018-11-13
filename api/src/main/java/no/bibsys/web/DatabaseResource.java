@@ -43,7 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import no.bibsys.db.EntityManager;
-import no.bibsys.db.ObjectMapperHelper;
+import no.bibsys.db.JsonUtils;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.SimpleResponse;
@@ -128,7 +128,7 @@ public class DatabaseResource {
     public SimpleResponse getRegistryList() throws JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
-        ObjectMapper mapper = ObjectMapperHelper.getObjectMapper();
+        ObjectMapper mapper = JsonUtils.getObjectMapper();
         return new SimpleResponse(mapper.writeValueAsString(registryList), Status.OK);
     }
 

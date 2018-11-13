@@ -1,13 +1,5 @@
 package no.bibsys.db;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -20,6 +12,13 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ItemDriver {
 
@@ -52,13 +51,13 @@ public final class ItemDriver {
         itemMap.put("id", itemId);
 
         try {
-            ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
-            Map<String, Object> bodyMap = objectMapper.convertValue(objectMapper.readTree(itemJson), Map.class);
+            ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+            Map<String, Object> bodyMap = objectMapper.readValue(itemJson, Map.class);
             itemMap.put("body", bodyMap);
         } catch (IllegalArgumentException | IOException e1) {
             return false;
         } 
-        
+
         Item item = Item.fromMap(itemMap);
 
         boolean success = false;
@@ -98,7 +97,7 @@ public final class ItemDriver {
             itemMap.put("id", itemId);
 
             try {
-                ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
+                ObjectMapper objectMapper = JsonUtils.getObjectMapper();
                 Map<String, Object> bodyMap = objectMapper.convertValue(objectMapper.readTree(itemJson), Map.class);
                 itemMap.put("body", bodyMap);
             } catch (IllegalArgumentException | IOException e1) {
@@ -131,7 +130,7 @@ public final class ItemDriver {
         final Table table = dynamoDb.getTable(tableName);
         try {
             final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
-            ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
+            ObjectMapper objectMapper = JsonUtils.getObjectMapper();
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         }catch(ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {
             return Optional.empty();

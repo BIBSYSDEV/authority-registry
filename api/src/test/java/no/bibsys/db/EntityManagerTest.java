@@ -5,12 +5,10 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import org.junit.Test;
-
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
+import org.junit.Test;
 
 public class EntityManagerTest extends LocalDynamoTest{
 
@@ -156,7 +154,8 @@ public class EntityManagerTest extends LocalDynamoTest{
         assertThat(updateEntity.isPresent(), equalTo(true));
         
         Optional<String> readEntity = entityManager.getEntity(tableName, entityId);
-        String readLabel = ObjectMapperHelper.getObjectMapper().readTree(readEntity.get()).get("label").asText();
+        String readLabel = JsonUtils.getObjectMapper().readTree(readEntity.get()).get("label")
+            .asText();
         assertThat(readLabel, equalTo(updatedLabel));
         
     }
