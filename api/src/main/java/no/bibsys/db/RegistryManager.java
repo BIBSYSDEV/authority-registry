@@ -37,7 +37,7 @@ public class RegistryManager {
             return false;
         }
         
-        itemDriver.addItem(getValidationSchemaTable(), json);
+        itemDriver.addItem(getValidationSchemaTable(), registryName, json);
         return tableDriver.createTable(registryName);
     }
 
@@ -103,7 +103,7 @@ public class RegistryManager {
     public void updateRegistryMetadata(EntityRegistryTemplate request) throws JsonProcessingException {
 
         String json = objectMapper.writeValueAsString(request);
-        itemDriver.updateItem(getValidationSchemaTable(), json);
+        itemDriver.updateItem(getValidationSchemaTable(), request.getId(), json);
 
     }
 

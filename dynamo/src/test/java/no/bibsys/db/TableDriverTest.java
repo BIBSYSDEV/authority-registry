@@ -70,7 +70,7 @@ public class TableDriverTest extends LocalDynamoTest {
         tableDriver.createTable(template.getId());
 
         ItemDriver itemDriver = newItemDriver();
-        itemDriver.addItem(template.getId(), newSimpleEntry().asJson());
+        itemDriver.addItem(template.getId(), "id01", newSimpleEntry().asJson());
         boolean deleteTable = tableDriver.deleteTable(tableName);
         assertThat(deleteTable, equalTo(false));
     }

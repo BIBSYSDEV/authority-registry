@@ -457,7 +457,7 @@ public class DatabaseResource {
             return new SimpleResponse(String.format(ENTITY_DOES_NOT_EXIST, entityId, registryName), Status.NOT_FOUND);
         }
 
-        entityManager.updateEntity(registryName, entity);
+        entityManager.updateEntity(registryName, entityId, entity);
 
         return new SimpleResponse(String.format("Entity with id %s in %s has been updated", entityId, registryName));
     }
