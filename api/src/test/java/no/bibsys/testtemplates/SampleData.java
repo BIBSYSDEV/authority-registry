@@ -12,8 +12,9 @@ public class SampleData {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public Entry sampleEntry(String id) {
+    public Entry sampleEntry() {
 
+        String id = "sampleId";
         ObjectNode root = getMapper().getNodeFactory().objectNode();
         root.put("id", id);
         root.put("label", "A random label");

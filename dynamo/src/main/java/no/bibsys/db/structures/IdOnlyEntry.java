@@ -1,6 +1,6 @@
 package no.bibsys.db.structures;
 
-public class IdOnlyEntry implements Entry {
+public class IdOnlyEntry implements DynamoDbEntry {
 
     private String id;
 
@@ -22,4 +22,6 @@ public class IdOnlyEntry implements Entry {
     public final void setId(String id) {
         this.id = id;
     }
+
+
 }

@@ -1,6 +1,6 @@
 package no.bibsys.db.structures;
 
-public class ValidationSchemaEntry implements Entry {
+public class ValidationSchemaEntry implements DynamoDbEntry {
 
 
     private String id;

@@ -33,6 +33,10 @@ public abstract class LocalDynamoTest extends DynamoTest {
         return TableDriver.create(localClient, new DynamoDB(localClient));
     }
 
+    protected ItemDriver newItemDriver() {
+        return ItemDriver.create(new DynamoDB(localClient));
+    }
+
 
     protected SimpleEntry newSimpleEntry() {
         SimpleEntry entry = new SimpleEntry();

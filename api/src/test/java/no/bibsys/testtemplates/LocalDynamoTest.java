@@ -1,17 +1,20 @@
 package no.bibsys.testtemplates;
 
 import org.junit.Before;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+
 import no.bibsys.LocalDynamoDBHelper;
-import no.bibsys.db.DatabaseManager;
+import no.bibsys.db.EntityManager;
+import no.bibsys.db.ItemDriver;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
 
 public abstract class LocalDynamoTest {
 
-    public DatabaseManager databaseManager;
-    public RegistryManager registryManager;
+    protected RegistryManager registryManager;
+    protected EntityManager entityManager;
     public SampleData sampleData;
 
     @Before
@@ -20,9 +23,10 @@ public abstract class LocalDynamoTest {
 
         final AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
 
-        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
-        databaseManager = new DatabaseManager(tableDriver);
-        registryManager = new RegistryManager(tableDriver);
+        TableDriver tableManager = TableDriver.create(client, new DynamoDB(client));
+        ItemDriver itemManager = ItemDriver.create(new DynamoDB(client));
+        registryManager = new RegistryManager(tableManager, itemManager);
+        entityManager = new EntityManager(itemManager);
 
         sampleData = new SampleData();
     }
