@@ -8,8 +8,10 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public interface Entry extends TableDefinitions {
+/**
+ * Interface that all classes representing a DynamoDB entry must implement
+ */
+public interface DynamoDbEntry extends TableDefinitions {
 
 
     @DynamoDBHashKey(attributeName = "id")
