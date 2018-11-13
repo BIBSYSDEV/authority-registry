@@ -7,7 +7,8 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import no.bibsys.amazon.handlers.events.CodePipelineEvent;
+import no.bibsys.amazon.handlers.events.buildevents.BuildEvent;
+import no.bibsys.amazon.handlers.events.buildevents.BuildEventBuilder;
 import no.bibsys.amazon.handlers.responses.SimpleResponse;
 import no.bibsys.utils.IoUtils;
 import org.junit.Ignore;
@@ -23,7 +24,7 @@ public class InitHandlerTest {
         InitHandler initHandler = new InitHandler();
         String eventJson = IoUtils
             .resourceAsString(Paths.get("events", "mock_codePipeline_event.json"));
-        CodePipelineEvent event = CodePipelineEvent.create(eventJson);
+        BuildEvent event = BuildEventBuilder.create(eventJson);
         SimpleResponse output = initHandler
             .processInput(event, null);
 

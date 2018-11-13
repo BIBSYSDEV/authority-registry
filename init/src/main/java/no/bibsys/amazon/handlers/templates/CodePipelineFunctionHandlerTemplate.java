@@ -12,57 +12,86 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Optional;
-import no.bibsys.amazon.handlers.events.CodePipelineEvent;
+import no.bibsys.amazon.handlers.events.buildevents.BuildEvent;
+import no.bibsys.amazon.handlers.events.buildevents.BuildEventBuilder;
+import no.bibsys.amazon.handlers.events.buildevents.CodePipelineEvent;
 import no.bibsys.utils.IoUtils;
 
+
 public abstract class CodePipelineFunctionHandlerTemplate<O> extends
-    HandlerTemplate<CodePipelineEvent, O> {
+    HandlerTemplate<BuildEvent, O> {
 
     private final transient AWSCodePipeline pipeline = AWSCodePipelineClientBuilder.defaultClient();
 
     public CodePipelineFunctionHandlerTemplate() {
-        super(CodePipelineEvent.class);
+        super(BuildEvent.class);
     }
 
     @Override
-    protected final CodePipelineEvent parseInput(InputStream inputStream) throws IOException {
+    protected final BuildEvent parseInput(InputStream inputStream) throws IOException {
         String jsonSting = IoUtils.streamToString(inputStream);
         System.out.println(jsonSting);
-        return CodePipelineEvent.create(jsonSting);
+        return BuildEventBuilder.create(jsonSting);
     }
 
 
     @Override
-    protected void writeOutput(CodePipelineEvent input, O output) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));) {
-            String outputString = objectMapper.writeValueAsString(output);
-            PutJobSuccessResultRequest success = new PutJobSuccessResultRequest();
-            success.withJobId(input.getId())
-                .withExecutionDetails(new ExecutionDetails().withSummary(outputString));
+    protected void writeOutput(BuildEvent input, O output) throws IOException {
+        String outputString = objectMapper.writeValueAsString(output);
+
+        writeOutput(outputString);
+        System.out.println(input.getClass().getName());
+        System.out.println(input instanceof CodePipelineEvent);
+
+        if (isPipelineEvent(input)) {
+            sendSuccessToCodePipeline((CodePipelineEvent) input,
+                outputString);
+
+        }
+
+    }
+
+
+    @Override
+    protected void writeFailure(BuildEvent input, Throwable error) throws IOException {
+        String outputString = Optional.ofNullable(error.getMessage())
+            .orElse("Unknown error. Check stacktrace.");
+        if (isPipelineEvent(input)) {
+            sendFailureToCodePipeline((CodePipelineEvent) input, outputString);
+        }
+        writeOutput(outputString);
+    }
+
+
+    private void writeOutput(String outputString) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
             writer.write(outputString);
-            pipeline.putJobSuccessResult(success);
         }
 
 
     }
 
+    private void sendSuccessToCodePipeline(CodePipelineEvent input, String outputString) {
+        System.out.println("sending success");
+        CodePipelineEvent codePipelineEvent = input;
+        PutJobSuccessResultRequest success = new PutJobSuccessResultRequest();
+        success.withJobId(codePipelineEvent.getId())
+            .withExecutionDetails(new ExecutionDetails().withSummary(outputString));
+        pipeline.putJobSuccessResult(success);
+        System.out.println("sent success");
+    }
 
-    @Override
-    protected void writeFailure(CodePipelineEvent input, Throwable error) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));) {
-            String outputString = Optional.ofNullable(error.getMessage())
-                .orElse("Unknown error. Check stacktrace.");
+    private void sendFailureToCodePipeline(CodePipelineEvent input, String outputString) {
+        FailureDetails failureDetails = new FailureDetails().withMessage(outputString)
+            .withType(FailureType.JobFailed);
+        PutJobFailureResultRequest failure = new PutJobFailureResultRequest()
+            .withJobId(input.getId()).withFailureDetails(failureDetails);
+        pipeline.putJobFailureResult(failure);
+    }
 
-            FailureDetails failureDetails = new FailureDetails().withMessage(outputString)
-                .withType(FailureType.JobFailed);
-            PutJobFailureResultRequest failure = new PutJobFailureResultRequest()
-                .withJobId(input.getId()).withFailureDetails(failureDetails);
-            pipeline.putJobFailureResult(failure);
 
-            writer.write(outputString);
-
-        }
-
+    private boolean isPipelineEvent(BuildEvent buildEvent) {
+        return buildEvent instanceof CodePipelineEvent;
 
     }
 
