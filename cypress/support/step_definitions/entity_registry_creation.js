@@ -56,5 +56,8 @@ then('an entity registry that accepts only valid data is created', () =>{
 		.then((response) => {
 			expect(response.body['message']).to.contain(randomRegistryName)
 		})
+		
+		let getRegistryUrl = '/registry/' + randomRegistryName;
+		cy.request(getRegistryUrl)
 	})
 })
