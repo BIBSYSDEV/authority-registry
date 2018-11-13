@@ -1,15 +1,13 @@
 package no.bibsys.db;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 
 public class RegistryManager {
@@ -63,7 +61,7 @@ public class RegistryManager {
         return true;
     }
 
-    public Optional<String> getSchemaAsJson(String registryName) throws JsonParseException, JsonMappingException, IOException {
+    public Optional<String> getSchemaAsJson(String registryName) throws IOException {
 
         Optional<String> registrySchemaItem = itemDriver.getItem(getValidationSchemaTable(), registryName);
 
@@ -91,7 +89,7 @@ public class RegistryManager {
                 .collect(Collectors.toList());
     }
 
-    public EntityRegistryTemplate getRegistryMetadata(String registryName) throws JsonParseException, JsonMappingException, IOException {
+    public EntityRegistryTemplate getRegistryMetadata(String registryName) throws IOException {
 
         EntityRegistryTemplate template = new EntityRegistryTemplate();
 
