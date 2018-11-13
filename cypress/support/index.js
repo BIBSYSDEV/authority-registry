@@ -24,7 +24,8 @@ beforeEach(function(){
 	let randomRegistryName = uuid.v4();
 	cy.wrap(randomRegistryName).as('registryName');
 	let randomEntityId = uuid.v4();
-	cy.wrap(randomEntityId).as('entityId')
+	cy.wrap(randomEntityId).as('entityId');
+	cy.wrap('fac116dd-1b6d-4c95-85ed-b90dd51a480e').as('apiAdminKey');
 })
 
 afterEach(function(){
