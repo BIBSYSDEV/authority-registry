@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 public class EntityManager {
 
     private final transient ItemDriver itemManager;
@@ -19,8 +15,7 @@ public class EntityManager {
     public Optional<String> addEntity(final String registryName, final String json) throws IOException {
         
         String entityId = createEntityId();
-        String updatedJson = addIdToJson(json, entityId);
-        boolean addItemSuccess = itemManager.addItem(registryName, updatedJson);
+        boolean addItemSuccess = itemManager.addItem(registryName, entityId, json);
         if(!addItemSuccess) {
             return Optional.empty();
         }
@@ -39,22 +34,14 @@ public class EntityManager {
         
     }
 
-    public Optional<String> updateEntity(String registryName, String entity) {
-        return itemManager.updateItem(registryName, entity);
+    public Optional<String> updateEntity(String registryName, String entityId, String entity) {
+        return itemManager.updateItem(registryName, entityId, entity);
     }
 
-    public boolean entityExists(String registryName, String entity) {
-        return itemManager.itemExists(registryName, entity);
+    public boolean entityExists(String registryName, String entityId) {
+        return itemManager.itemExists(registryName, entityId);
     }
     
-    private String addIdToJson(final String json, final String entityId) throws IOException {
-        ObjectMapper objectMapper = ObjectMapperHelper.getObjectMapper();
-        JsonNode tree = objectMapper.readTree(json);
-        ((ObjectNode)tree).put("id", entityId);
-        String updatedJson = objectMapper.writeValueAsString(tree);
-        return updatedJson;
-    }
-
     private String createEntityId() {
         String entitiyId = UUID.randomUUID().toString();
         return entitiyId;

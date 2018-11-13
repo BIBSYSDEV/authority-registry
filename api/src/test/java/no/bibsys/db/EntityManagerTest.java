@@ -152,7 +152,7 @@ public class EntityManagerTest extends LocalDynamoTest{
         String updatedLabel = "An updated label";
         updateEntry.root.put("id", entityId);
         updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity = entityManager.updateEntity(tableName, updateEntry.jsonString());
+        Optional<String> updateEntity = entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
         assertThat(updateEntity.isPresent(), equalTo(true));
         
         Optional<String> readEntity = entityManager.getEntity(tableName, entityId);
@@ -173,7 +173,7 @@ public class EntityManagerTest extends LocalDynamoTest{
         String updatedLabel = "An updated label";
         updateEntry.root.put("id", entityId);
         updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity = entityManager.updateEntity(tableName, updateEntry.jsonString());
+        Optional<String> updateEntity = entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
         assertThat(updateEntity.isPresent(), equalTo(false));
     }
     
@@ -187,7 +187,7 @@ public class EntityManagerTest extends LocalDynamoTest{
         String updatedLabel = "An updated label";
         updateEntry.root.put("id", entityId);
         updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity = entityManager.updateEntity(tableName, updateEntry.jsonString());
+        Optional<String> updateEntity = entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
         assertThat(updateEntity.isPresent(), equalTo(false));
     }
 }

@@ -2,7 +2,10 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -40,12 +43,16 @@ public final class ItemDriver {
      * @param itemJson
      * @return true if item is added
      */
-    public boolean addItem(String tableName, String itemJson) {
+    public boolean addItem(String tableName, String itemId, String itemJson) {
 
         boolean success = false;
-        Item item = Item.fromJSON(itemJson);
-        String id = item.asMap().getOrDefault("id", "").toString();
-        if(!id.isEmpty()) {
+        Map<String, Object> itemMap = new ConcurrentHashMap<>();
+        itemMap.put("id", itemId);
+        itemMap.put("body", itemJson);
+        
+        Item item = Item.fromMap(itemMap);
+
+        if(!itemId.isEmpty()) {
             try {
 
                 final Table table = dynamoDb.getTable(tableName);
@@ -70,16 +77,18 @@ public final class ItemDriver {
      * @param itemJson
      * @return
      */
-    public Optional<String> updateItem(String tableName, String itemJson) {
-        final Item item = Item.fromJSON(itemJson);
-        String id = item.asMap().getOrDefault("id", "").toString();
-
-        if(id.isEmpty()) {
+    public Optional<String> updateItem(String tableName, String itemId, String itemJson) {
+        
+        if(itemId.isEmpty()) {
             return Optional.empty();
         }
 
-        if(itemExists(tableName, id)) {
+        if(itemExists(tableName, itemId)) {
+            Map<String, Object> itemMap = new ConcurrentHashMap<>();
+            itemMap.put("id", itemId);
+            itemMap.put("body", itemJson);
 
+            final Item item = Item.fromMap(itemMap);
             final Table table = dynamoDb.getTable(tableName);
 
             List<AttributeUpdate> updateList = new ArrayList<>();
@@ -105,8 +114,8 @@ public final class ItemDriver {
         final Table table = dynamoDb.getTable(tableName);
         try {
             final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
-            return itemOpt.map(item -> item.toJSON());
-        }catch(ResourceNotFoundException e) {
+            return Optional.ofNullable(itemOpt.get().getString("body"));
+        }catch(ResourceNotFoundException | NoSuchElementException e) {
             return Optional.empty();
         }
     }
