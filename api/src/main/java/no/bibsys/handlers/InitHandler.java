@@ -2,6 +2,7 @@ package no.bibsys.handlers;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
 import com.amazonaws.services.lambda.runtime.Context;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.amazon.handlers.events.buildevents.BuildEvent;
@@ -24,8 +25,12 @@ public class InitHandler extends CodePipelineFunctionHandlerTemplate<SimpleRespo
     @Override
     public SimpleResponse processInput(BuildEvent input, Context context) {
 
-        authenticationService.createApiKeyTable();
-        authenticationService.setUpInitialApiKeys();
+        try {
+            authenticationService.createApiKeyTable();
+            authenticationService.setUpInitialApiKeys();
+        } catch (ResourceInUseException e) {
+            logger.log(e.getErrorMessage());
+        }
 
         return new SimpleResponse("Initializing!!");
 
