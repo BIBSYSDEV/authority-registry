@@ -4,24 +4,37 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 
+import javax.ws.rs.core.Response.Status;
+
 public class SimpleResponse {
 
     private String message;
     private int statusCode;
+    private Status status;
 
     public SimpleResponse() {}
-
-
+    
+    
     public SimpleResponse(String message) {
         setMessage(message);
         setStatusCode(200);
-    }
-
-    public SimpleResponse(String message, int statusCode) {
-        setMessage(message);
-        setStatusCode(statusCode);
+        setStatus(Status.OK);
     }
     
+    public SimpleResponse(String message, Status status) {
+        setMessage(message);
+        setStatusCode(status.getStatusCode());
+        setStatus(status);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+
+    public final void setStatus(Status status) {
+        this.status = status;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -37,9 +50,10 @@ public class SimpleResponse {
         return message != null ? message.equals(that.message) : that.message == null;
     }
 
+
     @Override
     public String toString() {
-        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + "]";
+        return "SimpleResponse [message=" + message + ", statusCode=" + statusCode + ", status=" + status + "]";
     }
 
 

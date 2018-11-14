@@ -3,7 +3,7 @@ package no.bibsys.db;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ObjectMapperHelper {
+public class JsonUtils {
 
     public static ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
