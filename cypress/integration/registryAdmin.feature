@@ -15,6 +15,7 @@ Feature: Registry admin features
     Then the data is available in the entity registry
 
   Scenario: A registry admin adds registry admin API keys to an existing, populated entity registry
-    And that the entity registry is populated
+    Given that the registry admin user has a valid API key for registry administration
+    And that there is an existing, populated entity registry with a schema
     When the API admin user adds registry admin API keys to the entity registry
     Then the users with the API keys can access the entity registry

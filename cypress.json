@@ -1,5 +1,4 @@
 {
-	"baseUrl": "https://0rfv5269f7.execute-api.eu-west-1.amazonaws.com/test",
 	"responseTimeout": 120000,
 	"video": false
 }

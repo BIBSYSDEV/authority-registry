@@ -1,10 +1,10 @@
-//Scenario: An API admin user creates a new entity registry
-//Given that the API admin user is authenticated
-//When the API admin user provides a properly formatted create-entity-registry-request providing information about:
-//| Registry name              |
-//| Registry admin users       |
-//| Registry validation schema |
-//Then an entity registry that accepts only valid data is created
+//  Scenario: An API admin user creates a new entity registry
+//    Given that the API admin user has a valid API key for API administration
+//    When the API admin user submits the API key and a properly formatted create-entity-registry-request providing information about:
+//      | Registry name              |
+//      | Registry admin users       |
+//      | Registry validation schema |
+//    Then an entity registry that accepts only valid data is created
 
 let createEntityRegistryRequest ={
 		'id': 'name',
@@ -24,7 +24,7 @@ let createEntityRegistryRequest ={
 
 let createRegistryEndpoint = '/registry';
 
-when('the API admin user provides a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
+when('the API admin user submits the API key and a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
 
 	let attributeArray = dataTable.rawTable;
 
