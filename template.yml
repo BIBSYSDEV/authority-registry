@@ -84,6 +84,7 @@ Resources:
       Environment:
         Variables:
           STAGE_NAME: !Ref Stage
+          API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
       Events:
         ApiResource:
           Type: Api
@@ -118,6 +119,10 @@ Resources:
           Resource: "*"
       MemorySize: 1500
       Timeout: 900
+      Environment:
+        Variables:
+          STAGE_NAME: !Ref Stage
+          API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
   Destroy:
     Type: AWS::Serverless::Function
     Properties:
@@ -137,3 +142,7 @@ Resources:
           Resource: "*"
       MemorySize: 1500
       Timeout: 900
+      Environment:
+        Variables:
+          STAGE_NAME: !Ref Stage
+          API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]

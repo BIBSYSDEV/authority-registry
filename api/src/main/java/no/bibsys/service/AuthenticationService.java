@@ -17,7 +17,6 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
 public class AuthenticationService {
@@ -36,7 +35,7 @@ public class AuthenticationService {
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
         
-        apiKeyTableName = environmentReader.getEnvForName(ApiKeyConstants.API_KEY_TABLE_NAME).orElse("entity-registry-api-keys");
+        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME).orElse("entity-registry-api-keys");
         
         config = DynamoDBMapperConfig
                 .builder()
@@ -84,7 +83,7 @@ public class AuthenticationService {
     }
     
     public void setUpInitialApiKeys() {
-        if (environmentReader.getStageName().equals(TEST_STAGE_NAME)) {
+        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).orElse("").equals(TEST_STAGE_NAME)) {
             ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
             apiAdminApiKey.setKey("testApiAdminApiKey");
             mapper.save(apiAdminApiKey, config);
