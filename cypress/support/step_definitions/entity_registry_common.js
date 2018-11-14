@@ -17,7 +17,7 @@ given('that there is an existing populated entity registry with a schema', () =>
 	createTestEntity();
 })
 
-given('that there is an existing empty entity registry with a schema', () => {
+given('that there is an existing, empty entity registry with a schema', () => {
 	createEmptyRegistry();
 })
 
