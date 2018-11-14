@@ -97,7 +97,7 @@ public class DatabaseResource {
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws JsonProcessingException {
 
-        SimpleResponse response = new SimpleResponse();
+        SimpleResponse response = new SimpleResponse("Unknown error", Status.INTERNAL_SERVER_ERROR);
         if(request.getId() == null||request.getId().isEmpty()) {
             response = new SimpleResponse("Registry create request is missing identifier", Status.BAD_REQUEST);
         }else {
@@ -328,7 +328,6 @@ public class DatabaseResource {
         }
 
         Optional<String> entityId = entityManager.addEntity(registryName, entity);
-
 
         return new SimpleResponse(String.format("/registry/%s/entity/%s", registryName, entityId.get()));
     }
