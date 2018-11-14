@@ -17,7 +17,6 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.web.security.Roles;
 
 public class AuthenticationService {
     
@@ -41,12 +40,6 @@ public class AuthenticationService {
                 .builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
-    }
-    
-    public String createApiKey(String... roles) {
-        ApiKey apiKey = new ApiKey(roles);
-        mapper.save(apiKey, config);
-        return apiKey.getKey();
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
@@ -84,15 +77,14 @@ public class AuthenticationService {
     
     public void setUpInitialApiKeys() {
         if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).orElse("").equals(TEST_STAGE_NAME)) {
-            ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
+            ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
-            mapper.save(apiAdminApiKey, config);
-            ApiKey registryAdminapiKey = new ApiKey(Roles.REGISTRY_ADMIN);
-            registryAdminapiKey.setKey("testRegistryAdminApiKey");
-            mapper.save(registryAdminapiKey, config);
+            saveApiKey(apiAdminApiKey);
+            ApiKey registryAdminApiKey = ApiKey.createRegistryAdminApiKey();
+            apiAdminApiKey.setKey("testRegistryAdminApiKey");
+            saveApiKey(registryAdminApiKey);
         } else {
-            createApiKey(Roles.API_ADMIN);
-            createApiKey(Roles.REGISTRY_ADMIN);
+            saveApiKey(ApiKey.createApiAdminApiKey());
         }
     }
 
@@ -108,8 +100,9 @@ public class AuthenticationService {
         return table.getTableName();
     }
     
-    public void saveApiKey(ApiKey apiKey) {
+    public String saveApiKey(ApiKey apiKey) {
         mapper.save(apiKey, config);
+        return apiKey.getKey();
     }
     
 }

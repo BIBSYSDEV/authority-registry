@@ -3,36 +3,31 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.model.SimpleResponse;
 import no.bibsys.web.security.ApiKeyConstants;
-import no.bibsys.web.security.Roles;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -56,9 +51,9 @@ public class DatabaseResourceTest extends JerseyTest {
         AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
         authenticationService.createApiKeyTable();
         
-        apiAdminKey = authenticationService.createApiKey(Roles.API_ADMIN);
-        registryAdminKey = authenticationService.createApiKey(Roles.REGISTRY_ADMIN);    
         
+        apiAdminKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());    
+        registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey());
         
         return config;
     }

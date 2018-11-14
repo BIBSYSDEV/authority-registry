@@ -61,7 +61,7 @@ public class AuthenticationServiceTest {
     @Test
     public void createApiAdminApiKey() throws Exception {
         authenticationService.createApiKeyTable();
-        String apiKeyKey = authenticationService.createApiKey(Roles.API_ADMIN);
+        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
@@ -72,7 +72,7 @@ public class AuthenticationServiceTest {
     @Test
     public void createRegistryAdminApiKey() throws Exception {
         authenticationService.createApiKeyTable();
-        String apiKeyKey = authenticationService.createApiKey(Roles.REGISTRY_ADMIN);
+        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey());
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
@@ -85,7 +85,7 @@ public class AuthenticationServiceTest {
         authenticationService.createApiKeyTable();
         String key = "test";
         
-        ApiKey apiKey = new ApiKey(Roles.API_ADMIN);
+        ApiKey apiKey = ApiKey.createApiAdminApiKey();
         apiKey.setKey(key);
         authenticationService.saveApiKey(apiKey);
         Assert.assertEquals(key, apiKey.getKey());
