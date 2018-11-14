@@ -13,6 +13,7 @@ given('that there is an existing entity in the registry', () => {
 })
 
 given('that there is an existing populated entity registry with a schema', () => {
+<<<<<<< HEAD
 	createEmptyRegistry();
 	createTestEntity();
 })
@@ -22,11 +23,17 @@ given('that there is an existing empty entity registry with a schema', () => {
 })
 
 given('that there is an existing, populated entity registry with a schema', () => {
+=======
+>>>>>>> branch 'AUTREG-72-update_cypress_tests' of https://github.com/BIBSYSDEV/authority-registry
 	createEmptyRegistry();
 	createTestEntity();
 })
 
+<<<<<<< HEAD
 given('that there is an existing, populated entity registry with a schema and registered registry API keys', () => {
+=======
+given('that there is an existing empty entity registry with a schema', () => {
+>>>>>>> branch 'AUTREG-72-update_cypress_tests' of https://github.com/BIBSYSDEV/authority-registry
 	createEmptyRegistry();
 	createTestEntity();
 })
@@ -52,7 +59,11 @@ function createEmptyRegistry(){
 							'content-type': 'application/json'
 						}
 					}).then((response) => {
+<<<<<<< HEAD
 						cy.wrap(response.apiKey).as('registryApiKey');
+=======
+						cy.wrap(response.apiKey).as('apiKey');
+>>>>>>> branch 'AUTREG-72-update_cypress_tests' of https://github.com/BIBSYSDEV/authority-registry
 					})
 				})
 			})

@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
+=======
+	"baseUrl": "https://0rfv5269f7.execute-api.eu-west-1.amazonaws.com/test",
+>>>>>>> branch 'AUTREG-72-update_cypress_tests' of https://github.com/BIBSYSDEV/authority-registry
 	"responseTimeout": 120000,
 	"video": false
 }
