@@ -7,11 +7,11 @@ phases:
   pre_build:
     commands:
     - echo Test started on `date`
-    - sh gradlew test
+    - sh gradlew clean test
   build:
     commands:
     - echo Build started on `date`
-    - sh gradlew build -x test fatJar
+    - sh gradlew -x test build fatJar
     - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.yml
     - sh gradlew api:resolve api:fixAws
     - aws s3 cp api/build/openapi-aws-modified/openapi.yaml s3://$S3_BUCKET/
