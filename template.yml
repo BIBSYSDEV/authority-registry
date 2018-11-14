@@ -118,6 +118,7 @@ Resources:
           - dynamodb:DescribeTable
           - dynamodb:CreateTable
           - dynamodb:PutItem
+          - dynamodb:UpdateItem
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
