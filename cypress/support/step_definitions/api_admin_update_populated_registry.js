@@ -6,15 +6,15 @@
 
 when('the API admin user uses the API key and submits a request to update the validation schema of the entity registry', () => {
 	cy.get('@registryName').then((registryName) => {
-		let updateRegistryUrl = '/registry/' + registryName;
+		let updateRegistryUrl = '/registry/' + registryName + '/schema';
 
-		cy.get('@apiAdminApiKey').then((apiKye) => {
+		cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
 			cy.fixture('registryTestSchemaUpdated').then((updatedSchema) => {
 				cy.request({
 					url: updateRegistryUrl,
 					method: 'PUT',
 					headers: {
-						'apikey': apiKey
+						'x-api-key': apiAdminApiKey
 					},
 					failOnStatusCode: false,
 					body: updatedSchema

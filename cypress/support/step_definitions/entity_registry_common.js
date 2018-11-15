@@ -27,27 +27,33 @@ given('that there is an existing, populated entity registry with a schema and re
 })
 
 function createEmptyRegistry(){
-	let entityRegistryUrl = "/registry/";
-	cy.wrap(entityRegistryUrl).as('entityRegistryUrl');
-
 	cy.get('@registryName').then((registryName) => {
-		cy.get('@apiAdminKey').then((apiAdminKey) => {
-			cy.get('@entityRegistryUrl').then((url) => {
-				// create new test registry
+		cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
+			// create new test registry metadata
+			cy.fixture('registryTestMetadata.json')
+			.then((testSchema) => {
+				testSchema.registryName = registryName;
+				let createUrl = '/registry';
+				cy.request({
+					url: createUrl,
+					method: 'POST',
+					body: testSchema, 
+					headers: {
+						'x-api-key': apiAdminApiKey
+					}
+				})
+
+				// add schema to registry
 				cy.fixture('registryTestSchema.json')
 				.then((testSchema) => {
-					testSchema.registryName = registryName;
-					let url = entityRegistryUrl + registryName
+					let addSchemaUrl = 'registry/' + registryName + '/schema';
 					cy.request({
-						url: url,
+						url: addSchemaUrl,
 						method: 'POST',
 						body: testSchema, 
 						headers: {
-							'apiKey': apiAdminKey,
-							'content-type': 'application/json'
+							'x-api-key': apiAdminApiKey
 						}
-					}).then((response) => {
-						cy.wrap(response.apiKey).as('registryApiKey');
 					})
 				})
 			})
@@ -58,24 +64,24 @@ function createEmptyRegistry(){
 function createTestEntity(){
 
 	cy.get('@registryName').then((registryName) => {
-		let entityAddUrl = '/registry/' + registryName + '/entity';
-		cy.get('@entityId').then((entityId) => {
-			cy.get('@entityRegistryUrl').then((url) => {
-				cy.fixture('entityTestData.json') // add testData to registry
-				.then((testData) => {
-					testData.id = entityId
-					cy.request({
-						url: entityAddUrl,
-						method: 'POST',
-						body: testData,
-						headers: {
-							'x-api-key': apiKey,
-							'content-type': 'application/json'
-						}
-					}).then((response) => {
+		cy.get('@apiAdminApiKey').then((apiKey) => {
+			cy.get('@entityId').then((entityId) => {
+				let entityAddUrl = '/registry/' + registryName + '/entity' + entityId;
+					cy.fixture('entityTestData.json') // add testData to registry
+					.then((testData) => {
+						testData.id = entityId
+						cy.request({
+							url: entityAddUrl,
+							method: 'POST',
+							body: testData,
+							headers: {
+								'x-api-key': apiKey,
+								'content-type': 'application/json'
+							}
+						}).then((response) => {
+						})
 					})
 				})
-			})
 		})
 	})
 }

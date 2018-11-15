@@ -1,10 +1,10 @@
-//  Scenario: An API admin user updates an existing, empty entity registry
+//  Scenario: An API admin user updates the entity registry metadata
 //    Given that the API admin user has a valid API key for API administration
-//    And that there is an existing, empty entity registry with a schema
-//    When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
-//    Then the entity registry is updated
+//    And that there is an existing, populated entity registry with a schema
+//    When the API admin user changes the metadata for the entity registry
+//    Then the metadata for the entity registry is updated
 
-when('the API admin user uses the API key and submits a request to update the validation schema of the entity registry', () => {
+when('the API admin user changes the metadata for the entity registry', () => {
 	cy.get('@registryName').then((registryName) => {
 
 		let registryUpdateUrl = '/registry/' + registryName + '/schema';
@@ -26,7 +26,7 @@ when('the API admin user uses the API key and submits a request to update the va
 	})
 })
 
-then('the entity registry is updated', () => {
+then('the metadata for the entity registry is updated', () => {
 	cy.get('@registryName').then((registryName) => {
 		let registryGetUrl = '/registry/' + registryName;
 		cy.get('@authenticationToken').then((authToken) => {

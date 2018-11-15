@@ -48,6 +48,14 @@ public class RegistryManager {
         tableDriver.createTable(tableName);
     }
 
+    public long registrySize(String registryName) {
+        if(registryExists(registryName)) {
+            return tableDriver.tableSize(registryName);
+        }else {
+            return -1;
+        }
+    }
+    
     public boolean deleteRegistry(String tableName) {
 
         if(tableDriver.tableSize(tableName) > 0) {

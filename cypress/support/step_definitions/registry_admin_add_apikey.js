@@ -12,12 +12,12 @@ when('the API admin user adds registry admin API keys to the entity registry', (
 		cy.wrap('').as('newApiKey')
 		cy.fixture('newApiKeyData.json')
 		.then((testData) => {
-			cy.get('@registryApiKey').then((apiKey) => {
+			cy.get('@registryAdminApiKey').then((apiKey) => {
 				cy.request({
 					url: addApikeyUrl,
 					method: 'POST',
 					headers: {
-						'apiKey': apiKey
+						'x-api-Key': apiKey
 					},
 					body: testData
 				}).then((response) => {

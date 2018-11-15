@@ -31,11 +31,8 @@ when('the API admin user submits the API key and a properly formatted create-ent
 	expect(createEntityRegistryRequest['id']).to.be.a('string');
 	expect(createEntityRegistryRequest['id']).to.have.length.above(0);
 
-	let schemaValidationUrl = 'https://www.unit.no';
+	let schemaValidationUrl = '/registry/schema';
 	cy.request(schemaValidationUrl, createEntityRegistryRequest[attributeArray[2]])
-	.then((response) => {
-		expect(true).to.be.true;
-	})
 
 })
 

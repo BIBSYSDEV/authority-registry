@@ -13,11 +13,11 @@ given('that the registry admin user has a set of properly schema-formatted data'
 when('the registry admin user submits an API key and a request to bulk upload the data to the entity registry', () => {
 	let bulkUploadUrl = 'https://www.unit.no';
 	cy.get('@bulkUpload').then((bulkUpload) => {
-		cy.get('@authenticationToken').then((authToken) => {
+		cy.get('@registryAdminApiKey').then((apiKey) => {
 			cy.request({
 				url: bulkUploadUrl,
 				header: {
-					Authorization: 'Token ' + authToken
+					'x-api-key': apiKey
 				},
 				body: bulkUpload
 			})
@@ -31,7 +31,7 @@ then('the data is available in the entity registry', () => {
 
 		let countEntitiesUrl = '/registry/' + registryName + '/entity';
 		cy.request(countEntitiesUrl).then((response) => {
-//			expect(Object.keys(response.body).length).to.equals(121)
+			expect(Object.keys(response.body).length).to.equals(10)
 		})
 	})
 })

@@ -20,7 +20,7 @@ when('the API admin user uses the API key and submits a request to delete the en
 				failOnStatusCode: true
 			}).then((response) => {
 				expect(response.status).to.equals(403)
-				cy.wrap('Error deleting registry, registry not empty').as('errorMessage')
+				cy.wrap(response.body).as('errorMessage')
 			})
 		})
 	})
@@ -28,6 +28,6 @@ when('the API admin user uses the API key and submits a request to delete the en
 
 then('the API admin user receives information that they cannot delete the entity registry until the populated data is deleted', () => {
 	cy.get('@errorMessage').then((errorMessage) => {
-		expect(errorMessage).to.contains('Error deleting registry, registry not empty')
+		assert.equal(errorMessage, 'Error deleting registry, registry must be empty')
 	})
 })

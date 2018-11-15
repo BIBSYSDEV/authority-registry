@@ -97,7 +97,7 @@ public class DatabaseResource {
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws JsonProcessingException {
 
-        SimpleResponse response = new SimpleResponse("Unknown error", Status.INTERNAL_SERVER_ERROR);
+        SimpleResponse response = new SimpleResponse();
         if(request.getId() == null||request.getId().isEmpty()) {
             response = new SimpleResponse("Registry create request is missing identifier", Status.BAD_REQUEST);
         }else {
@@ -215,6 +215,10 @@ public class DatabaseResource {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
         }
 
+        if(registryManager.registrySize(registryName) > 0) {
+            return new SimpleResponse("Error deleting registry, registry must be empty", Status.FORBIDDEN);
+        }
+        
         registryManager.deleteRegistry(registryName);
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }

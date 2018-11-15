@@ -1,23 +1,22 @@
-//  Scenario: An API admin user updates the entity registry metadata
+//  Scenario: An API admin user updates an existing, empty entity registry
 //    Given that the API admin user has a valid API key for API administration
-//    And that there is an existing, populated entity registry with a schema
-//    When the API admin user changes the metadata for the entity registry
-//    Then the metadata for the entity registry is updated
+//    And that there is an existing, empty entity registry with a schema
+//    When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
+//    Then the entity registry is updated
 
-when('the API admin user changes the metadata for the entity registry', () => {
+when('the API admin user uses the API key and submits a request to update the validation schema of the entity registry', () => {
 	cy.get('@registryName').then((registryName) => {
 
 		let registryUpdateUrl = '/registry/' + registryName + '/schema';
-		cy.get('@registryApiKey').then((apiKey) => {
-			let updatedDescription = 'Updated description';
-			cy.wrap(updatedDescription).as('updatedDescription')
-			cy.fixture('registryTestSchemaUpdated.json').then((updatedSchema) => {
+		cy.get('@registryApiKey').then((registryApiKey) => {
+			cy.fixture('registryTestSchemaUpdated.json')
+			.then((updatedSchema) => {
 				updatedSchema['metadata'].description = updatedDescription
 				cy.request({
 					url: registryUpdateUrl,
 					method: 'PUT',
 					headers: {
-						'apikey': apiKey,
+						'x-api-key': registryApiKey,
 					},
 					body: updatedSchema
 				})
@@ -26,9 +25,9 @@ when('the API admin user changes the metadata for the entity registry', () => {
 	})
 })
 
-then('the metadata for the entity registry is updated', () => {
+then('the entity registry is updated', () => {
 	cy.get('@registryName').then((registryName) => {
-		let registryGetUrl = '/registry/' + registryName;
+		let registryGetUrl = '/registry/' + registryName + '/schema';
 		cy.get('@authenticationToken').then((authToken) => {
 			cy.request({
 				url: registryGetUrl,

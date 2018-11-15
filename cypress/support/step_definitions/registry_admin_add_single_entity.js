@@ -7,25 +7,22 @@
 
 when('the registry admin user submits the API key with a request to create a new entity with properly formatted data', () =>{
 	cy.get("@registryName").then((registryName) => {
-		cy.get('@registryApiKey').then((apiKey) => {
 		let createEntityUrl = "/registry/" + registryName + "/entity";
 
 		cy.wrap('').as('returnId')
 		cy.fixture('entityTestData.json')
 		.then((testData) => {
-			cy.get('@authenticationToken').then((authToken) => {
+			cy.get('@registryAdminApiKey').then((apiKey) => {
 				cy.request({
 					url: createEntityUrl,
 					method: 'POST',
 					headers: {
-						'apiKey': apiKey
+						'x-api-key': apiKey
 					},
 					body: testData
 				}).then((response) => {
 					// test return from create
-					cy.log(response.body)
-					cy.wrap('return.id').as('returnId')
-				})
+					cy.wrap(response.body).as('returnUri')
 				})
 			})
 		})
@@ -33,9 +30,7 @@ when('the registry admin user submits the API key with a request to create a new
 })
 
 then('the entity is created', () => {
-	cy.get('@returnId').then((returnId) => {
-		let getEntityUrl = "/registry/" + registryName + "/entity/" + returnId;
-
-		cy.request(getEntityUrl)
+	cy.get('@returnUri').then((returnUri) => {
+		cy.request(returnUri);
 	})
 })

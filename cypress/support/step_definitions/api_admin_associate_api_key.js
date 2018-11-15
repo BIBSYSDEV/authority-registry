@@ -7,23 +7,17 @@
 
 when('the API admin user submits a new API key to replace the current valid API key', () =>{
 	cy.get("@registryName").then((registryName) => {
-		cy.get("@apiAdminApiKey").then((apiKey) => {
+		cy.get("@apiAdminApiKey").then((apiAdminApiKey) => {
 			let addApikeyUrl = "/registry/" + registryName + "/apikey";
 			cy.wrap('').as('newApiKey')
-			cy.fixture('newApiKeyData.json')
-			.then((testData) => {
-				cy.request({
-					url: addApikeyUrl,
-					method: 'POST',
-					headers: {
-						'apiKey': apiKey
-					},
-					body: testData
-				}).then((response) => {
-					// test return from create
-					cy.log(response.body)
-					cy.wrap('newApiKey').as('newApiKey')
-				})
+			cy.request({
+				url: addApikeyUrl,
+				method: 'POST',
+				headers: {
+					'x-api-key': apiAdminApiKey
+				}
+			}).then((response) => {
+				cy.wrap(response.body).as('newApiKey')
 			})
 		})
 	})
@@ -31,8 +25,18 @@ when('the API admin user submits a new API key to replace the current valid API 
 
 then('the API key is updated', () => {
 	cy.get('@returnId').then((returnId) => {
-		let getEntityUrl = "/registry/" + registryName + "/entity/" + returnId;
-
-		cy.request(getEntityUrl)
+		cy.get('@newApiKey').then((newApiKey) => {
+			cy.fixture('entityTestData.json').then((testData) => {
+				let updateEntityUrl = "/registry/" + registryName + "/entity"
+				cy.request({
+					url: updateEntityUrl,
+					method: 'POST',
+					body: testData,
+					headers: {
+						'x-api-key': newApiKey
+					}
+				})
+			})
+		})
 	})
 })
