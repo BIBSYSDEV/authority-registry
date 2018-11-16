@@ -65,23 +65,23 @@ function createTestEntity(){
 
 	cy.get('@registryName').then((registryName) => {
 		cy.get('@apiAdminApiKey').then((apiKey) => {
-			cy.get('@entityId').then((entityId) => {
-				let entityAddUrl = '/registry/' + registryName + '/entity' + entityId;
-					cy.fixture('entityTestData.json') // add testData to registry
-					.then((testData) => {
-						testData.id = entityId
-						cy.request({
-							url: entityAddUrl,
-							method: 'POST',
-							body: testData,
-							headers: {
-								'x-api-key': apiKey,
-								'content-type': 'application/json'
-							}
-						}).then((response) => {
-						})
-					})
+			let entityAddUrl = '/registry/' + registryName + '/entity';
+			cy.fixture('entityTestData.json') // add testData to registry
+			.then((testData) => {
+				cy.request({
+					url: entityAddUrl,
+					method: 'POST',
+					body: testData,
+					headers: {
+						'x-api-key': apiKey,
+						'content-type': 'application/json'
+					}
+				}).then((response) => {
+					let entityUri = response.body
+					let entityId = entityUri.split('/')[entityUri.length - 1]
+					cy.wrap(entityId).as('entityId');
 				})
+			})
 		})
 	})
 }
