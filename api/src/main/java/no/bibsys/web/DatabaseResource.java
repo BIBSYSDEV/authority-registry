@@ -1,18 +1,26 @@
 package no.bibsys.web;
 
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_REQUEST_PARAMETERS;
-import static no.bibsys.web.AwsExtensionHelper.AWS_REQUEST_PARAMETERS_OBJECT;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE;
-import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,22 +37,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.JsonUtils;
 import no.bibsys.db.RegistryManager;
@@ -83,20 +75,20 @@ public class DatabaseResource {
 
     @POST
     @Path("/")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_REQUEST_PARAMETERS, 
-            value = AWS_REQUEST_PARAMETERS_OBJECT, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-//    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
+    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
-    public SimpleResponse createRegistry(@HeaderParam("x-api-key") String apiKey, @RequestBody(
+    public SimpleResponse createRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey, @RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
@@ -121,16 +113,18 @@ public class DatabaseResource {
 
     @GET
     @Path("/")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    public SimpleResponse getRegistryList() throws JsonProcessingException {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
+    public SimpleResponse getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
         ObjectMapper mapper = JsonUtils.getObjectMapper();
@@ -139,18 +133,21 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getRegistryMetadata(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
@@ -168,18 +165,21 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse updateRegistryMetadata(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
@@ -199,18 +199,21 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse deleteRegistry(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
@@ -226,18 +229,21 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}/empty")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse emptyRegistry(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
@@ -252,18 +258,21 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/schema")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getRegistrySchema(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
@@ -279,18 +288,21 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}/schema")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse updateRegistrySchema(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to update",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -309,18 +321,21 @@ public class DatabaseResource {
 
     @POST
     @Path("/{registryName}/entity")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse createEntity(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to add to",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
@@ -340,16 +355,19 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/entity")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     public SimpleResponse entitiesSummary(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity summary from",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
@@ -363,18 +381,21 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/entity/{entityId}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse getEntity(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity from",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -400,18 +421,21 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}/entity/{entityId}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse deleteEntity(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete entity from",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -433,18 +457,21 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}/entity/{entityId}")
-    @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
             value = HttpMethod.POST),
-            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
-            value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public SimpleResponse updateEntity(
+    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry in which to update entity",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
