@@ -36,6 +36,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -95,7 +96,7 @@ public class DatabaseResource {
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
 //    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
-    public SimpleResponse createRegistry(@RequestBody(
+    public SimpleResponse createRegistry(@HeaderParam("x-api-key") String apiKey, @RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
