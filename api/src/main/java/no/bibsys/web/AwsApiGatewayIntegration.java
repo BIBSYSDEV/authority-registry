@@ -14,5 +14,5 @@ public class AwsApiGatewayIntegration {
   public static final String WHEN_NO_MATCH = "when_no_match";
   
   
-  public static final String REQUEST_PARAMETERS_OBJECT = "{\"integration.request.header.x-api-key\": \"method.request.header.x-api-key\"}";
+  public static final String REQUEST_PARAMETERS_OBJECT = "{\"integration.request.header.api-key\": \"method.request.header.api-key\"}";
 }
