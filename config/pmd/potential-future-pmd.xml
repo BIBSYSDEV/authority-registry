@@ -67,6 +67,7 @@
     <exclude name="AvoidCatchingGenericException"/>
     <exclude name="SignatureDeclareThrowsException"/>
     <exclude name="UseUtilityClass"/>
+    <exclude name="UseObjectForClearerAPI"/>
 
     <!-- This rule does not allow the Lambda Handler to cast  the ContainerInitializationException
         to a RuntimeException.
