@@ -39,7 +39,7 @@ function createEmptyRegistry(){
 					method: 'POST',
 					body: testSchema, 
 					headers: {
-						'x-api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey
 					}
 				})
 
@@ -52,7 +52,7 @@ function createEmptyRegistry(){
 						method: 'POST',
 						body: testSchema, 
 						headers: {
-							'x-api-key': apiAdminApiKey
+							'api-key': apiAdminApiKey
 						}
 					})
 				})
@@ -73,7 +73,7 @@ function createTestEntity(){
 					method: 'POST',
 					body: testData,
 					headers: {
-						'x-api-key': apiKey,
+						'api-key': apiKey,
 						'content-type': 'application/json'
 					}
 				}).then((response) => {

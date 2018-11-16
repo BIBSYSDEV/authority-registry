@@ -17,13 +17,13 @@ when('the registry admin user submits the API key with a request to create a new
 					url: createEntityUrl,
 					method: 'POST',
 					headers: {
-						'x-api-key': apiKey
+						'api-key': apiKey
 					},
 					body: testData
 				}).then((response) => {
 					// test return from create
 					cy.wrap(response.body).as('returnUri')
-				})
+				})	
 			})
 		})
 	})
