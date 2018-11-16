@@ -23,7 +23,7 @@ public class PingResource {
     @Path("/")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,

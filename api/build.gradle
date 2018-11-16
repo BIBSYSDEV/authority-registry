@@ -72,16 +72,3 @@ resolve {
     resourcePackages = ['no.bibsys.web']
     outputPath = "${buildDir}/openapi"
 }
-
-
-// this task is necessary because OpenAPI does not support nested @Extension annotations
-task fixAws(type: Copy) {
-    from("${buildDir}/openapi") {
-        include "openapi.yaml"
-    }
-    into("${buildDir}/openapi-aws-modified")
-    filter {
-       String line -> line.replaceAll('URI_PLACEHOLDER',
-                                      '\n          Fn::Sub: \"arn:aws:apigateway:\\${AWS::Region}:lambda:path/2015-03-31/functions/\\${LambdaFunction.Arn}/invocations\"')
-   	}
-}

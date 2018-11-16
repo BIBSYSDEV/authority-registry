@@ -1,6 +1,8 @@
 package no.bibsys.web;
 
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION;
+import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_REQUEST_PARAMETERS;
+import static no.bibsys.web.AwsExtensionHelper.AWS_REQUEST_PARAMETERS_OBJECT;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD;
 import static no.bibsys.web.AwsExtensionHelper.AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR;
@@ -82,14 +84,16 @@ public class DatabaseResource {
     @Path("/")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
+            @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_REQUEST_PARAMETERS, 
+            value = AWS_REQUEST_PARAMETERS_OBJECT, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
             value = HttpMethod.POST),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_TYPE,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_AWS_PROXY),})})
-    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
+//    @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
     public SimpleResponse createRegistry(@RequestBody(
             description = "Request object to create registry",
@@ -118,7 +122,7 @@ public class DatabaseResource {
     @Path("/")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -136,7 +140,7 @@ public class DatabaseResource {
     @Path("/{registryName}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -165,7 +169,7 @@ public class DatabaseResource {
     @Path("/{registryName}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -196,7 +200,7 @@ public class DatabaseResource {
     @Path("/{registryName}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -223,7 +227,7 @@ public class DatabaseResource {
     @Path("/{registryName}/empty")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -249,7 +253,7 @@ public class DatabaseResource {
     @Path("/{registryName}/schema")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -276,7 +280,7 @@ public class DatabaseResource {
     @Path("/{registryName}/schema")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -306,7 +310,7 @@ public class DatabaseResource {
     @Path("/{registryName}/entity")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -337,7 +341,7 @@ public class DatabaseResource {
     @Path("/{registryName}/entity")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -360,7 +364,7 @@ public class DatabaseResource {
     @Path("/{registryName}/entity/{entityId}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -397,7 +401,7 @@ public class DatabaseResource {
     @Path("/{registryName}/entity/{entityId}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
@@ -430,7 +434,7 @@ public class DatabaseResource {
     @Path("/{registryName}/entity/{entityId}")
     @Operation(extensions = {@Extension(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION, properties = {
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI,
-                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE),
+                    value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_URI_VALUE, parseValue=true),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_PASSTHROUGH_BEHAVIOR,
             value = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_WHEN_NO_MATCH),
             @ExtensionProperty(name = AWS_X_AMAZON_APIGATEWAY_INTEGRATION_HTTPMETHOD,
