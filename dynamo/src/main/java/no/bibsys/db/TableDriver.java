@@ -132,7 +132,7 @@ public final class TableDriver {
             TableUtils.deleteTableIfExists(client, deleteRequest);
             return true;
             } catch (Exception e) {
-                
+                System.out.println(String.format("Error deleting table: ", e.getMessage()));
             }
         }
         return false;
