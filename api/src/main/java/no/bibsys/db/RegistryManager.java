@@ -63,7 +63,7 @@ public class RegistryManager {
         }
         
         tableDriver.deleteTable(tableName);
-        itemDriver.deleteItem(getValidationSchemaTable(), tableName);
+//        itemDriver.deleteItem(getValidationSchemaTable(), tableName);
         return true;
     }
 
