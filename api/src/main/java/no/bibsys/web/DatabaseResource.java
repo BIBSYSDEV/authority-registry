@@ -217,7 +217,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws InterruptedException {
+                    throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
