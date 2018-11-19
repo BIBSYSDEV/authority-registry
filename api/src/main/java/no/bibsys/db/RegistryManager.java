@@ -56,14 +56,14 @@ public class RegistryManager {
         }
     }
     
-    public boolean deleteRegistry(String tableName) {
+    public boolean deleteRegistry(String tableName) throws Exception {
 
         if(tableDriver.tableSize(tableName) > 0) {
             return false;
         }
         
         tableDriver.deleteTable(tableName);
-//        itemDriver.deleteItem(getValidationSchemaTable(), tableName);
+        itemDriver.deleteItem(getValidationSchemaTable(), tableName);
         return true;
     }
 
