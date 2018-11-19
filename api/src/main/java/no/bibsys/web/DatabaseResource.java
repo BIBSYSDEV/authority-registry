@@ -227,7 +227,11 @@ public class DatabaseResource {
             return new SimpleResponse("Error deleting registry, registry must be empty", Status.FORBIDDEN);
         }
         
-        registryManager.deleteRegistry(registryName);
+        try {
+            registryManager.deleteRegistry(registryName);
+        } catch (Exception e) {
+            return new SimpleResponse(e.getMessage(), Status.BAD_REQUEST);
+        }
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }
 
