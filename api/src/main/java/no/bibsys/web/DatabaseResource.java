@@ -92,7 +92,7 @@ public class DatabaseResource {
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
-                            throws JsonProcessingException {
+                            throws Exception {
 
         SimpleResponse response = new SimpleResponse();
         if(request.getId() == null||request.getId().isEmpty()) {
@@ -124,7 +124,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
             value = AwsApiGatewayIntegration.AWS_PROXY),})})
-    public SimpleResponse getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws JsonProcessingException {
+    public SimpleResponse getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws Exception {
 
         List<String> registryList = registryManager.getRegistries();
         ObjectMapper mapper = JsonUtils.getObjectMapper();
@@ -151,7 +151,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-                    throws IOException {
+                    throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
@@ -186,7 +186,7 @@ public class DatabaseResource {
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
-                            throws InterruptedException, JsonProcessingException {
+                            throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
@@ -227,11 +227,8 @@ public class DatabaseResource {
             return new SimpleResponse("Error deleting registry, registry must be empty", Status.FORBIDDEN);
         }
         
-        try {
-            registryManager.deleteRegistry(registryName);
-        } catch (Exception e) {
-            return new SimpleResponse(e.getMessage(), Status.BAD_REQUEST);
-        }
+        registryManager.deleteRegistry(registryName);
+
         return new SimpleResponse(String.format("Registry %s has been deleted", registryName));
     }
 
@@ -254,7 +251,7 @@ public class DatabaseResource {
     		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
-                schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+                schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
@@ -284,7 +281,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-        throws IOException {
+        throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName), Status.NOT_FOUND);
@@ -316,7 +313,7 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
-    ) throws IOException {
+    ) throws Exception {
 
         if(!registryManager.registryExists(registryName)) {
             return new SimpleResponse(String.format(REGISTRY_DOES_NOT_EXIST, registryName),Status.NOT_FOUND);
