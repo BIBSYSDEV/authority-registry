@@ -18,6 +18,7 @@ import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
+import no.bibsys.web.exception.ExceptionExceptionMapper;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -44,6 +45,7 @@ public class JerseyConfig extends ResourceConfig {
         
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);
+        register(ExceptionExceptionMapper.class);
         
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
