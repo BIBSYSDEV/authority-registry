@@ -119,14 +119,13 @@ public class AuthenticationService {
 		
 		queryExpression.withKeyConditionExpression("Registry = :v_registry and Active = :v_active").withExpressionAttributeValues(map);
 		
-		PaginatedQueryList<ApiKey> apiKeys = mapper.query(ApiKey.class, queryExpression);
+		PaginatedQueryList<ApiKey> apiKeys = mapper.query(ApiKey.class, queryExpression, config);
 		
 		logger.info("Found {} API Keys",apiKeys.size());
 		
 		for (ApiKey apiKey : apiKeys) {
-		    logger.info("Deactivating API Key {}", apiKey);
-			apiKey.setActive(false);
-			saveApiKey(apiKey);
+		    logger.info("Deleting API Key {}", apiKey);
+			mapper.delete(apiKey, config);
 		}
 	}
     

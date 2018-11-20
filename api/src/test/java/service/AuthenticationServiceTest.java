@@ -66,7 +66,6 @@ public class AuthenticationServiceTest {
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
         Assert.assertEquals(Roles.API_ADMIN,apiKey.getRole());
-        Assert.assertTrue(apiKey.isActive());
     }
     
     @Test
@@ -77,7 +76,6 @@ public class AuthenticationServiceTest {
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
         Assert.assertEquals(Roles.REGISTRY_ADMIN, apiKey.getRole());
-        Assert.assertTrue(apiKey.isActive());
     }
     
     @Test
