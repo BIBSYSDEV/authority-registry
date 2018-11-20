@@ -52,6 +52,7 @@ Resources:
           - dynamodb:BatchWriteItem
           - dynamodb:PutItem
           - dynamodb:GetItem
+          - dynamodb:Scan
           - s3:*
           - apigateway:GET
           Resource: "*"
