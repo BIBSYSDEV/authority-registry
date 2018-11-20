@@ -53,6 +53,7 @@ Resources:
           - dynamodb:PutItem
           - dynamodb:GetItem
           - dynamodb:Scan
+          - dynamodb:DeleteItem
           - s3:*
           - apigateway:GET
           Resource: "*"
