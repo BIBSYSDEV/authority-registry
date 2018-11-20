@@ -1,4 +1,4 @@
-package service;
+package no.bibsys.service;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -87,6 +87,23 @@ public class AuthenticationServiceTest {
         apiKey.setKey(key);
         authenticationService.saveApiKey(apiKey);
         Assert.assertEquals(key, apiKey.getKey());
+    }
+    
+    @Test
+    public void deleteApiKeysForRegistryDeletesApiKey() throws Exception {
+        authenticationService.createApiKeyTable();
+
+        String registryName = "deleteTest";
+        ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
+        String apiKeyKey = authenticationService.saveApiKey(apiKey);
+        
+        ApiKey apiKeyFromDB = authenticationService.getApiKey(apiKeyKey);
+        Assert.assertTrue("API Key should exist", apiKeyFromDB.getRegistry().equals(registryName));
+        
+        authenticationService.deleteApiKeyForRegistry(registryName);
+        
+        apiKeyFromDB = authenticationService.getApiKey(apiKeyKey);
+        Assert.assertNull("API Key should be deleted", apiKeyFromDB);    
     }
 
 

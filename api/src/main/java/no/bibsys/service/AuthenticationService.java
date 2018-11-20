@@ -11,11 +11,15 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
@@ -108,15 +112,15 @@ public class AuthenticationService {
     }
 
 	public void deleteApiKeyForRegistry(String registryName) {
-		DynamoDBQueryExpression<ApiKey> queryExpression = new DynamoDBQueryExpression<>();
-		
-		Map<String, AttributeValue> map = new ConcurrentHashMap<String, AttributeValue>();
-        map.put(":v_registry", new AttributeValue().withS(registryName));
-        map.put(":v_active", new AttributeValue().withBOOL(Boolean.TRUE));
-		
-		queryExpression.withKeyConditionExpression("Registry = :v_registry and Active = :v_active").withExpressionAttributeValues(map);
-		
-		PaginatedQueryList<ApiKey> apiKeys = mapper.query(ApiKey.class, queryExpression, config);
+
+	    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+	    scanExpression
+	    .addFilterCondition("Registry", new Condition()
+	            .withComparisonOperator(ComparisonOperator.EQ)
+	            .withAttributeValueList(new AttributeValue()
+	                    .withS(registryName)));
+	    
+		PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
 		
 		logger.info("Found {} API Keys",apiKeys.size());
 		

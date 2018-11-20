@@ -37,6 +37,7 @@ public class ApiKey {
     public void setRole(String role) {
         this.role = role;
     }
+    
     @DynamoDBAttribute(attributeName = "Registry")
     public String getRegistry() {
         return registry;
