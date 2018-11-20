@@ -32,30 +32,32 @@ function createEmptyRegistry(){
 			// create new test registry metadata
 			cy.fixture('registryTestMetadata.json')
 			.then((testSchema) => {
-				testSchema.registryName = registryName;
+				testSchema.id = registryName;
 				let createUrl = '/registry';
 				cy.request({
 					url: createUrl,
 					method: 'POST',
 					body: testSchema, 
 					headers: {
-						'api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey,
+						 "content-type": "application/json"
 					}
 				})
 
-				// add schema to registry
-				cy.fixture('registryTestSchema.json')
-				.then((testSchema) => {
-					let addSchemaUrl = 'registry/' + registryName + '/schema';
-					cy.request({
-						url: addSchemaUrl,
-						method: 'POST',
-						body: testSchema, 
-						headers: {
-							'api-key': apiAdminApiKey
-						}
-					})
-				})
+//				// add schema to registry
+//				cy.get('@apiRegistryApiKey').then((registryAdminApiKey) => {
+//				cy.fixture('registryTestSchema.json')
+//				.then((testSchema) => {
+//					let addSchemaUrl = 'registry/' + registryName + '/schema';
+//					cy.request({
+//						url: addSchemaUrl,
+//						method: 'POST',
+//						body: testSchema, 
+//						headers: {
+//							'api-key': apiAdminApiKey
+//						}
+//					})
+//				})
 			})
 		})
 	})
@@ -64,7 +66,7 @@ function createEmptyRegistry(){
 function createTestEntity(){
 
 	cy.get('@registryName').then((registryName) => {
-		cy.get('@apiAdminApiKey').then((apiKey) => {
+		cy.get('@apiRegistryApiKey').then((apiKey) => {
 			let entityAddUrl = '/registry/' + registryName + '/entity';
 			cy.fixture('entityTestData.json') // add testData to registry
 			.then((testData) => {

@@ -1,3 +1,7 @@
 {
-	"registryName": "test"
+	"id": "test",
+	"schema": "test",
+	"metadata": {
+	
+	}
 }
