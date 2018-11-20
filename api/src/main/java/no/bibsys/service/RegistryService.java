@@ -42,7 +42,7 @@ public class RegistryService {
 		boolean registryDeleted = registryManager.deleteRegistry(registryName);
 		
 		if (registryDeleted) {
-			authenticationService.deactivateApiKey(registryName);
+			authenticationService.deleteApiKeyForRegistry(registryName);
 		}
 	}
 	

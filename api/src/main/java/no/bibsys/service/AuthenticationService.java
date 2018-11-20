@@ -85,9 +85,6 @@ public class AuthenticationService {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
-            ApiKey registryAdminApiKey = ApiKey.createRegistryAdminApiKey(null);
-            apiAdminApiKey.setKey("testRegistryAdminApiKey");
-            saveApiKey(registryAdminApiKey);
         } else {
             saveApiKey(ApiKey.createApiAdminApiKey());
         }
@@ -110,7 +107,7 @@ public class AuthenticationService {
         return apiKey.getKey();
     }
 
-	public void deactivateApiKey(String registryName) {
+	public void deleteApiKeyForRegistry(String registryName) {
 		DynamoDBQueryExpression<ApiKey> queryExpression = new DynamoDBQueryExpression<>();
 		
 		Map<String, AttributeValue> map = new ConcurrentHashMap<String, AttributeValue>();
