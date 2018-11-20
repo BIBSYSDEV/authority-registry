@@ -18,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -90,8 +91,8 @@ public class DatabaseResource {
     public SimpleResponse createRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey, @RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
-                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
-                            throws Exception {
+                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request) throws JsonProcessingException
+                            {
 
         SimpleResponse response = new SimpleResponse();
         if(request.getId() == null||request.getId().isEmpty()) {

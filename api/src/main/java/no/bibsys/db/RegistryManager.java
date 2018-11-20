@@ -61,9 +61,10 @@ public class RegistryManager {
         if(tableDriver.tableSize(tableName) > 0) {
             return false;
         }
-        
-        tableDriver.deleteTable(tableName);
+
+//        tableDriver.deleteTable(tableName);
         itemDriver.deleteItem(getValidationSchemaTable(), tableName);
+        
         return true;
     }
 
