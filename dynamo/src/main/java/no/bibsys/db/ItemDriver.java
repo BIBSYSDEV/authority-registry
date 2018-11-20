@@ -12,6 +12,9 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import no.bibsys.db.exceptions.EntityNotFoundException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

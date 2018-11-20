@@ -20,6 +20,8 @@ import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
+import no.bibsys.db.exceptions.EntityNotFoundException;
+import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.IdOnlyEntry;
 import no.bibsys.db.structures.TableDefinitions;
 
@@ -73,7 +75,6 @@ public final class TableDriver {
         }
         return exists;
     }
-
 
     /**
      * Return number of items in table

@@ -1,7 +1,9 @@
 package no.bibsys.db.structures;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.common.base.Preconditions;
 
 @JsonInclude(Include.NON_NULL)
 public class EntityRegistryTemplate {
@@ -48,4 +50,10 @@ public class EntityRegistryTemplate {
     public String toString() {
         return "EntityRegistryTemplate [id=" + id + ", metadata=" + metadata + "]";
     }
+
+    @JsonIgnore
+	public void validate() {
+		Preconditions.checkArgument(id != null && !id.isEmpty());
+		
+	}
 }

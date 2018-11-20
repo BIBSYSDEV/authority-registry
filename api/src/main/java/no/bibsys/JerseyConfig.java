@@ -14,10 +14,16 @@ import no.bibsys.db.ItemDriver;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
 import no.bibsys.service.AuthenticationService;
+import no.bibsys.service.RegistryService;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
+import no.bibsys.web.exception.BaseExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
+import no.bibsys.web.exception.EntityNotFoundExceptionMapper;
+import no.bibsys.web.exception.ForbiddenExceptionMapper;
+import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
+import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -34,19 +40,31 @@ public class JerseyConfig extends ResourceConfig {
         EntityManager entityManager = new EntityManager(itemDriver);
         RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver);
         
-        register(new DatabaseResource(registryManager, entityManager));
+        AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
+        RegistryService registryService = new RegistryService(authenticationService, registryManager);
+        
+        register(new DatabaseResource(registryService, registryManager, entityManager));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
         
-        register(new AuthenticationFilter(new AuthenticationService(client, environmentReader)));
+        register(new AuthenticationFilter(authenticationService));
         
-        register(BadRequestExceptionMapper.class);
-        register(ConditionalCheckFailedExceptionMapper.class);
+        registerExceptionMappers();
         
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
     }
+
+	private void registerExceptionMappers() {
+		register(BaseExceptionMapper.class);
+		register(ForbiddenExceptionMapper.class);
+        register(BadRequestExceptionMapper.class);
+        register(ConditionalCheckFailedExceptionMapper.class);
+        register(RegistryAlreadyExistsExceptionMapper.class);
+        register(RegistryNotFoundExceptionMapper.class);
+        register(EntityNotFoundExceptionMapper.class);
+	}
 
 }

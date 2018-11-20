@@ -12,6 +12,8 @@ public class MockEnvironmentReader extends EnvironmentReader {
     public Optional<String> getEnvForName(String name) {
         if (EnvironmentReader.API_KEY_TABLE_NAME.equals(name)) {
             return Optional.ofNullable(API_KEYS_FOR_UNIT_TESTS);
+        } else if (EnvironmentReader.STAGE_NAME.equals(name)) {
+        	return Optional.ofNullable("test");
         }
         
         return Optional.empty();
