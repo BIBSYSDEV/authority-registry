@@ -91,7 +91,7 @@ public class DatabaseResource {
     public SimpleResponse createRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey, @RequestBody(
             description = "Request object to create registry",
             content = @Content(schema = @Schema(
-                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request) throws JsonProcessingException
+                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request) throws Exception
                             {
 
         SimpleResponse response = new SimpleResponse();
