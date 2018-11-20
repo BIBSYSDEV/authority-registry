@@ -205,7 +205,7 @@ public class DatabaseResource {
 
     	registryManager.validateRegistryExists(registryName);
 
-        registryManager.deleteRegistry(registryName);
+        registryService.deleteRegistry(registryName);
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
     }
 
