@@ -16,7 +16,7 @@
         "dynamodb:UpdateItem",
         "dynamodb:DeleteItem",
         "dynamodb:Scan",
-        "dynamodb:ListTables",
+        "dynamodb:ListTables", 
         "s3:*",
         "apigateway:GET"
       ],
