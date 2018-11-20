@@ -2,15 +2,20 @@ package no.bibsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
@@ -80,7 +85,7 @@ public class AuthenticationService {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
-            ApiKey registryAdminApiKey = ApiKey.createRegistryAdminApiKey();
+            ApiKey registryAdminApiKey = ApiKey.createRegistryAdminApiKey(null);
             apiAdminApiKey.setKey("testRegistryAdminApiKey");
             saveApiKey(registryAdminApiKey);
         } else {
@@ -104,5 +109,25 @@ public class AuthenticationService {
         mapper.save(apiKey, config);
         return apiKey.getKey();
     }
+
+	public void deactivateApiKey(String registryName) {
+		DynamoDBQueryExpression<ApiKey> queryExpression = new DynamoDBQueryExpression<>();
+		
+		Map<String, AttributeValue> map = new ConcurrentHashMap<String, AttributeValue>();
+        map.put(":v_registry", new AttributeValue().withS(registryName));
+        map.put(":v_active", new AttributeValue().withBOOL(Boolean.TRUE));
+		
+		queryExpression.withKeyConditionExpression("Registry = :v_registry and Active = :v_active").withExpressionAttributeValues(map);
+		
+		PaginatedQueryList<ApiKey> apiKeys = mapper.query(ApiKey.class, queryExpression);
+		
+		logger.info("Found {} API Keys",apiKeys.size());
+		
+		for (ApiKey apiKey : apiKeys) {
+		    logger.info("Deactivating API Key {}", apiKey);
+			apiKey.setActive(false);
+			saveApiKey(apiKey);
+		}
+	}
     
 }

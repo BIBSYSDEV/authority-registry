@@ -65,18 +65,18 @@ public class AuthenticationServiceTest {
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
-        Assert.assertTrue(apiKey.getRoles().contains(Roles.API_ADMIN));
+        Assert.assertEquals(Roles.API_ADMIN,apiKey.getRole());
         Assert.assertTrue(apiKey.isActive());
     }
     
     @Test
     public void createRegistryAdminApiKey() throws Exception {
         authenticationService.createApiKeyTable();
-        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey());
+        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
-        Assert.assertTrue(apiKey.getRoles().contains(Roles.REGISTRY_ADMIN));
+        Assert.assertEquals(Roles.REGISTRY_ADMIN, apiKey.getRole());
         Assert.assertTrue(apiKey.isActive());
     }
     

@@ -38,4 +38,12 @@ public class RegistryService {
 		}	
 	}
 	
+	public void deleteRegistry(String registryName) {
+		boolean registryDeleted = registryManager.deleteRegistry(registryName);
+		
+		if (registryDeleted) {
+			authenticationService.deactivateApiKey(registryName);
+		}
+	}
+	
 }

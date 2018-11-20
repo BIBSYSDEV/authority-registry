@@ -3,7 +3,6 @@ package no.bibsys.web;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,10 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -121,7 +118,7 @@ public class DatabaseResource {
 
         List<String> registryList = registryManager.getRegistries();
         return Response.ok(mapper.writeValueAsString(registryList)).build();
-    }    private static final String ENTITY_DOES_NOT_EXIST = "Entity with id %s does not exist in registry %s";
+    }
 
 
     @GET

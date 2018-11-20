@@ -60,7 +60,7 @@ public class DatabaseResourceTest extends JerseyTest {
         
         
         apiAdminKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());    
-        registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey());
+        registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
         
         return config;
     }
