@@ -67,5 +67,14 @@ public class ApiKey {
         apiKey.setRegistry(registry);
         return apiKey;
     }
+
+    @Override
+    @DynamoDBIgnore
+    public String toString() {
+        return "ApiKey [key=" + key + ", role=" + role + ", registry=" + registry + ", modified="
+                + modified + "]";
+    }
+    
+    
     
 }
