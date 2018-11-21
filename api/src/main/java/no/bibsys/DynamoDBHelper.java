@@ -7,9 +7,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 public final class DynamoDBHelper {
 
-    private DynamoDBHelper() {
-        // TODO Auto-generated constructor stub
-    }
+    private DynamoDBHelper() {}
     
     public static AmazonDynamoDB getClient() {
         return AmazonDynamoDBClientBuilder.standard().build();

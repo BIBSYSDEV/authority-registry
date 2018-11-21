@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -23,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class ItemDriver {
 
     private transient final DynamoDB dynamoDb;
-
+    private transient final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
 
     private ItemDriver(final DynamoDB dynamoDb) {
         this.dynamoDb = dynamoDb;
@@ -52,9 +54,11 @@ public final class ItemDriver {
 
         try {
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+            @SuppressWarnings("unchecked")
             Map<String, Object> bodyMap = objectMapper.readValue(itemJson, Map.class);
             itemMap.put("body", bodyMap);
-        } catch (IllegalArgumentException | IOException e1) {
+        } catch (IllegalArgumentException | IOException e) {
+            logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
             return false;
         } 
 
@@ -72,9 +76,12 @@ public final class ItemDriver {
                 table.putItem(putItemSpec);
                 success = true;
             } catch (ConditionalCheckFailedException | ResourceNotFoundException e) {
+                logger.error("Error adding item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
                 success = false;
             }
         }
+        
+        logger.info("Item added successfully, tableId={}, itemId={}", tableName, itemId);
 
         return success;
     }
@@ -89,6 +96,7 @@ public final class ItemDriver {
     public Optional<String> updateItem(String tableName, String itemId, String itemJson) {
         
         if(itemId.isEmpty()) {
+            logger.error("ItemId is empty, tableId={}", tableName);
             return Optional.empty();
         }
 
@@ -98,9 +106,11 @@ public final class ItemDriver {
 
             try {
                 ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+                @SuppressWarnings("unchecked")
                 Map<String, Object> bodyMap = objectMapper.convertValue(objectMapper.readTree(itemJson), Map.class);
                 itemMap.put("body", bodyMap);
-            } catch (IllegalArgumentException | IOException e1) {
+            } catch (IllegalArgumentException | IOException e) {
+                logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
                 return Optional.empty();
             }
 
@@ -119,37 +129,41 @@ public final class ItemDriver {
                     .withAttributeUpdate(updateList)
                     .withReturnValues(ReturnValue.UPDATED_OLD);
             Item returnItem = table.updateItem(putItemSpec).getItem();
+            logger.error("Item updated successfully, tableId={}, itemId={}}", tableName, itemId);
             return Optional.ofNullable(returnItem.toJSON());
         } else {
+            logger.error("Can not update non-existing item, tableId={}, itemId={}", tableName, itemId);
             return Optional.empty();
         }
     }
 
 
-    public Optional<String> getItem(String tableName, String id) {
+    public Optional<String> getItem(String tableName, String itemId) {
         final Table table = dynamoDb.getTable(tableName);
         try {
-            final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+            final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", itemId));
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
+            logger.error("Item read successfully, tableId={}, itemId={}}", tableName, itemId);
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         }catch(ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {
+            logger.error("Error getting item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
             return Optional.empty();
         }
     }
 
-    public boolean deleteItem(String tableName, String id)  {
+    public boolean deleteItem(String tableName, String itemId)  {
 
         Table table = dynamoDb.getTable(tableName);
-        if(itemExists(tableName, id)) {
-            table.deleteItem(new PrimaryKey("id", id));
+        if(itemExists(tableName, itemId)) {
+            table.deleteItem(new PrimaryKey("id", itemId));
+            logger.error("Item deleted successfully, tableId={}, itemId={}}", tableName, itemId);
             return true;
         }
-
+        logger.error("Can not delete on-existing item, tableId={}, itemId={}, reason={}", tableName, itemId);
         return false;
     }
 
     public boolean itemExists(String tableName, String id) {
-
         return getItem(tableName, id).isPresent();
     }
 }

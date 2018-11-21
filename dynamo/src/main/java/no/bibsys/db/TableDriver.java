@@ -91,6 +91,7 @@ public final class TableDriver {
             result = client.scan(scanRequest);
             itemCount += result.getScannedCount();
         } while(result.getLastEvaluatedKey() != null);
+        logger.info("Table has {} items, tableId={}", itemCount, tableName);
         return itemCount;
     }
 
@@ -100,7 +101,7 @@ public final class TableDriver {
             return false;
         }
         boolean emptyResult = deleteNoCheckTable(tableName);
-        return emptyResult&&createTable(tableName);
+        return emptyResult && createTable(tableName);
     }
 
     public boolean deleteTable(final String tableName) {
@@ -124,8 +125,10 @@ public final class TableDriver {
         if (tableExists(tableName)) {
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
+            logger.info("Table deleted successfully, tableId={}", tableName);
             return true;
         }
+        logger.info("Can not delete non-existing table, tableId={}", tableName);
         return false;
 
     }
@@ -145,8 +148,10 @@ public final class TableDriver {
                             .withWriteCapacityUnits(1L));
 
             TableUtils.createTableIfNotExists(client, request);
+            logger.info("Table created, tableId={}", tableName);
             return true;
         }
+        logger.info("Tried to create table but it already exists, tableId={}", tableName);
         return false;
     }
 
@@ -159,7 +164,7 @@ public final class TableDriver {
     public List<String> listTables(){
         List<String> tableList = new ArrayList<>();
         dynamoDb.listTables().forEach(table -> tableList.add(table.getTableName()));
-
+        logger.info("Listing {} tables", tableList.size());
         return tableList;
     }
 }

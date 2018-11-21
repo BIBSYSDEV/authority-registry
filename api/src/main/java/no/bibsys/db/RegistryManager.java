@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 
@@ -15,7 +16,8 @@ public class RegistryManager {
     private final transient TableDriver tableDriver;
     private final transient ItemDriver itemDriver;
     private final transient ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-
+    private final transient Logger logger = LoggerFactory.getLogger(RegistryManager.class);
+    
     public RegistryManager(TableDriver tableManager, ItemDriver itemManager) {
         this.tableDriver = tableManager;
         this.itemDriver = itemManager;
@@ -29,15 +31,22 @@ public class RegistryManager {
 
     public boolean createRegistryFromJson(String registryName, String json) {
 
-        if(!tableDriver.tableExists(getValidationSchemaTable())) {
-            tableDriver.createTable(getValidationSchemaTable());
+        String schemaTable = getValidationSchemaTable();
+        
+        if(!tableDriver.tableExists(schemaTable)) {
+            logger.info("Registry does not exist, creating new one, registryId={}", registryName);
+            tableDriver.createTable(schemaTable);
         }
 
-        if(itemDriver.itemExists(getValidationSchemaTable(), registryName)) {
+        if(itemDriver.itemExists(schemaTable, registryName)) {
+            logger.info("Registry already exists in schema table, registryId={}, schemeTable={}", registryName, schemaTable);
             return false;
         }
         
-        itemDriver.addItem(getValidationSchemaTable(), registryName, json);
+        itemDriver.addItem(schemaTable, registryName, json);
+        
+        logger.info("Registry created successfully, registryId={}", registryName);
+        
         return tableDriver.createTable(registryName);
     }
 
@@ -59,6 +68,7 @@ public class RegistryManager {
     public boolean deleteRegistry(String tableName) {
 
         if(tableDriver.tableSize(tableName) > 0) {
+            logger.warn("Can not delete registry that is not empty, registryId={}", tableName);
             return false;
         }
         
