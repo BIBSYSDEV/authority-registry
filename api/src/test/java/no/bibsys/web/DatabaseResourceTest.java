@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,12 +28,13 @@ import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.SimpleResponse;
+import no.bibsys.web.model.CreatedRegistry;
+import no.bibsys.web.model.InsertEntity;
 import no.bibsys.web.security.ApiKeyConstants;
-import no.bibsys.web.security.Roles;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -56,9 +58,9 @@ public class DatabaseResourceTest extends JerseyTest {
         AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
         authenticationService.createApiKeyTable();
         
-        apiAdminKey = authenticationService.createApiKey(Roles.API_ADMIN);
-        registryAdminKey = authenticationService.createApiKey(Roles.REGISTRY_ADMIN);    
         
+        apiAdminKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());    
+        registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
         
         return config;
     }
@@ -79,13 +81,15 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
-        String ragistryName = UUID.randomUUID().toString();
-        SimpleResponse expected = new SimpleResponse(String.format("A registry with name %s has been created", ragistryName));
+        String registryName = UUID.randomUUID().toString();
+        CreatedRegistry expected = new CreatedRegistry(String.format("A registry with name=%s has been created", registryName));
 
-        SimpleResponse response = createRegistry(ragistryName).readEntity(SimpleResponse.class);
+        Response response = createRegistry(registryName);
+        CreatedRegistry entity = response.readEntity(CreatedRegistry.class);
 
-        assertThat(response.getStatusCode(), is(equalTo(Status.OK.getStatusCode())));
-        assertThat(response, is(equalTo(expected)));
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        assertThat(entity.getMessage(), is(equalTo(expected.getMessage())));
+        Assert.assertNotNull(entity.getApiKey());
     }
 
 
@@ -93,8 +97,8 @@ public class DatabaseResourceTest extends JerseyTest {
     public void createRegistry_RegistryAlreadyExists_ReturnsStatusCONFLICT() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
-        SimpleResponse response = createRegistry(registryName).readEntity(SimpleResponse.class);
-        assertThat(response.getStatusCode(), is(equalTo(Status.CONFLICT.getStatusCode())));
+        Response response = createRegistry(registryName);
+        assertThat(response.getStatus(), is(equalTo(Status.CONFLICT.getStatusCode())));
     }
 
     @Test
@@ -103,13 +107,13 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName);
 
         Entry entry = sampleData.sampleEntry();
-        SimpleResponse response = insertEntryRequest(registryName, entry.jsonString()).readEntity(SimpleResponse.class);
+        Response response = insertEntryRequest(registryName, entry.jsonString());
+        InsertEntity entity = response.readEntity(InsertEntity.class);
 
-        assertThat(response.getStatus(), is(equalTo(Status.OK)));
-        String entityId = response.getMessage().substring(response.getMessage().lastIndexOf("/") + 1);
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        SimpleResponse readResponse = readEntity(registryName, entityId).readEntity(SimpleResponse.class);
-        assertThat(readResponse.getStatus(), is(equalTo(Status.OK)));
+        Response readResponse = readEntity(registryName, entity.getEntityId());
+        assertThat(readResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
     @Test
@@ -123,10 +127,10 @@ public class DatabaseResourceTest extends JerseyTest {
                 .delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-        SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        SimpleResponse expected =
-                new SimpleResponse(String.format("Registry %s has been deleted", registryName));
-        assertThat(actual, is(equalTo(expected)));
+        String entity = response.readEntity(String.class);
+        String expected =
+                String.format("Registry %s has been deleted", registryName);
+        assertThat(entity, is(equalTo(expected)));
 
     }
 
@@ -140,11 +144,11 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
         
-        SimpleResponse readResponse = response.readEntity(SimpleResponse.class);
-        assertThat(readResponse.getStatus(), is(equalTo(Status.NOT_FOUND)));
+        String entity = response.readEntity(String.class);
+        assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
 
-        SimpleResponse expected = new SimpleResponse(String.format("Registry with name %s does not exist", registryName), Status.NOT_FOUND);
-        assertThat(readResponse, is(equalTo(expected)));
+        String expected = String.format("Registry with name %s does not exist", registryName);
+        assertThat(entity, is(equalTo(expected)));
 
     }
 
@@ -162,8 +166,7 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
 
-        SimpleResponse actual = response.readEntity(SimpleResponse.class);
-        assertThat(actual.getStatus(), is(equalTo(Status.OK)));
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
     @Test
@@ -196,10 +199,9 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .get();
 
-        SimpleResponse actual = response.readEntity(SimpleResponse.class);
+        String entity = response.readEntity(String.class);
 
-        SimpleResponse expected = new SimpleResponse(templateJson, Status.OK);
-        assertThat(actual, is(equalTo(expected)));
+        assertThat(entity, is(equalTo(templateJson)));
     }
 
     @Test
@@ -211,10 +213,9 @@ public class DatabaseResourceTest extends JerseyTest {
         Entry entry = sampleData.sampleEntry();
         Response response = insertEntryRequest(registryName, entry.jsonString());
 
-        String entityPath = response.readEntity(SimpleResponse.class).getMessage();
-        String entityId = entityPath.substring(entityPath.lastIndexOf("/") + 1);
+        InsertEntity entity = response.readEntity(InsertEntity.class);
 
-        Response readEntityResponse = readEntity(registryName, entityId);
+        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
     }
@@ -232,9 +233,9 @@ public class DatabaseResourceTest extends JerseyTest {
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        SimpleResponse actual = readSchema(registryName).readEntity(SimpleResponse.class);
-        SimpleResponse expected = new SimpleResponse(schemaAsJson);
-        assertThat(actual, is(equalTo(expected)));
+        Response response = readSchema(registryName);
+        String entity = response.readEntity(String.class);
+        assertThat(entity, is(equalTo(schemaAsJson)));
     }
 
     @Test
@@ -246,25 +247,25 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Entry entry = sampleData.sampleEntry();
         Response writeResponse = insertEntryRequest(registryName, entry.jsonString());
-        SimpleResponse simpleResponse = writeResponse.readEntity(SimpleResponse.class);
-        String path = simpleResponse.getMessage();
-        String generatedId = path.substring(path.lastIndexOf("/") + 1);
+        InsertEntity entity = writeResponse.readEntity(InsertEntity.class);
+
 
         SampleData updatedSampleData = new SampleData();
 
         Entry updatedEntry = updatedSampleData.sampleEntry();
         updatedEntry.root.remove("label");
         String updatedLabel = "An updated label";
-        updatedEntry.root.put("id", generatedId);
+        updatedEntry.root.put("id", entity.getEntityId());
         updatedEntry.root.put("label", updatedLabel);
 
         String updatedJson = updatedEntry.jsonString();
-        Response response = updateEntityRequest(registryName, generatedId, updatedJson);
+        Response response = updateEntityRequest(registryName, entity.getEntityId(), updatedJson);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readEntityResponse = readEntity(registryName, generatedId);
+        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
+        String readEntity = readEntityResponse.readEntity(String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        String actual = objectMapper.readTree(readEntityResponse.readEntity(SimpleResponse.class).getMessage()).get("label").asText();
+        String actual = objectMapper.readTree(readEntity).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }

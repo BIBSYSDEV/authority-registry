@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
+import no.bibsys.db.exceptions.EntityNotFoundException;
+
 public class EntityManager {
 
     private final transient ItemDriver itemManager;
@@ -45,5 +47,11 @@ public class EntityManager {
     private String createEntityId() {
         String entitiyId = UUID.randomUUID().toString();
         return entitiyId;
+    }
+    
+    public void validateItemExists(String registryName, String entityId) {
+    	if (!entityExists(registryName, entityId)) {
+    		throw new EntityNotFoundException(registryName, entityId);
+    	}
     }
 }

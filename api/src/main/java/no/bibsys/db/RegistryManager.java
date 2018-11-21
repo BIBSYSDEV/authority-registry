@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 
 public class RegistryManager {
@@ -41,6 +43,12 @@ public class RegistryManager {
 
     public boolean registryExists(String tableName) {
         return tableDriver.tableExists(tableName);
+    }
+    
+    public void validateRegistryExists(String tableName) {
+    	if (!registryExists(tableName)) {
+    		throw new RegistryNotFoundException(tableName);
+    	}
     }
 
     public void emptyRegistry(String tableName) {
