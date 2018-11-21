@@ -3,7 +3,6 @@ package no.bibsys.web;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -70,7 +69,7 @@ public class DatabaseResource {
     private transient final ObjectMapper mapper = JsonUtils.getObjectMapper();
     
     public DatabaseResource(RegistryService registryService, RegistryManager registryManager, EntityManager entityManager) {
-    	this.registryService = registryService;
+        this.registryService = registryService;
         this.entityManager = entityManager;
         this.registryManager = registryManager;
     }
@@ -96,9 +95,9 @@ public class DatabaseResource {
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws JsonProcessingException {
 
-    	request.validate();
-    	
-		CreatedRegistry createdRegistry = registryService.createRegistry(request);
+        request.validate();
+        
+        CreatedRegistry createdRegistry = registryService.createRegistry(request);
         return Response.ok(createdRegistry).build();
     }
 
@@ -115,7 +114,7 @@ public class DatabaseResource {
             value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
             value = AwsApiGatewayIntegration.AWS_PROXY),})})
-    public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws Exception {
+    public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
         return Response.ok(mapper.writeValueAsString(registryList)).build();
@@ -138,14 +137,14 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response getRegistryMetadata(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws IOException {
 
-    	registryManager.validateRegistryExists(registryName);
-    	
+        registryManager.validateRegistryExists(registryName);
+        
         EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
         return Response.ok(mapper.writeValueAsString(metadata)).build();
     }
@@ -166,7 +165,7 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateRegistryMetadata(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of new registry",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
@@ -175,8 +174,8 @@ public class DatabaseResource {
                     implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
                             throws InterruptedException, JsonProcessingException {
 
-    	registryManager.validateRegistryExists(registryName);
-    	
+        registryManager.validateRegistryExists(registryName);
+        
         registryManager.updateRegistryMetadata(request);
         return Response.accepted(String.format("Registry %s has been updated", request.getId())).build();
     }
@@ -198,13 +197,13 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response deleteRegistry(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
                     throws InterruptedException {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         registryService.deleteRegistry(registryName);
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
@@ -226,12 +225,12 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response emptyRegistry(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         registryManager.emptyRegistry(registryName);
         return Response.ok(String.format("Registry %s has been emptied", registryName)).build();
@@ -253,13 +252,13 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response getRegistrySchema(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get schema",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
         throws IOException {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         Optional<String> schemaAsJson = registryManager.getSchemaAsJson(registryName);
         return Response.ok(schemaAsJson.get()).build();
@@ -281,7 +280,7 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateRegistrySchema(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to update",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -289,7 +288,7 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(type = STRING))) String validationSchema
     ) throws IOException {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         registryManager.setSchemaJson(registryName, validationSchema);
         return Response.ok(String.format("/registry/%s/schema", registryName)).build();
@@ -312,7 +311,7 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response createEntity(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to add to",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
@@ -320,7 +319,7 @@ public class DatabaseResource {
             content = @Content(schema = @Schema(type = STRING))) String entity)
                     throws IOException {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         Optional<String> entityId = entityManager.addEntity(registryName, entity);
 
@@ -341,12 +340,12 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
             value = AwsApiGatewayIntegration.AWS_PROXY),})})
     public Response entitiesSummary(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity summary from",
                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
-    	registryManager.validateRegistryExists(registryName);
+        registryManager.validateRegistryExists(registryName);
 
         return Response.status(Status.NOT_IMPLEMENTED).entity("Not implemented").build();
     }
@@ -367,7 +366,7 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response getEntity(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to get entity from",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -375,9 +374,9 @@ public class DatabaseResource {
             description = "Id of entity to get",
                 schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
 
-    	registryManager.validateRegistryExists(registryName);
-    	entityManager.validateItemExists(registryName, entityId);
-    	
+        registryManager.validateRegistryExists(registryName);
+        entityManager.validateItemExists(registryName, entityId);
+        
         Optional<String> entity = entityManager.getEntity(registryName, entityId);
         return Response.ok(entity.get()).build();
     }
@@ -398,16 +397,16 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
     public Response deleteEntity(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry to delete entity from",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
             description = "Id of entity to delete",
                 schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
-    	
-    	registryManager.validateRegistryExists(registryName);
-    	entityManager.validateItemExists(registryName, entityId);
+        
+        registryManager.validateRegistryExists(registryName);
+        entityManager.validateItemExists(registryName, entityId);
 
         entityManager.deleteEntity(registryName, entityId);
 
@@ -430,7 +429,7 @@ public class DatabaseResource {
     @SecurityRequirement(name=ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateEntity(
-    		@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = "Name of registry in which to update entity",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName, 
@@ -440,8 +439,8 @@ public class DatabaseResource {
             @RequestBody(description = "Entity to update",
                 content = @Content(schema = @Schema(type = STRING))) String entity) {
 
-    	registryManager.validateRegistryExists(registryName);
-    	entityManager.validateItemExists(registryName, entityId);
+        registryManager.validateRegistryExists(registryName);
+        entityManager.validateItemExists(registryName, entityId);
 
         entityManager.updateEntity(registryName, entityId, entity);
 
