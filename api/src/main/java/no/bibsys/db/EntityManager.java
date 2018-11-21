@@ -10,7 +10,7 @@ import no.bibsys.db.exceptions.EntityNotFoundException;
 public class EntityManager {
 
     private final transient ItemDriver itemManager;
-    private final transient Logger logger = LoggerFactory.getLogger(EntityManager.class);
+    private final static Logger logger = LoggerFactory.getLogger(EntityManager.class);
     
     public EntityManager(ItemDriver itemManager) {
         this.itemManager = itemManager;
@@ -21,11 +21,11 @@ public class EntityManager {
         String entityId = createEntityId();
         boolean addItemSuccess = itemManager.addItem(registryName, entityId, json);
         if(!addItemSuccess) {
-            logger.info("Entity not created, entityId={}", entityId);
+            logger.info("Entity not created, registryId={}, entityId={}", registryName, entityId);
             return Optional.empty();
         }
 
-        logger.info("Entity created successfully, entityId={}");
+        logger.info("Entity created successfully, registryId={}, entityId={}", registryName, entityId);
         return Optional.ofNullable(entityId);
 
     }

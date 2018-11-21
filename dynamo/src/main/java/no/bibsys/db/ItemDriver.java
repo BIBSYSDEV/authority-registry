@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class ItemDriver {
 
-    private transient final DynamoDB dynamoDb;
-    private transient final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
+    private final transient DynamoDB dynamoDb;
+    private final static Logger logger = LoggerFactory.getLogger(ItemDriver.class);
 
     private ItemDriver(final DynamoDB dynamoDb) {
         this.dynamoDb = dynamoDb;
@@ -159,7 +159,7 @@ public final class ItemDriver {
             logger.error("Item deleted successfully, tableId={}, itemId={}}", tableName, itemId);
             return true;
         }
-        logger.error("Can not delete on-existing item, tableId={}, itemId={}, reason={}", tableName, itemId);
+        logger.error("Can not delete on-existing item, tableId={}, itemId={}", tableName, itemId);
         return false;
     }
 

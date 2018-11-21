@@ -22,7 +22,7 @@ import no.bibsys.db.structures.TableDefinitions;
 
 public final class TableDriver {
 
-    private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    private final static Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private transient AmazonDynamoDB client;
     private transient DynamoDB dynamoDb;
 

@@ -16,7 +16,7 @@ public class RegistryManager {
     private final transient TableDriver tableDriver;
     private final transient ItemDriver itemDriver;
     private final transient ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-    private final transient Logger logger = LoggerFactory.getLogger(RegistryManager.class);
+    private final static Logger logger = LoggerFactory.getLogger(RegistryManager.class);
     
     public RegistryManager(TableDriver tableManager, ItemDriver itemManager) {
         this.tableDriver = tableManager;
