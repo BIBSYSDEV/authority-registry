@@ -46,9 +46,9 @@ public class RegistryManager {
     }
     
     public void validateRegistryExists(String tableName) {
-    	if (!registryExists(tableName)) {
-    		throw new RegistryNotFoundException(tableName);
-    	}
+        if (!registryExists(tableName)) {
+            throw new RegistryNotFoundException(tableName);
+        }
     }
 
     public void emptyRegistry(String tableName) {
@@ -56,23 +56,14 @@ public class RegistryManager {
         tableDriver.createTable(tableName);
     }
 
-    public long registrySize(String registryName) {
-        if(registryExists(registryName)) {
-            return tableDriver.tableSize(registryName);
-        }else {
-            return -1;
-        }
-    }
-    
-    public boolean deleteRegistry(String tableName) throws Exception {
+    public boolean deleteRegistry(String tableName) {
 
         if(tableDriver.tableSize(tableName) > 0) {
             return false;
         }
-
+        
         tableDriver.deleteTable(tableName);
         itemDriver.deleteItem(getValidationSchemaTable(), tableName);
-        
         return true;
     }
 
