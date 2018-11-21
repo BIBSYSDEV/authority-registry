@@ -48,13 +48,12 @@ Resources:
           - dynamodb:CreateTable
           - dynamodb:DeleteTable
           - dynamodb:DescribeTable
-          - dynamodb:ListTables
           - dynamodb:BatchGetItem
           - dynamodb:BatchWriteItem
           - dynamodb:PutItem
           - dynamodb:GetItem
-          - dynamodb:DeleteItem
           - dynamodb:Scan
+          - dynamodb:DeleteItem
           - s3:*
           - apigateway:GET
           Resource: "*"

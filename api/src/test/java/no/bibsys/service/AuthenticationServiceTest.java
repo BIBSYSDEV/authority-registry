@@ -1,4 +1,4 @@
-package service;
+package no.bibsys.service;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -61,23 +61,21 @@ public class AuthenticationServiceTest {
     @Test
     public void createApiAdminApiKey() throws Exception {
         authenticationService.createApiKeyTable();
-        String apiKeyKey = authenticationService.createApiKey(Roles.API_ADMIN);
+        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
-        Assert.assertTrue(apiKey.getRoles().contains(Roles.API_ADMIN));
-        Assert.assertTrue(apiKey.isActive());
+        Assert.assertEquals(Roles.API_ADMIN,apiKey.getRole());
     }
     
     @Test
     public void createRegistryAdminApiKey() throws Exception {
         authenticationService.createApiKeyTable();
-        String apiKeyKey = authenticationService.createApiKey(Roles.REGISTRY_ADMIN);
+        String apiKeyKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
         
         ApiKey apiKey = authenticationService.getApiKey(apiKeyKey);
         
-        Assert.assertTrue(apiKey.getRoles().contains(Roles.REGISTRY_ADMIN));
-        Assert.assertTrue(apiKey.isActive());
+        Assert.assertEquals(Roles.REGISTRY_ADMIN, apiKey.getRole());
     }
     
     @Test
@@ -85,10 +83,27 @@ public class AuthenticationServiceTest {
         authenticationService.createApiKeyTable();
         String key = "test";
         
-        ApiKey apiKey = new ApiKey(Roles.API_ADMIN);
+        ApiKey apiKey = ApiKey.createApiAdminApiKey();
         apiKey.setKey(key);
         authenticationService.saveApiKey(apiKey);
         Assert.assertEquals(key, apiKey.getKey());
+    }
+    
+    @Test
+    public void deleteApiKeysForRegistryDeletesApiKey() throws Exception {
+        authenticationService.createApiKeyTable();
+
+        String registryName = "deleteTest";
+        ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
+        String apiKeyKey = authenticationService.saveApiKey(apiKey);
+        
+        ApiKey apiKeyFromDB = authenticationService.getApiKey(apiKeyKey);
+        Assert.assertTrue("API Key should exist", apiKeyFromDB.getRegistry().equals(registryName));
+        
+        authenticationService.deleteApiKeyForRegistry(registryName);
+        
+        apiKeyFromDB = authenticationService.getApiKey(apiKeyKey);
+        Assert.assertNull("API Key should be deleted", apiKeyFromDB);    
     }
 
 

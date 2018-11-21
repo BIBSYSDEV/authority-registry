@@ -8,16 +8,20 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.web.security.Roles;
 
 public class AuthenticationService {
     
@@ -41,12 +45,6 @@ public class AuthenticationService {
                 .builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
-    }
-    
-    public String createApiKey(String... roles) {
-        ApiKey apiKey = new ApiKey(roles);
-        mapper.save(apiKey, config);
-        return apiKey.getKey();
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
@@ -84,15 +82,11 @@ public class AuthenticationService {
     
     public void setUpInitialApiKeys() {
         if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).orElse("").equals(TEST_STAGE_NAME)) {
-            ApiKey apiAdminApiKey = new ApiKey(Roles.API_ADMIN);
+            ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
-            mapper.save(apiAdminApiKey, config);
-            ApiKey registryAdminapiKey = new ApiKey(Roles.REGISTRY_ADMIN);
-            registryAdminapiKey.setKey("testRegistryAdminApiKey");
-            mapper.save(registryAdminapiKey, config);
+            saveApiKey(apiAdminApiKey);
         } else {
-            createApiKey(Roles.API_ADMIN);
-            createApiKey(Roles.REGISTRY_ADMIN);
+            saveApiKey(ApiKey.createApiAdminApiKey());
         }
     }
 
@@ -108,8 +102,28 @@ public class AuthenticationService {
         return table.getTableName();
     }
     
-    public void saveApiKey(ApiKey apiKey) {
+    public String saveApiKey(ApiKey apiKey) {
         mapper.save(apiKey, config);
+        return apiKey.getKey();
     }
+
+	public void deleteApiKeyForRegistry(String registryName) {
+
+	    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+	    scanExpression
+	    .addFilterCondition("Registry", new Condition()
+	            .withComparisonOperator(ComparisonOperator.EQ)
+	            .withAttributeValueList(new AttributeValue()
+	                    .withS(registryName)));
+	    
+		PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
+		
+		logger.info("Found {} API Keys",apiKeys.size());
+		
+		for (ApiKey apiKey : apiKeys) {
+		    logger.info("Deleting API Key {}", apiKey);
+			mapper.delete(apiKey, config);
+		}
+	}
     
 }
