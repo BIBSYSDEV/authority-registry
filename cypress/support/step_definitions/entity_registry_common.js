@@ -12,63 +12,77 @@ given('that there is an existing entity in the registry', () => {
 	createTestEntity()
 })
 
+given('that there is an existing, empty entity registry with a schema', () => {
+	createEmptyRegistry();
+})
+
 given('that there is an existing, populated entity registry with a schema', () => {
 	createEmptyRegistry();
 	createTestEntity();
 })
 
-given('that there is an existing, empty entity registry with a schema', () => {
+given('that there is an existing, populated entity registry with a schema and registered registry API keys', () => {
 	createEmptyRegistry();
+	createTestEntity();
 })
 
-
 function createEmptyRegistry(){
-	let entityRegistryUrl = "/registry/";
-	cy.wrap(entityRegistryUrl).as('entityRegistryUrl');
-	cy.wrap('https://www.unit.no').as('entityGetUrl');
-
-	cy.get('@entityRegistryUrl').then((url) => {
-		// create new test registry
-		cy.fixture('registryTestSchema.json')
-		.then((testSchema) => {
-			cy.get('@registryName').then((registryName) => {
-				testSchema.registryName = registryName;
-				let url = entityRegistryUrl + registryName
+	cy.get('@registryName').then((registryName) => {
+		cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
+			// create new test registry metadata
+			cy.fixture('registryTestMetadata.json')
+			.then((testSchema) => {
+				testSchema.id = registryName;
+				let createUrl = '/registry';
 				cy.request({
-					url: url,
-					method: 'PUT',
+					url: createUrl,
+					method: 'POST',
 					body: testSchema, 
 					headers: {
-						Authorization: 'Token API_admin_token',
-						'content-type': 'application/json'
+						'api-key': apiAdminApiKey,
+						 "content-type": "application/json"
 					}
 				})
+
+//				// add schema to registry
+//				cy.get('@apiRegistryApiKey').then((registryAdminApiKey) => {
+//				cy.fixture('registryTestSchema.json')
+//				.then((testSchema) => {
+//					let addSchemaUrl = 'registry/' + registryName + '/schema';
+//					cy.request({
+//						url: addSchemaUrl,
+//						method: 'POST',
+//						body: testSchema, 
+//						headers: {
+//							'api-key': apiAdminApiKey
+//						}
+//					})
+//				})
 			})
 		})
 	})
 }
 
 function createTestEntity(){
-	let entityAddUrl = '/registry/';
-//	let entityAddUrl = 'https://www.unit.no';
-	let entityId = '0';
-	cy.wrap(entityId).as('entityId')
 
 	cy.get('@registryName').then((registryName) => {
-		entityAddUrl += registryName; 
-
-		cy.fixture('entityTestData.json') // add testData to registry
-		.then((testData) => {
-			cy.request({
-				url: entityAddUrl,
-				method: 'POST',
-				body: testData,
-				headers: {
-					Authorization: 'Token API_admin_token',
-					'content-type': 'application/json'
-				}
-			}).then((response) => {
-				cy.wrap(entityId).as('entityId')
+		cy.get('@apiRegistryApiKey').then((apiKey) => {
+			let entityAddUrl = '/registry/' + registryName + '/entity';
+			cy.fixture('entityTestData.json') // add testData to registry
+			.then((testData) => {
+				cy.request({
+					url: entityAddUrl,
+					method: 'POST',
+					body: testData,
+					headers: {
+						'api-key': apiKey,
+						'content-type': 'application/json'
+					}
+				}).then((response) => {
+					let entityUri = response.body
+					let entityId = entityUri.split('/')[entityUri.length - 1]
+					cy.wrap(entityId).as('entityId');
+				})
 			})
 		})
 	})
