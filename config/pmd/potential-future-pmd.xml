@@ -68,6 +68,7 @@
     <exclude name="SignatureDeclareThrowsException"/>
     <exclude name="UseUtilityClass"/>
     <exclude name="UseObjectForClearerAPI"/>
+    <exclude name="TooManyMethods"/>
 
     <!-- This rule does not allow the Lambda Handler to cast  the ContainerInitializationException
         to a RuntimeException.

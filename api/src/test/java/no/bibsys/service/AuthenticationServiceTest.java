@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
+import ch.qos.logback.classic.Logger;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.service.ApiKey;
@@ -35,7 +36,11 @@ public class AuthenticationServiceTest {
     
     @After
     public void tearDown() throws Exception {
-        authenticationService.deleteApiKeyTable();
+        try {
+            authenticationService.deleteApiKeyTable();
+        } catch (ResourceNotFoundException e) {
+            System.out.println("Already deleted");
+        }
     }
     
     @Test

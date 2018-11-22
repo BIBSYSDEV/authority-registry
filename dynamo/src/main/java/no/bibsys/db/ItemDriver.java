@@ -81,7 +81,7 @@ public final class ItemDriver {
             }
         }
         
-        logger.info("Item added successfully, tableId={}, itemId={}", tableName, itemId);
+        logger.debug("Item added successfully, tableId={}, itemId={}", tableName, itemId);
 
         return success;
     }
@@ -129,7 +129,7 @@ public final class ItemDriver {
                     .withAttributeUpdate(updateList)
                     .withReturnValues(ReturnValue.UPDATED_OLD);
             Item returnItem = table.updateItem(putItemSpec).getItem();
-            logger.error("Item updated successfully, tableId={}, itemId={}", tableName, itemId);
+            logger.debug("Item updated successfully, tableId={}, itemId={}", tableName, itemId);
             return Optional.ofNullable(returnItem.toJSON());
         } else {
             logger.error("Can not update non-existing item, tableId={}, itemId={}", tableName, itemId);
@@ -143,10 +143,10 @@ public final class ItemDriver {
         try {
             final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", itemId));
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-            logger.error("Item read successfully, tableId={}, itemId={}", tableName, itemId);
+            logger.debug("Item read successfully, tableId={}, itemId={}", tableName, itemId);
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         }catch(ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {
-            logger.error("Error getting item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
+            logger.debug("No item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
             return Optional.empty();
         }
     }
@@ -156,7 +156,7 @@ public final class ItemDriver {
         Table table = dynamoDb.getTable(tableName);
         if(itemExists(tableName, itemId)) {
             table.deleteItem(new PrimaryKey("id", itemId));
-            logger.error("Item deleted successfully, tableId={}, itemId={}", tableName, itemId);
+            logger.debug("Item deleted successfully, tableId={}, itemId={}", tableName, itemId);
             return true;
         }
         logger.error("Can not delete on-existing item, tableId={}, itemId={}", tableName, itemId);

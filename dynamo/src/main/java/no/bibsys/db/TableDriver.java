@@ -66,7 +66,7 @@ public final class TableDriver {
             String tableStatus = describe.getTableStatus();
             exists = tableStatus != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
-            logger.warn("Table {} does not exist", tableName);
+            logger.debug("Table {} does not exist", tableName);
         }
         return exists;
     }
@@ -125,10 +125,10 @@ public final class TableDriver {
         if (tableExists(tableName)) {
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
-            logger.info("Table deleted successfully, tableId={}", tableName);
+            logger.debug("Table deleted successfully, tableId={}", tableName);
             return true;
         }
-        logger.info("Can not delete non-existing table, tableId={}", tableName);
+        logger.error("Can not delete non-existing table, tableId={}", tableName);
         return false;
 
     }
@@ -148,10 +148,10 @@ public final class TableDriver {
                             .withWriteCapacityUnits(1L));
 
             TableUtils.createTableIfNotExists(client, request);
-            logger.info("Table created, tableId={}", tableName);
+            logger.debug("Table created, tableId={}", tableName);
             return true;
         }
-        logger.info("Tried to create table but it already exists, tableId={}", tableName);
+        logger.error("Tried to create table but it already exists, tableId={}", tableName);
         return false;
     }
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import no.bibsys.db.exceptions.EntityNotFoundException;
+import no.bibsys.web.exception.EntityNotFoundException;
 
 public class EntityManager {
 
@@ -21,7 +21,7 @@ public class EntityManager {
         String entityId = createEntityId();
         boolean addItemSuccess = itemManager.addItem(registryName, entityId, json);
         if(!addItemSuccess) {
-            logger.info("Entity not created, registryId={}, entityId={}", registryName, entityId);
+            logger.error("Entity not created, registryId={}, entityId={}", registryName, entityId);
             return Optional.empty();
         }
 
@@ -48,7 +48,6 @@ public class EntityManager {
     
     private String createEntityId() {
         String entitiyId = UUID.randomUUID().toString();
-        logger.info("Trying to create entity with entityId={}", entitiyId);
         return entitiyId;
     }
     
