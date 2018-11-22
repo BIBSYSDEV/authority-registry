@@ -2,6 +2,7 @@ package no.bibsys.db;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class RegistryManager {
             return Status.CREATED;
         case CREATING:
         case UPDATING:
-            throw new RegistryUnavailableException(tableName, status.name().toLowerCase());
+            throw new RegistryUnavailableException(tableName, status.name().toLowerCase(Locale.ENGLISH));
         case DELETING:
         case NOT_FOUND:
         default:

@@ -21,6 +21,7 @@ public class CreatedRegistry {
 		this.message = message;
 		this.registryName = registryName;
 		this.apiKey = apiKey; 
+		this.status = status; 
 	}
 	
 	public String getMessage() {
