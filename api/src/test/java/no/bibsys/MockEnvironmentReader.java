@@ -24,5 +24,4 @@ public class MockEnvironmentReader extends EnvironmentReader {
         
         return value;
     }
-    
 }
