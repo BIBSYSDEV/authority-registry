@@ -221,6 +221,16 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
+    public void getRegistryStatus_registryExists_returnsStatusCreated() {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
+        createRegistry(template);
+        
+        Response response = registryStatus(registryName);
+        assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
+    }
+    
+    @Test
     public void putRegistrySchema_RegsitryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
@@ -285,12 +295,18 @@ public class DatabaseResourceTest extends JerseyTest {
         return createRegistry(createRequest);
     }
 
-
     private Response createRegistry(EntityRegistryTemplate request) {
         Response response = target("/registry")
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+        return response;
+    }
+
+    private Response registryStatus(String registryName) {
+        Response response = target(String.format("/registry/%s/status", registryName))
+                .request()
+                .get();
         return response;
     }
 
@@ -330,5 +346,12 @@ public class DatabaseResourceTest extends JerseyTest {
                 .request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .delete();
+    }
+
+    private Response entityStatus(String registryName, String entityId) {
+        Response response = target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
+                .request()
+                .get();
+        return response;
     }
 }

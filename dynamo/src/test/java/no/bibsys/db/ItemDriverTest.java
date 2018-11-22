@@ -27,8 +27,8 @@ public class ItemDriverTest extends LocalDynamoTest {
     @Before
     public void init() {
         super.init();
-        itemDriver = ItemDriver.create(new DynamoDB(localClient));
         tableDriver = TableDriver.create(localClient, new DynamoDB(localClient));
+        itemDriver = ItemDriver.create(tableDriver);
     }
 
     @Test

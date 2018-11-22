@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -22,11 +24,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class ItemDriver {
 
-    private transient final DynamoDB dynamoDb;
+    private transient final TableDriver tableDriver;
 
 
-    private ItemDriver(final DynamoDB dynamoDb) {
-        this.dynamoDb = dynamoDb;
+    private ItemDriver(final TableDriver dynamoDb) {
+        this.tableDriver = dynamoDb;
     }
 
     /**
@@ -34,7 +36,7 @@ public final class ItemDriver {
      *
      * @return customized ItemDriver
      */
-    public static ItemDriver create(final DynamoDB dynamoDb) {
+    public static ItemDriver create(final TableDriver dynamoDb) {
         ItemDriver tableDriver = new ItemDriver(dynamoDb);
         return tableDriver;
     }
@@ -47,6 +49,10 @@ public final class ItemDriver {
      */
     public boolean addItem(String tableName, String itemId, String itemJson) {
 
+        if(!tableDriver.status(tableName).equals("ACTIVE")) {
+            return false;
+        }
+        
         Map<String, Object> itemMap = new ConcurrentHashMap<>();
         itemMap.put("id", itemId);
 
@@ -64,7 +70,7 @@ public final class ItemDriver {
         if(!itemId.isEmpty()) {
             try {
 
-                final Table table = dynamoDb.getTable(tableName);
+                final Table table = tableDriver.getTable(tableName);
 
                 PutItemSpec putItemSpec = new PutItemSpec()
                         .withItem(item)
@@ -105,7 +111,7 @@ public final class ItemDriver {
             }
 
             final Item item = Item.fromMap(itemMap);
-            final Table table = dynamoDb.getTable(tableName);
+            final Table table = tableDriver.getTable(tableName);
 
             List<AttributeUpdate> updateList = new ArrayList<>();
             item.attributes().forEach(entry -> {
@@ -127,7 +133,7 @@ public final class ItemDriver {
 
 
     public Optional<String> getItem(String tableName, String id) {
-        final Table table = dynamoDb.getTable(tableName);
+        final Table table = tableDriver.getTable(tableName);
         try {
             final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
@@ -139,7 +145,7 @@ public final class ItemDriver {
 
     public boolean deleteItem(String tableName, String id)  {
 
-        Table table = dynamoDb.getTable(tableName);
+        Table table = tableDriver.getTable(tableName);
         if(itemExists(tableName, id)) {
             table.deleteItem(new PrimaryKey("id", id));
             return true;

@@ -24,6 +24,7 @@ import no.bibsys.web.exception.EntityNotFoundExceptionMapper;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
+import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -36,7 +37,7 @@ public class JerseyConfig extends ResourceConfig {
         super();
 
         TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
-        ItemDriver itemDriver = ItemDriver.create(new DynamoDB(client));
+        ItemDriver itemDriver = ItemDriver.create(tableDriver);
         EntityManager entityManager = new EntityManager(itemDriver);
         RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver);
         
@@ -64,6 +65,7 @@ public class JerseyConfig extends ResourceConfig {
         register(ConditionalCheckFailedExceptionMapper.class);
         register(RegistryAlreadyExistsExceptionMapper.class);
         register(RegistryNotFoundExceptionMapper.class);
+        register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
 	}
 

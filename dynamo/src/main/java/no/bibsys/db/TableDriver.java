@@ -162,4 +162,10 @@ public final class TableDriver {
 
         return tableList;
     }
+
+    public String status(String tableName) {
+        
+        TableDescription describe = getTable(tableName).describe();
+        return describe.getTableStatus();
+    }
 }

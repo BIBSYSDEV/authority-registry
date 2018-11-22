@@ -1,16 +1,24 @@
 package no.bibsys.db;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.core.Response.Status;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.web.exception.RegistryUnavailableException;
 
 public class RegistryManager {
+
+    public enum RegistryStatus {
+        CREATING, UPDATING, DELETING, ACTIVE, NOT_FOUND;
+    }
 
     private final transient TableDriver tableDriver;
     private final transient ItemDriver itemDriver;
@@ -45,9 +53,18 @@ public class RegistryManager {
         return tableDriver.tableExists(tableName);
     }
     
-    public void validateRegistryExists(String tableName) {
-    	if (!registryExists(tableName)) {
-    		throw new RegistryNotFoundException(tableName);
+    public Status validateRegistryExists(String tableName) {
+    	RegistryStatus status = status(tableName);
+    	switch(status) {
+        case ACTIVE:
+            return Status.CREATED;
+        case CREATING:
+        case UPDATING:
+            throw new RegistryUnavailableException(tableName, status.name().toLowerCase());
+        case DELETING:
+        case NOT_FOUND:
+        default:
+            throw new RegistryNotFoundException(tableName);
     	}
     }
 
@@ -111,6 +128,16 @@ public class RegistryManager {
 
     }
 
+    public RegistryStatus status(String registryName) {
+        
+        RegistryStatus registryStatus = RegistryStatus.valueOf(tableDriver.status(registryName));
+        if(registryStatus == null) {
+            registryStatus = RegistryStatus.NOT_FOUND;
+        }
+        
+        return registryStatus;
+    }
+    
     private static String getValidationSchemaTable() {
         String validationSchemaTableName = "VALIDATION_SCHEMA_TABLE";
         String stage = System.getenv("STAGE_NAME");

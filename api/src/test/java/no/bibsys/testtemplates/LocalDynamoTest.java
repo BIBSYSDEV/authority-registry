@@ -24,7 +24,7 @@ public abstract class LocalDynamoTest {
         final AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
 
         TableDriver tableManager = TableDriver.create(client, new DynamoDB(client));
-        ItemDriver itemManager = ItemDriver.create(new DynamoDB(client));
+        ItemDriver itemManager = ItemDriver.create(tableManager);
         registryManager = new RegistryManager(tableManager, itemManager);
         entityManager = new EntityManager(itemManager);
 
