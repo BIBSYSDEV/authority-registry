@@ -69,7 +69,7 @@ public final class TableDriver {
             TableDescription describe = getTable(tableName).describe();
             String tableStatus = describe.getTableStatus();
             exists = tableStatus != null;
-        } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             logger.warn("Table {} does not exist", tableName);
         }
         return exists;
