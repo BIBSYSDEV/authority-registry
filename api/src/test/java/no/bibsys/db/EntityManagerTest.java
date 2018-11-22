@@ -10,6 +10,8 @@ import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
 import org.junit.Test;
 
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+
 public class EntityManagerTest extends LocalDynamoTest{
 
     @Test
@@ -28,7 +30,7 @@ public class EntityManagerTest extends LocalDynamoTest{
         
     }
 
-    @Test
+    @Test (expected = ResourceNotFoundException.class)
     public void addEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
         String tableName = "addEntityNoRegistry";
         Entry entry = sampleData.sampleEntry();

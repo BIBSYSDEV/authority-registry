@@ -82,7 +82,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        CreatedRegistry expected = new CreatedRegistry(String.format("A registry with name=%s has been created", registryName));
+        CreatedRegistry expected = new CreatedRegistry(String.format("A registry with name=%s is being created", registryName));
 
         Response response = createRegistry(registryName);
         CreatedRegistry entity = response.readEntity(CreatedRegistry.class);
@@ -227,7 +227,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(template);
         
         Response response = registryStatus(registryName);
-        assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
     
     @Test
