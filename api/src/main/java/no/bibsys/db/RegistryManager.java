@@ -166,8 +166,13 @@ public class RegistryManager {
 
         EntityRegistryTemplate template = new EntityRegistryTemplate();
         Optional<String> entry = itemDriver.getItem(validationSchemaTableName, registryName);
-        template = objectMapper.readValue(entry.get() , EntityRegistryTemplate.class);
-        return template;
+        if (entry.isPresent()) {
+            template = objectMapper.readValue(entry.get() , EntityRegistryTemplate.class);
+            return template;
+        } else {
+            throw new RegistryNotFoundException(registryName);
+        }
+
     }
 
     public void updateRegistryMetadata(EntityRegistryTemplate request) throws JsonProcessingException {
