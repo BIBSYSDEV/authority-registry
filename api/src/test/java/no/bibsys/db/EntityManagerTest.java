@@ -30,7 +30,7 @@ public class EntityManagerTest extends LocalDynamoTest{
         
     }
 
-    @Test (expected = ResourceNotFoundException.class)
+    @Test 
     public void addEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
         String tableName = "addEntityNoRegistry";
         Entry entry = sampleData.sampleEntry();
