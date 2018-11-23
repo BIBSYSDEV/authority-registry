@@ -170,7 +170,7 @@ public class RegistryManager {
             template = objectMapper.readValue(entry.get() , EntityRegistryTemplate.class);
             return template;
         } else {
-            throw new RegistryNotFoundException(registryName);
+            throw new RegistryNotFoundException(registryName, validationSchemaTableName);
         }
 
     }
