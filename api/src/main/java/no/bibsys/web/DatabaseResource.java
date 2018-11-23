@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,10 +35,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.db.EntityManager;
-import no.bibsys.db.JsonUtils;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.CreatedRegistry;
 import no.bibsys.web.model.InsertEntity;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -63,13 +60,10 @@ public class DatabaseResource {
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
-    private transient final RegistryService registryService;
     private transient final RegistryManager registryManager;
     private transient final EntityManager entityManager;
-    private transient final ObjectMapper mapper = JsonUtils.getObjectMapper();
     
-    public DatabaseResource(RegistryService registryService, RegistryManager registryManager, EntityManager entityManager) {
-    	this.registryService = registryService;
+    public DatabaseResource(RegistryManager registryManager, EntityManager entityManager) {
         this.entityManager = entityManager;
         this.registryManager = registryManager;
     }
@@ -97,7 +91,7 @@ public class DatabaseResource {
 
     	request.validate();
     	
-		CreatedRegistry createdRegistry = registryService.createRegistry(request);
+		CreatedRegistry createdRegistry = registryManager.createRegistry(request);
         return Response.ok(createdRegistry).build();
     }
 
@@ -117,7 +111,7 @@ public class DatabaseResource {
     public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) throws JsonProcessingException {
 
         List<String> registryList = registryManager.getRegistries();
-        return Response.ok(mapper.writeValueAsString(registryList)).build();
+        return Response.ok(registryList).build();
     }
 
 
@@ -146,7 +140,7 @@ public class DatabaseResource {
     	registryManager.validateRegistryExists(registryName);
     	
         EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
-        return Response.ok(mapper.writeValueAsString(metadata)).build();
+        return Response.ok(metadata).build();
     }
 
     @PUT
@@ -205,7 +199,7 @@ public class DatabaseResource {
 
     	registryManager.validateRegistryExists(registryName);
 
-        registryService.deleteRegistry(registryName);
+    	registryManager.deleteRegistry(registryName);
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
     }
 
@@ -261,7 +255,11 @@ public class DatabaseResource {
     	registryManager.validateRegistryExists(registryName);
 
         Optional<String> schemaAsJson = registryManager.getSchemaAsJson(registryName);
-        return Response.ok(schemaAsJson.get()).build();
+        if (schemaAsJson.isPresent()) {
+            return Response.ok(schemaAsJson.get()).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
     @PUT
@@ -378,7 +376,11 @@ public class DatabaseResource {
     	entityManager.validateItemExists(registryName, entityId);
     	
         Optional<String> entity = entityManager.getEntity(registryName, entityId);
-        return Response.ok(entity.get()).build();
+        if (entity.isPresent()) {
+            return Response.ok(entity.get()).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
     @DELETE

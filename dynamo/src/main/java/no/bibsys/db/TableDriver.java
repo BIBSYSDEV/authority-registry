@@ -22,7 +22,7 @@ import no.bibsys.db.structures.TableDefinitions;
 
 public final class TableDriver {
 
-    private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    private final static Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private transient AmazonDynamoDB client;
     private transient DynamoDB dynamoDb;
 
@@ -66,7 +66,7 @@ public final class TableDriver {
             String tableStatus = describe.getTableStatus();
             exists = tableStatus != null;
         } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
-            logger.warn("Table {} does not exist", tableName);
+            logger.debug("Table {} does not exist", tableName);
         }
         return exists;
     }
@@ -91,6 +91,7 @@ public final class TableDriver {
             result = client.scan(scanRequest);
             itemCount += result.getScannedCount();
         } while(result.getLastEvaluatedKey() != null);
+        logger.info("Table has {} items, tableId={}", itemCount, tableName);
         return itemCount;
     }
 
@@ -100,7 +101,7 @@ public final class TableDriver {
             return false;
         }
         boolean emptyResult = deleteNoCheckTable(tableName);
-        return emptyResult&&createTable(tableName);
+        return emptyResult && createTable(tableName);
     }
 
     public boolean deleteTable(final String tableName) {
@@ -124,8 +125,10 @@ public final class TableDriver {
         if (tableExists(tableName)) {
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
+            logger.debug("Table deleted successfully, tableId={}", tableName);
             return true;
         }
+        logger.error("Can not delete non-existing table, tableId={}", tableName);
         return false;
 
     }
@@ -145,8 +148,10 @@ public final class TableDriver {
                             .withWriteCapacityUnits(1L));
 
             TableUtils.createTableIfNotExists(client, request);
+            logger.debug("Table created, tableId={}", tableName);
             return true;
         }
+        logger.error("Tried to create table but it already exists, tableId={}", tableName);
         return false;
     }
 
@@ -159,7 +164,7 @@ public final class TableDriver {
     public List<String> listTables(){
         List<String> tableList = new ArrayList<>();
         dynamoDb.listTables().forEach(table -> tableList.add(table.getTableName()));
-
+        logger.info("Listing {} tables", tableList.size());
         return tableList;
     }
 }

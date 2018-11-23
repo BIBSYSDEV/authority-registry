@@ -39,7 +39,7 @@ public class AuthenticationService {
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
         
-        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME).orElse("entity-registry-api-keys");
+        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME);
         
         config = DynamoDBMapperConfig
                 .builder()
@@ -81,7 +81,7 @@ public class AuthenticationService {
     }
     
     public void setUpInitialApiKeys() {
-        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).orElse("").equals(TEST_STAGE_NAME)) {
+        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).equals(TEST_STAGE_NAME)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
@@ -97,7 +97,7 @@ public class AuthenticationService {
             table.delete();
             table.waitForDelete();
         } catch (Exception e) {
-            logger.error("Error deleting api keys table", e);
+            logger.error("Error deleting api keys table, reason={}", e.getMessage());
         }
         return table.getTableName();
     }

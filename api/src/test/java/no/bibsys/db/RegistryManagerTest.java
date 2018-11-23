@@ -14,6 +14,7 @@ import java.util.Optional;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
+import no.bibsys.web.exception.RegistryAlreadyExistsException;
 import org.junit.Test;
 
 
@@ -74,8 +75,8 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
 
-    @Test
-    public void createRegistry_RegistryAlreadyExists_ReturnsFalse() throws JsonProcessingException {
+    @Test(expected=RegistryAlreadyExistsException.class)
+    public void createRegistry_RegistryAlreadyExists_ThrowsException() throws JsonProcessingException {
 
         String tableName = "tableAlreadyExists";
         boolean existsBeforeCreation = registryManager.registryExists(tableName );
@@ -87,8 +88,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
         assertThat("The table should  exist before creation", existsAfterCreation,
                 is(equalTo(true)));
 
-        boolean createRegistryFromTemplate = registryManager.createRegistryFromTemplate(createRequest);
-        assertThat(createRegistryFromTemplate, equalTo(false));
+        registryManager.createRegistryFromTemplate(createRequest);
     }
     
     @Test
