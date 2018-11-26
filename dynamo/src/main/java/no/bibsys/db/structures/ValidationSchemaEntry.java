@@ -7,7 +7,7 @@ public class ValidationSchemaEntry implements DynamoDbEntry {
     private String validationSchema;
 
 
-    public ValidationSchemaEntry() { }
+    public ValidationSchemaEntry() {}
 
 
     public ValidationSchemaEntry(String id, String validationSchema) {
@@ -22,7 +22,7 @@ public class ValidationSchemaEntry implements DynamoDbEntry {
     }
 
     @Override
-    public final  void setId(String id) {
+    public final void setId(String id) {
         this.id = id;
     }
 
@@ -31,7 +31,7 @@ public class ValidationSchemaEntry implements DynamoDbEntry {
         return validationSchema;
     }
 
-    public final void  setValidationSchema(String validationSchema) {
+    public final void setValidationSchema(String validationSchema) {
         this.validationSchema = validationSchema;
     }
 }

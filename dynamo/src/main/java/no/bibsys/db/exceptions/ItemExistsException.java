@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 public class ItemExistsException extends ConditionalCheckFailedException {
 
     private static final long serialVersionUID = -1917349734490906563L;
+
     /**
      * Constructs a new ConditionalCheckFailedException with the specified error message.
      *

@@ -10,5 +10,5 @@ public class JsonUtils {
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         return objectMapper;
     }
-    
+
 }

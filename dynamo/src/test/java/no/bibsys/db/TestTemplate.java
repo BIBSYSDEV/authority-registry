@@ -4,7 +4,7 @@ public class TestTemplate {
 
     private String id;
     private Metadata metadata;
-    
+
     public TestTemplate(String tableName) {
         id = tableName;
         metadata = new Metadata();
@@ -14,15 +14,15 @@ public class TestTemplate {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public Metadata getMetadata() {
         return metadata;
     }
-    
+
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
