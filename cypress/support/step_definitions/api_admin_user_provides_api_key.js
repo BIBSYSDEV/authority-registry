@@ -3,28 +3,25 @@
 //    When they submit the API key
 //    Then they can access the administration APIs
 
-given('that the registry admin user has a valid API key for registry administration', () => {
-	
-	cy.wrap('testApiAdminApiKey').as('apiAdminApiKey');
-})
-
 when('they submit the API key', () => {
 	cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
 		cy.get('@registryName').then((registryName) => {
 			// create new test registry metadata
 			cy.fixture('registryTestMetadata.json')
 			.then((testSchema) => {
-				testSchema.registryName = registryName;
+				testSchema.id = registryName;
 				let createUrl = '/registry';
 				cy.request({
 					url: createUrl,
 					method: 'POST',
 					body: testSchema, 
 					headers: {
-						'x-api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey,
+						'content-type': 'application/json'
 					}
 				}).then((response) => {
 					cy.wrap(response.status).as('responseStatus')
+					cy.wrap(response.body.apiKey).as('registryAdminApiKey');
 				})
 			})
 		})
@@ -33,6 +30,6 @@ when('they submit the API key', () => {
 
 then('they can access the administration APIs', () => {
 	cy.get('@responseStatus').then((status) => {
-		assert.notEquals(status, 403)
+		expect(status).to.not.equal(403)
 	})
 })

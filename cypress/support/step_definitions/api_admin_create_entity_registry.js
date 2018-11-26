@@ -1,60 +1,45 @@
-//  Scenario: An API admin user creates a new entity registry
-//    Given that the API admin user has a valid API key for API administration
-//    When the API admin user submits the API key and a properly formatted create-entity-registry-request providing information about:
-//      | Registry name              |
-//      | Registry admin users       |
-//      | Registry validation schema |
-//    Then an entity registry that accepts only valid data is created
-
-let createEntityRegistryRequest ={
-		'id': 'name',
-		metadata: {
-			name: 'name',
-			createDate: '2018-01-01',
-			registryName: 'registryName',
-			label: ['label'],
-			license: 'license',
-			contributor: ['contributor'],
-			creator: ['creator'],
-			description: 'description',
-			sameAs: ['sameAs']
-
-		}
-}
+//Scenario: An API admin user creates a new entity registry
+//Given that the API admin user has a valid API key for API administration
+//When the API admin user submits the API key and a properly formatted create-entity-registry-request providing information about:
+//| Registry name              |
+//| Registry admin users       |
+//| Registry validation schema |
+//Then an entity registry that accepts only valid data is created
 
 let createRegistryEndpoint = '/registry';
 
 when('the API admin user submits the API key and a properly formatted create-entity-registry-request providing information about:', (dataTable) =>{
 
 	let attributeArray = dataTable.rawTable;
+	cy.fixture('registryTestMetadata.json').then((createEntityRegistryRequest) => {
 
-	expect(createEntityRegistryRequest['id']).to.be.a('string');
-	expect(createEntityRegistryRequest['id']).to.have.length.above(0);
+		createEntityRegistryRequest.id = registryName;
 
-	let schemaValidationUrl = '/registry/schema';
-	cy.request(schemaValidationUrl, createEntityRegistryRequest[attributeArray[2]])
+		cy.get('@registryName').then((registryName) => {
+			cy.get('@apiAdminApiKey').then((apiKey) => {
+				let url = '/registry';
+				cy.request({
+					url: url,
+					method: 'POST',
+					body: createEntityRegistryRequest,
+					headers: {
+						'api-key': apiKey,
+						'content-type': 'application/json'
+					}
+				}).then((response) => {})
 
+			})
+		})
+	})
 })
 
 then('an entity registry that accepts only valid data is created', () =>{
 
-	cy.get("@registryName").then((randomRegistryName) =>{
+	cy.get("@registryName").then((registryName) =>{
 
-		createEntityRegistryRequest['id'] = randomRegistryName
+		let getRegistryUrl = '/registry/' + registryName;
+		cy.request(getRegistryUrl).then((response) => {
 
-		cy.request({ 
-			url: createRegistryEndpoint, 
-			body: createEntityRegistryRequest,
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json'
-			}
 		})
-		.then((response) => {
-			expect(response.body['message']).to.contain(randomRegistryName)
-		})
-		
-		let getRegistryUrl = '/registry/' + randomRegistryName;
-		cy.request(getRegistryUrl)
 	})
 })

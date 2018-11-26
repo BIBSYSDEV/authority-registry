@@ -16,7 +16,7 @@ when('the API admin user uses the API key and submits a request to update the va
 					url: registryUpdateUrl,
 					method: 'PUT',
 					headers: {
-						'x-api-key': registryApiKey,
+						'api-key': registryApiKey,
 					},
 					body: updatedSchema
 				})

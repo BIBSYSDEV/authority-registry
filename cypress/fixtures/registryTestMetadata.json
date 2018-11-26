@@ -2,7 +2,7 @@
 	"id": "test",
 	"schema": "testSchema",
 	"metadata": {
-		"name": "testReg",
-		"registryName": "Registry"		
+		"name": "name",
+		"registryName": "registryName"
 	}
 }

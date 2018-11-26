@@ -14,7 +14,7 @@ when('the API admin user uses the API key and submits a request to update the va
 					url: updateRegistryUrl,
 					method: 'PUT',
 					headers: {
-						'x-api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey
 					},
 					failOnStatusCode: false,
 					body: updatedSchema

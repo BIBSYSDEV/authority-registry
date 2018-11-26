@@ -13,7 +13,7 @@ function createTestEntity(apikey, expectedStatus) {
 			method: 'POST',
 			failOnStatusCode: false,
 			headers: {
-				'x-api-key': apiKey
+				'api-key': apiKey
 			}
 		}).then((response) => {
 			assert.equals(response.status, expectedStatus)
@@ -33,7 +33,7 @@ when('the API admin user removes registry admin API keys from the entity registr
 					url: addApikeyUrl,
 					method: 'POST',
 					headers: {
-						'x-api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey
 					},
 					body: testData
 				})
@@ -46,7 +46,7 @@ when('the API admin user removes registry admin API keys from the entity registr
 					url: deleteApiKeyUrl,
 					method: 'DELETE',
 					headers: {
-						'x-api-key': apiAdminApiKey
+						'api-key': apiAdminApiKey
 					}
 				})
 			})
