@@ -10,22 +10,24 @@ import no.bibsys.web.exception.EntityNotFoundException;
 public class EntityManager {
 
     private final transient ItemDriver itemManager;
-    private final static Logger logger = LoggerFactory.getLogger(EntityManager.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(EntityManager.class);
+
     public EntityManager(ItemDriver itemManager) {
         this.itemManager = itemManager;
     }
-    
-    public Optional<String> addEntity(final String registryName, final String json) throws IOException {
-        
+
+    public Optional<String> addEntity(final String registryName, final String json)
+            throws IOException {
+
         String entityId = createEntityId();
         boolean addItemSuccess = itemManager.addItem(registryName, entityId, json);
-        if(!addItemSuccess) {
+        if (!addItemSuccess) {
             logger.error("Entity not created, registryId={}, entityId={}", registryName, entityId);
             return Optional.empty();
         }
 
-        logger.info("Entity created successfully, registryId={}, entityId={}", registryName, entityId);
+        logger.info("Entity created successfully, registryId={}, entityId={}", registryName,
+                entityId);
         return Optional.ofNullable(entityId);
 
     }
@@ -45,15 +47,15 @@ public class EntityManager {
     public boolean entityExists(String registryName, String entityId) {
         return itemManager.itemExists(registryName, entityId);
     }
-    
+
     private String createEntityId() {
         String entitiyId = UUID.randomUUID().toString();
         return entitiyId;
     }
-    
+
     public void validateItemExists(String registryName, String entityId) {
-    	if (!entityExists(registryName, entityId)) {
-    		throw new EntityNotFoundException(registryName, entityId);
-    	}
+        if (!entityExists(registryName, entityId)) {
+            throw new EntityNotFoundException(registryName, entityId);
+        }
     }
 }

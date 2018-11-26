@@ -9,9 +9,9 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class ForbiddenExceptionMapper implements ExceptionMapper<ForbiddenException> {
 
-	@Override
-	public Response toResponse(ForbiddenException exception) {
-		return Response.status(Status.FORBIDDEN).entity(exception.getMessage()).build();
-	}
+    @Override
+    public Response toResponse(ForbiddenException exception) {
+        return Response.status(Status.FORBIDDEN).entity(exception.getMessage()).build();
+    }
 
 }
