@@ -20,12 +20,10 @@ given('that there is an existing entity in the registry', () => {
 
 given('that there is an existing, populated entity registry with a schema', () => {
 	createEmptyRegistry(true);
-	createTestEntity();
 })
 
 given('that there is an existing, populated entity registry with a schema and registered registry API keys', () => {
 	createEmptyRegistry(true);
-	createTestEntity();
 })
 
 function createEmptyRegistry(createEntity){
@@ -50,6 +48,8 @@ function createEmptyRegistry(createEntity){
 				}).then((response) => {
 					cy.wrap(response.body.apiKey).as('registryAdminApiKey')
 
+					waitUntilRegistryIsCreated(registryName, 0)
+					
 					if(createEntity){
 						cy.log('creating test entity')
 						createTestEntity()
@@ -64,8 +64,6 @@ function createTestEntity(){
 	var ready = false
 	cy.get('@registryName').then(function (registryName) {
 		cy.get('@registryAdminApiKey').then(function (apiKey) {
-
-			waitUntilRegistryIsCreated(registryName, 0);
 
 			let entityAddUrl = '/registry/' + registryName + '/entity';
 			cy.fixture('entityTestData.json') // add testData to registry
