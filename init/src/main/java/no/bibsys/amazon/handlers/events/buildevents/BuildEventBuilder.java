@@ -35,8 +35,8 @@ public final class BuildEventBuilder {
     }
 
     private static boolean isCodePipelineEvent(JsonNode root) {
-        return root.has("CodePipeline.job") &&
-            root.get("CodePipeline.job").has("id");
+        return root.has("CodePipeline.job") 
+                && root.get("CodePipeline.job").has("id");
     }
 
 

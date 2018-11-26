@@ -30,40 +30,42 @@ public class JerseyConfig extends ResourceConfig {
         this(DynamoDBHelper.getClient(), new EnvironmentReader());
     }
 
-    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {        
+    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         super();
 
         TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
         ItemDriver itemDriver = ItemDriver.create(new DynamoDB(client));
         EntityManager entityManager = new EntityManager(itemDriver);
-        AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
+        AuthenticationService authenticationService =
+                new AuthenticationService(client, environmentReader);
 
-        RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver, authenticationService, environmentReader);
-                
+        RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver,
+                authenticationService, environmentReader);
+
         register(new DatabaseResource(registryManager, entityManager));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
-        
+
         register(new AuthenticationFilter(authenticationService));
-        
+
         registerExceptionMappers();
-        
+
         register(ExceptionLogger.class);
-        
+
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
     }
 
-	private void registerExceptionMappers() {
-		register(BaseExceptionMapper.class);
-		register(ForbiddenExceptionMapper.class);
+    private void registerExceptionMappers() {
+        register(BaseExceptionMapper.class);
+        register(ForbiddenExceptionMapper.class);
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);
         register(RegistryAlreadyExistsExceptionMapper.class);
         register(RegistryNotFoundExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
-	}
+    }
 
 }

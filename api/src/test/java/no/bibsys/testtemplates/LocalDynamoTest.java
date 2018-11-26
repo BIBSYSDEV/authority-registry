@@ -1,10 +1,8 @@
 package no.bibsys.testtemplates;
 
 import org.junit.Before;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.EntityManager;
@@ -29,7 +27,8 @@ public abstract class LocalDynamoTest {
         TableDriver tableManager = TableDriver.create(client, new DynamoDB(client));
         ItemDriver itemManager = ItemDriver.create(new DynamoDB(client));
         authenticationService = new AuthenticationService(client, new MockEnvironmentReader());
-        registryManager = new RegistryManager(tableManager, itemManager, authenticationService, new MockEnvironmentReader());
+        registryManager = new RegistryManager(tableManager, itemManager, authenticationService,
+                new MockEnvironmentReader());
         entityManager = new EntityManager(itemManager);
 
         sampleData = new SampleData();

@@ -23,17 +23,20 @@ public class RegistryManager {
     private final transient AuthenticationService authenticationService;
     private final transient String validationSchemaTableName;
     private final transient ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-    private final static Logger logger = LoggerFactory.getLogger(RegistryManager.class);
-    
-    public RegistryManager(TableDriver tableManager, ItemDriver itemManager, AuthenticationService authenticationService, EnvironmentReader environmentReader) {
+    private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
+
+    public RegistryManager(TableDriver tableManager, ItemDriver itemManager,
+            AuthenticationService authenticationService, EnvironmentReader environmentReader) {
         this.tableDriver = tableManager;
         this.itemDriver = itemManager;
         this.authenticationService = authenticationService;
-        
-        validationSchemaTableName = environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
+
+        validationSchemaTableName =
+                environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
     }
 
-    protected boolean createRegistryFromTemplate(EntityRegistryTemplate request) throws JsonProcessingException {
+    protected boolean createRegistryFromTemplate(EntityRegistryTemplate request)
+            throws JsonProcessingException {
         String registryName = request.getId();
         String json = objectMapper.writeValueAsString(request);
         return createRegistryFromJson(registryName, json);
@@ -42,12 +45,12 @@ public class RegistryManager {
     protected boolean createRegistryFromJson(String registryName, String json) {
         checkIfSchemaTableExistsOrCreate(registryName, validationSchemaTableName);
         checkIfRegistryExistsInSchemaTable(registryName, validationSchemaTableName);
-        return createRegistryTable(registryName, json, validationSchemaTableName);        
+        return createRegistryTable(registryName, json, validationSchemaTableName);
     }
 
     private boolean createRegistryTable(String registryName, String json, String schemaTable) {
         boolean created = tableDriver.createTable(registryName);
-        
+
         if (created) {
             addRegistryToSchemaTable(registryName, json, schemaTable);
             logger.info("Registry created successfully, registryId={}", registryName);
@@ -60,52 +63,58 @@ public class RegistryManager {
     }
 
     private void checkIfRegistryExistsInSchemaTable(String registryName, String schemaTable) {
-        if(itemDriver.itemExists(schemaTable, registryName)) {
-            String message = String.format("Registry already exists in schema table, registryId=%s, schemeTable=%s", registryName, schemaTable);
+        if (itemDriver.itemExists(schemaTable, registryName)) {
+            String message = String.format(
+                    "Registry already exists in schema table, registryId=%s, schemeTable=%s",
+                    registryName, schemaTable);
             throw new RegistryAlreadyExistsException(message);
         }
     }
 
-    private void checkIfSchemaTableExistsOrCreate(String registryName,
-            String schemaTable) {
-        if(!tableDriver.tableExists(schemaTable)) {
-            logger.info("Schema table does not exist, creating new one, registryId={}, schemaTable={}", registryName, schemaTable);
+    private void checkIfSchemaTableExistsOrCreate(String registryName, String schemaTable) {
+        if (!tableDriver.tableExists(schemaTable)) {
+            logger.info(
+                    "Schema table does not exist, creating new one, registryId={}, schemaTable={}",
+                    registryName, schemaTable);
             tableDriver.createTable(schemaTable);
         }
     }
-    
-    public CreatedRegistry createRegistry(EntityRegistryTemplate template) throws JsonProcessingException {
-        
+
+    public CreatedRegistry createRegistry(EntityRegistryTemplate template)
+            throws JsonProcessingException {
+
         logger.info("Creating registry, template={}", template);
-        
+
         String registryName = template.getId();
-        
+
         if (registryExists(registryName)) {
             throw new RegistryAlreadyExistsException(registryName);
         } else {
             boolean registryCreated = createRegistryFromTemplate(template);
-            
+
             if (registryCreated) {
-                
+
                 ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
                 String savedApiKey = authenticationService.saveApiKey(apiKey);
-                
-                return new CreatedRegistry(String.format("A registry with name=%s has been created", registryName), registryName, savedApiKey);
-                
+
+                return new CreatedRegistry(
+                        String.format("A registry with name=%s has been created", registryName),
+                        registryName, savedApiKey);
+
             }
-                
+
             return new CreatedRegistry("Registry NOT created. See log for details");
-        }   
+        }
     }
-    
+
     public boolean registryExists(String tableName) {
         return tableDriver.tableExists(tableName);
     }
-    
+
     public void validateRegistryExists(String tableName) {
-    	if (!registryExists(tableName)) {
-    		throw new RegistryNotFoundException(tableName);
-    	}
+        if (!registryExists(tableName)) {
+            throw new RegistryNotFoundException(tableName);
+        }
     }
 
     public void emptyRegistry(String tableName) {
@@ -116,40 +125,44 @@ public class RegistryManager {
     public boolean deleteRegistry(String registryName) {
 
         logger.info("Deteleting registry, registryId={}", registryName);
-        
-        if(tableDriver.tableSize(registryName) > 0) {
+
+        if (tableDriver.tableSize(registryName) > 0) {
             logger.warn("Can not delete registry that is not empty, registryId={}", registryName);
             return false;
         }
-        
+
         tableDriver.deleteTable(registryName);
         boolean deleted = itemDriver.deleteItem(validationSchemaTableName, registryName);
-        
+
         if (deleted) {
             authenticationService.deleteApiKeyForRegistry(registryName);
         }
-        
+
         return deleted;
     }
 
     public Optional<String> getSchemaAsJson(String registryName) throws IOException {
 
-        Optional<String> registrySchemaItem = itemDriver.getItem(validationSchemaTableName, registryName);
+        Optional<String> registrySchemaItem =
+                itemDriver.getItem(validationSchemaTableName, registryName);
 
         Optional<String> schema = Optional.empty();
-        
+
         if (registrySchemaItem.isPresent()) {
-            EntityRegistryTemplate registryTemplate = objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
+            EntityRegistryTemplate registryTemplate =
+                    objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
             schema = Optional.ofNullable(registryTemplate.getSchema());
         }
-        
+
         return schema;
     }
 
     public void setSchemaJson(String registryName, String schemaAsJson) throws IOException {
-        Optional<String> registrySchemaItem = itemDriver.getItem(validationSchemaTableName, registryName);
+        Optional<String> registrySchemaItem =
+                itemDriver.getItem(validationSchemaTableName, registryName);
 
-        EntityRegistryTemplate registryTemplate = objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
+        EntityRegistryTemplate registryTemplate =
+                objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
 
         registryTemplate.setSchema(schemaAsJson);
         updateRegistryMetadata(registryTemplate);
@@ -167,7 +180,7 @@ public class RegistryManager {
         EntityRegistryTemplate template = new EntityRegistryTemplate();
         Optional<String> entry = itemDriver.getItem(validationSchemaTableName, registryName);
         if (entry.isPresent()) {
-            template = objectMapper.readValue(entry.get() , EntityRegistryTemplate.class);
+            template = objectMapper.readValue(entry.get(), EntityRegistryTemplate.class);
             return template;
         } else {
             throw new RegistryNotFoundException(registryName);
@@ -175,7 +188,8 @@ public class RegistryManager {
 
     }
 
-    public void updateRegistryMetadata(EntityRegistryTemplate request) throws JsonProcessingException {
+    public void updateRegistryMetadata(EntityRegistryTemplate request)
+            throws JsonProcessingException {
 
         String json = objectMapper.writeValueAsString(request);
         itemDriver.updateItem(validationSchemaTableName, request.getId(), json);

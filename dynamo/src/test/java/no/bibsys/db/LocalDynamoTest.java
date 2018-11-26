@@ -2,13 +2,10 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-
 import no.bibsys.db.structures.LanguageString;
 import no.bibsys.db.structures.SimpleEntry;
 
@@ -24,7 +21,7 @@ public abstract class LocalDynamoTest extends DynamoTest {
         System.setProperty("sqlite4java.library.path", "build/libs");
         System.setProperty("java.library.path", "native-libs");
         System.setProperty("sqlite4java.library.path", "build/libs");
-        
+
         localClient = DynamoDBEmbedded.create().amazonDynamoDB();
 
     }

@@ -9,11 +9,11 @@ public class EntityRegistryTemplate {
     private String id;
     private Metadata metadata;
     private String schema;
-    
+
     public EntityRegistryTemplate() {
         metadata = new Metadata();
     }
-    
+
     public EntityRegistryTemplate(String tableName) {
         this();
         id = tableName;
@@ -23,7 +23,7 @@ public class EntityRegistryTemplate {
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
@@ -35,7 +35,7 @@ public class EntityRegistryTemplate {
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
-    
+
     public String getSchema() {
         return schema;
     }
