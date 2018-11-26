@@ -35,16 +35,33 @@ afterEach(function(){
 		cy.get('@registryAdminApiKey').then(function (apiKey) {
 
 			cy.log('api-key = ' + apiKey)
-			let url = '/registry/' + registryName
+
+
+			let emptyUrl = '/registry/' + registryName + '/empty'
 			cy.request({
-				url: url,
+				url: emptyUrl,
 				method: 'DELETE',
 				headers: {
 					'api-key': apiKey,
 					'content-type': 'application/json'
 				},
 				failOnStatusCode: false
-			}).then(function (response) {})
+			}).then(function (response) {
+				cy.log('empty registry status: ' + response.status)
+
+				let url = '/registry/' + registryName
+				cy.request({
+					url: url,
+					method: 'DELETE',
+					headers: {
+						'api-key': apiKey,
+						'content-type': 'application/json'
+					},
+					failOnStatusCode: false
+				}).then(function (response) {
+					cy.log('delete registry status: ' + response.status)
+				})
+			})
 		})
 	})
 })
