@@ -37,6 +37,8 @@ then('the entity is created', () => {
 					'headers': {
 						'api-key': apiKey
 					}
+				}).then((response) => {
+					expect(response.status).to.be.equals(200)
 				});
 			})
 		})

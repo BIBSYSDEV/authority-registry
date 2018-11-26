@@ -2,7 +2,7 @@
 
 given('that there is an existing entity registry with a schema', () => {
 	cy.log('creating empty registry')
-	createEmptyRegistry(true);
+	createEmptyRegistry(false);
 });
 
 given('that there is an existing, empty entity registry with a schema', () => {
@@ -45,11 +45,11 @@ function createEmptyRegistry(createEntity){
 					body: testSchema, 
 					headers: {
 						'api-key': apiAdminApiKey,
-						 "content-type": "application/json"
+						"content-type": "application/json"
 					}
 				}).then((response) => {
 					cy.wrap(response.body.apiKey).as('registryAdminApiKey')
-				
+
 					if(createEntity){
 						cy.log('creating test entity')
 						createTestEntity()
@@ -65,8 +65,8 @@ function createTestEntity(){
 	cy.get('@registryName').then(function (registryName) {
 		cy.get('@registryAdminApiKey').then(function (apiKey) {
 
-//			waitUntilRegistryIsCreated(registryName);
-			
+			waitUntilRegistryIsCreated(registryName, 0);
+
 			let entityAddUrl = '/registry/' + registryName + '/entity';
 			cy.fixture('entityTestData.json') // add testData to registry
 			.then(function (testData) {
@@ -87,34 +87,22 @@ function createTestEntity(){
 	})
 }
 
-let ready = false
+function waitUntilRegistryIsCreated(registryName, count){
 
-function waitUntilRegistryIsCreated(registryName){
-
+	cy.log('counter: ' + count)
 	let statusUrl = '/registry/' + registryName + '/status'
 	cy.log('waiting...')
-	var count = 0;
-	do{ 
-		cy.request({
-			url: statusUrl,
-			failOnStatusCode: false
-		}).then(function (response) {
-			if(response.status === 200){
-				ready = true
-
+	cy.request({
+		url: statusUrl,
+		failOnStatusCode: false
+	}).then(function (response) {
+		if(response.status === 303){
+			const newCount = count + 1;
+			cy.log('newCount: ' + newCount)
+			if(newCount < 5){
+				cy.wait(5000)
+				waitUntilRegistryIsCreated(registryName, newCount)
 			}
-			cy.log('status = ' + response.status + ' ready = ' + ready)
-		})
-		cy.log('ready =' + ready)
-
-		if(!ready){
-			cy.wait(2000);
 		}
-
-		if(count++ > 5){
-			ready = true;
-		}
-
-		cy.log('ready = ' + ready + ', count = ' + count)
-	}while(!ready)
+	})
 }
