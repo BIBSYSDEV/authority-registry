@@ -3,10 +3,12 @@ package no.bibsys.handlers;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.amazon.handlers.events.buildevents.BuildEvent;
-import no.bibsys.amazon.handlers.responses.SimpleResponse;
-import no.bibsys.amazon.handlers.templates.CodePipelineFunctionHandlerTemplate;
+import no.bibsys.aws.lambda.handlers.events.DeployEvent;
+import no.bibsys.aws.lambda.handlers.templates.CodePipelineFunctionHandlerTemplate;
+import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.service.AuthenticationService;
 
 public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
@@ -22,14 +24,10 @@ public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleRe
     }
 
     @Override
-    public SimpleResponse processInput(BuildEvent input, Context context) {
-
+    protected SimpleResponse processInput(DeployEvent inputObject, String apiGatewayQuery,
+        Context context) throws IOException, URISyntaxException {
         authenticationService.deleteApiKeyTable();
 
         return new SimpleResponse("Destroying!!");
-
-
     }
-
-
 }
