@@ -5,23 +5,21 @@ public class CreatedRegistry {
 	private String message;
     private String registryName;
 	private String apiKey;
-	private String status;
 	
 	public CreatedRegistry() {}
 	
 	public CreatedRegistry(String message) {
-		this(message, null, null, null);
+		this(message, null, null);
 	}
 	
 	public CreatedRegistry(String message, String registryName) {
-		this(message, registryName, null, null);
+		this(message, registryName, null);
 	}
 	
-	public CreatedRegistry(String message, String registryName, String apiKey, String status) {
+	public CreatedRegistry(String message, String registryName, String apiKey) {
 		this.message = message;
 		this.registryName = registryName;
 		this.apiKey = apiKey; 
-		this.status = status; 
 	}
 	
 	public String getMessage() {
@@ -47,14 +45,4 @@ public class CreatedRegistry {
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-	
-	
 }
