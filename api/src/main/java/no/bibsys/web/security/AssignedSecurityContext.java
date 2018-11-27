@@ -6,11 +6,11 @@ import javax.ws.rs.core.SecurityContext;
 public class AssignedSecurityContext implements SecurityContext {
 
     private final transient String asssignedRole;
-    
+
     public AssignedSecurityContext(String asssignedRole) {
         this.asssignedRole = asssignedRole;
     }
-    
+
     @Override
     public Principal getUserPrincipal() {
         return new Principal() {
@@ -34,6 +34,6 @@ public class AssignedSecurityContext implements SecurityContext {
     @Override
     public String getAuthenticationScheme() {
         return null;
-}
+    }
 
 }

@@ -12,20 +12,19 @@ import no.bibsys.web.security.ApiKeyConstants;
 
 @Path("/ping")
 public class PingResource {
-    
+
     @GET
     @Path("/")
-    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
             @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
-            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
-            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
+                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
             @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
-            value = HttpMethod.POST),
+                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-            value = AwsApiGatewayIntegration.AWS_PROXY),})})
+                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     public Response ping(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) {
         return Response.ok().build();
     }

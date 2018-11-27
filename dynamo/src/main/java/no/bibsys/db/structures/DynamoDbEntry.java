@@ -30,7 +30,7 @@ public interface DynamoDbEntry extends TableDefinitions {
     default List<AttributeDefinition> attributeDefinitions() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
         attributeDefinitions.add(new AttributeDefinition("id", "S"));
-        //    attributeDefinitions.add(new AttributeDefinition("name","S"));
+        // attributeDefinitions.add(new AttributeDefinition("name","S"));
         return attributeDefinitions;
     }
 
@@ -45,7 +45,7 @@ public interface DynamoDbEntry extends TableDefinitions {
     default List<KeySchemaElement> keySchema() {
         List<KeySchemaElement> keys = new ArrayList<KeySchemaElement>();
         keys.add(new KeySchemaElement("id", KeyType.HASH));
-        //    keys.add(new KeySchemaElement("name", KeyType.RANGE));
+        // keys.add(new KeySchemaElement("name", KeyType.RANGE));
         return keys;
     }
 

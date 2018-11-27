@@ -31,8 +31,7 @@ public final class TableDriver {
     private transient DynamoDB dynamoDb;
 
 
-    private TableDriver() {
-    }
+    private TableDriver() {}
 
     private TableDriver(final AmazonDynamoDB client) {
         this.client = client;
@@ -70,7 +69,7 @@ public final class TableDriver {
             String tableStatus = describe.getTableStatus();
             exists = tableStatus != null;
         } catch (ResourceNotFoundException e) {
-            logger.warn("Table {} does not exist", tableName);
+            logger.debug("Table {} does not exist", tableName);
         }
         return exists;
     }
@@ -88,31 +87,32 @@ public final class TableDriver {
         Integer itemCount = 0;
         ScanResult result = null;
         do {
-            if(result != null){
+            if (result != null) {
                 scanRequest.setExclusiveStartKey(result.getLastEvaluatedKey());
             }
 
             result = client.scan(scanRequest);
             itemCount += result.getScannedCount();
-        } while(result.getLastEvaluatedKey() != null);
+        } while (result.getLastEvaluatedKey() != null);
+        logger.info("Table has {} items, tableId={}", itemCount, tableName);
         return itemCount;
     }
 
     public boolean emptyTable(final String tableName) {
 
-        if(!tableExists(tableName)) {
+        if (!tableExists(tableName)) {
             return false;
         }
         boolean emptyResult = deleteNoCheckTable(tableName);
-        return emptyResult&&createTable(tableName);
+        return emptyResult && createTable(tableName);
     }
 
     public boolean deleteTable(final String tableName) {
 
-        if(!tableExists(tableName)) {
+        if (!tableExists(tableName)) {
             return false;
         }
-        
+
         if (isEmpty(tableName)) {
             return deleteNoCheckTable(tableName);
         } else {
@@ -128,29 +128,31 @@ public final class TableDriver {
         if (tableExists(tableName)) {
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
+            logger.debug("Table deleted successfully, tableId={}", tableName);
             return true;
         }
+        logger.error("Can not delete non-existing table, tableId={}", tableName);
         return false;
 
     }
 
     public boolean createTable(final String tableName, final TableDefinitions tableEntry) {
 
-        if(!tableExists(tableName)){
-            final List<AttributeDefinition> attributeDefinitions = tableEntry.attributeDefinitions();
+        if (!tableExists(tableName)) {
+            final List<AttributeDefinition> attributeDefinitions =
+                    tableEntry.attributeDefinitions();
             final List<KeySchemaElement> keySchema = tableEntry.keySchema();
 
-            final CreateTableRequest request = new CreateTableRequest()
-                    .withTableName(tableName)
-                    .withKeySchema(keySchema)
-                    .withAttributeDefinitions(attributeDefinitions)
-                    .withProvisionedThroughput(new ProvisionedThroughput()
-                            .withReadCapacityUnits(1L)
+            final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
+                    .withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions)
+                    .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
                             .withWriteCapacityUnits(1L));
 
             TableUtils.createTableIfNotExists(client, request);
+            logger.debug("Table created, tableId={}", tableName);
             return true;
         }
+        logger.error("Tried to create table but it already exists, tableId={}", tableName);
         return false;
     }
 
@@ -160,10 +162,10 @@ public final class TableDriver {
         return createTable(tableName, new IdOnlyEntry());
     }
 
-    public List<String> listTables(){
+    public List<String> listTables() {
         List<String> tableList = new ArrayList<>();
         dynamoDb.listTables().forEach(table -> tableList.add(table.getTableName()));
-
+        logger.info("Listing {} tables", tableList.size());
         return tableList;
     }
 

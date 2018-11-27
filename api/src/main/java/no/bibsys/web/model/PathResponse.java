@@ -8,7 +8,7 @@ public class PathResponse {
     private String path;
     private String message;
     private String statusCode;
-    
+
     public String getStatusCode() {
         return statusCode;
     }

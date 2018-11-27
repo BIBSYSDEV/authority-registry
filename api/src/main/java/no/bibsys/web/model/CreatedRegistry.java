@@ -2,7 +2,7 @@ package no.bibsys.web.model;
 
 public class CreatedRegistry {
 
-	private String message;
+    private String message;
     private String registryName;
 	private String apiKey;
 	

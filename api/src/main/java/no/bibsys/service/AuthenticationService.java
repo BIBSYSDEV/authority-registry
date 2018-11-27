@@ -24,25 +24,24 @@ import com.amazonaws.services.dynamodbv2.model.SSESpecification;
 import no.bibsys.EnvironmentReader;
 
 public class AuthenticationService {
-    
-    private final static String TEST_STAGE_NAME = "test";
-    
+
+    private static final  String TEST_STAGE_NAME = "test";
+
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
     private final transient EnvironmentReader environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
-    private final static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
     public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
-        
-        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME).orElse("entity-registry-api-keys");
-        
-        config = DynamoDBMapperConfig
-                .builder()
+
+        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME);
+
+        config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
     }
@@ -57,31 +56,31 @@ public class AuthenticationService {
 
     public String createApiKeyTable() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
-        
+        attributeDefinitions
+                .add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
+
         List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
         keySchema.add(new KeySchemaElement().withAttributeName("Key").withKeyType(KeyType.HASH));
-        
+
         CreateTableRequest request = new CreateTableRequest();
-        request
-        .withTableName(apiKeyTableName)
-        .withKeySchema(keySchema)
-        .withAttributeDefinitions(attributeDefinitions)
-        .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L))
-        .withSSESpecification(new SSESpecification().withEnabled(true));
-        
+        request.withTableName(apiKeyTableName).withKeySchema(keySchema)
+                .withAttributeDefinitions(attributeDefinitions)
+                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
+                        .withWriteCapacityUnits(1L))
+                .withSSESpecification(new SSESpecification().withEnabled(true));
+
         Table table = dynamoDB.createTable(request);
         try {
             table.waitForActive();
         } catch (InterruptedException e) {
-
+            logger.warn(e.getMessage());
         }
-        
+
         return table.getTableName();
     }
-    
+
     public void setUpInitialApiKeys() {
-        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).orElse("").equals(TEST_STAGE_NAME)) {
+        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).equals(TEST_STAGE_NAME)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
@@ -91,39 +90,37 @@ public class AuthenticationService {
     }
 
     public String deleteApiKeyTable() {
-        
+
         Table table = dynamoDB.getTable(apiKeyTableName);
         try {
             table.delete();
             table.waitForDelete();
         } catch (Exception e) {
-            logger.error("Error deleting api keys table", e);
+            logger.error("Error deleting api keys table, reason={}", e.getMessage());
         }
         return table.getTableName();
     }
-    
+
     public String saveApiKey(ApiKey apiKey) {
         mapper.save(apiKey, config);
         return apiKey.getKey();
     }
 
-	public void deleteApiKeyForRegistry(String registryName) {
+    public void deleteApiKeyForRegistry(String registryName) {
 
-	    DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-	    scanExpression
-	    .addFilterCondition("Registry", new Condition()
-	            .withComparisonOperator(ComparisonOperator.EQ)
-	            .withAttributeValueList(new AttributeValue()
-	                    .withS(registryName)));
-	    
-		PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
-		
-		logger.info("Found {} API Keys",apiKeys.size());
-		
-		for (ApiKey apiKey : apiKeys) {
-		    logger.info("Deleting API Key {}", apiKey);
-			mapper.delete(apiKey, config);
-		}
-	}
-    
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        scanExpression.addFilterCondition("Registry",
+                new Condition().withComparisonOperator(ComparisonOperator.EQ)
+                        .withAttributeValueList(new AttributeValue().withS(registryName)));
+
+        PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
+
+        logger.info("Found {} API Keys", apiKeys.size());
+
+        for (ApiKey apiKey : apiKeys) {
+            logger.info("Deleting API Key {}", apiKey);
+            mapper.delete(apiKey, config);
+        }
+    }
+
 }
