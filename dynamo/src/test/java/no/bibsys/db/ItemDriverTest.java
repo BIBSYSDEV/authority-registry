@@ -3,15 +3,18 @@ package no.bibsys.db;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import no.bibsys.utils.IoUtils;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import com.amazonaws.services.dynamodbv2.document.Item;
+
+import no.bibsys.utils.IoUtils;
 
 
 public class ItemDriverTest extends LocalDynamoTest {
@@ -26,7 +29,7 @@ public class ItemDriverTest extends LocalDynamoTest {
     @Before
     public void init() {
         super.init();
-        tableDriver = TableDriver.create(localClient, new DynamoDB(localClient));
+        tableDriver = TableDriver.create(localClient);
         itemDriver = ItemDriver.create(tableDriver);
     }
 

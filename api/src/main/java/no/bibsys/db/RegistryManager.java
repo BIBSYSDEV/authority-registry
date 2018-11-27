@@ -109,7 +109,7 @@ public class RegistryManager {
                 String savedApiKey = authenticationService.saveApiKey(apiKey);
 
                 return new CreatedRegistry(
-                        String.format("A registry with name=%s has been created", registryName),
+                        String.format("A registry with name=%s is being created", registryName),
                         registryName, savedApiKey);
 
             }
