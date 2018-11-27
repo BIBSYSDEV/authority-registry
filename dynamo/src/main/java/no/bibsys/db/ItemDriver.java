@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -24,11 +23,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class ItemDriver {
 
-    private final transient DynamoDB dynamoDb;
+    private transient final TableDriver tableDriver;
     private static final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
 
-    private ItemDriver(final DynamoDB dynamoDb) {
-        this.dynamoDb = dynamoDb;
+    private ItemDriver(final TableDriver dynamoDb) {
+        this.tableDriver = dynamoDb;
     }
 
     /**
@@ -36,7 +35,7 @@ public final class ItemDriver {
      *
      * @return customized ItemDriver
      */
-    public static ItemDriver create(final DynamoDB dynamoDb) {
+    public static ItemDriver create(final TableDriver dynamoDb) {
         ItemDriver tableDriver = new ItemDriver(dynamoDb);
         return tableDriver;
     }
@@ -50,6 +49,10 @@ public final class ItemDriver {
      */
     public boolean addItem(String tableName, String itemId, String itemJson) {
 
+        if(!tableDriver.status(tableName).equals("ACTIVE")) {
+            return false;
+        }
+        
         Map<String, Object> itemMap = new ConcurrentHashMap<>();
         itemMap.put("id", itemId);
 
@@ -70,7 +73,7 @@ public final class ItemDriver {
         if (!itemId.isEmpty()) {
             try {
 
-                final Table table = dynamoDb.getTable(tableName);
+                final Table table = tableDriver.getTable(tableName);
 
                 PutItemSpec putItemSpec = new PutItemSpec().withItem(item)
                         .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
@@ -120,7 +123,7 @@ public final class ItemDriver {
             }
 
             final Item item = Item.fromMap(itemMap);
-            final Table table = dynamoDb.getTable(tableName);
+            final Table table = tableDriver.getTable(tableName);
 
             List<AttributeUpdate> updateList = new ArrayList<>();
             item.attributes().forEach(entry -> {
@@ -143,11 +146,10 @@ public final class ItemDriver {
 
 
     public Optional<String> getItem(String tableName, String itemId) {
-        final Table table = dynamoDb.getTable(tableName);
+        final Table table = tableDriver.getTable(tableName);
         try {
             final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", itemId));
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
-            logger.debug("Item read successfully, tableId={}, itemId={}", tableName, itemId);
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         } catch (ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {
             logger.debug("No item, tableId={}, itemId={}, reason={}", tableName, itemId,
@@ -158,7 +160,7 @@ public final class ItemDriver {
 
     public boolean deleteItem(String tableName, String itemId) {
 
-        Table table = dynamoDb.getTable(tableName);
+        Table table = tableDriver.getTable(tableName);
         if (itemExists(tableName, itemId)) {
             table.deleteItem(new PrimaryKey("id", itemId));
             logger.debug("Item deleted successfully, tableId={}, itemId={}", tableName, itemId);

@@ -9,6 +9,8 @@ import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.testtemplates.SampleData.Entry;
 import org.junit.Test;
 
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+
 public class EntityManagerTest extends LocalDynamoTest {
 
     @Test
@@ -27,7 +29,7 @@ public class EntityManagerTest extends LocalDynamoTest {
 
     }
 
-    @Test
+    @Test 
     public void addEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
         String tableName = "addEntityNoRegistry";
         Entry entry = sampleData.sampleEntry();
@@ -101,7 +103,7 @@ public class EntityManagerTest extends LocalDynamoTest {
         boolean entityExists = entityManager.entityExists(tableName, entityId);
         assertThat(entityExists, equalTo(false));
     }
-
+    
     @Test
     public void getEntity_EntityExisting_ReturnsTrue() throws IOException {
         String tableName = "getEntity";
@@ -129,7 +131,7 @@ public class EntityManagerTest extends LocalDynamoTest {
     @Test
     public void getEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
         String tableName = "getEntityNoRegistry";
-
+        
         String entityId = "nonExistingEntityId";
         Optional<String> getEntity = entityManager.getEntity(tableName, entityId);
         assertThat(getEntity.isPresent(), equalTo(false));

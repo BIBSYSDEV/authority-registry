@@ -1,22 +1,33 @@
 package no.bibsys.db;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.EnvironmentReader;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
 import no.bibsys.web.exception.RegistryNotFoundException;
+import no.bibsys.web.exception.RegistryUnavailableException;
 import no.bibsys.web.model.CreatedRegistry;
 
 public class RegistryManager {
+
+    public enum RegistryStatus {
+        CREATING, UPDATING, DELETING, ACTIVE, NOT_FOUND;
+    }
 
     private final transient TableDriver tableDriver;
     private final transient ItemDriver itemDriver;
@@ -98,7 +109,7 @@ public class RegistryManager {
                 String savedApiKey = authenticationService.saveApiKey(apiKey);
 
                 return new CreatedRegistry(
-                        String.format("A registry with name=%s has been created", registryName),
+                        String.format("A registry with name=%s is being created", registryName),
                         registryName, savedApiKey);
 
             }
@@ -111,10 +122,19 @@ public class RegistryManager {
         return tableDriver.tableExists(tableName);
     }
 
-    public void validateRegistryExists(String tableName) {
-        if (!registryExists(tableName)) {
+    public Status validateRegistryExists(String tableName) {
+    	RegistryStatus status = status(tableName);
+    	switch(status) {
+        case ACTIVE:
+            return Status.CREATED;
+        case CREATING:
+        case UPDATING:
+            throw new RegistryUnavailableException(tableName, status.name().toLowerCase(Locale.ENGLISH));
+        case DELETING:
+        case NOT_FOUND:
+        default:
             throw new RegistryNotFoundException(tableName);
-        }
+    	}
     }
 
     public void emptyRegistry(String tableName) {
@@ -196,4 +216,14 @@ public class RegistryManager {
 
     }
 
+    public RegistryStatus status(String registryName) {
+        
+        RegistryStatus registryStatus = RegistryStatus.valueOf(tableDriver.status(registryName));
+        if(registryStatus == null) {
+            registryStatus = RegistryStatus.NOT_FOUND;
+        }
+        
+        return registryStatus;
+    }
+    
 }

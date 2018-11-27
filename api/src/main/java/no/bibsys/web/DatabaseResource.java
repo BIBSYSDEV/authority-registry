@@ -195,6 +195,30 @@ public class DatabaseResource {
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
     }
 
+    @GET
+    @Path("/{registryName}/status")
+    @Operation(extensions = {@Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS, 
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue=true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD,
+            value = HttpMethod.POST),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY),})})
+    public Response registryStatus(
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry in which to update entity",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+        
+        registryManager.validateRegistryExists(registryName);
+        
+        return Response.ok(String.format("Registry with name %s is active", registryName)).build();
+    }
+    
     @DELETE
     @Path("/{registryName}/empty")
     @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
@@ -347,7 +371,6 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",

@@ -14,7 +14,7 @@
 //      | bibframe-uri |
 //    Then anonymous user can view the data in the serialization and profile requested
 
-given('specifies an Accept-schema header with a value:', (dataTable) => {
+when('specifies an Accept-schema header with a value:', (dataTable) => {
 	let profileArray = dataTable.rawTable;
 	cy.wrap(profileArray[0]).as('profile')
 })

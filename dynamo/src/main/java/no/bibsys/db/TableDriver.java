@@ -2,8 +2,10 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -12,11 +14,13 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
 import no.bibsys.db.structures.IdOnlyEntry;
 import no.bibsys.db.structures.TableDefinitions;
 
@@ -29,9 +33,9 @@ public final class TableDriver {
 
     private TableDriver() {}
 
-    private TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+    private TableDriver(final AmazonDynamoDB client) {
         this.client = client;
-        this.dynamoDb = dynamoDb;
+        this.dynamoDb = new DynamoDB(client);
     }
 
     /**
@@ -39,11 +43,11 @@ public final class TableDriver {
      *
      * @return customized TableDriver
      */
-    public static TableDriver create(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+    public static TableDriver create(final AmazonDynamoDB client) {
         if (client == null) {
             throw new IllegalStateException("Cannot set null client ");
         }
-        TableDriver tableDriver = new TableDriver(client, dynamoDb);
+        TableDriver tableDriver = new TableDriver(client);
         return tableDriver;
     }
 
@@ -64,7 +68,7 @@ public final class TableDriver {
             TableDescription describe = getTable(tableName).describe();
             String tableStatus = describe.getTableStatus();
             exists = tableStatus != null;
-        } catch (com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             logger.debug("Table {} does not exist", tableName);
         }
         return exists;
@@ -163,5 +167,15 @@ public final class TableDriver {
         dynamoDb.listTables().forEach(table -> tableList.add(table.getTableName()));
         logger.info("Listing {} tables", tableList.size());
         return tableList;
+    }
+
+    public String status(String tableName) {
+        
+        try {
+            TableDescription describe = getTable(tableName).describe();
+            return describe.getTableStatus();
+        }catch(ResourceNotFoundException e) {
+            return "NOT_FOUND";
+        }
     }
 }
