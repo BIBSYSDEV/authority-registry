@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class SampleData {
 
-    public SampleData() {
-    }
+    public SampleData() {}
 
     private final ObjectMapper mapper = new ObjectMapper();
 

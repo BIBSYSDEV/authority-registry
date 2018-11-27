@@ -17,7 +17,7 @@ when('the API admin user adds registry admin API keys to the entity registry', (
 					url: addApikeyUrl,
 					method: 'POST',
 					headers: {
-						'x-api-Key': apiKey
+						'api-Key': apiKey
 					},
 					body: testData
 				}).then((response) => {

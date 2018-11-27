@@ -16,7 +16,7 @@ public class InitHandler extends CodePipelineFunctionHandlerTemplate<SimpleRespo
 
     public InitHandler() {
         super();
-        
+
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         authenticationService = new AuthenticationService(client, new EnvironmentReader());
     }

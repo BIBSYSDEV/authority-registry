@@ -1,7 +1,6 @@
 package no.bibsys.db;
 
 import static org.junit.Assert.assertEquals;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
@@ -26,9 +25,9 @@ public class DynamoDbEmbeddedTest {
     {
         System.setProperty("sqlite4java.library.path", "build/libs");
     }
-    
+
     private static CreateTableResult createTable(AmazonDynamoDB db, String tableName,
-        String hashKeyName) {
+            String hashKeyName) {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
         attributeDefinitions.add(new AttributeDefinition(hashKeyName, ScalarAttributeType.S));
 
@@ -37,11 +36,8 @@ public class DynamoDbEmbeddedTest {
 
         ProvisionedThroughput provisionedthroughput = new ProvisionedThroughput(1000L, 1000L);
 
-        CreateTableRequest request =
-            new CreateTableRequest()
-                .withTableName(tableName)
-                .withAttributeDefinitions(attributeDefinitions)
-                .withKeySchema(ks)
+        CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
+                .withAttributeDefinitions(attributeDefinitions).withKeySchema(ks)
                 .withProvisionedThroughput(provisionedthroughput);
 
         return db.createTable(request);
@@ -59,16 +55,16 @@ public class DynamoDbEmbeddedTest {
             TableDescription tableDesc = res.getTableDescription();
             assertEquals(tableName, tableDesc.getTableName());
             assertEquals("[{AttributeName: " + hashKeyName + ",KeyType: HASH}]",
-                tableDesc.getKeySchema().toString());
+                    tableDesc.getKeySchema().toString());
             assertEquals("[{AttributeName: " + hashKeyName + ",AttributeType: S}]",
-                tableDesc.getAttributeDefinitions().toString());
+                    tableDesc.getAttributeDefinitions().toString());
             assertEquals(Long.valueOf(1000L),
-                tableDesc.getProvisionedThroughput().getReadCapacityUnits());
+                    tableDesc.getProvisionedThroughput().getReadCapacityUnits());
             assertEquals(Long.valueOf(1000L),
-                tableDesc.getProvisionedThroughput().getWriteCapacityUnits());
+                    tableDesc.getProvisionedThroughput().getWriteCapacityUnits());
             assertEquals("ACTIVE", tableDesc.getTableStatus());
             assertEquals("arn:aws:dynamodb:ddblocal:000000000000:table/Movies",
-                tableDesc.getTableArn());
+                    tableDesc.getTableArn());
 
             ListTablesResult tables = ddb.listTables();
             assertEquals(1, tables.getTableNames().size());

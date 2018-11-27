@@ -18,7 +18,7 @@ public class Metadata {
     public Metadata() {
         createDate = new Date();
     }
-    
+
     public String getName() {
         return name;
     }
@@ -26,7 +26,7 @@ public class Metadata {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -90,5 +90,5 @@ public class Metadata {
     public void setSameAs(List<String> sameAs) {
         this.sameAs = sameAs;
     }
-    
+
 }

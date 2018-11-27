@@ -69,7 +69,8 @@ subprojects {
 
     dependencies {
 
-       
+	    compile ('io.symphonia:lambda-logging:1.0.3')
+
         //useful libraries from google
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
 

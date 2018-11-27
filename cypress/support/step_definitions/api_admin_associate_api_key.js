@@ -14,7 +14,7 @@ when('the API admin user submits a new API key to replace the current valid API 
 				url: addApikeyUrl,
 				method: 'POST',
 				headers: {
-					'x-api-key': apiAdminApiKey
+					'api-key': apiAdminApiKey
 				}
 			}).then((response) => {
 				cy.wrap(response.body).as('newApiKey')
@@ -33,7 +33,7 @@ then('the API key is updated', () => {
 					method: 'POST',
 					body: testData,
 					headers: {
-						'x-api-key': newApiKey
+						'api-key': newApiKey
 					}
 				})
 			})

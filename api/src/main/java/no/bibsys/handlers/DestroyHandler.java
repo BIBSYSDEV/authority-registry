@@ -16,7 +16,7 @@ public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleRe
 
     public DestroyHandler() {
         super();
-        
+
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         authenticationService = new AuthenticationService(client, new EnvironmentReader());
     }
@@ -25,7 +25,7 @@ public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleRe
     public SimpleResponse processInput(BuildEvent input, Context context) {
 
         authenticationService.deleteApiKeyTable();
-        
+
         return new SimpleResponse("Destroying!!");
 
 

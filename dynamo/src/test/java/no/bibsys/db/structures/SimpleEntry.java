@@ -11,8 +11,7 @@ public class SimpleEntry implements DynamoDbEntry {
     private List<LanguageString> preferredLabels;
 
 
-    public SimpleEntry() {
-    }
+    public SimpleEntry() {}
 
     public SimpleEntry(final String id, final List<LanguageString> preferredLabels) {
         this.id = id;

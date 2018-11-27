@@ -1,8 +1,14 @@
 /* global given */
 
 given('that there is an existing entity registry with a schema', () => {
-	createEmptyRegistry();
+	cy.log('creating empty registry')
+	createEmptyRegistry(false);
 });
+
+given('that there is an existing, empty entity registry with a schema', () => {
+	cy.log('creating empty registry')
+	createEmptyRegistry(false);
+})
 
 given('that there is an entity in the registry', () => {
 	createTestEntity()
@@ -12,26 +18,23 @@ given('that there is an existing entity in the registry', () => {
 	createTestEntity()
 })
 
-given('that there is an existing, empty entity registry with a schema', () => {
-	createEmptyRegistry();
-})
-
 given('that there is an existing, populated entity registry with a schema', () => {
-	createEmptyRegistry();
-	createTestEntity();
+	createEmptyRegistry(true);
 })
 
 given('that there is an existing, populated entity registry with a schema and registered registry API keys', () => {
-	createEmptyRegistry();
-	createTestEntity();
+	createEmptyRegistry(true);
 })
 
-function createEmptyRegistry(){
-	cy.get('@registryName').then((registryName) => {
-		cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
+function createEmptyRegistry(createEntity){
+	cy.get('@registryName').then(function (registryName) {
+		cy.log('create Entity? ' + createEntity)
+		cy.log('Creating schema with name ' + registryName)
+		cy.get('@apiAdminApiKey').then(function (apiAdminApiKey) {
 			// create new test registry metadata
+			cy.log('Using apiKey ' + apiAdminApiKey)
 			cy.fixture('registryTestMetadata.json')
-			.then((testSchema) => {
+			.then(function (testSchema) {
 				testSchema.id = registryName;
 				let createUrl = '/registry';
 				cy.request({
@@ -40,36 +43,31 @@ function createEmptyRegistry(){
 					body: testSchema, 
 					headers: {
 						'api-key': apiAdminApiKey,
-						 "content-type": "application/json"
+						"content-type": "application/json"
+					}
+				}).then((response) => {
+					cy.wrap(response.body.apiKey).as('registryAdminApiKey')
+
+					waitUntilRegistryIsCreated(registryName, 0)
+					
+					if(createEntity){
+						cy.log('creating test entity')
+						createTestEntity()
 					}
 				})
-
-//				// add schema to registry
-//				cy.get('@apiRegistryApiKey').then((registryAdminApiKey) => {
-//				cy.fixture('registryTestSchema.json')
-//				.then((testSchema) => {
-//					let addSchemaUrl = 'registry/' + registryName + '/schema';
-//					cy.request({
-//						url: addSchemaUrl,
-//						method: 'POST',
-//						body: testSchema, 
-//						headers: {
-//							'api-key': apiAdminApiKey
-//						}
-//					})
-//				})
 			})
 		})
 	})
 }
 
 function createTestEntity(){
+	var ready = false
+	cy.get('@registryName').then(function (registryName) {
+		cy.get('@registryAdminApiKey').then(function (apiKey) {
 
-	cy.get('@registryName').then((registryName) => {
-		cy.get('@apiRegistryApiKey').then((apiKey) => {
 			let entityAddUrl = '/registry/' + registryName + '/entity';
 			cy.fixture('entityTestData.json') // add testData to registry
-			.then((testData) => {
+			.then(function (testData) {
 				cy.request({
 					url: entityAddUrl,
 					method: 'POST',
@@ -78,9 +76,8 @@ function createTestEntity(){
 						'api-key': apiKey,
 						'content-type': 'application/json'
 					}
-				}).then((response) => {
-					let entityUri = response.body
-					let entityId = entityUri.split('/')[entityUri.length - 1]
+				}).then(function (response) {
+					let entityId = response.body.entityId
 					cy.wrap(entityId).as('entityId');
 				})
 			})
@@ -88,3 +85,22 @@ function createTestEntity(){
 	})
 }
 
+function waitUntilRegistryIsCreated(registryName, count){
+
+	cy.log('counter: ' + count)
+	let statusUrl = '/registry/' + registryName + '/status'
+	cy.log('waiting...')
+	cy.request({
+		url: statusUrl,
+		failOnStatusCode: false
+	}).then(function (response) {
+		if(response.status === 303){
+			const newCount = count + 1;
+			cy.log('newCount: ' + newCount)
+			if(newCount < 5){
+				cy.wait(5000)
+				waitUntilRegistryIsCreated(registryName, newCount)
+			}
+		}
+	})
+}

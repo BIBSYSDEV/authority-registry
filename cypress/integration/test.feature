@@ -1,4 +1,4 @@
-Feature: Registry admin features
+Feature: Test features
 
   Background:
     Given that the registry admin user has a valid API key for registry administration

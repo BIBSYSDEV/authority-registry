@@ -17,7 +17,7 @@ when('the registry admin user submits an API key and a request to bulk upload th
 			cy.request({
 				url: bulkUploadUrl,
 				header: {
-					'x-api-key': apiKey
+					'api-key': apiKey
 				},
 				body: bulkUpload
 			})

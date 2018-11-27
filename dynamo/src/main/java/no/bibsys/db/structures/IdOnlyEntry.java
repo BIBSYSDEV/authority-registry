@@ -5,8 +5,7 @@ public class IdOnlyEntry implements DynamoDbEntry {
     private String id;
 
 
-    public IdOnlyEntry() {
-    }
+    public IdOnlyEntry() {}
 
     public IdOnlyEntry(String id) {
         setId(id);
@@ -14,7 +13,7 @@ public class IdOnlyEntry implements DynamoDbEntry {
 
 
     @Override
-    public final  String getId() {
+    public final String getId() {
         return id;
     }
 

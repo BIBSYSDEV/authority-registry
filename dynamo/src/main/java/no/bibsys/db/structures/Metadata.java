@@ -2,7 +2,6 @@ package no.bibsys.db.structures;
 
 import java.util.Date;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -22,7 +21,7 @@ public class Metadata {
     public Metadata() {
         createDate = new Date();
     }
-    
+
     public String getName() {
         return name;
     }
@@ -30,7 +29,7 @@ public class Metadata {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -97,8 +96,9 @@ public class Metadata {
 
     @Override
     public String toString() {
-        return "Metadata [name=" + name + ", createDate=" + createDate + ", registryName=" + registryName + ", label="
-                + label + ", license=" + license + ", contributor=" + contributor + ", creator=" + creator
-                + ", description=" + description + ", sameAs=" + sameAs + "]";
+        return "Metadata [name=" + name + ", createDate=" + createDate + ", registryName="
+                + registryName + ", label=" + label + ", license=" + license + ", contributor="
+                + contributor + ", creator=" + creator + ", description=" + description
+                + ", sameAs=" + sameAs + "]";
     }
 }
