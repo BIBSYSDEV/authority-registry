@@ -34,9 +34,9 @@ public final class TableDriver {
     private TableDriver() {
     }
 
-    private TableDriver(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+    private TableDriver(final AmazonDynamoDB client) {
         this.client = client;
-        this.dynamoDb = dynamoDb;
+        this.dynamoDb = new DynamoDB(client);
     }
 
     /**
@@ -44,11 +44,11 @@ public final class TableDriver {
      *
      * @return customized TableDriver
      */
-    public static TableDriver create(final AmazonDynamoDB client, final DynamoDB dynamoDb) {
+    public static TableDriver create(final AmazonDynamoDB client) {
         if (client == null) {
             throw new IllegalStateException("Cannot set null client ");
         }
-        TableDriver tableDriver = new TableDriver(client, dynamoDb);
+        TableDriver tableDriver = new TableDriver(client);
         return tableDriver;
     }
 
