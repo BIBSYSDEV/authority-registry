@@ -3,20 +3,24 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
 import java.util.List;
 import java.util.UUID;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
@@ -44,7 +48,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EnvironmentReader environmentReader = new MockEnvironmentReader();
 
 
-        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
+        TableDriver tableDriver = TableDriver.create(client);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);

@@ -145,10 +145,10 @@ public final class ItemDriver {
     }
 
 
-    public Optional<String> getItem(String tableName, String id) {
+    public Optional<String> getItem(String tableName, String itemId) {
         final Table table = tableDriver.getTable(tableName);
         try {
-            final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", id));
+            final Optional<Item> itemOpt = Optional.ofNullable(table.getItem("id", itemId));
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         } catch (ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {

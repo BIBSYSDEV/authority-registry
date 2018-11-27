@@ -24,7 +24,7 @@ public abstract class LocalDynamoTest {
 
         final AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
 
-        TableDriver tableManager = TableDriver.create(client, new DynamoDB(client));
+        TableDriver tableManager = TableDriver.create(client);
         ItemDriver itemManager = ItemDriver.create(tableManager);
         authenticationService = new AuthenticationService(client, new MockEnvironmentReader());
         registryManager = new RegistryManager(tableManager, itemManager, authenticationService,
