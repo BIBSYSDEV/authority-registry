@@ -30,8 +30,7 @@ public class RegistryService {
 				ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
 				String savedApiKey = authenticationService.saveApiKey(apiKey);
 				
-				return new CreatedRegistry(String.format("A registry with name=%s is being created", registryName), registryName, savedApiKey, String.format("/registry/%s/status", registryName));
-				
+				return new CreatedRegistry(String.format("A registry with name=%s is being created", registryName), registryName, savedApiKey);
 			}
 				
 			return new CreatedRegistry("Registry NOT created. See log for details");
