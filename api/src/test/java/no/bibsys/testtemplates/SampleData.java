@@ -22,14 +22,14 @@ public class SampleData {
         array.add(1);
         array.add(2);
         array.add(3);
-        
+
         String json = mapper.writeValueAsString(root);
-        
+
         Entity entity = new Entity(json);
 
         String id = "sampleId";
         entity.setId(id);
-        
+
         return entity;
     }
 

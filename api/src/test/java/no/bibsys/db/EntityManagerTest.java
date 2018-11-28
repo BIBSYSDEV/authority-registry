@@ -97,7 +97,7 @@ public class EntityManagerTest extends LocalDynamoTest {
         boolean entityExists = entityManager.entityExists(tableName, entityId);
         assertThat(entityExists, equalTo(false));
     }
-    
+
     @Test
     public void getEntity_EntityExisting_ReturnsTrue() throws IOException {
         String tableName = "getEntity";
@@ -124,7 +124,7 @@ public class EntityManagerTest extends LocalDynamoTest {
     @Test(expected = RegistryNotFoundException.class)
     public void getEntity_RegistryNotExisting_ThrowsException() throws IOException {
         String tableName = "getEntityNoRegistry";
-        
+
         String entityId = "nonExistingEntityId";
         entityManager.getEntity(tableName, entityId);
     }
@@ -141,7 +141,7 @@ public class EntityManagerTest extends LocalDynamoTest {
 
         String updatedLabel = "An updated label";
         addEntity.getBody().put("label", updatedLabel);
-        
+
         Entity updateEntity =
                 entityManager.updateEntity(tableName, addEntity.getId(), addEntity.getBodyAsJson());
         assertEquals(addEntity, updateEntity);

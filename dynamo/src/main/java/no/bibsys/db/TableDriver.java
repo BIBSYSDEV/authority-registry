@@ -2,10 +2,8 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -20,7 +18,6 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-
 import no.bibsys.db.structures.IdOnlyEntry;
 import no.bibsys.db.structures.TableDefinitions;
 
@@ -139,14 +136,12 @@ public final class TableDriver {
     public boolean createTable(final String tableName, final TableDefinitions tableEntry) {
 
         if (!tableExists(tableName)) {
-            final List<AttributeDefinition> attributeDefinitions =
-                    tableEntry.attributeDefinitions();
+            final List<AttributeDefinition> attributeDefinitions = tableEntry.attributeDefinitions();
             final List<KeySchemaElement> keySchema = tableEntry.keySchema();
 
             final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
-                    .withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions)
-                    .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
-                            .withWriteCapacityUnits(1L));
+                    .withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions).withProvisionedThroughput(
+                            new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={}", tableName);
@@ -170,11 +165,11 @@ public final class TableDriver {
     }
 
     public String status(String tableName) {
-        
+
         try {
             TableDescription describe = getTable(tableName).describe();
             return describe.getTableStatus();
-        }catch(ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return "NOT_FOUND";
         }
     }

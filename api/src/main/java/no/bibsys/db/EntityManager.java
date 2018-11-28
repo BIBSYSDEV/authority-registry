@@ -1,8 +1,6 @@
 package no.bibsys.db;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
 import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,26 +26,25 @@ public class EntityManager {
 
     }
 
-    public Entity addEntity(final String registryName, final String json)
-            throws IOException {
+    public Entity addEntity(final String registryName, final String json) throws IOException {
 
         if (!itemDriver.tableExists(registryName)) {
             throw new RegistryNotFoundException(registryName);
         }
-        
+
         Entity entity = new Entity(json);
         entity.validate();
-        
+
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryName))
                 .build();
-        
+
         try {
-            mapper.save(entity, config);            
+            mapper.save(entity, config);
             logger.info("Entity created successfully, registryId={}, entityId={}", registryName,
                     entity.getId());
-            return entity;            
+            return entity;
         } catch (ResourceNotFoundException e) {
             throw new RegistryNotFoundException(registryName);
         }
@@ -57,7 +54,7 @@ public class EntityManager {
         if (!itemDriver.tableExists(registryName)) {
             throw new RegistryNotFoundException(registryName);
         }
-        
+
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryName))
                 .build();
@@ -67,12 +64,12 @@ public class EntityManager {
                 return entity;
             } else {
                 throw new EntityNotFoundException(registryName, id);
-            }            
+            }
         } catch (ResourceNotFoundException e) {
             throw new EntityNotFoundException(registryName, id);
         }
 
-        
+
     }
 
     public boolean deleteEntity(String registryName, String entityId) {
@@ -87,20 +84,20 @@ public class EntityManager {
         if (!itemDriver.itemExists(registryName, entityId)) {
             throw new EntityNotFoundException(registryName, entityId);
         }
-        
+
         Entity entity = new Entity(json);
         entity.setId(entityId);
         entity.validate();
-        
+
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.UPDATE)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryName))
                 .build();
-        
-        mapper.save(entity, config);            
+
+        mapper.save(entity, config);
         logger.info("Entity updated successfully, registryId={}, entityId={}", registryName,
                 entity.getId());
-        return entity;            
+        return entity;
 
     }
 

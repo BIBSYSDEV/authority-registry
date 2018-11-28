@@ -2,12 +2,9 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-
 import no.bibsys.db.structures.LanguageString;
 import no.bibsys.db.structures.SimpleEntry;
 

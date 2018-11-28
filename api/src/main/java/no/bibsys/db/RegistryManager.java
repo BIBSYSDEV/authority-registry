@@ -5,15 +5,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ws.rs.core.Response.Status;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.EnvironmentReader;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
@@ -123,18 +119,19 @@ public class RegistryManager {
     }
 
     public Status validateRegistryExists(String tableName) {
-    	RegistryStatus status = status(tableName);
-    	switch(status) {
-        case ACTIVE:
-            return Status.CREATED;
-        case CREATING:
-        case UPDATING:
-            throw new RegistryUnavailableException(tableName, status.name().toLowerCase(Locale.ENGLISH));
-        case DELETING:
-        case NOT_FOUND:
-        default:
-            throw new RegistryNotFoundException(tableName);
-    	}
+        RegistryStatus status = status(tableName);
+        switch (status) {
+            case ACTIVE:
+                return Status.CREATED;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(tableName,
+                        status.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+            default:
+                throw new RegistryNotFoundException(tableName);
+        }
     }
 
     public void emptyRegistry(String tableName) {
@@ -217,13 +214,13 @@ public class RegistryManager {
     }
 
     public RegistryStatus status(String registryName) {
-        
+
         RegistryStatus registryStatus = RegistryStatus.valueOf(tableDriver.status(registryName));
-        if(registryStatus == null) {
+        if (registryStatus == null) {
             registryStatus = RegistryStatus.NOT_FOUND;
         }
-        
+
         return registryStatus;
     }
-    
+
 }

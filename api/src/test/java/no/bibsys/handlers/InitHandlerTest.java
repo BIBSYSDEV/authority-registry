@@ -19,7 +19,8 @@ public class InitHandlerTest {
     // TODO create Integration.class template
     @Test
     @Ignore
-    public void initHandler_WhenProcessingInput_ReturnsThePipelineId() throws IOException, URISyntaxException {
+    public void initHandler_WhenProcessingInput_ReturnsThePipelineId()
+            throws IOException, URISyntaxException {
         InitHandler initHandler = new InitHandler();
         String eventJson =
                 IoUtils.resourceAsString(Paths.get("events", "mock_codePipeline_event.json"));

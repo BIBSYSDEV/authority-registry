@@ -21,8 +21,7 @@ public interface DynamoDbEntry extends TableDefinitions {
 
 
     /**
-     * The number of attributes in key schema must match the number of attributesdefined in
-     * attribute definitions.
+     * The number of attributes in key schema must match the number of attributesdefined in attribute definitions.
      *
      * @return A list of AttributeDefintions
      */
@@ -36,8 +35,7 @@ public interface DynamoDbEntry extends TableDefinitions {
 
 
     /**
-     * The number of attributes in key schema must match the number of attributesdefined in
-     * attribute definitions.
+     * The number of attributes in key schema must match the number of attributesdefined in attribute definitions.
      *
      * @return A list of KeySchemaElement
      */

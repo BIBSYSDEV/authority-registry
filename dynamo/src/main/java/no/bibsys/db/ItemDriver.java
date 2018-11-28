@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class ItemDriver {
 
-    private transient final TableDriver tableDriver;
-    private static final Logger logger = LoggerFactory.getLogger(ItemDriver.class);
+    private final transient TableDriver tableDriver;
+    private final static Logger logger = LoggerFactory.getLogger(ItemDriver.class);
 
     private ItemDriver(final TableDriver dynamoDb) {
         this.tableDriver = dynamoDb;
@@ -49,10 +49,10 @@ public final class ItemDriver {
      */
     public boolean addItem(String tableName, String itemId, String itemJson) {
 
-        if(!tableDriver.status(tableName).equals("ACTIVE")) {
+        if (!tableDriver.status(tableName).equals("ACTIVE")) {
             return false;
         }
-        
+
         Map<String, Object> itemMap = new ConcurrentHashMap<>();
         itemMap.put("id", itemId);
 
@@ -62,8 +62,7 @@ public final class ItemDriver {
             Map<String, Object> bodyMap = objectMapper.readValue(itemJson, Map.class);
             itemMap.put("body", bodyMap);
         } catch (IllegalArgumentException | IOException e) {
-            logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName, itemId,
-                    e.getMessage());
+            logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
             return false;
         }
 
@@ -75,13 +74,12 @@ public final class ItemDriver {
 
                 final Table table = tableDriver.getTable(tableName);
 
-                PutItemSpec putItemSpec = new PutItemSpec().withItem(item)
-                        .withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
+                PutItemSpec putItemSpec =
+                        new PutItemSpec().withItem(item).withConditionExpression(DynamoConstantsHelper.KEY_NOT_EXISTS);
                 table.putItem(putItemSpec);
                 success = true;
             } catch (ConditionalCheckFailedException | ResourceNotFoundException e) {
-                logger.error("Error adding item, tableId={}, itemId={}, reason={}", tableName,
-                        itemId, e.getMessage());
+                logger.error("Error adding item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
                 success = false;
             }
         }
@@ -113,12 +111,10 @@ public final class ItemDriver {
             try {
                 ObjectMapper objectMapper = JsonUtils.getObjectMapper();
                 @SuppressWarnings("unchecked")
-                Map<String, Object> bodyMap =
-                        objectMapper.convertValue(objectMapper.readTree(itemJson), Map.class);
+                Map<String, Object> bodyMap = objectMapper.convertValue(objectMapper.readTree(itemJson), Map.class);
                 itemMap.put("body", bodyMap);
             } catch (IllegalArgumentException | IOException e) {
-                logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName,
-                        itemId, e.getMessage());
+                logger.error("Error mapping json, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
                 return Optional.empty();
             }
 
@@ -138,8 +134,7 @@ public final class ItemDriver {
             logger.debug("Item updated successfully, tableId={}, itemId={}", tableName, itemId);
             return Optional.ofNullable(returnItem.toJSON());
         } else {
-            logger.error("Can not update non-existing item, tableId={}, itemId={}", tableName,
-                    itemId);
+            logger.error("Can not update non-existing item, tableId={}, itemId={}", tableName, itemId);
             return Optional.empty();
         }
     }
@@ -152,8 +147,7 @@ public final class ItemDriver {
             ObjectMapper objectMapper = JsonUtils.getObjectMapper();
             return Optional.ofNullable(objectMapper.writeValueAsString(itemOpt.get().get("body")));
         } catch (ResourceNotFoundException | NoSuchElementException | JsonProcessingException e) {
-            logger.debug("No item, tableId={}, itemId={}, reason={}", tableName, itemId,
-                    e.getMessage());
+            logger.debug("No item, tableId={}, itemId={}, reason={}", tableName, itemId, e.getMessage());
             return Optional.empty();
         }
     }
@@ -173,7 +167,7 @@ public final class ItemDriver {
     public boolean itemExists(String tableName, String id) {
         return getItem(tableName, id).isPresent();
     }
-    
+
     public boolean tableExists(String tableName) {
         return tableDriver.tableExists(tableName);
     }

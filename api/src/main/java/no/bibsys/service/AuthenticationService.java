@@ -25,7 +25,7 @@ import no.bibsys.EnvironmentReader;
 
 public class AuthenticationService {
 
-    private static final  String TEST_STAGE_NAME = "test";
+    private static final String TEST_STAGE_NAME = "test";
 
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;

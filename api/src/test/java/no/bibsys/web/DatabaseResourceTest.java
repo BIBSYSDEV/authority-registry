@@ -3,23 +3,18 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
@@ -213,11 +208,11 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
-        
+
         Response response = registryStatus(registryName);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
-    
+
     @Test
     public void putRegistrySchema_RegsitryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -255,7 +250,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String updatedLabel = "An updated label";
         updatedEntity.getBody().put("label", updatedLabel);
 
-        Response response = updateEntityRequest(registryName, writeEntity.getId(), updatedEntity.getBodyAsJson());
+        Response response = updateEntityRequest(registryName, writeEntity.getId(),
+                updatedEntity.getBodyAsJson());
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response readEntityResponse = readEntity(registryName, writeEntity.getId());
@@ -287,9 +283,8 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private Response registryStatus(String registryName) {
-        Response response = target(String.format("/registry/%s/status", registryName))
-                .request()
-                .get();
+        Response response =
+                target(String.format("/registry/%s/status", registryName)).request().get();
         return response;
     }
 
@@ -323,9 +318,9 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private Response entityStatus(String registryName, String entityId) {
-        Response response = target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
-                .request()
-                .get();
+        Response response =
+                target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
+                        .request().get();
         return response;
     }
 }

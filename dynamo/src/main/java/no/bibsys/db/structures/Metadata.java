@@ -96,9 +96,8 @@ public class Metadata {
 
     @Override
     public String toString() {
-        return "Metadata [name=" + name + ", createDate=" + createDate + ", registryName="
-                + registryName + ", label=" + label + ", license=" + license + ", contributor="
-                + contributor + ", creator=" + creator + ", description=" + description
-                + ", sameAs=" + sameAs + "]";
+        return "Metadata [name=" + name + ", createDate=" + createDate + ", registryName=" + registryName + ", label="
+                + label + ", license=" + license + ", contributor=" + contributor + ", creator=" + creator
+                + ", description=" + description + ", sameAs=" + sameAs + "]";
     }
 }
