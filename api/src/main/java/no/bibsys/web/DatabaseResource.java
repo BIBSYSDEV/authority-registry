@@ -14,8 +14,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -377,14 +381,21 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
                     description = "Id of entity to get",
-                    schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
+                    schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, @Context Request request) {
 
         registryManager.validateRegistryExists(registryName);
         entityManager.validateItemExists(registryName, entityId);
         
         Entity entity = entityManager.getEntity(registryName, entityId);
         
-        return Response.ok(entity).tag(entity.getEtagValue()).header(Headers.LAST_MODIFIED, entity.getModified()).build();
+        EntityTag etag = new EntityTag(entity.getEtagValue());
+        
+        ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null) {
+            return builder.build();
+        }
+        
+        return Response.ok(entity).tag(etag).header(Headers.LAST_MODIFIED, entity.getModified()).build();
     }
 
     @DELETE

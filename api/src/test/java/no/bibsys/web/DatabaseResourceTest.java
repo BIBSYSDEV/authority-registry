@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.UUID;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -206,6 +207,24 @@ public class DatabaseResourceTest extends JerseyTest {
         Assert.assertNotNull(readEntityResponse.getHeaderString(Headers.LAST_MODIFIED));
 
     }
+    
+    @Test
+    public void getEntity_Twice_RegistryExists_ReturnsStatusNotModified() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
+        createRegistry(template);
+
+        Entity entity = sampleData.sampleEntity();
+        Response response = insertEntryRequest(registryName, entity.getBodyAsJson());
+
+        Entity readEntity = response.readEntity(Entity.class);
+
+        Response readEntityResponse = readEntity(registryName, readEntity.getId());
+        assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        
+        Response readEntityResponseWithEntityTag = readEntityWithEntityTag(registryName, readEntity.getId(), readEntityResponse.getEntityTag());
+        assertThat(readEntityResponseWithEntityTag.getStatus(), is(equalTo(Status.NOT_MODIFIED.getStatusCode())));   
+    }
 
     @Test
     public void getRegistryStatus_registryExists_returnsStatusCreated() {
@@ -297,6 +316,12 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
+    private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
+        return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
+                .header("If-None-Match", "\"" + entityTag.getValue() + "\"")
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
+    }
+    
     private Response putSchema(String registryName, String schemaAsJson) throws Exception {
         return target(String.format("/registry/%s/schema", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
