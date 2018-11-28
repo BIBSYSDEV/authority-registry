@@ -19,6 +19,7 @@ import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
+import no.bibsys.web.exception.RegistryNotEmptyException;
 import no.bibsys.web.exception.RegistryNotFoundException;
 import no.bibsys.web.exception.RegistryUnavailableException;
 import no.bibsys.web.model.CreatedRegistry;
@@ -122,18 +123,18 @@ public class RegistryManager {
         return tableDriver.tableExists(tableName);
     }
 
-    public Status validateRegistryExists(String tableName) {
-    	RegistryStatus status = status(tableName);
+    public Status validateRegistryExists(String registryName) {
+    	RegistryStatus status = status(registryName);
     	switch(status) {
         case ACTIVE:
             return Status.CREATED;
         case CREATING:
         case UPDATING:
-            throw new RegistryUnavailableException(tableName, status.name().toLowerCase(Locale.ENGLISH));
+            throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
         case DELETING:
         case NOT_FOUND:
         default:
-            throw new RegistryNotFoundException(tableName);
+            throw new RegistryNotFoundException(registryName);
     	}
     }
 
@@ -148,7 +149,7 @@ public class RegistryManager {
 
         if (tableDriver.tableSize(registryName) > 0) {
             logger.warn("Can not delete registry that is not empty, registryId={}", registryName);
-            return false;
+            throw new RegistryNotEmptyException(registryName);
         }
 
         tableDriver.deleteTable(registryName);
