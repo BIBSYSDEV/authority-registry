@@ -1,5 +1,5 @@
 when('the anonymous user requests the entity specifying an Accept header with value:',(dataTable) => {
-
+	cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --')
 	let formats = dataTable.rawTable;
 	cy.wrap(formats).as('formats');
 	let resultMap = [];

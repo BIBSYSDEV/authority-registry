@@ -23,45 +23,25 @@ beforeEach(function(){
 	let uuid = require('uuid');
 	let randomRegistryName = Cypress.env('whoami') + uuid.v4();
 	cy.wrap(randomRegistryName).as('registryName');
+	cy.wrap(true).as('cleanUp') 
+	cy.wrap('testApiAdminApiKey').as('apiAdminApiKey')
 })
 
 
 afterEach(function(){
-	cy.get("@registryName").then(function (registryName) {
-		cy.log("removing DynamoDB table " + registryName)
+	cy.get('@cleanUp').then((doCleanUp) => {
+		if(doCleanUp){
+			cy.get("@registryName").then(function (registryName) {
+				cy.log("removing DynamoDB table " + registryName)
 
-		cy.registryReady(registryName)
+				cy.registryReady(registryName)
 
-		cy.get('@registryAdminApiKey').then(function (apiKey) {
+				cy.get('@registryAdminApiKey').then(function (apiKey) {
 
-			cy.deleteRegistry(registryName, apiKey);
-//			cy.log('api-key = ' + apiKey)
-//			let emptyUrl = '/registry/' + registryName + '/empty'
-//			cy.request({
-//				url: emptyUrl,
-//				method: 'DELETE',
-//				headers: {
-//					'api-key': apiKey,
-//					'content-type': 'application/json'
-//				},
-//				failOnStatusCode: false
-//			}).then(function (response) {
-//				cy.log('empty registry status: ' + response.status)
-//
-//				let url = '/registry/' + registryName
-//				cy.request({
-//					url: url,
-//					method: 'DELETE',
-//					headers: {
-//						'api-key': apiKey,
-//						'content-type': 'application/json'
-//					},
-//					failOnStatusCode: false
-//				}).then(function (response) {
-//					cy.log('delete registry status: ' + response.status)
-//				})
-//			})
-		})
+					cy.deleteRegistry(registryName, apiKey);
+				})
+			})
+		}
 	})
 })
 
@@ -82,7 +62,6 @@ function waitUntilRegistryIsReady(registryName, count) {
 				waitUntilRegistryIsReady(registryName, newCount)
 			}
 		}
-
 	})
 	cy.log('Done waiting...')
 }

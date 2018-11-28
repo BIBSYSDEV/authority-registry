@@ -29,7 +29,8 @@ when('the API admin user uses the API key and submits a request to update the va
 				headers: {
 					'api-key': apiKey,
 				},
-				body: updatedSchema
+				body: updatedSchema,
+				failOnStatusCode: false
 			}).then((response) => {
 				cy.wrap(response).as('updateSchemaResponse')
 			})

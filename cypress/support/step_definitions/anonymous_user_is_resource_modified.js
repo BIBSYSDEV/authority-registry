@@ -5,6 +5,7 @@
 //    Then the response contains an ETag and a Last-Modified header
 
 then('the response contains an ETag and a Last-Modified header', () => {
+	cy.log(-- anonymous_user_is_resource_modified.js --)
 	cy.get('@response').then((response) => {
 		cy.log('response = ' + response.headers)
 		.then(() => {

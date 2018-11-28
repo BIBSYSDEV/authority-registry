@@ -5,6 +5,7 @@
 //Then the API admin user receives information that the data is deleted
 
 when('the API admin user uses the API key and submits a request to delete the data in the entity registry', () => {
+	cy.log('-- api_admin_delete_data_from_populated_registry.js --')
 	let deleteDataUrl = '/registry/';
 	cy.get('@apiAdminApiKey').then((apiKey) => {
 		cy.get("@registryName").then((registryName) => {

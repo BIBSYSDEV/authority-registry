@@ -5,21 +5,34 @@
 //    Then the metadata for the entity registry is updated
 
 when('the API admin user changes the metadata for the entity registry', () => {
+	cy.log('-- api_admin_update_registry_metadata_.js --')
+	
 	cy.get('@registryName').then((registryName) => {
-
-		let registryUpdateUrl = '/registry/' + registryName;
 		cy.get('@registryAdminApiKey').then((apiKey) => {
-			let updatedDescription = 'Updated description';
-			cy.wrap(updatedDescription).as('updatedDescription')
-			cy.fixture('registryTestSchemaUpdated.json').then((updatedSchema) => {
-				updatedSchema.metadata.description = updatedDescription
+
+			let registryGetUrl = '/registry/' + registryName;
+			cy.request({
+				url: registryGetUrl,
+				method: 'GET',
+				headers: {
+					'api-key': apiKey
+				}
+			}).then((response) => {
+				expect(response.body.metadata.description).to.equals('descriptionValue')
+			})
+			
+			let registryUpdateUrl = '/registry/' + registryName;
+			cy.fixture('registryTestMetadataUpdated.json').then((updatedSchema) => {
+				updatedSchema.id = registryName
+				cy.log('description: ' + updatedSchema.metadata.description)
 				cy.request({
 					url: registryUpdateUrl,
 					method: 'PUT',
+					body: updatedSchema,
 					headers: {
 						'api-key': apiKey,
-					},
-					body: updatedSchema
+						'Content-Type': 'application/json'
+					}
 				})
 			})
 		})
@@ -28,19 +41,17 @@ when('the API admin user changes the metadata for the entity registry', () => {
 
 then('the metadata for the entity registry is updated', () => {
 	cy.get('@registryName').then((registryName) => {
-		let registryGetUrl = '/registry/' + registryName;
 		cy.get('@registryAdminApiKey').then((apiKey) => {
+			cy.registryReady(registryName)
+			let registryGetUrl = '/registry/' + registryName;
 			cy.request({
 				url: registryGetUrl,
 				method: 'GET',
 				headers: {
 					'api-key': apiKey
-				},
-				body: updatedSchema
+				}
 			}).then((response) => {
-				cy.get('@updatedDescription').then((updatedDescription) => {
-					expect(response.body.metadata.description).to.equals(updatedDescription)
-				})
+				expect(response.body.metadata.description).to.equals('updatedDescriptionValue')
 			})
 		})
 	})

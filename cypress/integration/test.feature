@@ -1,7 +1,10 @@
 Feature: Test features
+  Background:
+    Given that there is an existing entity registry with a schema
+#    And no cleanup
+ 
+  Scenario: An anonymous user views an entity without specifying a format
+    And that there is an entity in the registry
+    When the anonymous user requests the entity
+    Then anonymous user can view the entity's data in the native database format
 
-  Scenario: An API admin user attempts to update the validation schema of an existing, populated entity registry
-    Given that the API admin user has a valid API key for API administration
-    And that there is an existing, populated entity registry with a schema
-    When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
-    Then the API admin user receives information that they cannot update the entity registry validation schema until the populated data is deleted

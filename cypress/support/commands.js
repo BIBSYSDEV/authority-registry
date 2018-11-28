@@ -55,7 +55,7 @@ function waitUntilRegistryIsReady(registryName, count){
 		if(response.status === 303){
 			const newCount = count + 1;
 			if(newCount < 5){
-				cy.wait(5000)
+				cy.wait(2000)
 				waitUntilRegistryIsReady(registryName, newCount)
 			}
 		}

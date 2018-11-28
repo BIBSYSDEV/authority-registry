@@ -23,6 +23,7 @@ function createTestEntity(apikey, expectedStatus) {
 }
 
 when('the API admin user removes registry admin API keys from the entity registry', () =>{
+	cy.log('-- api_admin_remove_api_key.js --')
 	cy.get("@registryName").then((registryName) => {
 		cy.get("@apiAdminApiKey").then((apiAdminApiKey) => {
 			let addApikeyUrl = "/registry/" + registryName + "/apikey";
