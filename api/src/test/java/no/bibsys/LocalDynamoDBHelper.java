@@ -9,7 +9,7 @@ public class LocalDynamoDBHelper {
     private LocalDynamoDBHelper() {
         // TODO Auto-generated constructor stub
     }
-    
+
     public static AmazonDynamoDB getClient() {
         System.setProperty("java.library.path", "native-libs");
         return DynamoDBEmbedded.create().amazonDynamoDB();

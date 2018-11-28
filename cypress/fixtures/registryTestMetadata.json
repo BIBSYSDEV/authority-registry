@@ -1,0 +1,8 @@
+{
+	"id": "test",
+	"schema": "testSchema",
+	"metadata": {
+		"name": "name",
+		"registryName": "registryName"
+	}
+}

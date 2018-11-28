@@ -10,18 +10,18 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 
 /**
- * Template  for making it easier to use a POJO Lambda handler. The Amazon template RequestHandler
+ * Template for making it easier to use a POJO Lambda handler. The Amazon template RequestHandler
  * does not behave well with ApiGateway.
  *
  * <p>
- * Each class extending the HandlerTemplate should  implement the following methods:
+ * Each class extending the HandlerTemplate should implement the following methods:
  * </p>
  *
  * <p>
  * <ul>
  * <li>Method {@code parseInput} parses an {@code InputStream} into an object of class {@code
  * <I>}</li>.
- * <li>Method {@code processInput} processes an {@code  <I>}  into class {@code <O>}</li>.
+ * <li>Method {@code processInput} processes an {@code  <I>} into class {@code <O>}</li>.
  * <li>Method {@code writeOutput} writes a success message in the {@code OutputStream}</li>.
  * <li>Method {@code writeFailure} writes a failure message in the {@code OutputStream}</li>.
  * </ul>
@@ -58,7 +58,7 @@ public abstract class HandlerTemplate<I, O> implements RequestStreamHandler {
 
 
     protected abstract O processInput(I input, Context context)
-        throws IOException, URISyntaxException;
+            throws IOException, URISyntaxException;
 
     protected abstract void writeOutput(I input, O output) throws IOException;
 
@@ -73,7 +73,7 @@ public abstract class HandlerTemplate<I, O> implements RequestStreamHandler {
 
     @Override
     public void handleRequest(InputStream input, OutputStream output, Context context)
-        throws IOException {
+            throws IOException {
         init(output, context);
         I inputObject = parseInput(input);
         O response = null;

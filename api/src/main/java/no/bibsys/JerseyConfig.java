@@ -4,7 +4,6 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.EntityManager;
@@ -22,6 +21,7 @@ import no.bibsys.web.exception.ExceptionLogger;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
+import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -30,40 +30,43 @@ public class JerseyConfig extends ResourceConfig {
         this(DynamoDBHelper.getClient(), new EnvironmentReader());
     }
 
-    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {        
+    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         super();
 
-        TableDriver tableDriver = TableDriver.create(client, new DynamoDB(client));
-        ItemDriver itemDriver = ItemDriver.create(new DynamoDB(client));
+        TableDriver tableDriver = TableDriver.create(client);
+        ItemDriver itemDriver = ItemDriver.create(tableDriver);
         EntityManager entityManager = new EntityManager(itemDriver);
-        AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
+        AuthenticationService authenticationService =
+                new AuthenticationService(client, environmentReader);
 
-        RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver, authenticationService, environmentReader);
-                
+        RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver,
+                authenticationService, environmentReader);
+
         register(new DatabaseResource(registryManager, entityManager));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
-        
+
         register(new AuthenticationFilter(authenticationService));
-        
+
         registerExceptionMappers();
-        
+
         register(ExceptionLogger.class);
-        
+
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
     }
 
-	private void registerExceptionMappers() {
-		register(BaseExceptionMapper.class);
-		register(ForbiddenExceptionMapper.class);
+    private void registerExceptionMappers() {
+        register(BaseExceptionMapper.class);
+        register(ForbiddenExceptionMapper.class);
         register(BadRequestExceptionMapper.class);
         register(ConditionalCheckFailedExceptionMapper.class);
         register(RegistryAlreadyExistsExceptionMapper.class);
         register(RegistryNotFoundExceptionMapper.class);
+        register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
-	}
+    }
 
 }

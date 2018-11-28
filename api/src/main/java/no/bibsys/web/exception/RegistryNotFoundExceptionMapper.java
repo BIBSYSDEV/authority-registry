@@ -8,9 +8,9 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class RegistryNotFoundExceptionMapper implements ExceptionMapper<RegistryNotFoundException> {
 
-	@Override
-	public Response toResponse(RegistryNotFoundException exception) {
-		return Response.status(Status.NOT_FOUND).entity(exception.getMessage()).build();
-	}
+    @Override
+    public Response toResponse(RegistryNotFoundException exception) {
+        return Response.status(Status.NOT_FOUND).entity(exception.getMessage()).build();
+    }
 
 }

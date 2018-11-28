@@ -6,11 +6,12 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class RegistryAlreadyExistsExceptionMapper implements ExceptionMapper<RegistryAlreadyExistsException> {
+public class RegistryAlreadyExistsExceptionMapper
+        implements ExceptionMapper<RegistryAlreadyExistsException> {
 
-	@Override
-	public Response toResponse(RegistryAlreadyExistsException exception) {
-		return Response.status(Status.CONFLICT).entity(exception.getMessage()).build();
-	}
+    @Override
+    public Response toResponse(RegistryAlreadyExistsException exception) {
+        return Response.status(Status.CONFLICT).entity(exception.getMessage()).build();
+    }
 
 }

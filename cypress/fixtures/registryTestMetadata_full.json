@@ -1,0 +1,19 @@
+{
+	"id": "test",
+	"schema": "testSchema",
+	"metadata": {
+		"Registry name": "Registry name",
+		"Registry type": "Registry type",
+		"Publisher": "Publisher",
+		"License for the data": "License for the data",
+		"Owner organisation": "Owner organisation",
+		"Participating organisations": "Participating organisations",
+		"Languages used in dataset": "Languages used in dataset",
+		"Relations to other data sets": "Relations to other data sets",
+		"Location of APIs": "Location of APIs",
+		"Example resources": "Example resources",
+		"Base URI for dataset": "Base URI for dataset",
+		"Location of SPARQL endpoint": "Location of SPARQL endpoint",
+		"Description of available formats": "Description of available formats"
+	}
+}
