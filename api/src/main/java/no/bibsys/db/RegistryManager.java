@@ -145,7 +145,7 @@ public class RegistryManager {
 
     public boolean deleteRegistry(String registryName) {
 
-        logger.info("Deteleting registry, registryId={}", registryName);
+        logger.info("Deleting registry, registryId={}", registryName);
 
         if (tableDriver.tableSize(registryName) > 0) {
             logger.warn("Can not delete registry that is not empty, registryId={}", registryName);
@@ -179,6 +179,13 @@ public class RegistryManager {
     }
 
     public void setSchemaJson(String registryName, String schemaAsJson) throws IOException {
+        
+        if (tableDriver.tableSize(registryName) > 0) {
+            logger.warn("Can not update registry that is not empty, registryId={}", registryName);
+            throw new RegistryNotEmptyException(registryName);
+        }
+
+        
         Optional<String> registrySchemaItem =
                 itemDriver.getItem(validationSchemaTableName, registryName);
 
