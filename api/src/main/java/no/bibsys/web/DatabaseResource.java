@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -380,9 +381,10 @@ public class DatabaseResource {
 
         registryManager.validateRegistryExists(registryName);
         entityManager.validateItemExists(registryName, entityId);
-
+        
         Entity entity = entityManager.getEntity(registryName, entityId);
-        return Response.ok(entity).build();
+        
+        return Response.ok(entity).tag(entity.getEtagValue()).header(Headers.LAST_MODIFIED, entity.getModified()).build();
     }
 
     @DELETE

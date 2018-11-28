@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
@@ -200,6 +201,9 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response readEntityResponse = readEntity(registryName, readEntity.getId());
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        
+        Assert.assertNotNull(readEntityResponse.getEntityTag());
+        Assert.assertNotNull(readEntityResponse.getHeaderString(Headers.LAST_MODIFIED));
 
     }
 
