@@ -1,40 +1,34 @@
 package no.bibsys.db;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import java.io.IOException;
-import java.util.Optional;
+import org.junit.Test;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
-import no.bibsys.testtemplates.SampleData.Entry;
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import no.bibsys.web.exception.EntityNotFoundException;
+import no.bibsys.web.exception.RegistryNotFoundException;
 
 public class EntityManagerTest extends LocalDynamoTest {
 
     @Test
-    public void addEntity_RegistryExist_ReturnsTrue() throws IOException {
+    public void addEntity_RegistryExist_ReturnsEntity() throws Exception {
 
         String tableName = "addEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        assertThat(addEntity.isPresent(), equalTo(true));
-        String entityId = addEntity.get();
-        Optional<String> readEntity = entityManager.getEntity(tableName, entityId);
-        assertThat(readEntity.isPresent(), equalTo(true));
-
+        Entity entity = sampleData.sampleEntity();
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+        assertEquals(entity, addEntity);
     }
 
-    @Test 
-    public void addEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
+    @Test(expected = RegistryNotFoundException.class)
+    public void addEntity_RegistryNotExisting_ThrowsException() throws IOException {
         String tableName = "addEntityNoRegistry";
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        assertThat(addEntity.isPresent(), equalTo(false));
+        Entity entity = sampleData.sampleEntity();
+        entityManager.addEntity(tableName, entity.getBodyAsJson());
     }
 
     @Test
@@ -43,11 +37,11 @@ public class EntityManagerTest extends LocalDynamoTest {
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        assertThat(addEntity.isPresent(), equalTo(true));
-        String entityId = addEntity.get();
-        boolean deleteEntity = entityManager.deleteEntity(tableName, entityId);
+        Entity entity = sampleData.sampleEntity();
+
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+        assertEquals(entity, addEntity);
+        boolean deleteEntity = entityManager.deleteEntity(tableName, addEntity.getId());
         assertThat(deleteEntity, equalTo(true));
     }
 
@@ -77,10 +71,10 @@ public class EntityManagerTest extends LocalDynamoTest {
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        String entityId = addEntity.get();
-        boolean entityExists = entityManager.entityExists(tableName, entityId);
+        Entity entity = sampleData.sampleEntity();
+
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+        boolean entityExists = entityManager.entityExists(tableName, addEntity.getId());
         assertThat(entityExists, equalTo(true));
     }
 
@@ -110,31 +104,29 @@ public class EntityManagerTest extends LocalDynamoTest {
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        String entityId = addEntity.get();
-        Optional<String> getEntity = entityManager.getEntity(tableName, entityId);
-        assertThat(getEntity.isPresent(), equalTo(true));
+        Entity entity = sampleData.sampleEntity();
+
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+        Entity getEntity = entityManager.getEntity(tableName, addEntity.getId());
+        assertEquals(entity, getEntity);
     }
 
-    @Test
+    @Test(expected = EntityNotFoundException.class)
     public void getEntity_EntityNotExisting_ReturnsFalse() throws IOException {
         String tableName = "getEntityNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
         String entityId = "nonExistingEntityId";
-        Optional<String> getEntity = entityManager.getEntity(tableName, entityId);
-        assertThat(getEntity.isPresent(), equalTo(false));
+        entityManager.getEntity(tableName, entityId);
     }
 
-    @Test
-    public void getEntity_RegistryNotExisting_ReturnsFalse() throws IOException {
+    @Test(expected = RegistryNotFoundException.class)
+    public void getEntity_RegistryNotExisting_ThrowsException() throws IOException {
         String tableName = "getEntityNoRegistry";
         
         String entityId = "nonExistingEntityId";
-        Optional<String> getEntity = entityManager.getEntity(tableName, entityId);
-        assertThat(getEntity.isPresent(), equalTo(false));
+        entityManager.getEntity(tableName, entityId);
     }
 
     @Test
@@ -143,54 +135,48 @@ public class EntityManagerTest extends LocalDynamoTest {
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> addEntity = entityManager.addEntity(tableName, entry.jsonString());
-        String entityId = addEntity.get();
+        Entity entity = sampleData.sampleEntity();
 
-        Entry updateEntry = sampleData.sampleEntry();
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+
         String updatedLabel = "An updated label";
-        updateEntry.root.put("id", entityId);
-        updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity =
-                entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
-        assertThat(updateEntity.isPresent(), equalTo(true));
+        addEntity.getBody().put("label", updatedLabel);
+        
+        Entity updateEntity =
+                entityManager.updateEntity(tableName, addEntity.getId(), addEntity.getBodyAsJson());
+        assertEquals(addEntity, updateEntity);
 
-        Optional<String> readEntity = entityManager.getEntity(tableName, entityId);
-        String readLabel =
-                JsonUtils.getObjectMapper().readTree(readEntity.get()).get("label").asText();
+        Entity readEntity = entityManager.getEntity(tableName, updateEntity.getId());
+        String readLabel = readEntity.getBody().get("label").asText();
         assertThat(readLabel, equalTo(updatedLabel));
 
     }
 
-    @Test
-    public void updateEntity_EntityNotExisting_ReturnsFalse() throws IOException {
+    @Test(expected = EntityNotFoundException.class)
+    public void updateEntity_EntityNotExisting_ThrowsException() throws IOException {
         String tableName = "updateEntityNoEntity";
         EntityRegistryTemplate testTemplate = new EntityRegistryTemplate(tableName);
         registryManager.createRegistryFromTemplate(testTemplate);
 
         String entityId = "nonExistingEntityId";
 
-        Entry updateEntry = sampleData.sampleEntry();
+        Entity entity = sampleData.sampleEntity();
         String updatedLabel = "An updated label";
-        updateEntry.root.put("id", entityId);
-        updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity =
-                entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
-        assertThat(updateEntity.isPresent(), equalTo(false));
+        entity.getBody().put("label", updatedLabel);
+
+        entityManager.updateEntity(tableName, entityId, entity.getBodyAsJson());
     }
 
-    @Test
-    public void updateEntity_RegistryNotExisting_ReturnsFalse() {
+    @Test(expected = RegistryNotFoundException.class)
+    public void updateEntity_RegistryNotExisting_ThrowsException() throws IOException {
         String tableName = "updateEntityNoRegistry";
 
         String entityId = "nonExistingEntityId";
 
-        Entry updateEntry = sampleData.sampleEntry();
+        Entity entity = sampleData.sampleEntity();
         String updatedLabel = "An updated label";
-        updateEntry.root.put("id", entityId);
-        updateEntry.root.put("label", updatedLabel);
-        Optional<String> updateEntity =
-                entityManager.updateEntity(tableName, entityId, updateEntry.jsonString());
-        assertThat(updateEntity.isPresent(), equalTo(false));
+        entity.getBody().put("label", updatedLabel);
+
+        entityManager.updateEntity(tableName, entityId, entity.getBodyAsJson());
     }
 }

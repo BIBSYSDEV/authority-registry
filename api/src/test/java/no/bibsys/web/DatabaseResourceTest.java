@@ -7,7 +7,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,14 +24,13 @@ import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
+import no.bibsys.db.Entity;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
-import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.model.CreatedRegistry;
-import no.bibsys.web.model.InsertEntity;
 import no.bibsys.web.security.ApiKeyConstants;
 
 
@@ -106,13 +104,13 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
 
-        Entry entry = sampleData.sampleEntry();
-        Response response = insertEntryRequest(registryName, entry.jsonString());
-        InsertEntity entity = response.readEntity(InsertEntity.class);
+        Entity entity = sampleData.sampleEntity();
+        Response response = insertEntryRequest(registryName, entity.getBodyAsJson());
+        Entity readEntity = response.readEntity(Entity.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readResponse = readEntity(registryName, entity.getEntityId());
+        Response readResponse = readEntity(registryName, readEntity.getId());
         assertThat(readResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
@@ -152,9 +150,9 @@ public class DatabaseResourceTest extends JerseyTest {
     public void emptyRegistry_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
-        String entry = sampleData.sampleEntry().jsonString();
+        Entity entity = sampleData.sampleEntity();
 
-        insertEntryRequest(registryName, entry);
+        insertEntryRequest(registryName, entity.getBodyAsJson());
 
         Response response = target(String.format("/registry/%s/empty", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
@@ -168,7 +166,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate request = new EntityRegistryTemplate(registryName);
         Response response = target("/registry").request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON));
 
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
@@ -200,12 +198,12 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry();
-        Response response = insertEntryRequest(registryName, entry.jsonString());
+        Entity entity = sampleData.sampleEntity();
+        Response response = insertEntryRequest(registryName, entity.getBodyAsJson());
 
-        InsertEntity entity = response.readEntity(InsertEntity.class);
+        Entity readEntity = response.readEntity(Entity.class);
 
-        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
+        Response readEntityResponse = readEntity(registryName, readEntity.getId());
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
     }
@@ -226,16 +224,16 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry();
-        insertEntryRequest(registryName, entry.jsonString());
+        Entity entity = sampleData.sampleEntity();
+        insertEntryRequest(registryName, entity.getBodyAsJson());
 
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
-        String entity = response.readEntity(String.class);
-        assertThat(entity, is(equalTo(schemaAsJson)));
+        String schema = response.readEntity(String.class);
+        assertThat(schema, is(equalTo(schemaAsJson)));
     }
 
     @Test
@@ -245,27 +243,24 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
 
-        Entry entry = sampleData.sampleEntry();
-        Response writeResponse = insertEntryRequest(registryName, entry.jsonString());
-        InsertEntity entity = writeResponse.readEntity(InsertEntity.class);
+        Entity entity = sampleData.sampleEntity();
+        Response writeResponse = insertEntryRequest(registryName, entity.getBodyAsJson());
+        Entity writeEntity = writeResponse.readEntity(Entity.class);
 
 
         SampleData updatedSampleData = new SampleData();
 
-        Entry updatedEntry = updatedSampleData.sampleEntry();
-        updatedEntry.root.remove("label");
+        Entity updatedEntity = updatedSampleData.sampleEntity();
+        updatedEntity.getBody().remove("label");
         String updatedLabel = "An updated label";
-        updatedEntry.root.put("id", entity.getEntityId());
-        updatedEntry.root.put("label", updatedLabel);
+        updatedEntity.getBody().put("label", updatedLabel);
 
-        String updatedJson = updatedEntry.jsonString();
-        Response response = updateEntityRequest(registryName, entity.getEntityId(), updatedJson);
+        Response response = updateEntityRequest(registryName, writeEntity.getId(), updatedEntity.getBodyAsJson());
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
-        String readEntity = readEntityResponse.readEntity(String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String actual = objectMapper.readTree(readEntity).get("label").asText();
+        Response readEntityResponse = readEntity(registryName, writeEntity.getId());
+        Entity readEntity = readEntityResponse.readEntity(Entity.class);
+        String actual = readEntity.getBody().get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }
@@ -273,7 +268,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response insertEntryRequest(String registryName, String jsonBody) {
         String path = String.format("/registry/%s/entity", registryName);
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
 
@@ -287,7 +282,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response createRegistry(EntityRegistryTemplate request) {
         Response response = target("/registry").request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(request, MediaType.APPLICATION_JSON));
         return response;
     }
 
@@ -306,7 +301,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response putSchema(String registryName, String schemaAsJson) throws Exception {
         return target(String.format("/registry/%s/schema", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-                .put(Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
+                .put(javax.ws.rs.client.Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
     private Response readSchema(String registryName) throws Exception {
@@ -317,7 +312,7 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response updateEntityRequest(String registryName, String entityId, String jsonBody) {
         String path = String.format("/registry/%s/entity/%s", registryName, entityId);
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .put(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
+                .put(javax.ws.rs.client.Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
 
     }
 

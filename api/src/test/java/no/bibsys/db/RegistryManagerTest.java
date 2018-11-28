@@ -6,15 +6,13 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
+import org.junit.Test;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
-import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
-import org.junit.Test;
 
 
 public class RegistryManagerTest extends LocalDynamoTest {
@@ -97,13 +95,13 @@ public class RegistryManagerTest extends LocalDynamoTest {
         String tableName = "emptyRegistry";
         EntityRegistryTemplate createRequest = createTestEditRequest(tableName);
         registryManager.createRegistryFromTemplate(createRequest);
-        Entry entry = sampleData.sampleEntry();
-        Optional<String> entityId = entityManager.addEntity(tableName, entry.jsonString());
-        boolean entityExists = entityManager.entityExists(tableName, entityId.get());
+        Entity entity = sampleData.sampleEntity();
+        Entity addEntity = entityManager.addEntity(tableName, entity.getBodyAsJson());
+        boolean entityExists = entityManager.entityExists(tableName, addEntity.getId());
         assertThat(entityExists, equalTo(true));
 
         registryManager.emptyRegistry(tableName);
-        boolean entityExistAfterEmpty = entityManager.entityExists(tableName, entityId.get());
+        boolean entityExistAfterEmpty = entityManager.entityExists(tableName, addEntity.getId());
         assertThat(entityExistAfterEmpty, equalTo(false));
     }
 

@@ -1,8 +1,10 @@
 package no.bibsys.testtemplates;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.bibsys.db.Entity;
 
 
 public class SampleData {
@@ -11,42 +13,24 @@ public class SampleData {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public Entry sampleEntry() {
+    public Entity sampleEntity() throws JsonProcessingException {
 
-        String id = "sampleId";
-        ObjectNode root = getMapper().getNodeFactory().objectNode();
-        root.put("id", id);
+        ObjectNode root = mapper.getNodeFactory().objectNode();
         root.put("label", "A random label");
         root.put("number", 5);
         ArrayNode array = root.putArray("myArray");
         array.add(1);
         array.add(2);
         array.add(3);
+        
+        String json = mapper.writeValueAsString(root);
+        
+        Entity entity = new Entity(json);
 
-        return new Entry(id, root);
-    }
-
-
-    public ObjectMapper getMapper() {
-        return mapper;
-    }
-
-
-    public static class Entry {
-
-        public final String id;
-
-        public final ObjectNode root;
-
-        public Entry(String id, ObjectNode root) {
-            this.id = id;
-            this.root = root;
-        }
-
-
-        public String jsonString() {
-            return root.toString();
-        }
+        String id = "sampleId";
+        entity.setId(id);
+        
+        return entity;
     }
 
 }

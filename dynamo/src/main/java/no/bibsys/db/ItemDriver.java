@@ -173,4 +173,8 @@ public final class ItemDriver {
     public boolean itemExists(String tableName, String id) {
         return getItem(tableName, id).isPresent();
     }
+    
+    public boolean tableExists(String tableName) {
+        return tableDriver.tableExists(tableName);
+    }
 }

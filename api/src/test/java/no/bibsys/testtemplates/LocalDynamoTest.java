@@ -29,7 +29,7 @@ public abstract class LocalDynamoTest {
         authenticationService = new AuthenticationService(client, new MockEnvironmentReader());
         registryManager = new RegistryManager(tableManager, itemManager, authenticationService,
                 new MockEnvironmentReader());
-        entityManager = new EntityManager(itemManager);
+        entityManager = new EntityManager(itemManager, client);
 
         sampleData = new SampleData();
     }

@@ -34,11 +34,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import no.bibsys.db.Entity;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.web.model.CreatedRegistry;
-import no.bibsys.web.model.InsertEntity;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
@@ -329,11 +329,12 @@ public class DatabaseResource {
 
         registryManager.validateRegistryExists(registryName);
 
-        Optional<String> entityId = entityManager.addEntity(registryName, entity);
-
-        return Response.ok(new InsertEntity(
-                String.format("/registry/%s/entity/%s", registryName, entityId.get()),
-                entityId.get())).build();
+        Entity persistedEntity = entityManager.addEntity(registryName, entity);
+        String entityId = persistedEntity.getId();
+        
+        persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
+        
+        return Response.ok(persistedEntity).build();
     }
 
     @GET
@@ -382,12 +383,8 @@ public class DatabaseResource {
         registryManager.validateRegistryExists(registryName);
         entityManager.validateItemExists(registryName, entityId);
 
-        Optional<String> entity = entityManager.getEntity(registryName, entityId);
-        if (entity.isPresent()) {
-            return Response.ok(entity.get()).build();
-        } else {
-            return Response.status(Status.NOT_FOUND).build();
-        }
+        Entity entity = entityManager.getEntity(registryName, entityId);
+        return Response.ok(entity).build();
     }
 
     @DELETE

@@ -35,7 +35,7 @@ public class JerseyConfig extends ResourceConfig {
 
         TableDriver tableDriver = TableDriver.create(client);
         ItemDriver itemDriver = ItemDriver.create(tableDriver);
-        EntityManager entityManager = new EntityManager(itemDriver);
+        EntityManager entityManager = new EntityManager(itemDriver, client);
         AuthenticationService authenticationService =
                 new AuthenticationService(client, environmentReader);
 
