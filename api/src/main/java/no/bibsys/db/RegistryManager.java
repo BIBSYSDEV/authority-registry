@@ -193,7 +193,7 @@ public class RegistryManager {
                 objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
 
         registryTemplate.setSchema(schemaAsJson);
-        updateRegistryMetadata(registryTemplate);
+        updateRegistryMetadata(registryName, registryTemplate);
     }
 
     public List<String> getRegistries() {
@@ -216,9 +216,10 @@ public class RegistryManager {
 
     }
 
-    public void updateRegistryMetadata(EntityRegistryTemplate request)
+    public void updateRegistryMetadata(String registryName, EntityRegistryTemplate request)
             throws JsonProcessingException {
 
+        request.setId(registryName);
         String json = objectMapper.writeValueAsString(request);
         itemDriver.updateItem(validationSchemaTableName, request.getId(), json);
 
