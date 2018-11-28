@@ -6,6 +6,7 @@
 
 
 when('the registry admin user submits the API key with a request to create a new entity with properly formatted data', () =>{
+	cy.log('-- registry_admin_add_single_entity.js --')
 	cy.get('@registryName').then((registryName) => {
 		let createEntityUrl = "/registry/" + registryName + "/entity";
 		cy.fixture('entityTestData.json')

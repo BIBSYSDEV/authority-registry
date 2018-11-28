@@ -7,17 +7,17 @@
 when('the API admin user changes the metadata for the entity registry', () => {
 	cy.get('@registryName').then((registryName) => {
 
-		let registryUpdateUrl = '/registry/' + registryName + '/schema';
-		cy.get('@registryApiKey').then((apiKey) => {
+		let registryUpdateUrl = '/registry/' + registryName;
+		cy.get('@registryAdminApiKey').then((apiKey) => {
 			let updatedDescription = 'Updated description';
 			cy.wrap(updatedDescription).as('updatedDescription')
 			cy.fixture('registryTestSchemaUpdated.json').then((updatedSchema) => {
-				updatedSchema['metadata'].description = updatedDescription
+				updatedSchema.metadata.description = updatedDescription
 				cy.request({
 					url: registryUpdateUrl,
 					method: 'PUT',
 					headers: {
-						'apikey': apiKey,
+						'api-key': apiKey,
 					},
 					body: updatedSchema
 				})
@@ -29,17 +29,17 @@ when('the API admin user changes the metadata for the entity registry', () => {
 then('the metadata for the entity registry is updated', () => {
 	cy.get('@registryName').then((registryName) => {
 		let registryGetUrl = '/registry/' + registryName;
-		cy.get('@authenticationToken').then((authToken) => {
+		cy.get('@registryAdminApiKey').then((apiKey) => {
 			cy.request({
 				url: registryGetUrl,
 				method: 'GET',
 				headers: {
-					Authorization: 'Token ' + authToken,
+					'api-key': apiKey
 				},
 				body: updatedSchema
 			}).then((response) => {
 				cy.get('@updatedDescription').then((updatedDescription) => {
-					expect(response.body['metadata'].description).to.equals(updatedDescription)
+					expect(response.body.metadata.description).to.equals(updatedDescription)
 				})
 			})
 		})

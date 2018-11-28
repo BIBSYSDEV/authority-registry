@@ -1,10 +1,7 @@
 Feature: Test features
 
-  Background:
-    Given that the registry admin user has a valid API key for registry administration
-    And that there is an existing entity registry with a schema
-
-  Scenario: An registry admin user adds a single entity to a registry
-
-    When the registry admin user submits the API key with a request to create a new entity with properly formatted data
-    Then the entity is created
+  Scenario: An API admin user attempts to update the validation schema of an existing, populated entity registry
+    Given that the API admin user has a valid API key for API administration
+    And that there is an existing, populated entity registry with a schema
+    When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
+    Then the API admin user receives information that they cannot update the entity registry validation schema until the populated data is deleted

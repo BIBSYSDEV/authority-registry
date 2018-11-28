@@ -30,38 +30,37 @@ afterEach(function(){
 	cy.get("@registryName").then(function (registryName) {
 		cy.log("removing DynamoDB table " + registryName)
 
-		waitUntilRegistryIsReady(registryName, 0)
+		cy.registryReady(registryName)
 
 		cy.get('@registryAdminApiKey').then(function (apiKey) {
 
-			cy.log('api-key = ' + apiKey)
-
-
-			let emptyUrl = '/registry/' + registryName + '/empty'
-			cy.request({
-				url: emptyUrl,
-				method: 'DELETE',
-				headers: {
-					'api-key': apiKey,
-					'content-type': 'application/json'
-				},
-				failOnStatusCode: false
-			}).then(function (response) {
-				cy.log('empty registry status: ' + response.status)
-
-				let url = '/registry/' + registryName
-				cy.request({
-					url: url,
-					method: 'DELETE',
-					headers: {
-						'api-key': apiKey,
-						'content-type': 'application/json'
-					},
-					failOnStatusCode: false
-				}).then(function (response) {
-					cy.log('delete registry status: ' + response.status)
-				})
-			})
+			cy.deleteRegistry(registryName, apiKey);
+//			cy.log('api-key = ' + apiKey)
+//			let emptyUrl = '/registry/' + registryName + '/empty'
+//			cy.request({
+//				url: emptyUrl,
+//				method: 'DELETE',
+//				headers: {
+//					'api-key': apiKey,
+//					'content-type': 'application/json'
+//				},
+//				failOnStatusCode: false
+//			}).then(function (response) {
+//				cy.log('empty registry status: ' + response.status)
+//
+//				let url = '/registry/' + registryName
+//				cy.request({
+//					url: url,
+//					method: 'DELETE',
+//					headers: {
+//						'api-key': apiKey,
+//						'content-type': 'application/json'
+//					},
+//					failOnStatusCode: false
+//				}).then(function (response) {
+//					cy.log('delete registry status: ' + response.status)
+//				})
+//			})
 		})
 	})
 })
