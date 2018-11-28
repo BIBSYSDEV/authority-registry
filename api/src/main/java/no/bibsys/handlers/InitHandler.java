@@ -7,7 +7,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.aws.lambda.handlers.events.DeployEvent;
+import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.handlers.templates.CodePipelineFunctionHandlerTemplate;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.service.AuthenticationService;
