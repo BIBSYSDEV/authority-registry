@@ -59,7 +59,7 @@ public class InitHandler extends CodePipelineFunctionHandlerTemplate<SimpleRespo
     @Override
     protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery,
         Context context) {
-
+        logger.info("PROCESSING INPUT!");
         createApiKeysTable();
         updateUrl();
 
@@ -79,6 +79,7 @@ public class InitHandler extends CodePipelineFunctionHandlerTemplate<SimpleRespo
 
 
     private void updateUrl() {
+        System.out.println("HELLOOOO");
         logger.info("Updating url!");
         StaticUrlInfo urlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
         String restApiId = restApiId();
