@@ -16,10 +16,7 @@ import no.bibsys.staticurl.UrlUpdater;
 
 public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
 
-    public static final String STACK_NAME = "STACK_NAME";
-    public static final String CERTIFICATE_ARN_ENV = "REGIONAL_CERTIFICATE_ARN";
-    public static final String HOSTED_ZONE_NAME = "HOSTED_ZONE_NAME";
-    public static final String APPLICATION_URL = "APPLICATION_URL";
+
 
     private final transient Stage stage;
     private final transient String certificateArn;
@@ -31,11 +28,11 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
     public ResourceHandler(Environment environment) {
         super();
-        certificateArn = environment.readEnv(CERTIFICATE_ARN_ENV);
-        hostedZoneName = environment.readEnv(HOSTED_ZONE_NAME);
+        certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
+        hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
         stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
-        applicationUrl = environment.readEnv(APPLICATION_URL);
-        this.stackName = environment.readEnv(STACK_NAME);
+        applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
+        this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
 
     }
 

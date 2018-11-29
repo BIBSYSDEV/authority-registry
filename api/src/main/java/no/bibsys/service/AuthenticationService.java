@@ -20,12 +20,12 @@ import com.amazonaws.services.dynamodbv2.model.SSESpecification;
 import java.util.ArrayList;
 import java.util.List;
 import no.bibsys.EnvironmentVariables;
+import no.bibsys.aws.cloudformation.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AuthenticationService {
 
-    private static final  String TEST_STAGE_NAME = "test";
 
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
@@ -80,7 +80,8 @@ public class AuthenticationService {
     }
 
     public void setUpInitialApiKeys() {
-        if (environmentReader.readEnv(EnvironmentVariables.STAGE_NAME).equals(TEST_STAGE_NAME)) {
+        Stage currentStage=Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
+        if (currentStage.equals(Stage.TEST)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
