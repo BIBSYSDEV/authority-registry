@@ -21,7 +21,11 @@ import './commands'
 
 beforeEach(function(){
 	let uuid = require('uuid');
-	let randomRegistryName = Cypress.env('whoami') + uuid.v4();
+	let whoami = Cypress.env('whoami');
+	if(whoami === undefined){
+		whoami = 'test'
+	}
+	let randomRegistryName = whoami + uuid.v4();
 	cy.wrap(randomRegistryName).as('registryName');
 	cy.wrap(true).as('cleanUp') 
 	cy.wrap('testApiAdminApiKey').as('apiAdminApiKey')
