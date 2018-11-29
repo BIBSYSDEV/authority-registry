@@ -5,6 +5,7 @@
 //    Then anonymous user can view the data in the given format
 
 when(/the anonymous user requests the entity specifying an Accept header with value text\/html/, () => {
+	cy.log('-- anonymous_user_view_entity_HTML.js --')
 	cy.get('@registryName').then((registryName) => {
 		cy.get('@entityId').then((entityId) => {
 			let getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;

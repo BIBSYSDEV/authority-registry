@@ -8,4 +8,5 @@ build/
 bin/
 *.iml
 .metadata/
-
+.checkstyle
+/node_modules/

@@ -126,6 +126,7 @@ public final class TableDriver {
 
     private boolean deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
+                
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
             logger.debug("Table deleted successfully, tableId={}", tableName);

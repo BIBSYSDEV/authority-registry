@@ -13,6 +13,7 @@
 
 
 when('an anonymous user dereferences the base URI for the registry specifying mediatypes:', (dataTable) =>{
+	cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --')
 	let attributeArray = dataTable.rawTable;
 
 	cy.get('@registryName').then((registryName) => {

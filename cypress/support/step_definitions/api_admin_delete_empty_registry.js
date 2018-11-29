@@ -6,18 +6,19 @@
 
 
 when('the API admin user uses the API key and requests deletion of an entity registry', () => {
+	cy.log('-- api_admin_delete_empty_registry.js --')
 	// delete empty registry
 	cy.get("@registryName").then((registryName) => {
-		cy.get("@registryApiKey").then((apiKey) => {
-
-			let deleteRegistryUrl = '/registry/' + registryName;
+		cy.get("@registryAdminApiKey").then((apiKey) => {
+			let url = '/registry/' + registryName;
 			cy.request({
-				url: deleteRegistryUrl,
-				method: "DELETE",
+				url: url,
+				method: 'DELETE',
 				headers: {
-					'content-type': 'application/json',
-					'apikey': apiKey
+					'api-key': apiKey,
+					'content-type': 'application/json'
 				}
+			}).then(function (response) {
 			})
 		})
 	})
@@ -26,14 +27,18 @@ when('the API admin user uses the API key and requests deletion of an entity reg
 then('the empty entity registry is deleted', () => {
 	// call registry
 	cy.get("@registryName").then((registryName) => {
-
-		let registryHeartbeatUrl = '/registry/' + registryName;
-		cy.request({
-			url: registryHeartbeatUrl,
-			method: "GET",
-			failOnStatusCode: false
-		}).then((response) => {
-			expect(response.status).equals(404)
+		cy.get("@apiAdminApiKey").then((apiKey) => {
+			let registryHeartbeatUrl = '/registry/' + registryName;
+			cy.request({
+				url: registryHeartbeatUrl,
+				method: "GET",
+				failOnStatusCode: false,
+				headers: {
+					'api-key': apiKey
+				}
+			}).then((response) => {
+				expect(response.status).equals(404)
+			})
 		})
 	})
 })

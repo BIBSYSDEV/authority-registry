@@ -221,7 +221,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
-    public void putRegistrySchema_RegsitryExists_ReturnsStatusOK() throws Exception {
+    public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMETHOD_NOT_ALLOWED() throws Exception {
         String registryName = UUID.randomUUID().toString();
         EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
         createRegistry(template);
@@ -231,13 +231,27 @@ public class DatabaseResourceTest extends JerseyTest {
 
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
+        assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.METHOD_NOT_ALLOWED.getStatusCode())));
+
+    }
+
+    @Test
+    public void putRegistrySchema_RegistryExists_ReturnsStatusOK() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
+        createRegistry(template);
+        
+        String schemaAsJson = "Schema as Json";
+        Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
         String entity = response.readEntity(String.class);
         assertThat(entity, is(equalTo(schemaAsJson)));
     }
-
+    
+    
+    
     @Test
     public void updateEntity_EntityExists_ReturnsUpdatedEntity() throws Exception {
 

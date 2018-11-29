@@ -6,6 +6,7 @@
 //    Then the data is available in the entity registry
 
 given('that the registry admin user has a set of properly schema-formatted data', () => {
+	cy.log('-- registry_admin_populate_registry.js --')
 	cy.fixture('testDataBulk.json').as('bulkUpload')
 	// test against schema here?
 })

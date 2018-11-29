@@ -4,6 +4,7 @@
 //    Then they can access the administration APIs
 
 when('they submit the API key', () => {
+	cy.log('-- api_admin_user_provides_api_key.js --')
 	cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
 		cy.get('@registryName').then((registryName) => {
 			// create new test registry metadata

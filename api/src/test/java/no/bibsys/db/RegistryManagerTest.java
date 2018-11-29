@@ -50,14 +50,14 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test
     public void updateMetadata_RegistryExisting_MetadataUpdated() throws IOException {
 
-        String tableName = "addMetadataRegistry";
+        String registryName = "addMetadataRegistry";
 
-        EntityRegistryTemplate testEditRequest = createTestEditRequest(tableName);
+        EntityRegistryTemplate testEditRequest = createTestEditRequest(registryName);
         registryManager.createRegistryFromTemplate(testEditRequest);
-        registryManager.updateRegistryMetadata(testEditRequest);
-        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(tableName);
+        registryManager.updateRegistryMetadata(registryName, testEditRequest);
+        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
 
-        assertThat(metadata.getId(), is(equalTo(tableName)));
+        assertThat(metadata.getId(), is(equalTo(registryName)));
 
         assertThat(metadata.getMetadata().getCreator().get(0), is(equalTo("creator1")));
         assertThat(metadata.getMetadata().getCreator().get(1), is(equalTo("creator2")));
