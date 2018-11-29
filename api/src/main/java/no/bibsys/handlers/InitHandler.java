@@ -60,22 +60,26 @@ public class InitHandler extends CodePipelineFunctionHandlerTemplate<SimpleRespo
     protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery,
         Context context) {
 
-        try {
-            authenticationService.createApiKeyTable();
-            authenticationService.setUpInitialApiKeys();
-            updateUrl();
-
-        } catch (ResourceInUseException e) {
-            logger.warn(e.getErrorMessage());
-        }
+        createApiKeysTable();
+        updateUrl();
 
         return new SimpleResponse("Initializing!!");
 
     }
 
+    private void createApiKeysTable() {
+        try {
+            authenticationService.createApiKeyTable();
+            authenticationService.setUpInitialApiKeys();
+
+        } catch (ResourceInUseException e) {
+            logger.warn(e.getErrorMessage());
+        }
+    }
+
 
     private void updateUrl() {
-
+        logger.info("Updating url!");
         StaticUrlInfo urlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
