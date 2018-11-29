@@ -29,7 +29,7 @@ then('the API admin user receives information that the data is deleted', () => {
 			let registryUrl = '/registry' + registryName;
 			cy.request(registryUrl).then((response) => {
 				// empty registry needs to be made async. Does not work until this is fixed
-//				assert.isEqual(response.body.size, 0);
+//				expect(response.body.size).to.equal(0);
 			})
 		})
 	})
