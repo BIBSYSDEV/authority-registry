@@ -39,9 +39,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.EntityManager;
-import no.bibsys.service.RegistryManager;
+import no.bibsys.service.EntityService;
 import no.bibsys.web.model.CreatedRegistryDto;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -63,10 +64,10 @@ public class DatabaseResource {
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
     private final transient RegistryManager registryManager;
-    private final transient EntityManager entityManager;
+    private final transient EntityService entityService;
 
-    public DatabaseResource(RegistryManager registryManager, EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public DatabaseResource(RegistryManager registryManager, EntityService entityService) {
+        this.entityService = entityService;
         this.registryManager = registryManager;
     }
 
@@ -327,12 +328,10 @@ public class DatabaseResource {
                     description = "Name of registry to add to",
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to create",
-                    content = @Content(schema = @Schema(type = STRING))) String entity)
+                    content = @Content(schema = @Schema(implementation = EntityDto.class))) EntityDto entityDto)
             throws IOException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        EntityDto persistedEntity = entityManager.addEntity(registryName, entity);
+        EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
 
         persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
@@ -356,8 +355,6 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity summary from", schema = @Schema(
                             type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
-
-        registryManager.validateRegistryExists(registryName);
 
         return Response.status(Status.NOT_IMPLEMENTED).entity("Not implemented").build();
     }
@@ -383,10 +380,8 @@ public class DatabaseResource {
                     description = "Id of entity to get",
                     schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, @Context Request request) {
 
-        registryManager.validateRegistryExists(registryName);
-        entityManager.validateItemExists(registryName, entityId);
         
-        EntityDto entity = entityManager.getEntity(registryName, entityId);
+        EntityDto entity = entityService.getEntity(registryName, entityId);
         
         EntityTag etag = new EntityTag(entity.getEtagValue());
         
@@ -420,10 +415,7 @@ public class DatabaseResource {
                     description = "Id of entity to delete",
                     schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
 
-        registryManager.validateRegistryExists(registryName);
-        entityManager.validateItemExists(registryName, entityId);
-
-        entityManager.deleteEntity(registryName, entityId);
+        entityService.deleteEntity(registryName, entityId);
 
         return Response
                 .ok(String.format("Entity with id %s is deleted from %s", entityId, registryName))
@@ -452,12 +444,9 @@ public class DatabaseResource {
                     description = "Id of entity to be updated",
                     schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
             @RequestBody(description = "Entity to update",
-                    content = @Content(schema = @Schema(type = STRING))) String entity) {
+                    content = @Content(schema = @Schema(implementation = EntityDto.class))) EntityDto entityDto) {
 
-        registryManager.validateRegistryExists(registryName);
-        entityManager.validateItemExists(registryName, entityId);
-
-        entityManager.updateEntity(registryName, entityId, entity);
+        entityService.updateEntity(registryName, entityDto);
 
         return Response.ok(
                 String.format("Entity with id %s in %s has been updated", entityId, registryName))

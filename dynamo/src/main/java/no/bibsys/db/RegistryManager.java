@@ -1,4 +1,4 @@
-package no.bibsys.service;
+package no.bibsys.db;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,11 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.db.ItemDriver;
-import no.bibsys.db.JsonUtils;
-import no.bibsys.db.TableDriver;
+import no.bibsys.db.exceptions.RegistryNotFoundException;
+import no.bibsys.service.ApiKey;
+import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
-import no.bibsys.web.exception.RegistryNotFoundException;
 import no.bibsys.web.exception.RegistryUnavailableException;
 import no.bibsys.web.model.CreatedRegistryDto;
 import no.bibsys.web.model.RegistryEntryDto;

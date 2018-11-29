@@ -66,7 +66,7 @@ public class EntityDto {
     public void setBody(ObjectNode body) {
         this.body = body;
     }
-
+    
     public String getPath() {
         return path;
     }

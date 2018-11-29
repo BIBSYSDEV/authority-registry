@@ -6,10 +6,10 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.ItemDriver;
+import no.bibsys.db.RegistryManager;
 import no.bibsys.db.TableDriver;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityManager;
-import no.bibsys.service.RegistryManager;
 
 public abstract class LocalDynamoTest {
 
