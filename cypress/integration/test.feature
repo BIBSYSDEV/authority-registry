@@ -1,10 +1,10 @@
 Feature: Test features
-
   Background:
-    Given that the registry admin user has a valid API key for registry administration
-    And that there is an existing entity registry with a schema
+    Given that there is an existing entity registry with a schema
+#    And no cleanup
+ 
+  Scenario: An anonymous user views an entity without specifying a format
+    And that there is an entity in the registry
+    When the anonymous user requests the entity
+    Then anonymous user can view the entity's data in the native database format
 
-  Scenario: An registry admin user adds a single entity to a registry
-
-    When the registry admin user submits the API key with a request to create a new entity with properly formatted data
-    Then the entity is created
