@@ -33,5 +33,14 @@ public class UrlUpdater {
     }
 
 
+    public Optional<ChangeResourceRecordSetsRequest> createDeleteRequest(){
+            return route53Updater.createDeleteRequest();
+    }
+
+    public ChangeResourceRecordSetsResult executeDelete(ChangeResourceRecordSetsRequest request) {
+        return route53Updater.executeDeleteRequest(request);
+    }
+
+
 
 }
