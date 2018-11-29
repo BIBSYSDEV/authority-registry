@@ -165,3 +165,5 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           STACK_NAME: !Ref AWS::StackName
+          HOSTED_ZONE_NAME: "aws.unit.no."
+          APPLICATION_URL: "apihello.entitydata.aws.unit.no."

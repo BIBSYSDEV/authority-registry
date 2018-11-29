@@ -47,14 +47,14 @@ public class UrlUpdaterTest {
             client);
 
         route53Updater.setRoute53Client(mockRoute53Client());
-        urlUpdater = new UrlUpdater(route53Updater, certificateArn);
+        urlUpdater = new UrlUpdater(route53Updater);
 
 
     }
 
     @Before
     public void generateRecordSet() {
-        Optional<ChangeResourceRecordSetsRequest> requestOpt = urlUpdater.createUpdateRequest();
+        Optional<ChangeResourceRecordSetsRequest> requestOpt = urlUpdater.createUpdateRequest(certificateArn);
 
         assertTrue(requestOpt.isPresent());
         ChangeResourceRecordSetsRequest request = requestOpt.get();

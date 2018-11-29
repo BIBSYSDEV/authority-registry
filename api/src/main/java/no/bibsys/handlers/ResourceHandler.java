@@ -19,7 +19,6 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
 
     private final transient Stage stage;
-    private final transient String certificateArn;
     private final transient String hostedZoneName;
     private final transient String applicationUrl;
 
@@ -28,7 +27,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
     public ResourceHandler(Environment environment) {
         super();
-        certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
+
         hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
         stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
         applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
@@ -43,7 +42,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
         Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway);
 
-        return new UrlUpdater(route53Updater, certificateArn);
+        return new UrlUpdater(route53Updater);
     }
 
 

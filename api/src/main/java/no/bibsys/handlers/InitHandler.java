@@ -8,6 +8,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
 import java.util.Optional;
+import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.tools.Environment;
@@ -21,16 +22,18 @@ public class InitHandler extends ResourceHandler {
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
 
     private final transient AuthenticationService authenticationService;
-
+    private final transient String certificateArn;
 
 
     public InitHandler() {
         this(new Environment());
+
     }
 
     public InitHandler(Environment environment){
         super(environment);
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        this.certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
         authenticationService = new AuthenticationService(client, environment);
     }
 
@@ -63,7 +66,7 @@ public class InitHandler extends ResourceHandler {
         UrlUpdater urlUpdater = createUrlUpdater();
 
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater
-            .createUpdateRequest();
+            .createUpdateRequest(certificateArn);
         ChangeResourceRecordSetsResult result = request
             .map(urlUpdater::executeUpdate)
             .orElseThrow(() -> new NotFoundException("Could not update Static URL settings"));

@@ -13,17 +13,16 @@ public class UrlUpdater {
 
 
     private final transient Route53Updater route53Updater;
-    private final transient String certificateArn;
+
 
     public UrlUpdater(
-        Route53Updater route53Updater,
-        String certificateArn) {
+        Route53Updater route53Updater) {
 
         this.route53Updater = route53Updater;
-        this.certificateArn = certificateArn;
+
     }
 
-    public Optional<ChangeResourceRecordSetsRequest> createUpdateRequest() {
+    public Optional<ChangeResourceRecordSetsRequest> createUpdateRequest(String certificateArn) {
         return route53Updater.createUpdateRequest(certificateArn);
 
     }
