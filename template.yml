@@ -136,7 +136,7 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
-          HOSTED_ZONE_NAME: "aws.unit.no"
+          HOSTED_ZONE_NAME: "aws.unit.no."
           APPLICATION_URL: "apihello.entitydata.aws.unit.no."
           STACK_NAME: !Ref AWS::StackName
   Destroy:
