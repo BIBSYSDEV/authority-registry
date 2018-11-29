@@ -1,24 +1,22 @@
 package no.bibsys.db;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.net.ssl.SSLEngineResult.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.bibsys.EnvironmentReader;
+import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
+import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
-import no.bibsys.service.ApiKey;
-import no.bibsys.service.AuthenticationService;
-import no.bibsys.web.exception.RegistryAlreadyExistsException;
-import no.bibsys.web.exception.RegistryNotEmptyException;
-import no.bibsys.web.exception.RegistryUnavailableException;
-import no.bibsys.web.model.CreatedRegistryDto;
-import no.bibsys.web.model.RegistryEntryDto;
+import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.structures.Registry;
 
 public class RegistryManager {
 
@@ -27,91 +25,87 @@ public class RegistryManager {
     }
 
     private final transient TableDriver tableDriver;
-    private final transient ItemDriver itemDriver;
-    private final transient AuthenticationService authenticationService;
-    private final transient String validationSchemaTableName;
+    private final transient DynamoDBMapper mapper;
     private final transient ObjectMapper objectMapper = JsonUtils.getObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
-    public RegistryManager(TableDriver tableManager, ItemDriver itemManager,
-            AuthenticationService authenticationService, EnvironmentReader environmentReader) {
-        this.tableDriver = tableManager;
-        this.itemDriver = itemManager;
-        this.authenticationService = authenticationService;
+    public RegistryManager(AmazonDynamoDB client) {
+        this.tableDriver = TableDriver.create(client);
+        this.mapper = new DynamoDBMapper(client);
 
-        validationSchemaTableName =
-                environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
     }
 
-    protected boolean createRegistryFromTemplate(RegistryEntryDto request)
-            throws JsonProcessingException {
-        String registryName = request.getId();
-        String json = objectMapper.writeValueAsString(request);
-        return createRegistryFromJson(registryName, json);
+    public Registry createRegistry(String validationSchemaTableName, Registry registry) {
+        checkIfSchemaTableExistsOrCreate(validationSchemaTableName);
+        checkIfRegistryExistsInSchemaTable(validationSchemaTableName, registry.getId());
+        return createRegistryTable(validationSchemaTableName, registry);
+    }
+    
+    public Registry getRegistry(String validationSchemaTableName, String registryId) {
+ 
+        validateSchemaTable(validationSchemaTableName);
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
+
+        try {
+            return mapper.load(Registry.class, registryId, config);
+        } catch (ResourceNotFoundException e) {
+            throw new RegistryNotFoundException(registryId, validationSchemaTableName);
+        }
     }
 
-    protected boolean createRegistryFromJson(String registryName, String json) {
-        checkIfSchemaTableExistsOrCreate(registryName, validationSchemaTableName);
-        checkIfRegistryExistsInSchemaTable(registryName, validationSchemaTableName);
-        return createRegistryTable(registryName, json, validationSchemaTableName);
-    }
-
-    private boolean createRegistryTable(String registryName, String json, String schemaTable) {
-        boolean created = tableDriver.createEntityRegistryTable(registryName);
+    private Registry createRegistryTable(String validationSchemaTable, Registry registry) {
+        boolean created = tableDriver.createEntityRegistryTable(registry.getId());
 
         if (created) {
-            addRegistryToSchemaTable(registryName, json, schemaTable);
-            logger.info("Registry created successfully, registryId={}", registryName);
+            addRegistryToSchemaTable(validationSchemaTable, registry);
+            logger.info("Registry created successfully, registryId={}", registry.getId());
+        } else {
+            //TODO: fix exception
         }
-        return created;
+        return registry;
     }
 
-    private void addRegistryToSchemaTable(String registryName, String json, String schemaTable) {
-        itemDriver.addItem(schemaTable, registryName, json);
+    private Registry addRegistryToSchemaTable(String validationSchemaTableName, Registry registry) {
+        
+        validateSchemaTable(validationSchemaTableName);
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(SaveBehavior.PUT)
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
+        
+        try {
+            mapper.save(registry, config);
+            return registry;
+        } catch (ResourceNotFoundException e) {
+            throw new RegistryNotFoundException(validationSchemaTableName); //TODO: fix exception            
+        }
+        
     }
 
-    private void checkIfRegistryExistsInSchemaTable(String registryName, String schemaTable) {
-        if (itemDriver.itemExists(schemaTable, registryName)) {
+    private void validateSchemaTable(String validationSchemaTableName) {
+        if (!tableDriver.tableExists(validationSchemaTableName)) {
+            throw new RegistryNotFoundException(validationSchemaTableName); //TODO: fix exception
+        } 
+    }
+
+    private void checkIfRegistryExistsInSchemaTable(String validationSchemaTableName, String registryId) {
+        if (getRegistry(validationSchemaTableName, registryId) != null) {
             String message = String.format(
                     "Registry already exists in schema table, registryId=%s, schemeTable=%s",
-                    registryName, schemaTable);
+                    registryId, registryId);
             throw new RegistryAlreadyExistsException(message);
         }
     }
 
-    private void checkIfSchemaTableExistsOrCreate(String registryName, String schemaTable) {
+    private void checkIfSchemaTableExistsOrCreate(String schemaTable) {
         if (!tableDriver.tableExists(schemaTable)) {
             logger.info(
-                    "Schema table does not exist, creating new one, registryId={}, schemaTable={}",
-                    registryName, schemaTable);
+                    "Schema table does not exist, creating new one, schemaTable={}", schemaTable);
             tableDriver.createRegistryMetadataTable(schemaTable);
-        }
-    }
-
-    public CreatedRegistryDto createRegistry(EntityRegistryTemplate template)
-            throws JsonProcessingException {
-
-        logger.info("Creating registry, template={}", template);
-
-        String registryName = template.getId();
-
-        if (registryExists(registryName)) {
-            throw new RegistryAlreadyExistsException(registryName);
-        } else {
-            boolean registryCreated = createRegistryFromTemplate(template);
-
-            if (registryCreated) {
-
-                ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
-                String savedApiKey = authenticationService.saveApiKey(apiKey);
-
-                return new CreatedRegistryDto(
-                        String.format("A registry with name=%s is being created", registryName),
-                        registryName, savedApiKey);
-
-            }
-
-            return new CreatedRegistryDto("Registry NOT created. See log for details");
         }
     }
 
@@ -119,11 +113,11 @@ public class RegistryManager {
         return tableDriver.tableExists(tableName);
     }
 
-    public Status validateRegistryExists(String registryName) {
+    public String validateRegistryExists(String registryName) {
     	RegistryStatus status = status(registryName);
     	switch(status) {
         case ACTIVE:
-            return Status.CREATED;
+            return "CREATED";
         case CREATING:
         case UPDATING:
             throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
@@ -138,87 +132,64 @@ public class RegistryManager {
         tableDriver.emptyEntityRegistryTable(tableName);
         tableDriver.createEntityRegistryTable(tableName);
     }
-
-    public boolean deleteRegistry(String registryName) {
-
-        logger.info("Deleting registry, registryId={}", registryName);
-
-        if (tableDriver.tableSize(registryName) > 0) {
-            logger.warn("Can not delete registry that is not empty, registryId={}", registryName);
-            throw new RegistryNotEmptyException(registryName);
-        }
-
-        tableDriver.deleteTable(registryName);
-        boolean deleted = itemDriver.deleteItem(validationSchemaTableName, registryName);
-
-        if (deleted) {
-            authenticationService.deleteApiKeyForRegistry(registryName);
-        }
-
-        return deleted;
+    
+    public void validateRegistryNotEmpty(String registryId) {
+        validateRegistryExists(registryId);
+        if (tableDriver.tableSize(registryId) > 0) {
+            logger.warn("Registry is not empty, registryId={}", registryId);
+            throw new RegistryNotEmptyException(registryId);
+        }        
     }
 
-    public Optional<String> getSchemaAsJson(String registryName) throws IOException {
+    public void deleteRegistry(String validationSchemaTableName, String registryId) {
 
-        Optional<String> registrySchemaItem =
-                itemDriver.getItem(validationSchemaTableName, registryName);
+        logger.info("Deleting registry, registryId={}", registryId);
 
-        Optional<String> schema = Optional.empty();
-
-        if (registrySchemaItem.isPresent()) {
-            EntityRegistryTemplate registryTemplate =
-                    objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
-            schema = Optional.ofNullable(registryTemplate.getSchema());
-        }
-
-        return schema;
-    }
-
-    public void setSchemaJson(String registryName, String schemaAsJson) throws IOException {
+        validateRegistryNotEmpty(registryId);
+        tableDriver.deleteTable(registryId);
+        Registry registry = getRegistry(validationSchemaTableName, registryId);
         
-        if (tableDriver.tableSize(registryName) > 0) {
-            logger.warn("Can not update registry that is not empty, registryId={}", registryName);
-            throw new RegistryNotEmptyException(registryName);
-        }
-
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
         
-        Optional<String> registrySchemaItem =
-                itemDriver.getItem(validationSchemaTableName, registryName);
-
-        EntityRegistryTemplate registryTemplate =
-                objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
-
-        registryTemplate.setSchema(schemaAsJson);
-        updateRegistryMetadata(registryName, registryTemplate);
+        try {
+            mapper.delete(registry, config);
+        } catch (ResourceNotFoundException e) {
+            //TODO: fix exception
+        }
     }
 
-    public List<String> getRegistries() {
+    public List<String> getRegistries(String validationSchemaTableName) {
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(SaveBehavior.PUT)
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
+        
         List<String> tables = tableDriver.listTables();
         return tables.stream()
-                .filter(tableName -> itemDriver.itemExists(validationSchemaTableName, tableName))
+                .filter(tableName -> mapper.load(Registry.class, tableName, config) != null)
                 .collect(Collectors.toList());
     }
 
-    public EntityRegistryTemplate getRegistryMetadata(String registryName) throws IOException {
+    public Registry updateRegistry(String validationSchemaTableName, Registry registry) {
+        validateSchemaTable(validationSchemaTableName);
+        validateRegistryNotEmpty(registry.getId());
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(SaveBehavior.UPDATE)
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
 
-        EntityRegistryTemplate template = new EntityRegistryTemplate();
-        Optional<String> entry = itemDriver.getItem(validationSchemaTableName, registryName);
-        if (entry.isPresent()) {
-            template = objectMapper.readValue(entry.get(), EntityRegistryTemplate.class);
-            return template;
-        } else {
-            throw new RegistryNotFoundException(registryName, validationSchemaTableName);
+        try {
+            mapper.save(registry, config);
+            logger.info("Registry metadata updated successfully, validationSchemaTableNameId={}, registryId={}", validationSchemaTableName,
+                    registry.getId());  
+            return registry;
+        } catch (ResourceNotFoundException e) {
+            throw new RegistryNotFoundException(registry.getId(), validationSchemaTableName);           
         }
-
-    }
-
-    public void updateRegistryMetadata(String registryName, EntityRegistryTemplate request)
-            throws JsonProcessingException {
-
-        request.setId(registryName);
-        String json = objectMapper.writeValueAsString(request);
-        itemDriver.updateItem(validationSchemaTableName, request.getId(), json);
-
     }
 
     public RegistryStatus status(String registryName) {

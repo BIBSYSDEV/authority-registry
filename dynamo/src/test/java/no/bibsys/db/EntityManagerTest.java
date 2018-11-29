@@ -8,7 +8,7 @@ import org.junit.Test;
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
-import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.db.structures.Entity;
 import no.bibsys.testtemplates.LocalDynamoTest;
 
 public class EntityManagerTest extends LocalDynamoTest {

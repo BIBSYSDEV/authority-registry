@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import no.bibsys.db.structures.Entity;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
 
 
 public class SampleData {
@@ -13,7 +14,7 @@ public class SampleData {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public Entity sampleEntity() throws JsonProcessingException {
+    public EntityDto sampleEntityDto() throws JsonProcessingException {
 
         ObjectNode root = mapper.getNodeFactory().objectNode();
         root.put("label", "A random label");
@@ -23,14 +24,22 @@ public class SampleData {
         array.add(2);
         array.add(3);
 
-        String json = mapper.writeValueAsString(root);
 
-        Entity entity = new Entity(json);
+        EntityDto entityDto = new EntityDto();
 
         String id = "sampleId";
-        entity.setId(id);
+        entityDto.setId(id);
+        entityDto.setBody(root);
+        
+        return entityDto;
+    }
 
-        return entity;
+    public RegistryDto sampleRegistryDto(String registryName) {
+        
+        RegistryDto registryDto = new RegistryDto();
+        registryDto.setId(registryName);
+        
+        return registryDto;
     }
 
 }

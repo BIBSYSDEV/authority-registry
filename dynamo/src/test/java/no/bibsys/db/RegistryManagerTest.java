@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.structures.Entity;
-import no.bibsys.db.structures.EntityRegistryTemplate;
+import no.bibsys.db.structures.Entity;
 import no.bibsys.testtemplates.LocalDynamoTest;
-import no.bibsys.web.exception.RegistryAlreadyExistsException;
 
 
 public class RegistryManagerTest extends LocalDynamoTest {

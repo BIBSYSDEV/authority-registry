@@ -86,8 +86,6 @@ public class EntityManager {
         } catch (ResourceNotFoundException e) {
             throw new EntityNotFoundException(registryId, entity.getId());            
         }
-
-        
     }
     
     /**

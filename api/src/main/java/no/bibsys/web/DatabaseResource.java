@@ -2,7 +2,6 @@ package no.bibsys.web;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -39,12 +38,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import no.bibsys.db.RegistryManager;
-import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.service.EntityManager;
 import no.bibsys.service.EntityService;
-import no.bibsys.web.model.CreatedRegistryDto;
+import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
@@ -63,12 +60,12 @@ public class DatabaseResource {
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
-    private final transient RegistryManager registryManager;
+    private final transient RegistryService registryService;
     private final transient EntityService entityService;
 
-    public DatabaseResource(RegistryManager registryManager, EntityService entityService) {
+    public DatabaseResource(RegistryService registryService, EntityService entityService) {
         this.entityService = entityService;
-        this.registryManager = registryManager;
+        this.registryService = registryService;
     }
 
     @POST
@@ -88,12 +85,10 @@ public class DatabaseResource {
     public Response createRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
-                            implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
+                            implementation = RegistryDto.class))) RegistryDto registryDto)
             throws JsonProcessingException {
 
-        request.validate();
-
-        CreatedRegistryDto createdRegistry = registryManager.createRegistry(request);
+        RegistryDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
     }
 
@@ -112,7 +107,7 @@ public class DatabaseResource {
     public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey)
             throws JsonProcessingException {
 
-        List<String> registryList = registryManager.getRegistries();
+        List<String> registryList = registryService.getRegistries();
         return Response.ok(registryList).build();
     }
 
@@ -138,10 +133,8 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
             throws IOException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        EntityRegistryTemplate metadata = registryManager.getRegistryMetadata(registryName);
-        return Response.ok(metadata).build();
+        RegistryDto registryDto = registryService.getRegistry(registryName);
+        return Response.ok(registryDto).build();
     }
 
     @PUT
@@ -164,13 +157,11 @@ public class DatabaseResource {
                     description = "Name of new registry",
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(
-                    implementation = EntityRegistryTemplate.class))) EntityRegistryTemplate request)
+                    implementation = RegistryDto.class))) RegistryDto registryDto)
             throws InterruptedException, JsonProcessingException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        registryManager.updateRegistryMetadata(registryName, request);
-        return Response.accepted(String.format("Registry %s has been updated", request.getId()))
+        RegistryDto updateRegistry = registryService.updateRegistry(registryDto);
+        return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId()))
                 .build();
     }
 
@@ -195,9 +186,7 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
             throws InterruptedException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        registryManager.deleteRegistry(registryName);
+        registryService.deleteRegistry(registryName);
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
     }
 
@@ -218,7 +207,7 @@ public class DatabaseResource {
                     description = "Name of registry in which to update entity", schema = @Schema(
                             type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
-        registryManager.validateRegistryExists(registryName);
+        registryService.getRegistry(registryName);
 
         return Response.ok(String.format("Registry with name %s is active", registryName)).build();
     }
@@ -242,9 +231,8 @@ public class DatabaseResource {
                     description = "Name of registry to delete", schema = @Schema(
                             type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
-        registryManager.validateRegistryExists(registryName);
 
-        registryManager.emptyRegistry(registryName);
+        registryService.emptyRegistry(registryName);
         return Response.ok(String.format("Registry %s has been emptied", registryName)).build();
     }
 
@@ -269,14 +257,9 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
             throws IOException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        Optional<String> schemaAsJson = registryManager.getSchemaAsJson(registryName);
-        if (schemaAsJson.isPresent()) {
-            return Response.ok(schemaAsJson.get()).build();
-        } else {
-            return Response.status(Status.NOT_FOUND).build();
-        }
+        RegistryDto registryDto = registryService.getRegistry(registryName);
+        
+        return Response.ok(registryDto).build();
     }
 
     @PUT
@@ -299,13 +282,12 @@ public class DatabaseResource {
                     description = "Name of registry to update",
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-                    content = @Content(schema = @Schema(type = STRING))) String validationSchema)
+                    content = @Content(schema = @Schema(implementation = RegistryDto.class))) RegistryDto registryDto)
             throws IOException {
 
-        registryManager.validateRegistryExists(registryName);
-
-        registryManager.setSchemaJson(registryName, validationSchema);
-        return Response.ok(String.format("/registry/%s/schema", registryName)).build();
+        RegistryDto updateRegistry = registryService.updateRegistry(registryDto);
+        updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
+        return Response.ok(updateRegistry).build();
     }
 
 

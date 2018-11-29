@@ -1,19 +1,19 @@
 package no.bibsys.web.model;
 
-import no.bibsys.db.structures.RegistryEntry;
+import no.bibsys.db.structures.Registry;
 
-public class RegistryEntryConverter {
+public class RegistryConverter {
 
-    public static RegistryEntryDto toEntityRegistryDto(RegistryEntry registry) {
-        RegistryEntryDto dto = new RegistryEntryDto();
+    public static RegistryDto toRegistryDto(Registry registry) {
+        RegistryDto dto = new RegistryDto();
         dto.setId(registry.getId());
         dto.setMetadata(registry.getMetadata());
         dto.setSchema(registry.getSchema());
         return dto;
     }
     
-    public static RegistryEntry toEntityRegistry(RegistryEntryDto dto) {
-        RegistryEntry registry = new RegistryEntry();
+    public static Registry toRegistry(RegistryDto dto) {
+        Registry registry = new Registry();
         registry.setId(dto.getId());
         registry.setMetadata(dto.getMetadata());
         registry.setSchema(dto.getSchema());

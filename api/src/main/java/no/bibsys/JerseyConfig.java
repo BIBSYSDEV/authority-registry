@@ -3,17 +3,14 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.db.EntityManager;
-import no.bibsys.db.ItemDriver;
 import no.bibsys.db.RegistryManager;
-import no.bibsys.db.TableDriver;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
+import no.bibsys.service.RegistryService;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -37,17 +34,15 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {
         super();
 
-        TableDriver tableDriver = TableDriver.create(client);
-        ItemDriver itemDriver = ItemDriver.create(tableDriver);
         EntityManager entityManager = new EntityManager(client);
         EntityService entityService = new EntityService(entityManager);
         AuthenticationService authenticationService =
                 new AuthenticationService(client, environmentReader);
 
-        RegistryManager registryManager = new RegistryManager(tableDriver, itemDriver,
-                authenticationService, environmentReader);
+        RegistryManager registryManager = new RegistryManager(client);
+        RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
 
-        register(new DatabaseResource(registryManager, entityService));
+        register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);
 
         register(SecurityEntityFilteringFeature.class);

@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
@@ -18,7 +20,7 @@ import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import no.bibsys.db.structures.Entity;
-import no.bibsys.db.structures.RegistryEntry;
+import no.bibsys.db.structures.Registry;
 
 public final class TableDriver {
 
@@ -96,7 +98,7 @@ public final class TableDriver {
     }
 
     public boolean emptyRegistryMetadataTable(final String tableName) {
-        return emptyTable(tableName, RegistryEntry.class);
+        return emptyTable(tableName, Registry.class);
     }
     
     public boolean emptyEntityRegistryTable(final String tableName) {
@@ -147,14 +149,18 @@ public final class TableDriver {
     }
     
     public boolean createRegistryMetadataTable(final String tableName) {
-        return createTable(tableName, RegistryEntry.class);
+        return createTable(tableName, Registry.class);
     }
     
     private boolean createTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
             
-            CreateTableRequest request = mapper.generateCreateTableRequest(clazz);
+            DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
+                    .build();
+            
+            CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L)
                     );
