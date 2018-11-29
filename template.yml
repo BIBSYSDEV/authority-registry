@@ -122,6 +122,7 @@ Resources:
           - dynamodb:CreateTable
           - dynamodb:PutItem
           - dynamodb:UpdateItem
+          - cloudformation:DescribeStackResources
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
