@@ -39,11 +39,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import no.bibsys.db.Entity;
-import no.bibsys.db.EntityManager;
-import no.bibsys.db.RegistryManager;
 import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.web.model.CreatedRegistry;
+import no.bibsys.service.EntityManager;
+import no.bibsys.service.RegistryManager;
+import no.bibsys.web.model.CreatedRegistryDto;
+import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
@@ -92,7 +92,7 @@ public class DatabaseResource {
 
         request.validate();
 
-        CreatedRegistry createdRegistry = registryManager.createRegistry(request);
+        CreatedRegistryDto createdRegistry = registryManager.createRegistry(request);
         return Response.ok(createdRegistry).build();
     }
 
@@ -332,7 +332,7 @@ public class DatabaseResource {
 
         registryManager.validateRegistryExists(registryName);
 
-        Entity persistedEntity = entityManager.addEntity(registryName, entity);
+        EntityDto persistedEntity = entityManager.addEntity(registryName, entity);
         String entityId = persistedEntity.getId();
 
         persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
@@ -386,7 +386,7 @@ public class DatabaseResource {
         registryManager.validateRegistryExists(registryName);
         entityManager.validateItemExists(registryName, entityId);
         
-        Entity entity = entityManager.getEntity(registryName, entityId);
+        EntityDto entity = entityManager.getEntity(registryName, entityId);
         
         EntityTag etag = new EntityTag(entity.getEtagValue());
         

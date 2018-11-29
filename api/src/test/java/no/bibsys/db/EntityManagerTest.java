@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import org.junit.Test;
+import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.testtemplates.LocalDynamoTest;
 import no.bibsys.web.exception.EntityNotFoundException;

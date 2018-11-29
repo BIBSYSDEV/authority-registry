@@ -1,22 +1,22 @@
 package no.bibsys.web.model;
 
-public class CreatedRegistry {
+public class CreatedRegistryDto {
 
     private String message;
     private String registryName;
     private String apiKey;
 
-    public CreatedRegistry() {}
+    public CreatedRegistryDto() {}
 
-    public CreatedRegistry(String message) {
+    public CreatedRegistryDto(String message) {
         this(message, null, null);
     }
 
-    public CreatedRegistry(String message, String registryName) {
+    public CreatedRegistryDto(String message, String registryName) {
         this(message, registryName, null);
     }
 
-    public CreatedRegistry(String message, String registryName, String apiKey) {
+    public CreatedRegistryDto(String message, String registryName, String apiKey) {
         this.message = message;
         this.registryName = registryName;
         this.apiKey = apiKey;

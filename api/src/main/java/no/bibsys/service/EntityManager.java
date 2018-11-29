@@ -1,4 +1,4 @@
-package no.bibsys.db;
+package no.bibsys.service;
 
 import java.io.IOException;
 import javax.ws.rs.core.Response.Status;
@@ -10,6 +10,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import no.bibsys.db.ItemDriver;
+import no.bibsys.db.structures.Entity;
 import no.bibsys.web.exception.EntityNotFoundException;
 import no.bibsys.web.exception.RegistryNotFoundException;
 

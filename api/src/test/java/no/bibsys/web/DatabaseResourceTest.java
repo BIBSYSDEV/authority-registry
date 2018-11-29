@@ -21,13 +21,13 @@ import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
-import no.bibsys.db.Entity;
 import no.bibsys.db.TableDriver;
+import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
-import no.bibsys.web.model.CreatedRegistry;
+import no.bibsys.web.model.CreatedRegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
 
@@ -76,11 +76,11 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        CreatedRegistry expected = new CreatedRegistry(
+        CreatedRegistryDto expected = new CreatedRegistryDto(
                 String.format("A registry with name=%s is being created", registryName));
 
         Response response = createRegistry(registryName);
-        CreatedRegistry entity = response.readEntity(CreatedRegistry.class);
+        CreatedRegistryDto entity = response.readEntity(CreatedRegistryDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         assertThat(entity.getMessage(), is(equalTo(expected.getMessage())));

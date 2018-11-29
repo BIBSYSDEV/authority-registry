@@ -1,4 +1,4 @@
-package no.bibsys.db;
+package no.bibsys.service;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,13 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.EnvironmentReader;
-import no.bibsys.db.structures.EntityRegistryTemplate;
-import no.bibsys.service.ApiKey;
-import no.bibsys.service.AuthenticationService;
+import no.bibsys.db.ItemDriver;
+import no.bibsys.db.JsonUtils;
+import no.bibsys.db.TableDriver;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
 import no.bibsys.web.exception.RegistryNotFoundException;
 import no.bibsys.web.exception.RegistryUnavailableException;
-import no.bibsys.web.model.CreatedRegistry;
+import no.bibsys.web.model.CreatedRegistryDto;
+import no.bibsys.web.model.RegistryEntryDto;
 
 public class RegistryManager {
 
@@ -42,7 +43,7 @@ public class RegistryManager {
                 environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
     }
 
-    protected boolean createRegistryFromTemplate(EntityRegistryTemplate request)
+    protected boolean createRegistryFromTemplate(RegistryEntryDto request)
             throws JsonProcessingException {
         String registryName = request.getId();
         String json = objectMapper.writeValueAsString(request);
@@ -56,7 +57,7 @@ public class RegistryManager {
     }
 
     private boolean createRegistryTable(String registryName, String json, String schemaTable) {
-        boolean created = tableDriver.createTable(registryName);
+        boolean created = tableDriver.createEntityRegistryTable(registryName);
 
         if (created) {
             addRegistryToSchemaTable(registryName, json, schemaTable);
@@ -83,11 +84,11 @@ public class RegistryManager {
             logger.info(
                     "Schema table does not exist, creating new one, registryId={}, schemaTable={}",
                     registryName, schemaTable);
-            tableDriver.createTable(schemaTable);
+            tableDriver.createRegistryMetadataTable(schemaTable);
         }
     }
 
-    public CreatedRegistry createRegistry(EntityRegistryTemplate template)
+    public CreatedRegistryDto createRegistry(EntityRegistryTemplate template)
             throws JsonProcessingException {
 
         logger.info("Creating registry, template={}", template);
@@ -104,13 +105,13 @@ public class RegistryManager {
                 ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registryName);
                 String savedApiKey = authenticationService.saveApiKey(apiKey);
 
-                return new CreatedRegistry(
+                return new CreatedRegistryDto(
                         String.format("A registry with name=%s is being created", registryName),
                         registryName, savedApiKey);
 
             }
 
-            return new CreatedRegistry("Registry NOT created. See log for details");
+            return new CreatedRegistryDto("Registry NOT created. See log for details");
         }
     }
 
@@ -135,8 +136,8 @@ public class RegistryManager {
     }
 
     public void emptyRegistry(String tableName) {
-        tableDriver.emptyTable(tableName);
-        tableDriver.createTable(tableName);
+        tableDriver.emptyEntityRegistryTable(tableName);
+        tableDriver.createEntityRegistryTable(tableName);
     }
 
     public boolean deleteRegistry(String registryName) {
