@@ -39,18 +39,18 @@ Feature: API admin features
     When the API admin user changes the metadata for the entity registry
     Then the metadata for the entity registry is updated
 
-  Scenario: An API admin user deletes populated data from an entity registry
-    And that there is an existing, populated entity registry with a schema
-    When the API admin user uses the API key and submits a request to delete the data in the entity registry
-    Then the API admin user receives information that the data is deleted
+#  Scenario: An API admin user deletes populated data from an entity registry
+#    And that there is an existing, populated entity registry with a schema
+#    When the API admin user uses the API key and submits a request to delete the data in the entity registry
+#    Then the API admin user receives information that the data is deleted
 
-  Scenario: An API admin user associates an API key with the registry admin role for a registry
-    And that there is an existing, populated entity registry with a schema
-    When the API admin user submits a new API key to replace the current valid API key
-    Then the API key is updated
+#  Scenario: An API admin user associates an API key with the registry admin role for a registry
+#    And that there is an existing, populated entity registry with a schema
+#    When the API admin user submits a new API key to replace the current valid API key
+#    Then the API key is updated
 
-  Scenario: An API admin user removes registry admin API keys from an existing, populated entity registry
-    And that there is an existing, populated entity registry with a schema and registered registry API keys
-    When the API admin user removes registry admin API keys from the entity registry
-    Then the API keys no longer provide access to the entity registry
+#  Scenario: An API admin user removes registry admin API keys from an existing, populated entity registry
+#    And that there is an existing, populated entity registry with a schema and registered registry API keys
+#    When the API admin user removes registry admin API keys from the entity registry
+#    Then the API keys no longer provide access to the entity registry
 
