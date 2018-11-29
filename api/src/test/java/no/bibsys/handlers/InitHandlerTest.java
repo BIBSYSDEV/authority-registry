@@ -26,7 +26,7 @@ public class InitHandlerTest {
 
     public InitHandlerTest(){
         env= Mockito.mock(no.bibsys.aws.tools.Environment.class);
-        when(env.readEnv((EnvironmentVariables.CERTIFICATE_ARN_ENV))).thenReturn("arn:aws:acm:eu-west-1:933878624978:certificate/b163e7df-2e12-4abf-ae91-7a8bbd19fb9a");
+        when(env.readEnv((EnvironmentVariables.CERTIFICATE_ARN_ENV))).thenReturn("somthing goes here");
         when(env.readEnv((EnvironmentVariables.APPLICATION_URL))).thenReturn("apihello.entitydata.aws.unit.no.");
         when(env.readEnv((EnvironmentVariables.STACK_NAME))).thenReturn("aut-reg-autre-88-stati-url-service-stack-test");
         when(env.readEnv(EnvironmentVariables.STAGE_NAME)).thenReturn(Stage.TEST.toString());
