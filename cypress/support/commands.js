@@ -47,7 +47,7 @@ Cypress.Commands.add("createEntity", (registryName, apiKey, dataFile) => {
 function waitUntilRegistryIsReady(registryName, count){
 
 	let statusUrl = '/registry/' + registryName + '/status'
-	cy.log('waiting...')
+	cy.log('waiting for registry to be ready...')
 	cy.request({
 		url: statusUrl,
 		failOnStatusCode: false
