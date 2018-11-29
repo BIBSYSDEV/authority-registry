@@ -64,6 +64,8 @@ function waitUntilRegistryIsReady(registryName, count){
 
 // create registry
 function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity) {
+	cy.log('creating registry...')
+	
 	cy.log('Using apiKey ' + apiAdminApiKey)
 	cy.fixture(metadataFile)
 	.then(function (testSchema) {
@@ -96,6 +98,8 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 
 // create entity in existing registry
 function createEntity(registryName, apiKey, dataFile) {
+	cy.log('creating entity...')
+	
 	let entityAddUrl = '/registry/' + registryName + '/entity';
 	cy.fixture(dataFile) // add testData to registry
 	.then(function (testData) {
@@ -115,6 +119,8 @@ function createEntity(registryName, apiKey, dataFile) {
 }
 
 function deleteRegistry(registryName, apiKey){
+	cy.log('deleting registry...')
+	
 	cy.log('api-key = ' + apiKey)
 	let emptyUrl = '/registry/' + registryName + '/empty'
 	cy.request({
