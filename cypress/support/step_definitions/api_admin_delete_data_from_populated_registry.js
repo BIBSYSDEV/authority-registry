@@ -28,6 +28,7 @@ then('the API admin user receives information that the data is deleted', () => {
 			expect(deleteComfirmation).is.equal('Registry ' + registryName + ' has been emptied')
 			let registryUrl = '/registry' + registryName;
 			cy.request(registryUrl).then((response) => {
+				// empty registry needs to be made async. Does not work until this is fixed
 //				assert.isEqual(response.body.size, 0);
 			})
 		})
