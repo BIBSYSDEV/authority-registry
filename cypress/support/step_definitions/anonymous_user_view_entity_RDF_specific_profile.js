@@ -15,6 +15,7 @@
 //    Then anonymous user can view the data in the serialization and profile requested
 
 when('specifies an Accept-schema header with a value:', (dataTable) => {
+	cy.log('-- anonymous_user_view_entity_RDF_specific_profile.js --')
 	let profileArray = dataTable.rawTable;
 	cy.wrap(profileArray[0]).as('profile')
 })

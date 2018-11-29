@@ -163,7 +163,7 @@ public class DatabaseResource {
 
         registryManager.validateRegistryExists(registryName);
 
-        registryManager.updateRegistryMetadata(request);
+        registryManager.updateRegistryMetadata(registryName, request);
         return Response.accepted(String.format("Registry %s has been updated", request.getId()))
                 .build();
     }

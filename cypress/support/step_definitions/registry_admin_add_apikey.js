@@ -6,6 +6,7 @@
 
 
 when('the API admin user adds registry admin API keys to the entity registry', () =>{
+	cy.log('-- registry_admin_add_apikey.js --')
 	cy.get("@registryName").then((registryName) => {
 		let addApikeyUrl = "/registry/" + registryName + "/apikey";
 

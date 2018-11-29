@@ -5,6 +5,8 @@
 //Then anonymous user can view the entity's data in the native database format
 
 when('the anonymous user requests the entity', () => {
+	cy.log('-- anonymous_user_view_entity.js --')
+	
 	cy.get('@registryName').then((registryName) => {
 
 		cy.get('@entityId').then((entityId) => {
@@ -19,6 +21,6 @@ when('the anonymous user requests the entity', () => {
 
 then("anonymous user can view the entity's data in the native database format", () => {
 	cy.get('@response').then((entityData) => {
-		expect(entityData.body['metadata'].name).to.be.equal('name')
+		expect(entityData.body.name).to.be.equal('nameValue')
 	})
 })

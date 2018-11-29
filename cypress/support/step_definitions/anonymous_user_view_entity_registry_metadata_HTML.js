@@ -20,6 +20,7 @@
 
 
 when(/an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/, (tableData) =>{
+	cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --')
 	
 	let attributeArray = dataTable.rawTable;
 	cy.wrap(attributeArray).as('attributeNames')

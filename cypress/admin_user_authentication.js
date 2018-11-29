@@ -4,7 +4,7 @@
 //    Then they are authenticated and receive a valid authentication token
 
 let credentials = "";
-let authenticationUrl = "https://www.unit.no"; // authentication service here
+let authenticationUrl = "/"; // authentication service here
 let authenticated = 'not authenticated';
 
 given('that there is an API admin user with valid credentials', () => {

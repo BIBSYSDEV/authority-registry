@@ -19,6 +19,7 @@ import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.exception.RegistryAlreadyExistsException;
+import no.bibsys.web.exception.RegistryNotEmptyException;
 import no.bibsys.web.exception.RegistryNotFoundException;
 import no.bibsys.web.exception.RegistryUnavailableException;
 import no.bibsys.web.model.CreatedRegistry;
@@ -122,18 +123,18 @@ public class RegistryManager {
         return tableDriver.tableExists(tableName);
     }
 
-    public Status validateRegistryExists(String tableName) {
-    	RegistryStatus status = status(tableName);
+    public Status validateRegistryExists(String registryName) {
+    	RegistryStatus status = status(registryName);
     	switch(status) {
         case ACTIVE:
             return Status.CREATED;
         case CREATING:
         case UPDATING:
-            throw new RegistryUnavailableException(tableName, status.name().toLowerCase(Locale.ENGLISH));
+            throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
         case DELETING:
         case NOT_FOUND:
         default:
-            throw new RegistryNotFoundException(tableName);
+            throw new RegistryNotFoundException(registryName);
     	}
     }
 
@@ -144,11 +145,11 @@ public class RegistryManager {
 
     public boolean deleteRegistry(String registryName) {
 
-        logger.info("Deteleting registry, registryId={}", registryName);
+        logger.info("Deleting registry, registryId={}", registryName);
 
         if (tableDriver.tableSize(registryName) > 0) {
             logger.warn("Can not delete registry that is not empty, registryId={}", registryName);
-            return false;
+            throw new RegistryNotEmptyException(registryName);
         }
 
         tableDriver.deleteTable(registryName);
@@ -178,6 +179,13 @@ public class RegistryManager {
     }
 
     public void setSchemaJson(String registryName, String schemaAsJson) throws IOException {
+        
+        if (tableDriver.tableSize(registryName) > 0) {
+            logger.warn("Can not update registry that is not empty, registryId={}", registryName);
+            throw new RegistryNotEmptyException(registryName);
+        }
+
+        
         Optional<String> registrySchemaItem =
                 itemDriver.getItem(validationSchemaTableName, registryName);
 
@@ -185,7 +193,7 @@ public class RegistryManager {
                 objectMapper.readValue(registrySchemaItem.get(), EntityRegistryTemplate.class);
 
         registryTemplate.setSchema(schemaAsJson);
-        updateRegistryMetadata(registryTemplate);
+        updateRegistryMetadata(registryName, registryTemplate);
     }
 
     public List<String> getRegistries() {
@@ -208,9 +216,10 @@ public class RegistryManager {
 
     }
 
-    public void updateRegistryMetadata(EntityRegistryTemplate request)
+    public void updateRegistryMetadata(String registryName, EntityRegistryTemplate request)
             throws JsonProcessingException {
 
+        request.setId(registryName);
         String json = objectMapper.writeValueAsString(request);
         itemDriver.updateItem(validationSchemaTableName, request.getId(), json);
 
