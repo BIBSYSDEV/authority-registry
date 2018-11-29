@@ -1,9 +1,5 @@
 package no.bibsys.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -21,7 +17,11 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-import no.bibsys.EnvironmentReader;
+import java.util.ArrayList;
+import java.util.List;
+import no.bibsys.EnvironmentVariables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthenticationService {
 
@@ -29,17 +29,17 @@ public class AuthenticationService {
 
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
-    private final transient EnvironmentReader environmentReader;
+    private final transient no.bibsys.aws.tools.Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-    public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
+    public AuthenticationService(AmazonDynamoDB client, no.bibsys.aws.tools.Environment environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
 
-        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME);
+        apiKeyTableName = environmentReader.readEnv(EnvironmentVariables.API_KEY_TABLE_NAME);
 
         config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
@@ -80,7 +80,7 @@ public class AuthenticationService {
     }
 
     public void setUpInitialApiKeys() {
-        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).equals(TEST_STAGE_NAME)) {
+        if (environmentReader.readEnv(EnvironmentVariables.STAGE_NAME).equals(TEST_STAGE_NAME)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);

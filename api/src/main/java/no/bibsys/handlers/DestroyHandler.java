@@ -5,10 +5,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import no.bibsys.EnvironmentReader;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.handlers.templates.CodePipelineFunctionHandlerTemplate;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 
 public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
@@ -20,7 +20,7 @@ public class DestroyHandler extends CodePipelineFunctionHandlerTemplate<SimpleRe
         super();
 
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-        authenticationService = new AuthenticationService(client, new EnvironmentReader());
+        authenticationService = new AuthenticationService(client, new Environment());
     }
 
     @Override

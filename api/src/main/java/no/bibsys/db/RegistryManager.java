@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response.Status;
-import no.bibsys.EnvironmentReader;
+import no.bibsys.EnvironmentVariables;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
@@ -34,13 +34,13 @@ public class RegistryManager {
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
     public RegistryManager(TableDriver tableManager, ItemDriver itemManager,
-            AuthenticationService authenticationService, EnvironmentReader environmentReader) {
+            AuthenticationService authenticationService, no.bibsys.aws.tools.Environment environmentReader) {
         this.tableDriver = tableManager;
         this.itemDriver = itemManager;
         this.authenticationService = authenticationService;
 
         validationSchemaTableName =
-                environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
+                environmentReader.readEnv(EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME);
     }
 
     protected boolean createRegistryFromTemplate(EntityRegistryTemplate request)
