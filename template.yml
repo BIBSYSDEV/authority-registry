@@ -124,6 +124,9 @@ Resources:
           - dynamodb:PutItem
           - dynamodb:UpdateItem
           - cloudformation:DescribeStackResources
+          - route53:ListHostedZones
+          - route53:ChangeResourceRecordSets
+
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
