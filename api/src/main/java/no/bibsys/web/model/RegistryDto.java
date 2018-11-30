@@ -1,5 +1,6 @@
 package no.bibsys.web.model;
 
+import java.util.Objects;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class RegistryDto {
@@ -52,40 +53,26 @@ public class RegistryDto {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((metadata == null) ? 0 : metadata.hashCode());
-        result = prime * result + ((schema == null) ? 0 : schema.hashCode());
-        return result;
+        return Objects.hash(id, metadata, schema);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (!(obj instanceof RegistryDto)) {
             return false;
+        }
         RegistryDto other = (RegistryDto) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (metadata == null) {
-            if (other.metadata != null)
-                return false;
-        } else if (!metadata.equals(other.metadata))
-            return false;
-        if (schema == null) {
-            if (other.schema != null)
-                return false;
-        } else if (!schema.equals(other.schema))
-            return false;
-        return true;
+        return Objects.equals(id, other.id) && Objects.equals(metadata, other.metadata)
+                && Objects.equals(schema, other.schema);
     }
+
+
     
     
     

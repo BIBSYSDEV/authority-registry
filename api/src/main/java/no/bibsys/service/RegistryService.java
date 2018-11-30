@@ -9,8 +9,8 @@ import no.bibsys.web.model.RegistryDto;
 
 public class RegistryService {
 
-    private final RegistryManager registryManager;
-    private final AuthenticationService authenticationService;
+    private final transient RegistryManager registryManager;
+    private final transient AuthenticationService authenticationService;
     private final transient String validationSchemaTableName;
 
     

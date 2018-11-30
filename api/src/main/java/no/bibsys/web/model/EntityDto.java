@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import javax.xml.bind.DatatypeConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -88,12 +89,11 @@ public class EntityDto {
 
     }
 
+
+
     @Override
     public int hashCode() {
-        int prime = 31;
-        int result = 1;
-        result = prime * result + ((body == null) ? 0 : body.hashCode());
-        return result;
+        return Objects.hash(body);
     }
 
     @Override
@@ -104,18 +104,11 @@ public class EntityDto {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof EntityDto)) {
             return false;
         }
         EntityDto other = (EntityDto) obj;
-        if (body == null) {
-            if (other.body != null) {
-                return false;
-            }
-        } else if (!body.equals(other.body)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(body, other.body);
     }
 
     @Override

@@ -47,14 +47,23 @@ public class EntityManager {
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId))
                 .build();
+        
+        Entity entity = null;
+        
         try {
-            return mapper.load(Entity.class, entityId, config);
+            entity = mapper.load(Entity.class, entityId, config);
         } catch (ResourceNotFoundException e) {
+            throw new EntityNotFoundException(registryId, entityId);
+        }
+        
+        if (entity != null) {
+            return entity;
+        } else {
             throw new EntityNotFoundException(registryId, entityId);
         }
     }
 
-    public void deleteEntity(String registryId, String entityId) {
+    public boolean deleteEntity(String registryId, String entityId) {
         validateRegistry(registryId);
         
         Entity entity = getEntity(registryId, entityId);
@@ -65,6 +74,7 @@ public class EntityManager {
         
         try {
             mapper.delete(entity, config);
+            return true;
         } catch (ResourceNotFoundException e) {
             throw new EntityNotFoundException(registryId, entityId);            
         }
@@ -72,6 +82,10 @@ public class EntityManager {
 
     public Entity updateEntity(String registryId, Entity entity) {
         validateRegistry(registryId);
+        
+        if (!entityExists(registryId, entity.getId())) {
+            throw new EntityNotFoundException(registryId, entity.getId());
+        }
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.UPDATE)
@@ -85,6 +99,15 @@ public class EntityManager {
             return entity;
         } catch (ResourceNotFoundException e) {
             throw new EntityNotFoundException(registryId, entity.getId());            
+        }
+    }
+    
+    public boolean entityExists(String registryId, String entityId) {
+        try {
+            getEntity(registryId, entityId);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
     

@@ -7,7 +7,7 @@ import no.bibsys.web.model.EntityDto;
 
 public class EntityService {
 
-    private final EntityManager entityManager;
+    private final transient EntityManager entityManager;
     
     public EntityService(EntityManager entityManager) {
         this.entityManager = entityManager;

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import no.bibsys.db.structures.Entity;
 
 
 public class TableDriverTest extends LocalDynamoTest {
@@ -14,7 +15,7 @@ public class TableDriverTest extends LocalDynamoTest {
     @Test
     public void createTable_TableNotExisting_AddsTable() {
         TableDriver tableDriver = newTableDriver();
-        tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable(tableName);
         List<String> tables = tableDriver.listTables();
         int numberOfTables = tables.size();
 
@@ -27,8 +28,8 @@ public class TableDriverTest extends LocalDynamoTest {
         int tables = tableDriver.listTables().size();
         assertThat(tables, is(equalTo(0)));
 
-        tableDriver.createTable(template.getId());
-        boolean createDuplicateTable = tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable(tableName);
+        boolean createDuplicateTable = tableDriver.createEntityRegistryTable(tableName);
         assertThat(createDuplicateTable, is(equalTo(false)));
 
         tables = tableDriver.listTables().size();
@@ -39,7 +40,8 @@ public class TableDriverTest extends LocalDynamoTest {
     @Test
     public void deleteTable_EmptyTable_ReturnsTrue() {
         TableDriver tableDriver = newTableDriver();
-        tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable(tableName);
+
 
         boolean deleteTable = tableDriver.deleteTable(tableName);
         assertThat(deleteTable, equalTo(true));
@@ -51,7 +53,8 @@ public class TableDriverTest extends LocalDynamoTest {
     @Test
     public void deleteTable_TableNotExisting_ReturnsFalse() {
         TableDriver tableDriver = newTableDriver();
-        tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable(tableName);
+
 
         boolean deleteTable = tableDriver.deleteTable(tableName + "blabla");
         assertThat(deleteTable, equalTo(false));
@@ -64,10 +67,11 @@ public class TableDriverTest extends LocalDynamoTest {
     @Test
     public void deleteTable_TableNotEmpty_ReturnsFalse() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
-        tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable(tableName);
 
-        ItemDriver itemDriver = newItemDriver(tableDriver);
-        itemDriver.addItem(template.getId(), "id01", newSimpleEntry().asJson());
+        EntityManager entityManager = new EntityManager(localClient);
+        entityManager.addEntity(tableName, new Entity());
+        
         boolean deleteTable = tableDriver.deleteTable(tableName);
         assertThat(deleteTable, equalTo(false));
     }
@@ -76,16 +80,11 @@ public class TableDriverTest extends LocalDynamoTest {
     @Test
     public void listTable_FiveExistingTables_ListsAllFiveTables() {
         TableDriver tableDriver = newTableDriver();
-        template.setId("test");
-        tableDriver.createTable(template.getId());
-        template.setId("test1");
-        tableDriver.createTable(template.getId());
-        template.setId("test2");
-        tableDriver.createTable(template.getId());
-        template.setId("test3");
-        tableDriver.createTable(template.getId());
-        template.setId("test4");
-        tableDriver.createTable(template.getId());
+        tableDriver.createEntityRegistryTable("test");
+        tableDriver.createEntityRegistryTable("test1");
+        tableDriver.createEntityRegistryTable("test2");
+        tableDriver.createEntityRegistryTable("test3");
+        tableDriver.createEntityRegistryTable("test4");
 
         List<String> tables = tableDriver.listTables();
         assertTrue(tables.contains("test"));

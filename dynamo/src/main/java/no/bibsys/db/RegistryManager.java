@@ -11,7 +11,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
@@ -26,7 +25,6 @@ public class RegistryManager {
 
     private final transient TableDriver tableDriver;
     private final transient DynamoDBMapper mapper;
-    private final transient ObjectMapper objectMapper = JsonUtils.getObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
     public RegistryManager(AmazonDynamoDB client) {
@@ -49,10 +47,18 @@ public class RegistryManager {
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
                 .build();
 
+        Registry registry = null;
+        
         try {
-            return mapper.load(Registry.class, registryId, config);
+            registry = mapper.load(Registry.class, registryId, config);
         } catch (ResourceNotFoundException e) {
             throw new RegistryNotFoundException(registryId, validationSchemaTableName);
+        }
+        
+        if (registry != null) {
+            return registry;
+        } else {
+            throw new RegistryNotFoundException(registryId, validationSchemaTableName);           
         }
     }
 
@@ -63,6 +69,7 @@ public class RegistryManager {
             addRegistryToSchemaTable(validationSchemaTable, registry);
             logger.info("Registry created successfully, registryId={}", registry.getId());
         } else {
+            logger.error("Registry not created, registryId={}", registry.getId());
             //TODO: fix exception
         }
         return registry;
@@ -93,7 +100,7 @@ public class RegistryManager {
     }
 
     private void checkIfRegistryExistsInSchemaTable(String validationSchemaTableName, String registryId) {
-        if (getRegistry(validationSchemaTableName, registryId) != null) {
+        if (registryExists(validationSchemaTableName, registryId)) {
             String message = String.format(
                     "Registry already exists in schema table, registryId=%s, schemeTable=%s",
                     registryId, registryId);
@@ -109,8 +116,13 @@ public class RegistryManager {
         }
     }
 
-    public boolean registryExists(String tableName) {
-        return tableDriver.tableExists(tableName);
+    public boolean registryExists(String validationSchemaTableName, String registryId) {
+        try {
+            getRegistry(validationSchemaTableName, registryId);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String validateRegistryExists(String registryName) {
@@ -156,6 +168,7 @@ public class RegistryManager {
         try {
             mapper.delete(registry, config);
         } catch (ResourceNotFoundException e) {
+            logger.info("Registry not found, registryId={}", registryId);
             //TODO: fix exception
         }
     }
