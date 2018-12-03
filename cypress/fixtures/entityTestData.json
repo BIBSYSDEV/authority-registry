@@ -1,15 +1,12 @@
 {
-	"id": "testId",
-	"entity": {
-		"inScheme": "schemeValue",
-		"type": "typeValue",
-		"identifier": "identifierValue",
-		"broader": "broaderValue",
-		"preferredLabel": [{"lang":"en", "value":"preferredLabelValue"}],
-		"alternativeLabel": [{"lang":"en", "value":"alternativeLabelValue"}],
-		"narrower": ["narrowerValue"],
-		"related": ["relatedValue"],
-		"definition": [{"lang":"en", "value":"definitionValue"}],
-		"seeAlso": ["seeAlsoValue"]
-	}
+	"identifier": "identifierValue",
+	"inScheme": "schemeValue",
+	"type": "typeValue",
+	"broader": "broaderValue",
+	"preferredLabel": [{"lang":"en", "value":"preferredLabelValue"}],
+	"alternativeLabel": [{"lang":"en", "value":"alternativeLabelValue"}],
+	"narrower": ["narrowerValue"],
+	"related": ["relatedValue"],
+	"definition": [{"lang":"en", "value":"definitionValue"}],
+	"seeAlso": ["seeAlsoValue"]
 }
