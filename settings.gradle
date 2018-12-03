@@ -4,4 +4,5 @@ include 'dynamo'
 include 'cypress'
 include 'init'
 include 'common'
+include 'validation'
 

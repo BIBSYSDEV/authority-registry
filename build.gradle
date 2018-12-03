@@ -22,6 +22,8 @@ dependencies {
     compile project(":api")
     compile project(":cypress")
     compile project(":init")
+    compile project(":validation")
+    
 }
 
 task fatJar {
