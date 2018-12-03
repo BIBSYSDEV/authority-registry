@@ -28,7 +28,7 @@ public class SampleData {
 
         String id = "sampleId";
         entityDto.setId(id);
-        entityDto.setBody(body);
+        entityDto.setBody(mapper.writeValueAsString(body));
         
         return entityDto;
     }

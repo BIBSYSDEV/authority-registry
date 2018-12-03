@@ -286,12 +286,14 @@ public class DatabaseResourceTest extends JerseyTest {
 
         EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
         
-        ObjectNode body = (ObjectNode)updatedEntity.getBody();
+        ObjectMapper mapper = new ObjectMapper();
+        
+        ObjectNode body = mapper.readValue(updatedEntity.getBody(), ObjectNode.class);
         
         body.remove("label");
         String updatedLabel = "An updated label";
         body.put("label", updatedLabel);
-        updatedEntity.setBody(body);
+        updatedEntity.setBody(mapper.writeValueAsString(body));
         
         Response response = updateEntityRequest(registryName,
                 updatedEntity);
@@ -300,7 +302,7 @@ public class DatabaseResourceTest extends JerseyTest {
         Response readEntityResponse = readEntity(registryName, writeEntity.getId());
                         
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
-        String actual = readEntity.getBody().get("label").asText();
+        String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }
