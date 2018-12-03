@@ -360,7 +360,7 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
                     description = "Id of entity to get",
-                    schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, @Context Request request) {
+                    schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, @Context Request request) throws JsonProcessingException {
 
         
         EntityDto entity = entityService.getEntity(registryName, entityId);

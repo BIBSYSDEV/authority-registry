@@ -1,6 +1,5 @@
 package no.bibsys.web.model;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,8 +7,8 @@ import java.util.Objects;
 import javax.xml.bind.DatatypeConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 public class EntityDto {
@@ -18,18 +17,7 @@ public class EntityDto {
     private String created;
     private String modified;
     private String path;
-    private ObjectNode body;
-
-    public EntityDto() {}
-
-    public EntityDto(String json) {
-        try {
-            this.body = new ObjectMapper().readValue(json, ObjectNode.class);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "Could not parse Json into Entity body: " + e.getMessage());
-        }
-    }
+    private JsonNode body = new ObjectMapper().createObjectNode().nullNode();
 
     public String getId() {
         return id;
@@ -54,8 +42,8 @@ public class EntityDto {
     public void setModified(String modified) {
         this.modified = modified;
     }
-
-    public ObjectNode getBody() {
+    
+    public JsonNode getBody() {
         return body;
     }
 
@@ -64,7 +52,7 @@ public class EntityDto {
         return new ObjectMapper().writeValueAsString(body);
     }
 
-    public void setBody(ObjectNode body) {
+    public void setBody(JsonNode body) {
         this.body = body;
     }
     

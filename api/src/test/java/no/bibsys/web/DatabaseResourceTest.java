@@ -17,12 +17,12 @@ import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
 import no.bibsys.db.TableDriver;
-import no.bibsys.db.structures.Entity;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
@@ -285,15 +285,20 @@ public class DatabaseResourceTest extends JerseyTest {
         SampleData updatedSampleData = new SampleData();
 
         EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
-        updatedEntity.getBody().remove("label");
+        
+        ObjectNode body = (ObjectNode)updatedEntity.getBody();
+        
+        body.remove("label");
         String updatedLabel = "An updated label";
-        updatedEntity.getBody().put("label", updatedLabel);
-
+        body.put("label", updatedLabel);
+        updatedEntity.setBody(body);
+        
         Response response = updateEntityRequest(registryName,
                 updatedEntity);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response readEntityResponse = readEntity(registryName, writeEntity.getId());
+                        
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
         String actual = readEntity.getBody().get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));

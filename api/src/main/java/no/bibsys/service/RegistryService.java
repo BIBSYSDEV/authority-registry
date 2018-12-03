@@ -39,7 +39,8 @@ public class RegistryService {
     }
     
     public RegistryDto getRegistry(String registryId) {
-        return RegistryConverter.toRegistryDto(registryManager.getRegistry(validationSchemaTableName, registryId));
+        Registry registry = registryManager.getRegistry(validationSchemaTableName, registryId);
+        return RegistryConverter.toRegistryDto(registry);
     }
     
     public void deleteRegistry(String registryId) {

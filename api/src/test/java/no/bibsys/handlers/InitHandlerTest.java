@@ -6,12 +6,12 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import org.junit.Ignore;
+import org.junit.Test;
 import no.bibsys.amazon.handlers.events.buildevents.BuildEvent;
 import no.bibsys.amazon.handlers.events.buildevents.BuildEventBuilder;
 import no.bibsys.amazon.handlers.responses.SimpleResponse;
 import no.bibsys.utils.IoUtils;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class InitHandlerTest {
 

@@ -1,14 +1,15 @@
 package no.bibsys.web.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RegistryDto {
 
     private String id;
     private String apiKey;
     private String path;
-    private ObjectNode metadata;
+    private JsonNode metadata = new ObjectMapper().createObjectNode().nullNode();
     private String schema;
     
     public String getId() {
@@ -35,11 +36,11 @@ public class RegistryDto {
         this.path = path;
     }
 
-    public ObjectNode getMetadata() {
+    public JsonNode getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(ObjectNode metadata) {
+    public void setMetadata(JsonNode metadata) {
         this.metadata = metadata;
     }
     
@@ -50,7 +51,7 @@ public class RegistryDto {
     public void setSchema(String schema) {
         this.schema = schema;
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(id, metadata, schema);

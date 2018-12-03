@@ -2,8 +2,8 @@ package no.bibsys.web.model;
 
 import no.bibsys.db.structures.Entity;
 
-public class EntityConverter {
-
+public class EntityConverter extends BaseConverter {
+        
     public static EntityDto toEntityDto(Entity entity) {
         EntityDto dto = new EntityDto();
         dto.setId(entity.getId());
@@ -18,7 +18,7 @@ public class EntityConverter {
         entity.setId(dto.getId());
         entity.setCreated(dto.getCreated());
         entity.setModified(dto.getModified());
-        entity.setBody(dto.getBody());
+        entity.setBody(toObjectNode(dto.getBody()));
         return entity;
     }
     

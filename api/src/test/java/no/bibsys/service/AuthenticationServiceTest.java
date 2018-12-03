@@ -10,11 +10,8 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
-import ch.qos.logback.classic.Logger;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironmentReader;
-import no.bibsys.service.ApiKey;
-import no.bibsys.service.AuthenticationService;
 import no.bibsys.web.security.Roles;
 
 public class AuthenticationServiceTest {
