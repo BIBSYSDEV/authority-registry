@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import no.bibsys.aws.tools.IoUtils;
+import no.bibsys.utils.IoUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -97,11 +97,11 @@ public class SchaclValidatorTest {
             validationModel = ModelFactory.createDefaultModel();
             dataModel = ModelFactory.createDefaultModel();
             InputStream validationSchemaStream = IoUtils
-                .inputStreamFromResources(Paths.get("validation", "validationSchema.ttl"));
+                .resourceAsStream(Paths.get("validation", "validationSchema.ttl"));
             RDFDataMgr.read(validationModel, validationSchemaStream, Lang.TURTLE);
 
             InputStream dataStream = IoUtils
-                .inputStreamFromResources(dataModelPath);
+                .resourceAsStream(dataModelPath);
             RDFDataMgr.read(dataModel, dataStream, Lang.TURTLE);
             return this;
         }
