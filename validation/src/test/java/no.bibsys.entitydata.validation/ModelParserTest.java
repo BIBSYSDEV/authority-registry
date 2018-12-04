@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Set;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -43,8 +43,7 @@ public class ModelParserTest implements ModelParser{
     public void getObjects_model_allObjectsThatAreIRIsOrLiterals() throws IOException {
         String modelString=IoUtils.resourceAsString(Paths.get("validation","validationSchema.ttl"));
         Model model=parseModel(modelString,Lang.TURTLE);
-        List<Resource> objects = getObjects(model);
-
+        Set<Resource> objects = getObjects(model);
         int expectedNumberOfObjects=4;
         assertThat(objects.size(),is(equalTo(expectedNumberOfObjects)));
 
