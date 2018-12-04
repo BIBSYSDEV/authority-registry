@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import no.bibsys.utils.IoUtils;
+import no.bibsys.aws.tools.IoUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -18,7 +18,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-public class ValidatorTest {
+public class SchaclValidatorTest {
 
     private static final Property SH_CONFORMS = ResourceFactory
         .createProperty("http://www.w3.org/ns/shacl#conforms");
@@ -31,8 +31,8 @@ public class ValidatorTest {
         TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
         Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-        Validator validator = new Validator(validationModel);
-        assertTrue(validator.validationResult(dataModel));
+        SchaclValidator schaclValidator = new SchaclValidator(validationModel);
+        assertTrue(schaclValidator.validationResult(dataModel));
 
 
     }
@@ -43,9 +43,9 @@ public class ValidatorTest {
         Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
 
-        Validator validator = new Validator(validationModel);
+        SchaclValidator schaclValidator = new SchaclValidator(validationModel);
 
-        assertFalse(validator.validationResult(dataModel));
+        assertFalse(schaclValidator.validationResult(dataModel));
 
 
     }
@@ -57,9 +57,9 @@ public class ValidatorTest {
         Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
 
-        Validator validator = new Validator(validationModel);
+        SchaclValidator schaclValidator = new SchaclValidator(validationModel);
 
-        Model report = validator.validationReport(dataModel);
+        Model report = schaclValidator.validationReport(dataModel);
 
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
@@ -97,11 +97,11 @@ public class ValidatorTest {
             validationModel = ModelFactory.createDefaultModel();
             dataModel = ModelFactory.createDefaultModel();
             InputStream validationSchemaStream = IoUtils
-                .resourceAsStream(Paths.get("validation", "validationSchema.ttl"));
+                .inputStreamFromResources(Paths.get("validation", "validationSchema.ttl"));
             RDFDataMgr.read(validationModel, validationSchemaStream, Lang.TURTLE);
 
             InputStream dataStream = IoUtils
-                .resourceAsStream(dataModelPath);
+                .inputStreamFromResources(dataModelPath);
             RDFDataMgr.read(dataModel, dataStream, Lang.TURTLE);
             return this;
         }

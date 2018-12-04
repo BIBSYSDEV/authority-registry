@@ -7,7 +7,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.topbraid.shacl.validation.ValidationUtil;
 
-public class Validator implements SchemaParser{
+public class SchaclValidator implements ModelParser {
     private static final Property SH_CONFORMS = ResourceFactory.createProperty("http://www.w3.org/ns/shacl#conforms");
     private static final Literal BOOLEAN_FALSE = ResourceFactory
         .createTypedLiteral("false", XSDDatatype.XSDboolean);
@@ -15,7 +15,7 @@ public class Validator implements SchemaParser{
 
     private final Model validationSchema;
 
-    public Validator(Model validationSchema) {
+    public SchaclValidator(Model validationSchema) {
         this.validationSchema = validationSchema;
     }
 
