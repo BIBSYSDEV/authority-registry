@@ -6,6 +6,6 @@
   sh:targetClass :ClassA ;
   sh:property [
     sh:path :name ;
-    sh:datatype xsd:string
+    sh:datatype xsd:string;
   ] .
 
