@@ -1,6 +1,8 @@
 package no.bibsys.entitydata.validation;
 
+import java.util.Set;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 
 public class OntologyValidator implements ModelParser {
@@ -17,8 +19,16 @@ public class OntologyValidator implements ModelParser {
     }
 
 
-    public void checkModel(Model model){
-            ontology.listSubjects();
+    public boolean isShaclSchemaValid(Model model) {
+        Set<Resource> allowedObjects = ontology.listSubjects().toSet();
+        Set<Resource> modelObjects = getObjects(model);
+        for (Resource modelObject : modelObjects) {
+            if (!allowedObjects.contains(modelObject)) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
 
