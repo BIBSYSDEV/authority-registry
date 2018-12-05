@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
@@ -84,7 +83,6 @@ public class DatabaseResourceTest extends JerseyTest {
         RegistryDto registry = response.readEntity(RegistryDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-//        assertThat(registry.getMessage(), is(equalTo(expected.getMessage())));
         Assert.assertNotNull(registry.getApiKey());
     }
 
@@ -176,8 +174,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-
-        ObjectMapper mapper = new ObjectMapper();
 
         createRegistry(registryDto);
 
@@ -276,33 +272,30 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         createRegistry(registryDto);
-
+        
         EntityDto entity = sampleData.sampleEntityDto();
         Response writeResponse = insertEntryRequest(registryName, entity);
         EntityDto writeEntity = writeResponse.readEntity(EntityDto.class);
 
-
         SampleData updatedSampleData = new SampleData();
 
         EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
+                
         
-        ObjectMapper mapper = new ObjectMapper();
-        
-        ObjectNode body = mapper.readValue(updatedEntity.getBody(), ObjectNode.class);
-        
-        body.remove("label");
+        ((ObjectNode)updatedEntity.getBody()).remove("label");
         String updatedLabel = "An updated label";
-        body.put("label", updatedLabel);
-        updatedEntity.setBody(mapper.writeValueAsString(body));
+        ((ObjectNode)updatedEntity.getBody()).put("label", updatedLabel);
         
         Response response = updateEntityRequest(registryName,
                 updatedEntity);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response readEntityResponse = readEntity(registryName, writeEntity.getId());
-                        
+        
+        
+        
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
-        String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
+        String actual = ((ObjectNode)readEntity.getBody()).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }

@@ -1,13 +1,14 @@
 package no.bibsys.web.model;
 
 import java.util.Objects;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class RegistryDto {
 
     private String id;
     private String apiKey;
     private String path;
-    private String metadata;
+    private JsonNode metadata;
     private String schema;
     
     public String getId() {
@@ -33,12 +34,12 @@ public class RegistryDto {
     public void setPath(String path) {
         this.path = path;
     }
-
-    public String getMetadata() {
+    
+    public JsonNode getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(String metadata) {
+    public void setMetadata(JsonNode metadata) {
         this.metadata = metadata;
     }
     

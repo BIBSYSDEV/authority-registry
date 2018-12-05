@@ -371,7 +371,7 @@ public class DatabaseResource {
         if (builder != null) {
             return builder.build();
         }
-        
+                
         return Response.ok(entity).tag(etag).header(Headers.LAST_MODIFIED, entity.getModified()).build();
     }
 

@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.xml.bind.DatatypeConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -16,7 +17,7 @@ public class EntityDto {
     private String created;
     private String modified;
     private String path;
-    private String body;
+    private JsonNode body;
 
     public String getId() {
         return id;
@@ -42,16 +43,16 @@ public class EntityDto {
         this.modified = modified;
     }
     
-    public String getBody() {
+    public JsonNode getBody() {
         return body;
     }
-
+    
     @JsonIgnore
     public String getBodyAsJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(body);
     }
 
-    public void setBody(String body) {
+    public void setBody(JsonNode body) {
         this.body = body;
     }
     

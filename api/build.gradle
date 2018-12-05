@@ -16,6 +16,7 @@ dependencies {
     compile project(":dynamo")
     compile project(":init")
 
+	implementation 'com.google.code.gson:gson:2.8.5'
 
     testCompile group: 'com.amazonaws', name: 'DynamoDBLocal', version: '1.11.+'
     //jersey libraries

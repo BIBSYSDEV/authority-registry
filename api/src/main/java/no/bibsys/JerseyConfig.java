@@ -55,7 +55,7 @@ public class JerseyConfig extends ResourceConfig {
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
-        register(AcceptHeaderOpenApiResource.class);
+        register(AcceptHeaderOpenApiResource.class);    
     }
 
     private void registerExceptionMappers() {
