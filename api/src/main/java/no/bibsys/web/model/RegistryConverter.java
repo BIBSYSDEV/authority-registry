@@ -7,7 +7,7 @@ public class RegistryConverter extends BaseConverter {
     public static RegistryDto toRegistryDto(Registry registry) {
         RegistryDto dto = new RegistryDto();
         dto.setId(registry.getId());
-        dto.setMetadata(toJsonNode(registry.getMetadata()));
+        dto.setMetadata(toJson(registry.getMetadata()));
         dto.setSchema(registry.getSchema());
         return dto;
     }

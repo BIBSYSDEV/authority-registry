@@ -1,14 +1,15 @@
 package no.bibsys.web.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class RegistryDto {
 
     private String id;
     private String apiKey;
     private String path;
-    private JsonNode metadata;
+    private String metadata;
     private String schema;
     
     public String getId() {
@@ -35,11 +36,13 @@ public class RegistryDto {
         this.path = path;
     }
     
-    public JsonNode getMetadata() {
+    @JsonRawValue
+    @JsonDeserialize(using = JsonAsStringDeserializer.class)
+    public String getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(JsonNode metadata) {
+    public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
     

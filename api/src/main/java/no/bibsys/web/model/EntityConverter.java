@@ -9,7 +9,7 @@ public class EntityConverter extends BaseConverter {
         dto.setId(entity.getId());
         dto.setCreated(entity.getCreated());
         dto.setModified(entity.getModified());
-        dto.setBody(toJsonNode(entity.getBody()));
+        dto.setBody(toJson(entity.getBody()));
         return dto;
     }
     

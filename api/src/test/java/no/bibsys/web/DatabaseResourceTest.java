@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
@@ -281,10 +282,15 @@ public class DatabaseResourceTest extends JerseyTest {
 
         EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
                 
+        ObjectMapper mapper = new ObjectMapper();
         
-        ((ObjectNode)updatedEntity.getBody()).remove("label");
+        ObjectNode body = mapper.readValue(updatedEntity.getBody(), ObjectNode.class);
+        
+        body.remove("label");
         String updatedLabel = "An updated label";
-        ((ObjectNode)updatedEntity.getBody()).put("label", updatedLabel);
+        body.put("label", updatedLabel);
+        
+        updatedEntity.setBody(mapper.writeValueAsString(body));
         
         Response response = updateEntityRequest(registryName,
                 updatedEntity);
@@ -295,7 +301,7 @@ public class DatabaseResourceTest extends JerseyTest {
         
         
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
-        String actual = ((ObjectNode)readEntity.getBody()).get("label").asText();
+        String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }

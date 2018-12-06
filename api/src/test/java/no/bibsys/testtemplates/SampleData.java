@@ -3,7 +3,6 @@ package no.bibsys.testtemplates;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
@@ -46,7 +45,7 @@ public class SampleData {
 
         String id = "sampleId";
         entityDto.setId(id);
-        entityDto.setBody(body);
+        entityDto.setBody(mapper.writeValueAsString(body));
         
         return entityDto;
     }
@@ -55,7 +54,7 @@ public class SampleData {
         
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
-        registryDto.setMetadata(NullNode.getInstance());
+//        registryDto.setMetadata(NullNode.getInstance());
         
         return registryDto;
     }
