@@ -207,8 +207,8 @@ public class DatabaseResource {
                     description = "Name of registry in which to update entity", schema = @Schema(
                             type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
-        registryService.getRegistry(registryName);
-
+        registryService.validateRegistryExists(registryName);
+        
         return Response.ok(String.format("Registry with name %s is active", registryName)).build();
     }
 

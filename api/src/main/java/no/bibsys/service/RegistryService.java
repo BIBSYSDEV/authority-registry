@@ -1,8 +1,13 @@
 package no.bibsys.service;
 
 import java.util.List;
+import java.util.Locale;
+import javax.ws.rs.core.Response.Status;
 import no.bibsys.EnvironmentReader;
 import no.bibsys.db.RegistryManager;
+import no.bibsys.db.RegistryManager.RegistryStatus;
+import no.bibsys.db.exceptions.RegistryNotFoundException;
+import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
@@ -62,5 +67,19 @@ public class RegistryService {
         
     }
 
+    public Status validateRegistryExists(String registryName) {
+        RegistryStatus status = registryManager.status(registryName);
+        switch(status) {
+        case ACTIVE:
+            return Status.CREATED;
+        case CREATING:
+        case UPDATING:
+            throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
+        case DELETING:
+        case NOT_FOUND:
+        default:
+            throw new RegistryNotFoundException(registryName);
+        }
+}
     
 }
