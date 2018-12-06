@@ -112,7 +112,7 @@ function createEntity(registryName, apiKey, dataFile) {
 				'content-type': 'application/json'
 			}
 		}).then(function (response) {
-			let entityId = response.body.entityId
+			let entityId = response.body.id
 			cy.wrap(entityId).as('entityId');
 		})
 	})
