@@ -1,7 +1,7 @@
 version: 0.2
 env:
   parameter-store:
-    CYPRESS_baseUrl: "$PROJECT_ID-$BRANCH-$STAGE-apiUrl"
+    CYPRESS_baseUrl: "aut-reg-autreg-93-etag-last-modif-test-apiUrl"
 
 phases:
   install:
