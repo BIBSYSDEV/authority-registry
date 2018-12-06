@@ -282,9 +282,12 @@ public class DatabaseResource {
                     description = "Name of registry to update",
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Validation schema",
-                    content = @Content(schema = @Schema(implementation = RegistryDto.class))) RegistryDto registryDto)
+                    content = @Content(schema = @Schema(type = STRING))) String schema)
             throws IOException {
 
+        RegistryDto registryDto = registryService.getRegistry(registryName);
+        registryDto.setSchema(schema);
+        
         RegistryDto updateRegistry = registryService.updateRegistry(registryDto);
         updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
         return Response.ok(updateRegistry).build();

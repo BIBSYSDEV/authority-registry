@@ -243,8 +243,7 @@ public class DatabaseResourceTest extends JerseyTest {
         insertEntryRequest(registryName, entity);
 
         String schemaAsJson = "Schema as Json";
-        registryDto.setSchema(schemaAsJson);
-        Response putRegistrySchemaResponse = putSchema(registryName, registryDto);
+        Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.METHOD_NOT_ALLOWED.getStatusCode())));
 
     }
@@ -256,13 +255,12 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryDto);
         
         String schemaAsJson = "Schema as Json";
-        registryDto.setSchema(schemaAsJson);
-        Response putRegistrySchemaResponse = putSchema(registryName, registryDto);
+        Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
         RegistryDto registry = response.readEntity(RegistryDto.class);
-        assertThat(registryDto, is(equalTo(registry)));
+        assertThat(schemaAsJson, is(equalTo(registry.getSchema())));
     }
     
     
@@ -344,10 +342,10 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
     
-    private Response putSchema(String registryName, RegistryDto registryDto) throws Exception {
+    private Response putSchema(String registryName, String schemaAsJson) throws Exception {
         return target(String.format("/registry/%s/schema", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-                .put(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
+                .put(javax.ws.rs.client.Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
     private Response readSchema(String registryName) throws Exception {
