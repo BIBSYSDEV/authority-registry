@@ -1,16 +1,16 @@
 version: 0.2
 env:
   parameter-store:
-    CYPRESS_baseUrl: "aut-reg-autreg-93-etag-last-modif-test-apiUrl"
+    CYPRESS_baseUrl: "$PROJECT_ID-$BRANCH-$STAGE-apiUrl"
 
 phases:
   install:
     commands:
       - echo "install cypress dependencies..."
       - apt-get update
-      - npm install cypress --save-dev
+      - npm install cypress uuid
       - apt-get install -y libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
-      - npm install --save-dev cypress-cucumber-preprocessor
+      - npm install cypress-cucumber-preprocessor
   pre_build:
     commands:
       - echo "pre_build step"
