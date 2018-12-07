@@ -1,7 +1,7 @@
 version: 0.2
-env:
-  parameter-store:
-    CYPRESS_baseUrl: "$PROJECT_ID-$BRANCH-$STAGE-apiUrl"
+#env:
+#  parameter-store:
+#    CYPRESS_baseUrl: "${PROJECT_ID}-${BRANCH}-${STAGE}-apiUrl"
 
 phases:
   install:
@@ -9,11 +9,13 @@ phases:
       - echo "install cypress dependencies..."
       - apt-get update
       - npm install cypress uuid
-      - apt-get install -y libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
+      - apt-get install -y libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb jq  
       - npm install cypress-cucumber-preprocessor
   pre_build:
     commands:
       - echo "pre_build step"
+      - export CYPRESS_baseUrl=`aws ssm get-parameter --name $PROJECT_ID-$BRANCH-$STAGE-apiUrl | jq -r '.Parameter.Value'`
+      - echo $CYPRESS_baseUrl
   build:
     commands:
       - npx cypress run
