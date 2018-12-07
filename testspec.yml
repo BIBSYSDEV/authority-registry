@@ -14,7 +14,7 @@ phases:
   pre_build:
     commands:
       - echo "pre_build step"
-      - export CYPRESS_baseUrl=`aws ssm get-parameter --name $PROJECT_ID-$BRANCH-$STAGE-apiUrl | jq -r '.Parameter.Value'`
+      - export CYPRESS_baseUrl=$(aws ssm get-parameter --name $PROJECT_ID-$BRANCH-$STAGE-apiUrl | jq -r '.Parameter.Value')
       - echo $CYPRESS_baseUrl
   build:
     commands:
