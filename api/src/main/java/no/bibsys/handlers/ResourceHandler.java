@@ -34,14 +34,26 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
         hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
         stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
-        applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
+        applicationUrl = initApplicationUrl(environment,stage);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
 
+    }
+
+    private String initApplicationUrl(Environment environment,Stage stage) {
+        if(Stage.TEST.equals(stage)){
+            String url = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
+            url="test."+url;
+            return  url;
+        }
+        else{
+            return  environment.readEnv(EnvironmentVariables.APPLICATION_URL);
+        }
     }
 
 
     protected UrlUpdater createUrlUpdater() {
         StaticUrlInfo urlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
+
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
         Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway);
