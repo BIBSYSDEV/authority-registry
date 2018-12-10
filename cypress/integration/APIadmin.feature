@@ -34,10 +34,11 @@ Feature: API admin features
     When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
     Then the API admin user receives information that they cannot update the entity registry validation schema until the populated data is deleted
 
-  Scenario: An API admin user updates the entity registry metadata
-    And that there is an existing, populated entity registry with a schema
-    When the API admin user changes the metadata for the entity registry
-    Then the metadata for the entity registry is updated
+#	Question: Is this suppose to update populated registry?
+#  Scenario: An API admin user updates the entity registry metadata
+#    And that there is an existing, populated entity registry with a schema
+#    When the API admin user changes the metadata for the entity registry
+#    Then the metadata for the entity registry is updated
 
 #  Scenario: An API admin user deletes populated data from an entity registry
 #    And that there is an existing, populated entity registry with a schema

@@ -42,7 +42,8 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     }
 
     protected UrlUpdater createUrlUpdater() {
-        StaticUrlInfo urlInfo=initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
+    StaticUrlInfo urlInfo=initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
+
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
         Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway);

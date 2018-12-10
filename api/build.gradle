@@ -16,8 +16,8 @@ apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 dependencies {
 
     compile project(":dynamo")
-
     testCompile ("com.amazonaws:DynamoDBLocal:1.11.+")
+
     //jersey libraries
     compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
     compile("org.glassfish.jersey.inject:jersey-hk2:2.27") {

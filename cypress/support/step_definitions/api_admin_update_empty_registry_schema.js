@@ -18,7 +18,7 @@ when('the API admin user uses the API key and submits a request to update the va
 					'api-key': apiKey
 				}
 			}).then((response) => {
-				expect(response.body).to.equal('testSchema')
+				expect(response.body.schema).to.equal('testSchema')
 			})
 
 			let registryUpdateUrl = '/registry/' + registryName + '/schema';
@@ -28,6 +28,7 @@ when('the API admin user uses the API key and submits a request to update the va
 				method: 'PUT',
 				headers: {
 					'api-key': apiKey,
+					"content-type": "application/json"
 				},
 				body: updatedSchema,
 				failOnStatusCode: false
@@ -53,7 +54,7 @@ then('the entity registry is updated', () => {
 					'api-key': apiKey
 				}
 			}).then((response) => {
-				expect(response.body).to.equal('updatedTestSchema')
+				expect(response.body.schema).to.equal('updatedTestSchema')
 			})
 		})
 	})

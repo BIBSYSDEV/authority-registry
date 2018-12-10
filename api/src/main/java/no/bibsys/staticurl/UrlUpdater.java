@@ -1,8 +1,8 @@
 package no.bibsys.staticurl;
 
+import java.util.Optional;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
-import java.util.Optional;
 import no.bibsys.aws.route53.Route53Updater;
 
 public class UrlUpdater {

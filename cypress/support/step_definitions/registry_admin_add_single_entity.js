@@ -22,7 +22,7 @@ when('the registry admin user submits the API key with a request to create a new
 					body: testData
 				}).then((response) => {
 					// test return from create
-					cy.wrap(response.body.entityId).as('entityId')
+					cy.wrap(response.body.id).as('entityId')
 				})	
 			})
 		})
