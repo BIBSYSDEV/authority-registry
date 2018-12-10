@@ -4,27 +4,19 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
-import no.bibsys.MockEnvironmentReader;
+import no.bibsys.MockEnvironment;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
@@ -34,6 +26,10 @@ import no.bibsys.testtemplates.SampleData.Entry;
 import no.bibsys.web.model.CreatedRegistry;
 import no.bibsys.web.model.InsertEntity;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -45,7 +41,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Override
     protected Application configure() {
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
-        EnvironmentReader environmentReader = new MockEnvironmentReader();
+        Environment environmentReader = new MockEnvironment();
 
 
         TableDriver tableDriver = TableDriver.create(client);

@@ -2,6 +2,5 @@ rootProject.name = 'authority-registry'
 include 'api'
 include 'dynamo'
 include 'cypress'
-include 'init'
 include 'common'
 
