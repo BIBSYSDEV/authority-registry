@@ -139,6 +139,7 @@ Resources:
           HOSTED_ZONE_NAME: "aws.unit.no."
           APPLICATION_URL: "api.entitydata.aws.unit.no."
           STACK_NAME: !Ref AWS::StackName
+          BRANCH: !Ref Branch
   Destroy:
     Type: AWS::Serverless::Function
     Properties:
@@ -170,3 +171,4 @@ Resources:
           STACK_NAME: !Ref AWS::StackName
           HOSTED_ZONE_NAME: "aws.unit.no."
           APPLICATION_URL: "apihello.entitydata.aws.unit.no."
+          BRANCH: !Ref Branch

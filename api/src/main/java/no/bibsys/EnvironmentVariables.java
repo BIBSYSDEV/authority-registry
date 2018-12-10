@@ -21,4 +21,8 @@ public class EnvironmentVariables {
     public static final String APPLICATION_URL = "APPLICATION_URL";
 
 
+    /** Git branch */
+    public static final String BRANCH="BRANCH";
+
+
 }
