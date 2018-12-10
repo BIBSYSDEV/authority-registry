@@ -146,7 +146,6 @@ public class RegistryManager {
     }
     
     public void validateRegistryNotEmpty(String registryId) {
-        validateRegistryExists(registryId);
         if (tableDriver.tableSize(registryId) > 0) {
             logger.warn("Registry is not empty, registryId={}", registryId);
             throw new RegistryNotEmptyException(registryId);
@@ -157,7 +156,9 @@ public class RegistryManager {
 
         logger.info("Deleting registry, registryId={}", registryId);
 
-        validateRegistryNotEmpty(registryId);
+        validateRegistryExists(registryId);
+        // disabled until we have a way to empty registries asynchronous
+//        validateRegistryNotEmpty(registryId);
         tableDriver.deleteTable(registryId);
         Registry registry = getRegistry(validationSchemaTableName, registryId);
         
