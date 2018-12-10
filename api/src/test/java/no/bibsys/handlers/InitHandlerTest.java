@@ -4,18 +4,18 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.nio.file.Paths;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.Mockito;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.events.DeployEventBuilder;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.utils.IoUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
+
 
 public class InitHandlerTest {
 
@@ -41,6 +41,7 @@ public class InitHandlerTest {
     @Ignore
     public void initHandler_WhenProcessingInput_ReturnsThePipelineId() throws IOException {
         InitHandler initHandler = new InitHandler(env);
+
         String eventJson =
                 IoUtils.resourceAsString(Paths.get("events", "mock_codePipeline_event.json"));
         DeployEvent event = DeployEventBuilder.create(eventJson);

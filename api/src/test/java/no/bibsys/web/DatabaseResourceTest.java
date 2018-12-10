@@ -3,33 +3,33 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
-import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
-import no.bibsys.testtemplates.SampleData.Entry;
-import no.bibsys.web.model.CreatedRegistry;
-import no.bibsys.web.model.InsertEntity;
+import no.bibsys.web.model.CreatedRegistryDto;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -77,15 +77,14 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        CreatedRegistry expected = new CreatedRegistry(
+        CreatedRegistryDto expected = new CreatedRegistryDto(
                 String.format("A registry with name=%s is being created", registryName));
 
         Response response = createRegistry(registryName);
-        CreatedRegistry entity = response.readEntity(CreatedRegistry.class);
+        RegistryDto registry = response.readEntity(RegistryDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-        assertThat(entity.getMessage(), is(equalTo(expected.getMessage())));
-        Assert.assertNotNull(entity.getApiKey());
+        Assert.assertNotNull(registry.getApiKey());
     }
 
 
@@ -102,13 +101,13 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
 
-        Entry entry = sampleData.sampleEntry();
-        Response response = insertEntryRequest(registryName, entry.jsonString());
-        InsertEntity entity = response.readEntity(InsertEntity.class);
+        EntityDto entity = sampleData.sampleEntityDto();
+        Response response = insertEntryRequest(registryName, entity);
+        EntityDto readEntity = response.readEntity(EntityDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readResponse = readEntity(registryName, entity.getEntityId());
+        Response readResponse = readEntity(registryName, readEntity.getId());
         assertThat(readResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
@@ -148,9 +147,9 @@ public class DatabaseResourceTest extends JerseyTest {
     public void emptyRegistry_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
-        String entry = sampleData.sampleEntry().jsonString();
+        EntityDto entity = sampleData.sampleEntityDto();
 
-        insertEntryRequest(registryName, entry);
+        insertEntryRequest(registryName, entity);
 
         Response response = target(String.format("/registry/%s/empty", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
@@ -161,10 +160,10 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void callEndpoint_WrongRole_ReturnsStatusForbidden() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate request = new EntityRegistryTemplate(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response response = target("/registry").request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
 
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
@@ -175,55 +174,73 @@ public class DatabaseResourceTest extends JerseyTest {
     public void getRegistryMetadata_RegistryExists_ReturnsMetadata() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
 
-        ObjectMapper mapper = new ObjectMapper();
-        String templateJson = mapper.writeValueAsString(template);
-
-        createRegistry(template);
+        createRegistry(registryDto);
 
         Response response = target(String.format("/registry/%s", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
 
-        String entity = response.readEntity(String.class);
+        RegistryDto registry = response.readEntity(RegistryDto.class);
 
-        assertThat(entity, is(equalTo(templateJson)));
+        assertThat(registryDto, is(equalTo(registry)));
     }
 
     @Test
     public void getEntity_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
-        createRegistry(template);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
 
-        Entry entry = sampleData.sampleEntry();
-        Response response = insertEntryRequest(registryName, entry.jsonString());
+        EntityDto entity = sampleData.sampleEntityDto();
+        Response response = insertEntryRequest(registryName, entity);
 
-        InsertEntity entity = response.readEntity(InsertEntity.class);
+        EntityDto readEntity = response.readEntity(EntityDto.class);
 
-        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
+        Response readEntityResponse = readEntity(registryName, readEntity.getId());
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        
+        Assert.assertNotNull(readEntityResponse.getEntityTag());
+        Assert.assertNotNull(readEntityResponse.getHeaderString(Headers.LAST_MODIFIED));
 
+    }
+    
+    @Test
+    public void getEntity_Twice_RegistryExists_ReturnsStatusNotModified() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+
+        EntityDto entity = sampleData.sampleEntityDto();
+        Response response = insertEntryRequest(registryName, entity);
+
+        EntityDto readEntity = response.readEntity(EntityDto.class);
+
+        Response readEntityResponse = readEntity(registryName, readEntity.getId());
+        assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        
+        Response readEntityResponseWithEntityTag = readEntityWithEntityTag(registryName, readEntity.getId(), readEntityResponse.getEntityTag());
+        assertThat(readEntityResponseWithEntityTag.getStatus(), is(equalTo(Status.NOT_MODIFIED.getStatusCode())));   
     }
 
     @Test
     public void getRegistryStatus_registryExists_returnsStatusCreated() {
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
-        createRegistry(template);
-        
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+
         Response response = registryStatus(registryName);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
-    
+
     @Test
     public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMETHOD_NOT_ALLOWED() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
-        createRegistry(template);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
 
-        Entry entry = sampleData.sampleEntry();
-        insertEntryRequest(registryName, entry.jsonString());
+        EntityDto entity = sampleData.sampleEntityDto();
+        insertEntryRequest(registryName, entity);
 
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
@@ -234,16 +251,16 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void putRegistrySchema_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
-        createRegistry(template);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
         
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
-        String entity = response.readEntity(String.class);
-        assertThat(entity, is(equalTo(schemaAsJson)));
+        RegistryDto registry = response.readEntity(RegistryDto.class);
+        assertThat(schemaAsJson, is(equalTo(registry.getSchema())));
     }
     
     
@@ -252,59 +269,65 @@ public class DatabaseResourceTest extends JerseyTest {
     public void updateEntity_EntityExists_ReturnsUpdatedEntity() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
-        EntityRegistryTemplate template = new EntityRegistryTemplate(registryName);
-        createRegistry(template);
-
-        Entry entry = sampleData.sampleEntry();
-        Response writeResponse = insertEntryRequest(registryName, entry.jsonString());
-        InsertEntity entity = writeResponse.readEntity(InsertEntity.class);
-
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        
+        EntityDto entity = sampleData.sampleEntityDto();
+        Response writeResponse = insertEntryRequest(registryName, entity);
+        EntityDto writeEntity = writeResponse.readEntity(EntityDto.class);
 
         SampleData updatedSampleData = new SampleData();
 
-        Entry updatedEntry = updatedSampleData.sampleEntry();
-        updatedEntry.root.remove("label");
+        EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
+                
+        ObjectMapper mapper = new ObjectMapper();
+        
+        ObjectNode body = mapper.readValue(updatedEntity.getBody(), ObjectNode.class);
+        
+        body.remove("label");
         String updatedLabel = "An updated label";
-        updatedEntry.root.put("id", entity.getEntityId());
-        updatedEntry.root.put("label", updatedLabel);
-
-        String updatedJson = updatedEntry.jsonString();
-        Response response = updateEntityRequest(registryName, entity.getEntityId(), updatedJson);
+        body.put("label", updatedLabel);
+        
+        updatedEntity.setBody(mapper.writeValueAsString(body));
+        
+        Response response = updateEntityRequest(registryName,
+                updatedEntity);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readEntityResponse = readEntity(registryName, entity.getEntityId());
-        String readEntity = readEntityResponse.readEntity(String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String actual = objectMapper.readTree(readEntity).get("label").asText();
+        Response readEntityResponse = readEntity(registryName, writeEntity.getId());
+        
+        
+        
+        EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
+        String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }
 
-    private Response insertEntryRequest(String registryName, String jsonBody) {
+    private Response insertEntryRequest(String registryName, EntityDto entityDto) {
         String path = String.format("/registry/%s/entity", registryName);
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .post(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
 
     }
 
 
     private Response createRegistry(String registryName) throws Exception {
-        EntityRegistryTemplate createRequest = new EntityRegistryTemplate(registryName);
-        return createRegistry(createRequest);
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        return createRegistry(registryDto);
     }
 
 
-    private Response createRegistry(EntityRegistryTemplate request) {
+    private Response createRegistry(RegistryDto registryDto) {
         Response response = target("/registry").request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON));
+                .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
         return response;
     }
 
     private Response registryStatus(String registryName) {
-        Response response = target(String.format("/registry/%s/status", registryName))
-                .request()
-                .get();
+        Response response =
+                target(String.format("/registry/%s/status", registryName)).request().get();
         return response;
     }
 
@@ -313,10 +336,16 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
+    private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
+        return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
+                .header("If-None-Match", "\"" + entityTag.getValue() + "\"")
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
+    }
+    
     private Response putSchema(String registryName, String schemaAsJson) throws Exception {
         return target(String.format("/registry/%s/schema", registryName)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-                .put(Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
+                .put(javax.ws.rs.client.Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
     private Response readSchema(String registryName) throws Exception {
@@ -324,10 +353,10 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
-    private Response updateEntityRequest(String registryName, String entityId, String jsonBody) {
-        String path = String.format("/registry/%s/entity/%s", registryName, entityId);
+    private Response updateEntityRequest(String registryName, EntityDto entityDto) {
+        String path = String.format("/registry/%s/entity/%s", registryName, entityDto.getId());
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .put(Entity.entity(jsonBody, MediaType.APPLICATION_JSON));
+                .put(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
 
     }
 
@@ -338,9 +367,9 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private Response entityStatus(String registryName, String entityId) {
-        Response response = target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
-                .request()
-                .get();
+        Response response =
+                target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
+                        .request().get();
         return response;
     }
 }

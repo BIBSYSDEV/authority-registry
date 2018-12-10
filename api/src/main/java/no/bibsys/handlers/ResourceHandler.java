@@ -13,6 +13,7 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
+import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
@@ -27,6 +28,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     private final transient String applicationUrl;
 
     protected final transient String stackName;
+    private final transient String branch;
 
 
     public ResourceHandler(Environment environment) {
@@ -36,12 +38,12 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
         applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
-
+        this.branch=environment.readEnv(EnvironmentVariables.BRANCH);
     }
 
-
     protected UrlUpdater createUrlUpdater() {
-        StaticUrlInfo urlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
+    StaticUrlInfo urlInfo=initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
+
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
         Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway);
@@ -56,6 +58,35 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
             .orElseThrow(
                 () -> new NotFoundException("Could not find a RestApi in stack " + stackName));
     }
+
+
+
+    protected StaticUrlInfo initStaticUrlInfo(String hostedZoneName,
+        String applicationUrl,
+        Stage stage,
+        String gitBranch) {
+
+        StaticUrlInfo staticUrlInfo=new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
+        if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
+
+            String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
+            String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
+            staticUrlInfo=new StaticUrlInfo(hostedZoneName, newUrl,
+                staticUrlInfo.getStage());
+        }
+        if (Stage.TEST.equals(stage)) {
+            String newUrl="test."+staticUrlInfo.getRecordSetName();
+            staticUrlInfo=new StaticUrlInfo(staticUrlInfo.getZoneName(),
+                newUrl,
+                staticUrlInfo.getStage());
+        }
+        return staticUrlInfo;
+
+
+    }
+
+
+
 
 
 }

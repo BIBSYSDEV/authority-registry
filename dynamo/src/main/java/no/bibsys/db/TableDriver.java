@@ -2,17 +2,16 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
@@ -20,22 +19,22 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-
-import no.bibsys.db.structures.IdOnlyEntry;
-import no.bibsys.db.structures.TableDefinitions;
+import no.bibsys.db.structures.Entity;
+import no.bibsys.db.structures.Registry;
 
 public final class TableDriver {
 
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private transient AmazonDynamoDB client;
     private transient DynamoDB dynamoDb;
-
+    private transient DynamoDBMapper mapper;
 
     private TableDriver() {}
 
     private TableDriver(final AmazonDynamoDB client) {
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
+        this.mapper = new DynamoDBMapper(client);
     }
 
     /**
@@ -98,13 +97,21 @@ public final class TableDriver {
         return itemCount;
     }
 
-    public boolean emptyTable(final String tableName) {
+    public boolean emptyRegistryMetadataTable(final String tableName) {
+        return emptyTable(tableName, Registry.class);
+    }
+    
+    public boolean emptyEntityRegistryTable(final String tableName) {
+        return emptyTable(tableName, Entity.class);
+    }
+    
+    private boolean emptyTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
             return false;
         }
         boolean emptyResult = deleteNoCheckTable(tableName);
-        return emptyResult && createTable(tableName);
+        return emptyResult && createTable(tableName, clazz);
     }
 
     public boolean deleteTable(final String tableName) {
@@ -137,17 +144,26 @@ public final class TableDriver {
 
     }
 
-    public boolean createTable(final String tableName, final TableDefinitions tableEntry) {
+    public boolean createEntityRegistryTable(final String tableName) {
+        return createTable(tableName, Entity.class);
+    }
+    
+    public boolean createRegistryMetadataTable(final String tableName) {
+        return createTable(tableName, Registry.class);
+    }
+    
+    private boolean createTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
-            final List<AttributeDefinition> attributeDefinitions =
-                    tableEntry.attributeDefinitions();
-            final List<KeySchemaElement> keySchema = tableEntry.keySchema();
-
-            final CreateTableRequest request = new CreateTableRequest().withTableName(tableName)
-                    .withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions)
-                    .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
-                            .withWriteCapacityUnits(1L));
+            
+            DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
+                    .build();
+            
+            CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
+            request.setProvisionedThroughput(
+                    new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L)
+                    );
 
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={}", tableName);
@@ -155,12 +171,6 @@ public final class TableDriver {
         }
         logger.error("Tried to create table but it already exists, tableId={}", tableName);
         return false;
-    }
-
-
-    public boolean createTable(final String tableName) {
-
-        return createTable(tableName, new IdOnlyEntry());
     }
 
     public List<String> listTables() {
@@ -171,11 +181,11 @@ public final class TableDriver {
     }
 
     public String status(String tableName) {
-        
+
         try {
             TableDescription describe = getTable(tableName).describe();
             return describe.getTableStatus();
-        }catch(ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return "NOT_FOUND";
         }
     }

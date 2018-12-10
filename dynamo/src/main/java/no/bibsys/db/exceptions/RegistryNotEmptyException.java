@@ -1,4 +1,4 @@
-package no.bibsys.web.exception;
+package no.bibsys.db.exceptions;
 
 public class RegistryNotEmptyException  extends RuntimeException {
 

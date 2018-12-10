@@ -1,5 +1,11 @@
 package no.bibsys.handlers;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -8,18 +14,12 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.Change;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InitHandler extends ResourceHandler {
 
@@ -79,6 +79,8 @@ public class InitHandler extends ResourceHandler {
         logger.info(result.toString());
 
     }
+
+
 
 
 

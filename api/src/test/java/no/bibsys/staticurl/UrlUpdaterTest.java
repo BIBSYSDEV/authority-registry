@@ -4,9 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
+import java.util.Optional;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
 import com.amazonaws.services.apigateway.model.GetBasePathMappingsResult;
@@ -17,15 +20,15 @@ import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
-import java.util.Optional;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 public class UrlUpdaterTest {
+
+
+    private  final static String DEFAULT_ZONE_NAME = "aws.unit.no";
+    private  final static String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
     private final transient String certificateArn = "TheCerificate";
     private final transient String hostedZoneId = "HOSTEDZONEID";
     private final transient String domainName = "DomainName";
@@ -37,8 +40,8 @@ public class UrlUpdaterTest {
 
     public UrlUpdaterTest() {
         staticUrlInfo = new StaticUrlInfo(
-            UrlUpdater.DEFAULT_ZONE_NAME,
-            UrlUpdater.DEFAULT_RECORD_SET_NAME,
+            DEFAULT_ZONE_NAME,
+            DEFAULT_RECORD_SET_NAME,
             Stage.TEST);
         AmazonApiGateway client = mockApiGatewayClient();
 
@@ -73,7 +76,7 @@ public class UrlUpdaterTest {
         AmazonRoute53 client = Mockito.mock(AmazonRoute53.class);
         ListHostedZonesResult mockResult = new ListHostedZonesResult()
             .withHostedZones(
-                new HostedZone().withId(hostedZoneId).withName(UrlUpdater.DEFAULT_ZONE_NAME));
+                new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
         when(client.listHostedZones()).thenReturn(mockResult);
         return client;
     }

@@ -2,8 +2,8 @@ package no.bibsys.db;
 
 public abstract class DynamoTest {
 
-    String tableName = "itemTable";
-    TestTemplate template = new TestTemplate(tableName);
+    String validationSchemaTableName = "validationSchemas";
+    String tableName = "tableTable";
 
     public abstract void init();
 

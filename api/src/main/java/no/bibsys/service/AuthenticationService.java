@@ -1,5 +1,9 @@
 package no.bibsys.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -17,24 +21,20 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-import java.util.ArrayList;
-import java.util.List;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.bibsys.aws.tools.Environment;
 
 public class AuthenticationService {
 
-
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
-    private final transient no.bibsys.aws.tools.Environment environmentReader;
+    private final transient Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-    public AuthenticationService(AmazonDynamoDB client, no.bibsys.aws.tools.Environment environmentReader) {
+    public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
