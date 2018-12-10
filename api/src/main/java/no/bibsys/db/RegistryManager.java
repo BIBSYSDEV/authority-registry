@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.Response.Status;
 import no.bibsys.EnvironmentVariables;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
@@ -34,7 +35,7 @@ public class RegistryManager {
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
     public RegistryManager(TableDriver tableManager, ItemDriver itemManager,
-            AuthenticationService authenticationService, no.bibsys.aws.tools.Environment environmentReader) {
+            AuthenticationService authenticationService, Environment environmentReader) {
         this.tableDriver = tableManager;
         this.itemDriver = itemManager;
         this.authenticationService = authenticationService;
