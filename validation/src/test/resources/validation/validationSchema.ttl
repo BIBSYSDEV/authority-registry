@@ -1,11 +1,11 @@
+@prefix : <__THIS_DOCUMENT__> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix : <http://example.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :nodeshape a sh:NodeShape ;
-  sh:targetClass :ClassA ;
+  sh:targetClass :ConceptScheme ;
   sh:property [
-    sh:path :name ;
+    sh:path :preferredLabel ;
     sh:datatype xsd:string;
   ] .
 
