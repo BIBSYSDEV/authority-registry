@@ -59,6 +59,10 @@ public class EntityDto {
         this.body = body;
     }
     
+    /**
+     * Relative path to this resource, set in the API level
+     * @return
+     */
     public String getPath() {
         return path;
     }

@@ -16,12 +16,6 @@ public class SampleData {
 
         ObjectMapper mapper = new ObjectMapper();
 
-//        Map<String,Object> body = new HashMap<>();
-//        body.put("label", "A random label");
-//        body.put("number", 5);
-//        body.put("myArray", Arrays.asList(1,2,3));
-        
-        
         ObjectNode body = mapper.createObjectNode();
         body.put("label", "A random label");
         body.put("number", 5);
@@ -29,17 +23,6 @@ public class SampleData {
         array.add(1);
         array.add(2);
         array.add(3);
-
-//        JsonObject body = new JsonObject();
-//        body.addProperty("label", "A random label");
-//        body.addProperty("number", 5);
-//        body.addProperty("boolean", true);
-//        body.add("emptyArray", new JsonArray());
-//        JsonArray array = new JsonArray();
-//        array.add(1);
-//        array.add(2);
-//        array.add(3);
-//        body.add("myArray", array);
         
         EntityDto entityDto = new EntityDto();
 
@@ -54,7 +37,6 @@ public class SampleData {
         
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
-//        registryDto.setMetadata(NullNode.getInstance());
         
         return registryDto;
     }

@@ -70,7 +70,7 @@ public class RegistryManager {
             logger.info("Registry created successfully, registryId={}", registry.getId());
         } else {
             logger.error("Registry not created, registryId={}", registry.getId());
-            //TODO: fix exception
+            throw new RegistryNotFoundException(registry.getId());
         }
         return registry;
     }
@@ -169,7 +169,7 @@ public class RegistryManager {
             mapper.delete(registry, config);
         } catch (ResourceNotFoundException e) {
             logger.info("Registry not found, registryId={}", registryId);
-            //TODO: fix exception
+            throw new RegistryNotFoundException(registryId);
         }
     }
 
