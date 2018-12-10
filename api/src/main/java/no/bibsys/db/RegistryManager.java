@@ -1,20 +1,15 @@
 package no.bibsys.db;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ws.rs.core.Response.Status;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.bibsys.EnvironmentReader;
+import no.bibsys.EnvironmentVariables;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.structures.EntityRegistryTemplate;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
@@ -23,6 +18,8 @@ import no.bibsys.web.exception.RegistryNotEmptyException;
 import no.bibsys.web.exception.RegistryNotFoundException;
 import no.bibsys.web.exception.RegistryUnavailableException;
 import no.bibsys.web.model.CreatedRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegistryManager {
 
@@ -38,13 +35,13 @@ public class RegistryManager {
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
     public RegistryManager(TableDriver tableManager, ItemDriver itemManager,
-            AuthenticationService authenticationService, EnvironmentReader environmentReader) {
+            AuthenticationService authenticationService, Environment environmentReader) {
         this.tableDriver = tableManager;
         this.itemDriver = itemManager;
         this.authenticationService = authenticationService;
 
         validationSchemaTableName =
-                environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
+                environmentReader.readEnv(EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME);
     }
 
     protected boolean createRegistryFromTemplate(EntityRegistryTemplate request)
