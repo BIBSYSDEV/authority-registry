@@ -37,13 +37,30 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
         Registry registry = sampleData.sampleRegistry(registryName);
         registryManager.createRegistry(validationSchemaTableName, registry);
-        registryManager.updateRegistry(validationSchemaTableName, registry);
+        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
         Registry metadata = registryManager.getRegistry(validationSchemaTableName, registryName);
 
         assertThat(metadata.getId(), is(equalTo(registryName)));
 
     }
 
+    @Test
+    public void updateMetadata_NonEmptyRegistryExisting_MetadataUpdated() throws IOException {
+        
+        String registryName = "updateNonEmptyMetadataRegistry";
+        
+        Registry registry = sampleData.sampleRegistry(registryName);
+        registryManager.createRegistry(validationSchemaTableName, registry); 
+
+        Entity entity = sampleData.sampleEntity();
+        entityManager.addEntity(registryName, entity);
+        
+        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
+        Registry metadata = registryManager.getRegistry(validationSchemaTableName, registryName);
+
+        assertThat(metadata.getId(), is(equalTo(registryName)));
+        
+    }
 
     @Test(expected = RegistryAlreadyExistsException.class)
     public void createRegistry_RegistryAlreadyExists_ThrowsException()
@@ -87,7 +104,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
         registryManager.createRegistry(validationSchemaTableName, registry);
         String schemaAsJson = "JSON validation schema";
         registry.setSchema(schemaAsJson);
-        registryManager.updateRegistry(validationSchemaTableName, registry);
+        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
 
         assertThat(registryManager.getRegistry(validationSchemaTableName, registryName), is(equalTo(registry)));
     }

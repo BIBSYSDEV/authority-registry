@@ -186,9 +186,31 @@ public class RegistryManager {
                 .collect(Collectors.toList());
     }
 
-    public Registry updateRegistry(String validationSchemaTableName, Registry registry) {
+    public Registry uppdateRegistrySchema(String validationSchemaTableName, String registryId, String schema) {
         validateSchemaTable(validationSchemaTableName);
-        validateRegistryNotEmpty(registry.getId());
+        validateRegistryNotEmpty(registryId);
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(SaveBehavior.UPDATE)
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(validationSchemaTableName))
+                .build();
+        
+        try {
+            // We only want to modify the schema
+            Registry registry = getRegistry(validationSchemaTableName, registryId);
+            registry.setSchema(schema);
+            mapper.save(registry, config);
+            
+            logger.info("Registry schema updated successfully, validationSchemaTableNameId={}, registryId={}", validationSchemaTableName,
+                    registry.getId());
+            return registry;
+        } catch (ResourceNotFoundException e) {
+            throw new RegistryNotFoundException(registryId, validationSchemaTableName);           
+        }
+    }
+    
+    public Registry updateRegistryMetadata(String validationSchemaTableName, Registry registry) {
+        validateSchemaTable(validationSchemaTableName);
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.UPDATE)
@@ -196,6 +218,11 @@ public class RegistryManager {
                 .build();
 
         try {
+        
+            // We don't want to update schema
+            Registry existingRegistry = getRegistry(validationSchemaTableName, registry.getId());
+            registry.setSchema(existingRegistry.getSchema());
+            
             mapper.save(registry, config);
             logger.info("Registry metadata updated successfully, validationSchemaTableNameId={}, registryId={}", validationSchemaTableName,
                     registry.getId());  
