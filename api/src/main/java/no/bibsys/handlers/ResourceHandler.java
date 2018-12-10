@@ -14,6 +14,10 @@ import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
 
+
+/**
+ *  Class for common methods of InitHandler and DestroyHandler.
+ */
 public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
 
 
