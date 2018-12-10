@@ -31,11 +31,15 @@ public class OntologyValidatorTest implements ModelParser {
     @Test
     public void checkModel_shaclValidationSchema_validIfItContainsOnlyObjectsDefinedInOntology()
         throws IOException {
-        String modelSting=IoUtils.resourceAsString(Paths.get("validation","unit-entity-ontology.ttl"));
-        Model dataModel = parseModel(modelSting,Lang.TURTLE);
-        NodeIterator objectsIterator = dataModel.listObjects();
 
-        assertFalse(dataModel.isEmpty());
+        OntologyValidator validator = initializeOntologyValidator();
+        String validdationModelString = IoUtils
+            .resourceAsString(Paths.get("validation", "validationSchema.ttl"));
+        Model schaclModel = parseModel(validdationModelString, Lang.TURTLE);
+        validator.checkModel(schaclModel);
+
+
+
     }
 
 

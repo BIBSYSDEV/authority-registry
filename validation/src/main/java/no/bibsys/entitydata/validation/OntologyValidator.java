@@ -22,4 +22,9 @@ public class OntologyValidator implements ModelParser {
     }
 
 
+    private boolean shaclModelTargetClassesAreSubjectsOfOntology(Model model){
+        model.listObjectsOfProperty()
+    }
+
+
 }
