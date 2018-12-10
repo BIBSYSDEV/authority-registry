@@ -4,9 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
+import java.util.Optional;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
 import com.amazonaws.services.apigateway.model.GetBasePathMappingsResult;
@@ -17,13 +20,9 @@ import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
-import java.util.Optional;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 public class UrlUpdaterTest {
     private final transient String certificateArn = "TheCerificate";

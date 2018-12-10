@@ -1,12 +1,12 @@
 package no.bibsys;
 
-import no.bibsys.aws.tools.Environment;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.service.AuthenticationService;
