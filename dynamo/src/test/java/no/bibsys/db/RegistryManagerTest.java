@@ -52,13 +52,20 @@ public class RegistryManagerTest extends LocalDynamoTest {
         Registry registry = sampleData.sampleRegistry(registryName);
         registryManager.createRegistry(validationSchemaTableName, registry); 
 
+        assertThat(registry.getMetadata().get("label").asText(), is(equalTo("label")));
+        
         Entity entity = sampleData.sampleEntity();
         entityManager.addEntity(registryName, entity);
+        
+        String updatedLabel = "Updated label";
+        
+        registry.getMetadata().put("label", updatedLabel);
         
         registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
         Registry metadata = registryManager.getRegistry(validationSchemaTableName, registryName);
 
         assertThat(metadata.getId(), is(equalTo(registryName)));
+        assertThat(registry.getMetadata().get("label").asText(), is(equalTo(updatedLabel)));
         
     }
 

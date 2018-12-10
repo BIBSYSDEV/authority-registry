@@ -19,6 +19,7 @@ public class SampleData {
         
         
         ObjectNode metadata = mapper.createObjectNode();
+        metadata.put("label", "label");
 
         registry.setMetadata(metadata);
         registry.setSchema("Schema");
