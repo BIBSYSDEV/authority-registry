@@ -123,6 +123,10 @@ Resources:
           - dynamodb:CreateTable
           - dynamodb:PutItem
           - dynamodb:UpdateItem
+          - cloudformation:DescribeStackResources
+          - route53:ListHostedZones
+          - route53:ChangeResourceRecordSets
+
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
@@ -131,6 +135,10 @@ Resources:
         Variables:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
+          REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
+          HOSTED_ZONE_NAME: "aws.unit.no."
+          APPLICATION_URL: "api.entitydata.aws.unit.no."
+          STACK_NAME: !Ref AWS::StackName
   Destroy:
     Type: AWS::Serverless::Function
     Properties:
@@ -148,6 +156,9 @@ Resources:
           - apigateway:*
           - dynamodb:DescribeTable
           - dynamodb:DeleteTable
+          - cloudformation:DescribeStackResources
+          - route53:ListHostedZones
+          - route53:ChangeResourceRecordSets
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
@@ -156,3 +167,6 @@ Resources:
         Variables:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
+          STACK_NAME: !Ref AWS::StackName
+          HOSTED_ZONE_NAME: "aws.unit.no."
+          APPLICATION_URL: "apihello.entitydata.aws.unit.no."

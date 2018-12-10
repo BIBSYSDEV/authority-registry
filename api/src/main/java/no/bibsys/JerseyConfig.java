@@ -1,5 +1,6 @@
 package no.bibsys;
 
+import no.bibsys.aws.tools.Environment;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -28,10 +29,10 @@ import no.bibsys.web.security.AuthenticationFilter;
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
-        this(DynamoDBHelper.getClient(), new EnvironmentReader());
+        this(DynamoDBHelper.getClient(), new Environment());
     }
 
-    public JerseyConfig(AmazonDynamoDB client, EnvironmentReader environmentReader) {
+    public JerseyConfig(AmazonDynamoDB client, Environment environmentReader) {
         super();
 
         EntityManager entityManager = new EntityManager(client);

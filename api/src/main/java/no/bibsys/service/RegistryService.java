@@ -3,7 +3,8 @@ package no.bibsys.service;
 import java.util.List;
 import java.util.Locale;
 import javax.ws.rs.core.Response.Status;
-import no.bibsys.EnvironmentReader;
+import no.bibsys.EnvironmentVariables;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.RegistryManager.RegistryStatus;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
@@ -21,11 +22,11 @@ public class RegistryService {
     
     public RegistryService(RegistryManager registryManager, 
             AuthenticationService authenticationService, 
-            EnvironmentReader environmentReader) {
+            Environment environmentReader) {
         this.registryManager = registryManager;
         this.authenticationService = authenticationService;
         
-        validationSchemaTableName = environmentReader.getEnvForName(EnvironmentReader.VALIDATION_SCHEMA_TABLE_NAME);
+        validationSchemaTableName = environmentReader.readEnv(EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME);
     }
     
     public RegistryDto createRegistry(RegistryDto registryDto) {

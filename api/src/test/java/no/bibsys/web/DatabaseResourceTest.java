@@ -18,10 +18,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import no.bibsys.EnvironmentReader;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
-import no.bibsys.MockEnvironmentReader;
+import no.bibsys.MockEnvironment;
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
@@ -41,7 +41,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Override
     protected Application configure() {
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
-        EnvironmentReader environmentReader = new MockEnvironmentReader();
+        Environment environmentReader = new MockEnvironment();
 
 
         TableDriver tableDriver = TableDriver.create(client);

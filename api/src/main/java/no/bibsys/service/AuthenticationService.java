@@ -21,25 +21,25 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-import no.bibsys.EnvironmentReader;
+import no.bibsys.EnvironmentVariables;
+import no.bibsys.aws.cloudformation.Stage;
+import no.bibsys.aws.tools.Environment;
 
 public class AuthenticationService {
 
-    private static final String TEST_STAGE_NAME = "test";
-
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
-    private final transient EnvironmentReader environmentReader;
+    private final transient Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
-    public AuthenticationService(AmazonDynamoDB client, EnvironmentReader environmentReader) {
+    public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
         this.dynamoDB = new DynamoDB(client);
 
-        apiKeyTableName = environmentReader.getEnvForName(EnvironmentReader.API_KEY_TABLE_NAME);
+        apiKeyTableName = environmentReader.readEnv(EnvironmentVariables.API_KEY_TABLE_NAME);
 
         config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
@@ -80,7 +80,8 @@ public class AuthenticationService {
     }
 
     public void setUpInitialApiKeys() {
-        if (environmentReader.getEnvForName(EnvironmentReader.STAGE_NAME).equals(TEST_STAGE_NAME)) {
+        Stage currentStage=Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
+        if (currentStage.equals(Stage.TEST)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
             saveApiKey(apiAdminApiKey);
