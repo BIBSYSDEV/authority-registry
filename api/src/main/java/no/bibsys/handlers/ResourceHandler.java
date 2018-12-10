@@ -1,5 +1,6 @@
 package no.bibsys.handlers;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
@@ -13,7 +14,6 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**

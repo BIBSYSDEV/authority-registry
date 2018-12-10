@@ -160,7 +160,7 @@ public class DatabaseResource {
                     implementation = RegistryDto.class))) RegistryDto registryDto)
             throws InterruptedException, JsonProcessingException {
 
-        RegistryDto updateRegistry = registryService.updateRegistry(registryDto);
+        RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
         return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId()))
                 .build();
     }
@@ -285,10 +285,7 @@ public class DatabaseResource {
                     content = @Content(schema = @Schema(type = STRING))) String schema)
             throws IOException {
 
-        RegistryDto registryDto = registryService.getRegistry(registryName);
-        registryDto.setSchema(schema);
-        
-        RegistryDto updateRegistry = registryService.updateRegistry(registryDto);
+        RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
         updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
         return Response.ok(updateRegistry).build();
     }

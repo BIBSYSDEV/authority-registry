@@ -58,8 +58,13 @@ public class RegistryService {
         return registryManager.getRegistries(validationSchemaTableName);
     }
 
-    public RegistryDto updateRegistry(RegistryDto registryDto) {
-        Registry registry = registryManager.updateRegistry(validationSchemaTableName, RegistryConverter.toRegistry(registryDto));
+    public RegistryDto updateRegistrySchema(String registryId, String schema) {
+        Registry registry = registryManager.uppdateRegistrySchema(validationSchemaTableName, registryId, schema);
+        return RegistryConverter.toRegistryDto(registry);
+    }
+    
+    public RegistryDto updateRegistryMetadata(RegistryDto registryDto) {
+        Registry registry = registryManager.updateRegistryMetadata(validationSchemaTableName, RegistryConverter.toRegistry(registryDto));
         return RegistryConverter.toRegistryDto(registry);
     }
 
