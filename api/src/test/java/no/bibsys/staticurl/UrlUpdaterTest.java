@@ -25,6 +25,10 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 
 public class UrlUpdaterTest {
+
+
+    private  final static String DEFAULT_ZONE_NAME = "aws.unit.no";
+    private  final static String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
     private final transient String certificateArn = "TheCerificate";
     private final transient String hostedZoneId = "HOSTEDZONEID";
     private final transient String domainName = "DomainName";
@@ -36,8 +40,8 @@ public class UrlUpdaterTest {
 
     public UrlUpdaterTest() {
         staticUrlInfo = new StaticUrlInfo(
-            UrlUpdater.DEFAULT_ZONE_NAME,
-            UrlUpdater.DEFAULT_RECORD_SET_NAME,
+            DEFAULT_ZONE_NAME,
+            DEFAULT_RECORD_SET_NAME,
             Stage.TEST);
         AmazonApiGateway client = mockApiGatewayClient();
 
@@ -72,7 +76,7 @@ public class UrlUpdaterTest {
         AmazonRoute53 client = Mockito.mock(AmazonRoute53.class);
         ListHostedZonesResult mockResult = new ListHostedZonesResult()
             .withHostedZones(
-                new HostedZone().withId(hostedZoneId).withName(UrlUpdater.DEFAULT_ZONE_NAME));
+                new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
         when(client.listHostedZones()).thenReturn(mockResult);
         return client;
     }

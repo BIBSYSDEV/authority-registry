@@ -8,8 +8,7 @@ import no.bibsys.aws.route53.Route53Updater;
 public class UrlUpdater {
 
 
-    public final static String DEFAULT_ZONE_NAME = "aws.unit.no";
-    public final static String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
+
 
 
     private final transient Route53Updater route53Updater;
