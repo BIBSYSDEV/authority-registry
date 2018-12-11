@@ -133,6 +133,9 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
+          SWAGGER_API_ID: "aut-reg-service"
+          SWAGGER_API_VERSION: "1.0"
+          SWAGGER_API_OWNER: 'axthosarouris'
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
