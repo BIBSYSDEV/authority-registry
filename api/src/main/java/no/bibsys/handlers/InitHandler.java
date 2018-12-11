@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
@@ -96,7 +97,8 @@ public class InitHandler extends ResourceHandler {
                 ObjectMapper mapper = JsonUtils.newJsonParser();
                 String jsonSpec = mapper.writeValueAsString(amazonApiSpec.get());
                 String apiKey = swaggerHubInfo.getSwaggerAuth();
-                swaggerDriver.createUpdateRequest(jsonSpec, apiKey);
+                HttpPost createUpdateRequest = swaggerDriver.createUpdateRequest(jsonSpec, apiKey);
+                swaggerDriver.executePost(createUpdateRequest);
               
             } else {
                 logger.warn("No swagger specification");
