@@ -1,9 +1,9 @@
 package no.bibsys.handlers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ public class InitHandler extends ResourceHandler {
         
         try {
             
-            Map<String, String> requestParameters = new HashMap<>();
+            Map<String, String> requestParameters = new ConcurrentHashMap<>();
             requestParameters.put("accepts", "application/json");
             Optional<JsonNode> amazonApiSpec = apiGatewayApiInfo.readOpenApiSpecFromAmazon(requestParameters);
             
