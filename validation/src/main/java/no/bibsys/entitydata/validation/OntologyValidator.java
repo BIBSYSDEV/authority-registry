@@ -41,11 +41,13 @@ public class OntologyValidator implements ModelParser {
     public boolean checkModel(Model model) {
         boolean result = shaclModelTargetClassesAreSubjectsOfOntology(model);
         if (result) {
-            result=allActualPropertiesAreIncludedinOntology(model);
+
+            result = allActualPropertiesAreIncludedinOntology(model);
 
         }
 
-        return  result;
+        return result;
+
 
     }
 
@@ -73,6 +75,7 @@ public class OntologyValidator implements ModelParser {
 
 
     private Set<Resource> actualPropertiesOnlyNames(Model shaclModel) {
+
         Set<Model> propertiesModels = listActualProperties(shaclModel);
         Set<Resource> properties = propertiesModels.stream()
             .flatMap(model ->
@@ -81,7 +84,6 @@ public class OntologyValidator implements ModelParser {
 
         return properties;
     }
-
 
     public Map<Resource, RDFNode> allowedPropertiesWithRange() {
         return ontology
@@ -95,9 +97,9 @@ public class OntologyValidator implements ModelParser {
 
     }
 
-
     private Entry<Resource, Resource> pathAndDatatype(Model blankNodeModel) {
-        List<RDFNode> propertyNameList = blankNodeModel.listObjectsOfProperty(ShaclConstants.PATH)
+        List<RDFNode> propertyNameList = blankNodeModel
+            .listObjectsOfProperty(ShaclConstants.PATH)
             .toList();
         Preconditions.checkArgument(propertyNameList.size() == 1,
             "Only one sh:path object is allowed per property model");
@@ -112,7 +114,6 @@ public class OntologyValidator implements ModelParser {
 
     }
 
-
     private SimpleEntry<Resource, Resource> subjectAndObjectFromStatement(Statement statement) {
         Resource subject = statement.getSubject();
         Resource object = (Resource) statement.getObject();
@@ -120,14 +121,13 @@ public class OntologyValidator implements ModelParser {
 
     }
 
-
     private Set<Model> listActualProperties(Model model) {
-        List<RDFNode> properties = model.listObjectsOfProperty(ShaclConstants.PROPERTY).toList();
+        List<RDFNode> properties = model.listObjectsOfProperty(ShaclConstants.PROPERTY)
+            .toList();
         return properties.stream().map(rdfNode -> (ResourceImpl) rdfNode)
             .map(resource -> resource.listProperties().toModel()).collect(Collectors.toSet());
 
     }
-
 
     private boolean shaclModelTargetClassesAreSubjectsOfOntology(Model model) {
         Set<Resource> subjects = ontology.listSubjects().toSet();
@@ -180,7 +180,6 @@ public class OntologyValidator implements ModelParser {
             return Collections.emptySet();
         }
     }
-
 
     private boolean areRDFNodesResources(List<RDFNode> rdfNodes) {
         for (RDFNode node : rdfNodes) {

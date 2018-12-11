@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+
+import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
@@ -64,7 +66,7 @@ public class OntologyValidatorTest implements ModelParser {
         throws IOException {
         OntologyValidator validator = initializeOntologyValidator();
         Model shaclModel = validationSchema();
-        List<Model> properties = validator.listActualPropertiesModels(shaclModel);
+        List<Model> properties = validator.listActualProperties(shaclModel);
 
         assertThat(properties.size(), is(equalTo(1)));
     }
