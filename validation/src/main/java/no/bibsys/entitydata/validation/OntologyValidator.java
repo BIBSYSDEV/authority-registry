@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.jena.rdf.model.Model;
@@ -38,7 +39,12 @@ public class OntologyValidator implements ModelParser {
 
 
     public boolean checkModel(Model model) {
-        return shaclModelTargetClassesAreSubjectsOfOntology(model);
+        boolean result = shaclModelTargetClassesAreSubjectsOfOntology(model);
+        if (result) {
+            Set<Resource> allowedPropeties = listAllowedProperties();
+            Set<Resource> actualPropeties = actualPropertiesOnlyNames(model);
+
+        }
 
     }
 
@@ -49,21 +55,24 @@ public class OntologyValidator implements ModelParser {
     }
 
 
-    public void actualPropertiesWithType(Model model) {
-        List<Model> propertiesModels = listActualProperties(model);
-        propertiesModels.stream()
+    public Map<Resource, Resource> actualPropertiesWithRange(Model shaclModel) {
+        Set<Model> propertiesModels = listActualProperties(shaclModel);
+        return propertiesModels.stream().map(this::pathAndDatatype)
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
     }
 
 
-    private void pathAndDatatype(Model model) {
-        List<RDFNode> pathObject = model.listObjectsOfProperty(ShaclConstants.PATH).toList();
-        Preconditions.checkArgument(pathObject.size() == 1,
-            "Only one sh:path object is allowed per property model");
-        List<RDFNode> typeObject = model.listObjectsOfProperty(ShaclConstants.DATATYPE).toList();
-        Preconditions.checkArgument(pathObject.size() == 1,
-            "Only one sh:datatype object is allowed per property model");
+    public Set<Resource> actualPropertiesOnlyNames(Model shaclModel) {
+        Set<Model> propertiesModels = listActualProperties(shaclModel);
+        Set<Resource> properties = propertiesModels.stream()
+            .flatMap(model ->
+                model.listObjectsOfProperty(ShaclConstants.PATH).toSet().stream())
+            .map(rdfNode -> (Resource) rdfNode).collect(Collectors.toSet());
+
+        return properties;
     }
+
 
     public Map<Resource, RDFNode> allowedPropertiesWithRange() {
         return ontology
@@ -71,24 +80,42 @@ public class OntologyValidator implements ModelParser {
             .toList().stream()
             .flatMap(resource -> ontology.listStatements(resource, RDFS.range, null, null)
                 .toList().stream())
-            .map(this::subjectObjectEntry)
+            .map(this::subjectAndObjectFromStatement)
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
 
     }
 
-    private SimpleEntry<Resource, RDFNode> subjectObjectEntry(Statement statement) {
-        Resource subject = statement.getSubject();
-        RDFNode object = statement.getObject();
-        return new HashMap.SimpleEntry<>(subject, object);
+
+    private Entry<Resource, Resource> pathAndDatatype(Model blankNodeModel) {
+        List<RDFNode> propertyNameList = blankNodeModel.listObjectsOfProperty(ShaclConstants.PATH)
+            .toList();
+        Preconditions.checkArgument(propertyNameList.size() == 1,
+            "Only one sh:path object is allowed per property model");
+        List<RDFNode> propertyRangeList = blankNodeModel
+            .listObjectsOfProperty(ShaclConstants.DATATYPE).toList();
+        Preconditions.checkArgument(propertyRangeList.size() == 1,
+            "Only one sh:datatype object is allowed per property model");
+        Resource propertyName = (Resource) propertyNameList.iterator().next();
+        Resource propertyRange = (Resource) propertyRangeList.iterator().next();
+        return new HashMap.SimpleEntry<>(propertyName, propertyRange);
+
 
     }
 
 
-    public List<Model> listActualProperties(Model model) {
+    private SimpleEntry<Resource, Resource> subjectAndObjectFromStatement(Statement statement) {
+        Resource subject = statement.getSubject();
+        Resource object = (Resource) statement.getObject();
+        return new HashMap.SimpleEntry<Resource, Resource>(subject, object);
+
+    }
+
+
+    private Set<Model> listActualProperties(Model model) {
         List<RDFNode> properties = model.listObjectsOfProperty(ShaclConstants.PROPERTY).toList();
         return properties.stream().map(rdfNode -> (ResourceImpl) rdfNode)
-            .map(resource -> resource.listProperties().toModel()).collect(Collectors.toList());
+            .map(resource -> resource.listProperties().toModel()).collect(Collectors.toSet());
 
     }
 
