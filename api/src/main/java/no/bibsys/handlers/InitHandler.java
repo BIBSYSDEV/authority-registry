@@ -103,7 +103,7 @@ public class InitHandler extends ResourceHandler {
             }
         
         } catch (Exception e) {
-            logger.error("SwaggerHub error", e.getMessage());
+            logger.error("SwaggerHub error", e);
         }  
         
     }
