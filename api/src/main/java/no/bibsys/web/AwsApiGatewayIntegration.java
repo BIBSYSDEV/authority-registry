@@ -16,5 +16,5 @@ public class AwsApiGatewayIntegration {
 
 
     public static final String REQUEST_PARAMETERS_OBJECT =
-            "{\"integration.request.header.api-key\": \"method.request.header.api-key\"}";
+            "{\"integration.request.header.api-key\": \"method.request.header.api-key\", \"integration.request.header.role\": \"context.authorizer.role\", \"integration.request.header.registry\": \"context.authorizer.registry\",}";
 }

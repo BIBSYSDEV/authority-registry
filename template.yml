@@ -71,7 +71,6 @@ Resources:
           - logs:CreateLogStream
           - logs:PutLogEvents
           Resource: "*"
-
         - Effect: Allow
           Action:
           - s3:GetObject
@@ -96,6 +95,64 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+            
+  LambdaAuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: no.bibsys.handlers.AuthorizerHandler::handleRequest
+      Runtime: java8
+      CodeUri: api/build/libs/api-fat.jar
+      MemorySize: 1512
+      Policies:
+        Version: '2012-10-17'
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          - dynamodb:CreateTable
+          - dynamodb:DeleteTable
+          - dynamodb:DescribeTable
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Scan
+          - s3:*
+          - apigateway:GET
+          Resource: "*"
+          Effect: Allow
+        - Action:
+          - secretsmanager:GetSecretValue
+          - ssm:GetParameter
+          Resource: "*"
+          #     //The rest of the policies are for all lambda functions
+          Effect: Allow
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: "*"
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource: arn:aws:s3:::*/AWSLogs/*/Config/*
+        - Effect: Allow
+          Action:
+          - config:Put*
+          - config:Get*
+          - config:List*
+          - config:Describe*
+          Resource: "*"
+      Timeout: 600
+      Environment:
+        Variables:
+          STAGE_NAME: !Ref Stage
+          API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
+              
   RestApiUrlParameter:
     Type: AWS::SSM::Parameter
     Properties:

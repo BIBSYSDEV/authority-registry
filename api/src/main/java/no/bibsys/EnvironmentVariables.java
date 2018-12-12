@@ -32,5 +32,11 @@ public class EnvironmentVariables {
 
     public static final String SWAGGER_API_KEY = "SWAGGER_API_KEY";
 
+    public static final String AWS_REGION = "AWS_REGION";
+
+    public static final String AWS_ACCOUNT_ID = "AWS_ACCOUNT_ID";
+
+    public static final String AWS_REST_API_ID = "AWS_REST_API_ID";
+
 
 }

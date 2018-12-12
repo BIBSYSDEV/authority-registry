@@ -76,4 +76,16 @@ resolve {
     classpath = sourceSets.main.runtimeClasspath
     resourcePackages = ['no.bibsys.web']
     outputPath = "${buildDir}/openapi"
+    openApiFile = new File("${projectDir}/src/main/resources/openapi-template.yml")
+}
+
+task fixAws(type: Copy) {
+	String snippet = new File("${projectDir}/src/main/resources/openapi-lambda-authorizer-snippet.txt").text
+    from("${buildDir}/openapi") {
+        include "openapi.yaml"
+    }
+    into("${buildDir}/openapi-aws-modified")
+    filter {
+       String line -> line.replaceAll('in: header',snippet)
+   	}
 }

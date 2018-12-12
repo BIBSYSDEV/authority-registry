@@ -49,7 +49,7 @@ public class JerseyConfig extends ResourceConfig {
         register(SecurityEntityFilteringFeature.class);
         register(JacksonFeature.class);
 
-        register(new AuthenticationFilter(authenticationService));
+        register(AuthenticationFilter.class);
 
         registerExceptionMappers();
 

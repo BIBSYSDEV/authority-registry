@@ -1,0 +1,20 @@
+openapi: 3.0.1
+info:
+  title: Entity Registry
+  description: API documentation for Entity Registry
+  contact:
+    name: Entity registry team
+    url: http://example.org
+    email: entity@example.org
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: '0.0'
+paths: null
+components:
+  schemas: null
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api-key
+      in: header

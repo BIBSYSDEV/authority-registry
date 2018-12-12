@@ -5,10 +5,12 @@ import javax.ws.rs.core.SecurityContext;
 
 public class AssignedSecurityContext implements SecurityContext {
 
-    private final transient String asssignedRole;
-
-    public AssignedSecurityContext(String asssignedRole) {
-        this.asssignedRole = asssignedRole;
+    private final transient String assignedRole;
+    private final transient String registry;
+    
+    public AssignedSecurityContext(String asssignedRole, String registry) {
+        this.assignedRole = asssignedRole;
+        this.registry = registry;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class AssignedSecurityContext implements SecurityContext {
 
     @Override
     public boolean isUserInRole(final String role) {
-        return asssignedRole.equals(role);
+        return assignedRole.equals(role);
     }
 
     @Override

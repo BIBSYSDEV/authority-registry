@@ -22,22 +22,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
@@ -48,13 +41,6 @@ import no.bibsys.web.security.Roles;
 @Path("/registry")
 @Consumes({ MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_JSON })
-@OpenAPIDefinition(info = @Info(title = "Entity Registry", version = "0.0",
-        description = "API documentation for Entity Registry",
-        license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
-        contact = @Contact(url = "http://example.org", name = "Entity registry team",
-                email = "entity@example.org")))
-@SecurityScheme(name = ApiKeyConstants.API_KEY, paramName = ApiKeyConstants.API_KEY_PARAM_NAME,
-        type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String ENTITY_ID = "entityId";
