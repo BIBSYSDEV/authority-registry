@@ -371,6 +371,8 @@ public class DatabaseResource {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class)))) EntityDto[] entityDtos)
             throws IOException {
 
+        
+        
         List<EntityDto> persistedEntities = new ArrayList<EntityDto>();
         Arrays.asList(entityDtos).forEach(entityDto -> {
             EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);

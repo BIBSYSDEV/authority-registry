@@ -31,6 +31,7 @@ import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
+import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
@@ -341,13 +342,34 @@ public class DatabaseResourceTest extends JerseyTest {
             try {
                 readEntity(registryName, entity.getId());
                 numberOfEntities.set(numberOfEntities.incrementAndGet());
-                System.out.println("number: " + numberOfEntities.get());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
         
         assertThat(numberOfEntities.get() , is(equalTo(3)));        
+    }
+    
+    @Test
+    public void uploadArrayOfThreeEntities_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
+        
+        String registryName = UUID.randomUUID().toString();
+        
+        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
+        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
+        sampleEntityDto1.setId("id1");
+        sampleEntities.add(sampleEntityDto1);
+        
+        EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
+        sampleEntityDto2.setId("id2");
+        sampleEntities.add(sampleEntityDto2);
+        
+        EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
+        sampleEntityDto3.setId("id3");
+        sampleEntities.add(sampleEntityDto3);
+        
+        Response response = uploadEntities(registryName, sampleEntities);
+        assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
     }
 
     private Response uploadEntities(String registryName, List<EntityDto> sampleEntities) {
