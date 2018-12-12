@@ -1,5 +1,6 @@
 package no.bibsys.entitydata.validation;
 
+import no.bibsys.entitydata.validation.rdfutils.RdfUtil;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -7,7 +8,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.topbraid.shacl.validation.ValidationUtil;
 
-public class SchaclValidator implements ModelParser {
+public class ShaclValidator implements ModelParser {
     private static final Property SH_CONFORMS = ResourceFactory.createProperty("http://www.w3.org/ns/shacl#conforms");
     private static final Literal BOOLEAN_FALSE = ResourceFactory
         .createTypedLiteral("false", XSDDatatype.XSDboolean);
@@ -15,7 +16,7 @@ public class SchaclValidator implements ModelParser {
 
     private final Model validationSchema;
 
-    public SchaclValidator(Model validationSchema) {
+    public ShaclValidator(Model validationSchema) {
         this.validationSchema = validationSchema;
     }
 
@@ -26,6 +27,7 @@ public class SchaclValidator implements ModelParser {
 
     public boolean validationResult(Model dataModel) {
         Model report = validate(dataModel);
+        System.out.println(RdfUtil.turtleString(report));
         return parseReportToBoolean(report);
     }
 
