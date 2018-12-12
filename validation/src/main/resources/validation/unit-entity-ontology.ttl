@@ -81,7 +81,7 @@ unit:deinition a rdfs:Property ;
   rdfs:label "Definition"@en ;
   rdfs:label "Beskrivelse"@no ;
   rdfs:description "A complete definition of what the term means and how it is to be used" ;
-  rdfs:domain :Concept, :ConceptScheme ;
+  rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
 
 unit:inScheme a rdfs:Property ;
