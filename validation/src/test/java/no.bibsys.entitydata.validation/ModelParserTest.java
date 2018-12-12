@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import no.bibsys.utils.IoUtils;
@@ -47,10 +46,10 @@ public class ModelParserTest implements ModelParser {
         String modelString = IoUtils
             .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
         Model model = parseModel(modelString, Lang.TURTLE);
-        List<Resource> objects = getUriResourceObjects(model);
+        Set<Resource> objects = getUriResourceObjects(model);
         Set<RDFNode> resources = model.listObjects().toSet()
             .stream()
-            .filter(rdfNode -> rdfNode.isURIResource())
+            .filter(RDFNode::isURIResource)
             .collect(Collectors.toSet());
 
         int expectedNumberOfObjects = resources.size();

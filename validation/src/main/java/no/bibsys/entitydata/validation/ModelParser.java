@@ -4,12 +4,10 @@ package no.bibsys.entitydata.validation;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -26,18 +24,14 @@ public interface ModelParser {
     }
 
 
-    default List<Resource> getUriResourceObjects(Model model) {
-        NodeIterator objects = model.listObjects();
-        List<Resource> result = new ArrayList<>();
-        RDFNode current;
-        while (objects.hasNext()) {
-            current = objects.next();
-            if (current.isURIResource()) {
-                result.add((Resource) current);
-            }
+    default Set<Resource> getUriResourceObjects(Model model) {
+        return model.listObjects()
+            .toSet().stream()
+            .filter(rdfNode -> rdfNode.isURIResource())
+            .map(rdfNode -> (Resource) rdfNode)
+            .collect(Collectors.toSet());
 
-        }
-        return result;
+
     }
 
 
