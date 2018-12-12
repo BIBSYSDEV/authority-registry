@@ -368,7 +368,7 @@ public class DatabaseResource {
                     description = "Name of registry to add to",
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Array of Entity to upload",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class)))) EntityDto[] entityDtos)
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
             throws IOException {
 
         
