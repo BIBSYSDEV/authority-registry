@@ -8,10 +8,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
@@ -42,11 +45,15 @@ public class ModelParserTest implements ModelParser {
     @Test
     public void getObjects_model_allObjectsThatAreIRIsOrLiterals() throws IOException {
         String modelString = IoUtils
-            .resourceAsString(Paths.get("validation", "validationSchema.ttl"));
+            .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
         Model model = parseModel(modelString, Lang.TURTLE);
-        List<Resource> objects = getObjects(model);
+        List<Resource> objects = getUriResourceObjects(model);
+        Set<RDFNode> resources = model.listObjects().toSet()
+            .stream()
+            .filter(rdfNode -> rdfNode.isURIResource())
+            .collect(Collectors.toSet());
 
-        int expectedNumberOfObjects = 4;
+        int expectedNumberOfObjects = resources.size();
         assertThat(objects.size(), is(equalTo(expectedNumberOfObjects)));
 
     }

@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 public class OntologyValidator implements ModelParser {
 
-    public static final String DELIMITER = ",";
-    private final static Logger logger = LoggerFactory.getLogger(OntologyValidator.class);
+    private static final String DELIMITER = ",";
+    private static final Logger logger = LoggerFactory.getLogger(OntologyValidator.class);
     private final transient OntologyParser ontologyParser;
     private final transient ShaclParser shaclParser;
 
@@ -43,11 +43,11 @@ public class OntologyValidator implements ModelParser {
 
     public boolean checkModel() throws IOException {
 
-        return shaclModelPropertiesAreIncludedInOntology() &&
-            shaclModelTargetClassesAreClassesOfOntology() &&
-            shaclModelPathObjectsAreOntologyProperties() &&
-            shaclModelDatatypeObjectsMapExactlyPropertyRange() &&
-            shaclModelTargetClassesAreInDomainOfRespectiveProperties();
+        return shaclModelPropertiesAreIncludedInOntology()
+            && shaclModelTargetClassesAreClassesOfOntology()
+            && shaclModelPathObjectsAreOntologyProperties()
+            && shaclModelDatatypeObjectsMapExactlyPropertyRange()
+            && shaclModelTargetClassesAreInDomainOfRespectiveProperties();
 
 
     }

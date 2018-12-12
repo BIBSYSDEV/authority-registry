@@ -26,7 +26,7 @@ public interface ModelParser {
     }
 
 
-    default List<Resource> getObjects(Model model) {
+    default List<Resource> getUriResourceObjects(Model model) {
         NodeIterator objects = model.listObjects();
         List<Resource> result = new ArrayList<>();
         RDFNode current;
