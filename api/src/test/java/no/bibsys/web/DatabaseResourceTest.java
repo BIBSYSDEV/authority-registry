@@ -3,21 +3,29 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -302,6 +310,51 @@ public class DatabaseResourceTest extends JerseyTest {
         String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
         assertThat(actual, is(equalTo(updatedLabel)));
 
+    }
+    
+    @Test
+    public void uploadArrayOfThreeEntities_RegistryExists_RegistryContainsThreeEntities() throws Exception {
+        
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        
+        
+        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
+        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
+        sampleEntityDto1.setId("id1");
+        sampleEntities.add(sampleEntityDto1);
+        
+        EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
+        sampleEntityDto2.setId("id2");
+        sampleEntities.add(sampleEntityDto2);
+        
+        EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
+        sampleEntityDto3.setId("id3");
+        sampleEntities.add(sampleEntityDto3);
+        
+        Response response = uploadEntities(registryName, sampleEntities);
+        List<EntityDto> readEntityList = response.readEntity(new GenericType<List<EntityDto>>() {});
+        AtomicInteger numberOfEntities = new AtomicInteger(0);
+        
+        readEntityList.forEach(entity -> {
+            try {
+                readEntity(registryName, entity.getId());
+                numberOfEntities.set(numberOfEntities.incrementAndGet());
+                System.out.println("number: " + numberOfEntities.get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+        assertThat(numberOfEntities.get() , is(equalTo(3)));        
+    }
+
+    private Response uploadEntities(String registryName, List<EntityDto> sampleEntities) {
+
+        String path = String.format("/registry/%s/upload", registryName);
+        return target(path).request(MediaType.APPLICATION_JSON).header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
+                .post(javax.ws.rs.client.Entity.entity(sampleEntities, MediaType.APPLICATION_JSON));
     }
 
     private Response insertEntryRequest(String registryName, EntityDto entityDto) {

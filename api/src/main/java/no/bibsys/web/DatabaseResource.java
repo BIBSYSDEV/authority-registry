@@ -1,9 +1,9 @@
 package no.bibsys.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -18,6 +18,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -361,6 +362,7 @@ public class DatabaseResource {
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
+    @Produces("application/json")
     public Response uploadEntities(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to add to",
@@ -369,15 +371,16 @@ public class DatabaseResource {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class)))) EntityDto[] entityDtos)
             throws IOException {
 
-        List<EntityDto> persistedEntities = new CopyOnWriteArrayList<EntityDto>();
+        List<EntityDto> persistedEntities = new ArrayList<EntityDto>();
         Arrays.asList(entityDtos).forEach(entityDto -> {
             EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
             String entityId = persistedEntity.getId();
             persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
+            persistedEntities.add(persistedEntity);
         });
 
-
-        return Response.ok(persistedEntities).build();
+        
+        return Response.status(Status.OK).entity(new GenericEntity<List<EntityDto>>(persistedEntities) {}).type(MediaType.APPLICATION_JSON).build();
     }
 
     
