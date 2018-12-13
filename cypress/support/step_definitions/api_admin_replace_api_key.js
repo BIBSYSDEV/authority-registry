@@ -12,7 +12,7 @@ when('the API admin user requests a new API key to replace the current valid API
 			let url = '/registry/' + registryName + '/apikey'
 			cy.request({
 				url: url,
-				method: 'GET',
+				method: 'PUT',
 				headers: {
 					'api-key': apiAdminApiKey
 				}
@@ -27,41 +27,38 @@ then('the API key is updated', () => {
 	cy.get('@registryName').then((registryName) => {
 		cy.fixture('entityTestData').then((testData) => {
 			cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
-				cy.get('').then((registryApiKey) => {
-					let url = '/registry/' + registryName + '/entity'
-					cy.request({
-						url: url,
-						method: 'POST',
-						body: testData,
-						failOnStatusCode: false,
-						headers: {
-							'api-key': registryApiKey,
-							'content-type': 'application/json'
-						}
-					}).then((response) => {
-						cy.expect(response.status).to.equal(403)
-					})
+				let url = '/registry/' + registryName + '/entity'
+				cy.request({
+					url: url,
+					method: 'POST',
+					body: testData,
+					failOnStatusCode: false,
+					headers: {
+						'api-key': registryAdminApiKey,
+						'content-type': 'application/json'
+					}
+				}).then((response) => {
+					cy.expect(response.status).to.equal(403)
 				})
 			})
 			cy.get('@newApiKey').then((newRegistryAdminApiKey) => {
-				cy.get('').then((registryApiKey) => {
-					let url = '/registry/' + registryName + '/entity'
-					cy.request({
-						url: url,
-						method: 'POST',
-						body: testData,
-						failOnStatusCode: false,
-						headers: {
-							'api-key': newRegistryAdminApiKey,
-							'content-type': 'application/json'
-						}
-					}).then((response) => {
-						cy.expect(response.status).to.equal(200)
-					})
+				let url = '/registry/' + registryName + '/entity'
+				cy.request({
+					url: url,
+					method: 'POST',
+					body: testData,
+					failOnStatusCode: false,
+					headers: {
+						'api-key': newRegistryAdminApiKey,
+						'content-type': 'application/json'
+					}
+				}).then((response) => {
+					cy.expect(response.status).to.equal(200)
 				})
 			})
 		})
 	})
+})
 
 then('the user receives the updated API key', () => {
 	cy.get('@newApiKey')
