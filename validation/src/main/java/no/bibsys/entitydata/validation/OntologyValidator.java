@@ -2,11 +2,7 @@ package no.bibsys.entitydata.validation;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
@@ -14,17 +10,12 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OntologyValidator implements ModelParser {
 
-    private static final String DELIMITER = ",";
-    private static final Logger logger = LoggerFactory.getLogger(OntologyValidator.class);
+
     private final transient OntologyParser ontologyParser;
     private final transient ShaclParser shaclParser;
-
-    private final transient Map<Resource, Resource> allowedRanges;
 
     public OntologyValidator(String ontologyString, Lang ontolgyLang,
         String shaclModelString, Lang shaclModelLang) {
@@ -32,7 +23,7 @@ public class OntologyValidator implements ModelParser {
         Model shaclModel = parseModel(shaclModelString, shaclModelLang);
         this.ontologyParser = new OntologyParser(ontology);
         this.shaclParser = new ShaclParser(shaclModel);
-        this.allowedRanges = ontologyParser.propertiesWithRange();
+
     }
 
 
@@ -66,42 +57,9 @@ public class OntologyValidator implements ModelParser {
         Set<Resource> subjects = ontologyParser.listSubjects(RDF.type, RDFS.Class);
         Set<Resource> objects = shaclParser
             .resourceObjectNodes(ShaclConstants.TARGETCLASS_PROPERTY);
-        return isSubset(subjects, objects);
+        return subjects.containsAll(objects);
 
 
-    }
-
-    private boolean isSubset(Set<Resource> superSet, Set<Resource> subset) {
-        if (subset.isEmpty()) {
-            logger.warn("Empty subset");
-            return false;
-        } else {
-            if (superSet.containsAll(subset)) {
-                return true;
-            } else {
-                logger.warn("Invalid resources:{}", showSetDiffForErrorMessage(superSet, subset));
-                return false;
-            }
-
-        }
-
-    }
-
-    private String showSetDiffForErrorMessage(Set<Resource> superSet, Set<Resource> subset) {
-        Set<Resource> diff = calculateDiff(superSet, subset);
-        Set<String> diffStrings = diff.stream().map(resource -> resource.toString()).collect(
-            Collectors.toSet());
-        String wrongResources = String.join(DELIMITER, diffStrings);
-        return wrongResources;
-
-
-    }
-
-    private Set<Resource> calculateDiff(Set<Resource> superSet, Set<Resource> subset) {
-        Set<Resource> diff = new HashSet<>();
-        diff.addAll(subset);
-        diff.removeAll(superSet);
-        return diff;
     }
 
 
@@ -113,29 +71,11 @@ public class OntologyValidator implements ModelParser {
 
     }
 
-    public boolean shaclModelDatatypeObjectsMapExactlyPropertyRange() {
+    public boolean shaclModelDatatypeObjectsMapExactlyPropertyRange() throws IOException {
 
-        Map<Resource, Resource> actualRanges = shaclParser.propertiesWithRange();
-
-        Set<Entry<Resource, Resource>> validationSet = actualRanges.entrySet().stream()
-            .filter(this::isNotValidRange)
-            .collect(Collectors.toSet());
-
-        return validationSet.isEmpty();
-
-
-    }
-
-
-    private boolean isNotValidRange(Entry<Resource, Resource> propertyRangeEntry) {
-        Resource propertyUri = propertyRangeEntry.getKey();
-        if (allowedRanges.containsKey(propertyUri)) {
-            Resource actualRange = propertyRangeEntry.getValue();
-            Resource allowedRange = allowedRanges.get(propertyUri);
-            return !allowedRange.equals(actualRange);
-        } else {
-            return true;
-        }
+        Model actualRanges = shaclParser.generateRangeModel();
+        Model validRanges = ontologyParser.propertiesWithRange();
+        return validRanges.containsAll(actualRanges);
 
     }
 

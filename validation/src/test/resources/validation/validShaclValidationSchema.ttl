@@ -12,7 +12,11 @@ unit:nodeshape a sh:NodeShape ;
 
 unit:invalidShape a sh:NodeShape ;
   sh:targetSubjectsOf rdf:type ;
-  sh:or ([sh:class unit:Concept][sh:class unit:ConceptScheme]) .
+  sh:property [
+    sh:path rdf:type ;
+    sh:in (unit:Concept unit:ConceptScheme) ;
+    sh:minCount 1
+  ].
 
 
 

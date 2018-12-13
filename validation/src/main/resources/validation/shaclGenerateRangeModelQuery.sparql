@@ -1,0 +1,13 @@
+
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+PREFIX unit: <http://unit.no/entitydata#>
+
+Construct {?property rdfs:range ?datatype} WHERE {
+?s rdf:type sh:NodeShape .
+?s sh:targetClass  ?class .
+?s sh:property  ?o .
+?o sh:path  ?property .
+?o sh:datatype ?datatype .
+}

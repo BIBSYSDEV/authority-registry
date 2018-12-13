@@ -1,8 +1,5 @@
 package no.bibsys.entitydata.validation;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import no.bibsys.entitydata.validation.rdfutils.RdfsConstants;
@@ -30,29 +27,7 @@ public class OntologyParser {
     }
 
 
-    public Map<Resource, Resource> propertiesWithRange() {
-        return ontology
-            .listResourcesWithProperty(RDF.type, RdfsConstants.PROPERTY_CLASS)
-            .toList().stream()
-            .flatMap(resource -> ontology.listStatements(resource, RDFS.range, (RDFNode) null)
-                .toList().stream())
-            .map(this::subjectAndObjectFromStatement)
-            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
-
-    }
-
-
-    private SimpleEntry<Resource, Resource> subjectAndObjectFromStatement(Statement statement) {
-        Resource subject = statement.getSubject();
-        Resource object = (Resource) statement.getObject();
-        return new HashMap.SimpleEntry<>(subject, object);
-
-    }
-
-    public Set<Resource> listSubjects() {
-        return ontology.listSubjects().toSet();
-    }
 
 
     public Set<Resource> listSubjects(Property property, Resource object) {
@@ -64,6 +39,12 @@ public class OntologyParser {
         return this.ontology;
 
     }
+
+
+    public Model propertiesWithRange() {
+        return ontology.listStatements(null, RDFS.range, (RDFNode) null).toModel();
+    }
+
 
     public Set<Resource> getPropertyDomain(Resource propertySubject) {
         return ontology.listStatements(propertySubject, RDFS.domain, (RDFNode) null)

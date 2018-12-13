@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Set;
 import no.bibsys.entitydata.validation.rdfutils.RdfsConstants;
 import no.bibsys.utils.IoUtils;
@@ -59,14 +58,6 @@ public class OntologyParserTest implements ModelParser {
         assertThat(subjects, is(equalTo(expectedSubjects)));
     }
 
-
-    @Test
-    public void propertiesWithRange_ontology_mapWithPropertyResourcesWithRespecitveRange() {
-        Map<Resource, Resource> properties = ontologyParser.propertiesWithRange();
-        int expectedNumberOfPropertiesWithRange = ontologyParser.getOntology()
-            .listResourcesWithProperty(RDFS.range).toSet().size();
-        assertThat(properties.size(), is(equalTo(expectedNumberOfPropertiesWithRange)));
-    }
 
 
     @Test

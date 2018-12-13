@@ -8,8 +8,14 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
 import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
 import no.bibsys.utils.IoUtils;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -21,6 +27,8 @@ import org.junit.Test;
 public class ShaclParserTest implements ModelParser {
 
 
+    private static final String TEST_RESOURCES_FOLDER = "testQueries";
+    private static final String PROPERTIES_COUNT_QUERY = "propertiesInShackModel.sparql";
     private final transient ShaclParser shaclParser;
 
     public ShaclParserTest() throws IOException {
@@ -32,9 +40,19 @@ public class ShaclParserTest implements ModelParser {
 
 
     @Test
-    public void listProperties_shaclModel_listOfBlankNodeModels() {
+    public void listProperties_shaclModel_listOfBlankNodeModels() throws IOException {
         Set<Resource> properties = shaclParser.listPropertyNames();
-        assertThat(properties.size(), is(equalTo(1)));
+        String queryString = IoUtils
+            .resourceAsString(Paths.get(TEST_RESOURCES_FOLDER, PROPERTIES_COUNT_QUERY));
+
+        Query query = QueryFactory.create(queryString);
+        QueryExecution queryExecution = QueryExecutionFactory.create(query, shaclParser.getModel());
+        ResultSet queryRes = queryExecution.execSelect();
+        Integer numberOfProperties = queryRes.getResultVars().stream()
+            .map(var -> queryRes.next().getLiteral(var)).map(literal -> literal.getInt())
+            .findAny().orElse(-1);
+
+        assertThat(properties.size(), is(equalTo(numberOfProperties)));
     }
 
 
@@ -67,7 +85,9 @@ public class ShaclParserTest implements ModelParser {
         Set<Resource> propertyUris = domainStatements.listSubjects().toSet();
         Set<Resource> expectedPropertyUris = shaclParser.getModel()
             .listObjectsOfProperty(ShaclConstants.PATH)
-            .toSet().stream().map(node -> (Resource) node).collect(Collectors.toSet());
+            .toSet().stream().map(node -> (Resource) node)
+            .filter(RdfConstants::isNotRDFType)
+            .collect(Collectors.toSet());
 
         assertThat(propertyUris, is(equalTo(expectedPropertyUris)));
     }

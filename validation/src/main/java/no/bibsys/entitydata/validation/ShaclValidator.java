@@ -1,6 +1,5 @@
 package no.bibsys.entitydata.validation;
 
-import no.bibsys.entitydata.validation.rdfutils.RdfUtil;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -21,13 +20,13 @@ public class ShaclValidator implements ModelParser {
     }
 
     public Model validationReport(Model dataModel){
-       return  validate(dataModel);
+        return shaclValidation(dataModel);
     }
 
 
     public boolean validationResult(Model dataModel) {
-        Model report = validate(dataModel);
-        System.out.println(RdfUtil.turtleString(report));
+        Model report = shaclValidation(dataModel);
+
         return parseReportToBoolean(report);
     }
 
@@ -38,7 +37,7 @@ public class ShaclValidator implements ModelParser {
     }
 
 
-    private Model validate(Model dataModel) {
+    private Model shaclValidation(Model dataModel) {
         return ValidationUtil
             .validateModel(dataModel, validationSchema, true)
             .getModel();
