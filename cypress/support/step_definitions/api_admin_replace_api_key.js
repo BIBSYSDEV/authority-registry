@@ -8,16 +8,19 @@
 when('the API admin user requests a new API key to replace the current valid API key', () =>{
 	cy.log('-- api_admin_replace_api_key.js --')
 	cy.get("@registryName").then((registryName) => {
-		cy.get("@apiAdminApiKey").then((apiAdminApiKey) => {
-			let url = '/registry/' + registryName + '/apikey'
-			cy.request({
-				url: url,
-				method: 'PUT',
-				headers: {
-					'api-key': apiAdminApiKey
-				}
-			}).then((response) => {
-				cy.wrap(response.body.apikey).as('newApiKey')
+		cy.get("@registryAdminApiKey").then((registryAdminApiKey) => {
+			cy.get("@apiAdminApiKey").then((apiAdminApiKey) => {
+				let url = '/registry/' + registryName + '/apikey'
+				cy.request({
+					url: url,
+					method: 'PUT',
+					body: registryAdminApiKey, 
+					headers: {
+						'api-key': apiAdminApiKey
+					}
+				}).then((response) => {
+					cy.wrap(response.body.apikey).as('newApiKey')
+				})
 			})
 		})
 	})
@@ -61,5 +64,7 @@ then('the API key is updated', () => {
 })
 
 then('the user receives the updated API key', () => {
-	cy.get('@newApiKey')
+	cy.get('@newApiKey').then((newApiKey) => {
+		cy.wrap(newApiKey).as('registryAdminApiKey') //using the new apikey when cleaning up test registries
+	})
 })
