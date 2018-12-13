@@ -120,17 +120,8 @@ public final class TableDriver {
             return false;
         }
 
-        // disabled until we have a way to delete tables asynchronous
-//        if (isEmpty(tableName)) {
             return deleteNoCheckTable(tableName);
-//        } else {
-//            return false;
-//        }
     }
-
-//    private boolean isEmpty(final String tableName) {
-//        return tableSize(tableName) == 0;
-//    }
 
     private boolean deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
