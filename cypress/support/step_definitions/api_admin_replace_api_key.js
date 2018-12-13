@@ -19,7 +19,7 @@ when('the API admin user requests a new API key to replace the current valid API
 						'api-key': apiAdminApiKey
 					}
 				}).then((response) => {
-					cy.wrap(response.body.apikey).as('newApiKey')
+					cy.wrap(response.body).as('newApiKey')
 				})
 			})
 		})
@@ -30,6 +30,7 @@ then('the API key is updated', () => {
 	cy.get('@registryName').then((registryName) => {
 		cy.fixture('entityTestData').then((testData) => {
 			cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
+				cy.log('api-key = ' + registryAdminApiKey)
 				let url = '/registry/' + registryName + '/entity'
 				cy.request({
 					url: url,
@@ -45,6 +46,7 @@ then('the API key is updated', () => {
 				})
 			})
 			cy.get('@newApiKey').then((newRegistryAdminApiKey) => {
+				cy.log('api-key = ' + newRegistryAdminApiKey)
 				let url = '/registry/' + registryName + '/entity'
 				cy.request({
 					url: url,
