@@ -87,5 +87,15 @@ public class RegistryService {
             throw new RegistryNotFoundException(registryName);
         }
 }
+
+    public String replaceApiKey(String registryName) {
+        
+        Registry registry = registryManager.getRegistry(validationSchemaTableName, registryName);
+        
+        ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
+        String savedApiKey = authenticationService.saveApiKey(apiKey);
+
+        return savedApiKey;
+    }
     
 }

@@ -204,7 +204,7 @@ public class DatabaseResource {
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     public Response registryStatus(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                    description = "Name of registry in which to update entity", schema = @Schema(
+                    description = "Name of registry in which to get status", schema = @Schema(
                             type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         registryService.validateRegistryExists(registryName);
@@ -212,6 +212,35 @@ public class DatabaseResource {
         return Response.ok(String.format("Registry with name %s is active", registryName)).build();
     }
 
+    @PUT
+    @Path("/{registryName}/apikey")
+    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
+            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
+                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
+            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
+            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
+            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
+            value = AwsApiGatewayIntegration.AWS_PROXY), }) })
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({ Roles.API_ADMIN })
+    public Response replaceApiKey(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = "Name of registry in which to update entity", schema = @Schema(
+                    type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
+            @RequestBody(description = "Old apikey", content = @Content(schema = @Schema(
+                    implementation = String.class))) String oldApiKey) {
+        
+        String newApiKey = oldApiKey;
+        registryService.validateRegistryExists(registryName);
+        
+        newApiKey = registryService.replaceApiKey(registryName);
+        
+        return Response.ok(newApiKey).build();
+    }
+    
     @DELETE
     @Path("/{registryName}/empty")
     @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
