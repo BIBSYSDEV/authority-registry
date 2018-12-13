@@ -27,13 +27,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         if (apiKeyInHeader.isPresent()) {
             ApiKey apiKey = authenticationService.getApiKey(apiKeyInHeader.get());
-            if(apiKey != null) {
-                if (Roles.API_ADMIN.equals(apiKey.getRole())) {
-                    requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
-                } else if (Roles.REGISTRY_ADMIN.equals(apiKey.getRole())) {
-                    requestContext
-                    .setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
-                }
+            if (Roles.API_ADMIN.equals(apiKey.getRole())) {
+                requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
+            } else if (Roles.REGISTRY_ADMIN.equals(apiKey.getRole())) {
+                requestContext
+                        .setSecurityContext(new AssignedSecurityContext(Roles.REGISTRY_ADMIN));
             }
         }
     }
