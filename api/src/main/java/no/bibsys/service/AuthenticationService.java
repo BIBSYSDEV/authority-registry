@@ -47,11 +47,7 @@ public class AuthenticationService {
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
-        ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
-        if(apiKey == null) {
-            apiKey = new ApiKey();
-        }
-        return apiKey;
+        return mapper.load(ApiKey.class, apiKeyInHeader, config);
     }
 
     public String getApiKeyTableName() {
