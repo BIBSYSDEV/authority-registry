@@ -6,7 +6,10 @@ PREFIX unit: <http://unit.no/entitydata#>
 
 select (count (?s) as ?propertyCount) where {
   ?s sh:property ?blankNode .
+  ?blankNode sh:path ?property .
+  FILTER (
+    ?property != rdf:type
+  )
+  }
 
-
-}
 

@@ -28,7 +28,7 @@ public class ShaclParserTest implements ModelParser {
 
 
     private static final String TEST_RESOURCES_FOLDER = "testQueries";
-    private static final String PROPERTIES_COUNT_QUERY = "propertiesInShackModel.sparql";
+    private static final String PROPERTIES_COUNT_QUERY = "propertiesInShaclModel.sparql";
     private final transient ShaclParser shaclParser;
 
     public ShaclParserTest() throws IOException {
