@@ -11,3 +11,4 @@ bin/
 .checkstyle
 /node_modules/
 *.log
+/package-lock.json
