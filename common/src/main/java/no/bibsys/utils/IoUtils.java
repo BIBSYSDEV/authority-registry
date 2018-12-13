@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class IoUtils {
 
     // Operating system independent newline character. "\n" is not working in all OSes.
-    private static final String NEWLINE = String.format("%n");
+    private static final String NEWLINE = System.lineSeparator();
 
     public static InputStream resourceAsStream(Path path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString());
