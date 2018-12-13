@@ -236,7 +236,7 @@ public class DatabaseResource {
         String newApiKey = oldApiKey;
         registryService.validateRegistryExists(registryName);
         
-        newApiKey = registryService.replaceApiKey(registryName);
+        newApiKey = registryService.replaceApiKey(registryName, oldApiKey);
         
         return Response.ok(newApiKey).build();
     }

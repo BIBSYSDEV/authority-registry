@@ -88,11 +88,16 @@ public class RegistryService {
         }
 }
 
-    public String replaceApiKey(String registryName) {
+    public String replaceApiKey(String registryName, String oldApiKey) {
         
         Registry registry = registryManager.getRegistry(validationSchemaTableName, registryName);
+        ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
+        if(!existingApiKey.getRegistry().equals(registryName)) {
+            throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
+        }
         
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
+        authenticationService.deleteApiKeyForRegistry(registryName);
         String savedApiKey = authenticationService.saveApiKey(apiKey);
 
         return savedApiKey;
