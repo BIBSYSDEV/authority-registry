@@ -91,7 +91,7 @@ public class RegistryService {
     public String replaceApiKey(String registryName, String oldApiKey) {
         
         ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
-        if(!existingApiKey.getRegistry().equals(registryName)) {
+        if(existingApiKey.getRegistry() == null || !existingApiKey.getRegistry().equals(registryName)) {
             throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
         }
         
