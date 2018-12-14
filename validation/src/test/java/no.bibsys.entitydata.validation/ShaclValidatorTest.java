@@ -13,7 +13,6 @@ import org.junit.Test;
 
 public class ShaclValidatorTest extends ModelParser {
 
-
     private static final String RESOURCES_PATH = "validation";
     private static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
     private static final String VALID_SCHEMA = "validShaclValidationSchema.ttl";
@@ -29,7 +28,6 @@ public class ShaclValidatorTest extends ModelParser {
         assertFalse(model.isEmpty());
     }
 
-
     @Test
     public void shaclModelTargetClassesAreClassesOfOntology_validShaclSchema_valid()
         throws IOException {
@@ -38,10 +36,7 @@ public class ShaclValidatorTest extends ModelParser {
         boolean result = validator.shaclModelTargetClassesAreClassesOfOntology();
         assertTrue(result);
         assertTrue(validator.checkModel());
-
-
     }
-
 
     @Test
     public void shaclModelTargetClassesAreClassesOfOntology_invalidShackValidationSchema_notValid()
@@ -51,9 +46,7 @@ public class ShaclValidatorTest extends ModelParser {
         boolean result = validator.shaclModelTargetClassesAreClassesOfOntology();
         assertFalse(result);
         assertFalse(validator.checkModel());
-
     }
-
 
     @Test
     public void shaclModelPathObjectsAreOntologyProperties_validShaclShchema_valid()
@@ -61,69 +54,62 @@ public class ShaclValidatorTest extends ModelParser {
         ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
         assertTrue(validator.shaclModelPathObjectsAreOntologyProperties());
         assertTrue(validator.checkModel());
-
-
     }
 
     @Test
     public void shaclModelPathObjectsAreOntologyProperties_invalidShaclShchema_notValid()
         throws IOException {
+
         ShaclValidator validator = initializeOntologyValidator(INVALID_PATH_SCHEMA);
         assertFalse(validator.shaclModelPathObjectsAreOntologyProperties());
         assertFalse(validator.checkModel());
-
     }
 
 
     @Test
     public void shaclModelDatatypeObjectsMapExactlyPropertyRange_validShackSchema_valid()
         throws IOException {
+
         ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
         assertTrue(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
         assertTrue(validator.checkModel());
-
     }
 
     @Test
     public void shaclModelDatatypeObjectsMapExactlyPropertyRange_invalidDatatypeRangeShaclSchema_notValid()
         throws IOException {
+
         ShaclValidator validator = initializeOntologyValidator(INVALID_DATATYPE_SCHEMA);
         assertFalse(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
         assertFalse(validator.checkModel());
-
     }
-
 
     @Test
     public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_validShaclSchema_valid()
         throws IOException {
+
         ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
         assertTrue(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
         assertTrue(validator.checkModel());
-
     }
-
 
     @Test
     public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_invalidShaclSchema_valid()
         throws IOException {
+
         ShaclValidator validator = initializeOntologyValidator(INVALID_DOMAIN_SCEMA);
         assertFalse(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
         assertFalse(validator.checkModel());
-
     }
-
 
     private ShaclValidator initializeOntologyValidator(String validationSchemeFilename)
         throws IOException {
+
         String ontologyString = IoUtils.resourceAsString(
             Paths.get(RESOURCES_PATH, ENTITY_ONTOLOGY_TTL));
         String shaclModelString = IoUtils
             .resourceAsString(Paths.get(RESOURCES_PATH, validationSchemeFilename));
 
         return new ShaclValidator(ontologyString, Lang.TURTLE, shaclModelString, Lang.TURTLE);
-
     }
-
-
 }

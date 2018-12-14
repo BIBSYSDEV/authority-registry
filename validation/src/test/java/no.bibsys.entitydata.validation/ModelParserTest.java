@@ -21,25 +21,18 @@ import org.junit.Test;
 
 public class ModelParserTest extends ModelParser {
 
-
     @Test
     public void parseJson_jsonLdString_model() throws IOException {
         String modelString = IoUtils.resourceAsString(Paths.get("validation", "validGraph.json"));
         Model actual = loadData(modelString, Lang.JSONLD);
-
         Model expected = ModelFactory.createDefaultModel();
         Resource subject = expected.createResource("http://example.org/a");
         Resource classObject = expected.createResource("http://example.org/ClassA");
-
         Property nameProperty = expected.createProperty("http://example.org/name");
-
         expected.add(expected.createStatement(subject, RDF.type, classObject))
             .add(expected.createStatement(subject, nameProperty, "entityA"));
-
         assertTrue(actual.isIsomorphicWith(expected));
-
     }
-
 
     @Test
     public void getObjects_model_allObjectsThatAreIRIsOrLiterals() throws IOException {
@@ -51,11 +44,7 @@ public class ModelParserTest extends ModelParser {
             .stream()
             .filter(RDFNode::isURIResource)
             .collect(Collectors.toSet());
-
         int expectedNumberOfObjects = resources.size();
         assertThat(objects.size(), is(equalTo(expectedNumberOfObjects)));
-
     }
-
-
 }

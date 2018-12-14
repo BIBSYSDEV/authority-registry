@@ -7,11 +7,9 @@ import org.apache.jena.riot.RDFDataMgr;
 
 public class RdfUtil {
 
-
     public static String turtleString(Model model) {
         StringWriter writer = new StringWriter();
         RDFDataMgr.write(writer, model, Lang.TURTLE);
         return writer.toString();
     }
-
 }

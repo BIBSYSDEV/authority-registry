@@ -8,7 +8,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
-
 unit: a owl:Ontology ;
   dcterms:description "A simple vocabulary to hold UNIT-specific authority terms and provide relations to common vocabularies" ;
   dcterms:title "UNIT entity vocabulary"@en ;

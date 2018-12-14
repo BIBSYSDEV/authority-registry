@@ -20,13 +20,12 @@ import org.junit.Test;
 
 public class DataValidatorTest {
 
+    public static final String VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
+    public static final String RESOURCES_FOLDER = "validation";
     private static final Property SH_CONFORMS = ResourceFactory
         .createProperty("http://www.w3.org/ns/shacl#conforms");
     private static final Property SH_VALIDATION_REPORT_CLASS = ResourceFactory
         .createProperty("http://www.w3.org/ns/shacl#ValidationReport");
-    public static final String VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
-    public static final String RESOURCES_FOLDER = "validation";
-
 
     @Test
     public void validationResult_validationSchemaAndValidGraph_true() {
@@ -35,8 +34,6 @@ public class DataValidatorTest {
         Model dataModel = testData.getDataModel();
         DataValidator dataValidator = new DataValidator(validationModel);
         assertTrue(dataValidator.validationResult(dataModel));
-
-
     }
 
     @Test
@@ -44,25 +41,17 @@ public class DataValidatorTest {
         TestData testData = new TestData(Paths.get("validation", "invalidGraph.ttl")).invoke();
         Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-
         DataValidator dataValidator = new DataValidator(validationModel);
-
         assertFalse(dataValidator.validationResult(dataModel));
-
-
     }
-
 
     @Test
     public void valiationReport_validSchemaAndValidGraph_report() {
         TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
         Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-
         DataValidator dataValidator = new DataValidator(validationModel);
-
         Model report = dataValidator.validationReport(dataModel);
-
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
         expectedModel.add(expectedModel.createStatement(blankNode,
@@ -70,12 +59,8 @@ public class DataValidatorTest {
         expectedModel.add(expectedModel.createStatement(blankNode,
             SH_CONFORMS,
             expectedModel.createTypedLiteral("true", XSDDatatype.XSDboolean)));
-
         assertTrue(expectedModel.isIsomorphicWith(report));
-
-
     }
-
 
     private class TestData {
 

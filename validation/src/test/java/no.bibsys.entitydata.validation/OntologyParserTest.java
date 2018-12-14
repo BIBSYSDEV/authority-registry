@@ -22,17 +22,16 @@ import org.junit.Test;
 
 public class OntologyParserTest extends ModelParser {
 
-
-    //    private final transient Model ontology;
+    private static final String RESOURCE_FOLDER = "validation";
+    private static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
     private final transient OntologyParser ontologyParser;
 
     public OntologyParserTest() throws IOException {
         String ontologyString = IoUtils.resourceAsString(
-            Paths.get("validation", "unit-entity-ontology.ttl"));
+            Paths.get(RESOURCE_FOLDER, ENTITY_ONTOLOGY_TTL));
         Model ontology = loadData(ontologyString, Lang.TURTLE);
         this.ontologyParser = new OntologyParser(ontology);
     }
-
 
     @Test
     public void listProperties_ontology_allSubjectsWithTypeProperty() {
@@ -41,9 +40,7 @@ public class OntologyParserTest extends ModelParser {
         Set<Resource> expectedProperties = ontologyParser.getOntology()
             .listResourcesWithProperty(RDF.type,
                 RdfsConstants.PROPERTY_CLASS).toSet();
-
         assertThat(properties, is(equalTo(expectedProperties)));
-
     }
 
     @Test
@@ -54,11 +51,8 @@ public class OntologyParserTest extends ModelParser {
         Property property = RDF.type;
         Resource object = RDFS.Class;
         Set<Resource> subjects = ontologyParser.listSubjects(property, object);
-
         assertThat(subjects, is(equalTo(expectedSubjects)));
     }
-
-
 
     @Test
     public void propertyDomain_property_setOfResources() {
@@ -66,15 +60,10 @@ public class OntologyParserTest extends ModelParser {
             .listStatements(null, RDFS.domain, (RDFNode) null).toModel();
 
         for (Statement domainStatement : domainStatements.listStatements().toSet()) {
-
             Resource propertySubject = domainStatement.getSubject();
             Set<Resource> propertyDomain = ontologyParser.getPropertyDomain(propertySubject);
             Resource resourceInDomain = (Resource) domainStatement.getObject();
             assertTrue(propertyDomain.contains(resourceInDomain));
         }
-
-
     }
-
-
 }

@@ -5,9 +5,9 @@ PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX unit: <http://unit.no/entitydata#>
 
 Construct {?property rdfs:domain ?class} WHERE {
-?s rdf:type sh:NodeShape .
-?s sh:targetClass  ?class .
-?s sh:property  ?o .
-?o sh:path  ?property .
-?o sh:datatype ?datatype .
+  ?s rdf:type sh:NodeShape .
+  ?s sh:targetClass  ?class .
+  ?s sh:property  ?o .
+  ?o sh:path  ?property .
+  ?o sh:datatype ?datatype .
 }

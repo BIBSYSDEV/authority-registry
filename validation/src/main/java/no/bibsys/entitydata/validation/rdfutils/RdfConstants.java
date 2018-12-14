@@ -5,13 +5,7 @@ import org.apache.jena.vocabulary.RDF;
 
 public class RdfConstants {
 
-
-    public static final String PROLOGUE = "PREFIX rdf:<" + RDF.uri + ">";
-
-
     public static boolean isNotRDFType(Resource resource) {
         return !resource.equals(RDF.type);
     }
-
-
 }

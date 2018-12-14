@@ -33,16 +33,13 @@ public class ShaclParser {
     public Set<Resource> listPropertyNames() {
 
         Set<Model> propertiesModels = listProperties();
-        Set<Resource> properties = propertiesModels.stream()
-            .flatMap(model ->
-                model.listObjectsOfProperty(ShaclConstants.PATH).toSet().stream())
+        return propertiesModels.stream()
+            .flatMap(m ->
+                m.listObjectsOfProperty(ShaclConstants.PATH).toSet().stream())
             .map(rdfNode -> (Resource) rdfNode)
             .filter(RdfConstants::isNotRDFType)
             .collect(Collectors.toSet());
-
-        return properties;
     }
-
 
     private Set<Model> listProperties() {
         List<RDFNode> properties = model.listObjectsOfProperty(ShaclConstants.PROPERTY)
@@ -51,11 +48,6 @@ public class ShaclParser {
             .map(resource -> resource.listProperties().toModel()).collect(Collectors.toSet());
 
     }
-
-
-
-
-
 
     public Set<Resource> resourceObjectNodes(Property targetClassProperty) {
         List<RDFNode> objectNodes = model
@@ -68,7 +60,6 @@ public class ShaclParser {
         }
     }
 
-
     private boolean areRDFNodesResources(List<RDFNode> rdfNodes) {
         for (RDFNode node : rdfNodes) {
             if (!node.isResource()) {
@@ -78,14 +69,11 @@ public class ShaclParser {
         return true;
     }
 
-
     public Model getModel() {
         return this.model;
     }
 
-
     public Model generateDomainModel() throws IOException {
-
         return generateModel(DOMAIN_MODEL_QUERY_TTL);
     }
 

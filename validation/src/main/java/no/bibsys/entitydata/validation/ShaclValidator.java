@@ -37,6 +37,7 @@ public class ShaclValidator extends ModelParser {
             && shaclModelTargetClassesAreInDomainOfRespectiveProperties();
     }
 
+    @VisibleForTesting
     public boolean shaclModelPropertiesAreIncludedInOntology() {
         Set<Resource> allowedPropeties = ontologyParser.listProperties();
         Set<Resource> actualPropeties = shaclParser.listPropertyNames();
@@ -53,18 +54,22 @@ public class ShaclValidator extends ModelParser {
 
     }
 
+    @VisibleForTesting
     public boolean shaclModelPathObjectsAreOntologyProperties() {
         Set<Resource> allowedProperties = ontologyParser.listProperties();
         Set<Resource> actualProperties = shaclParser.listPropertyNames();
         return allowedProperties.containsAll(actualProperties);
 
     }
+
+    @VisibleForTesting
     public boolean shaclModelDatatypeObjectsMapExactlyPropertyRange() throws IOException {
         Model actualRanges = shaclParser.generateRangeModel();
         Model validRanges = ontologyParser.propertiesWithRange();
         return validRanges.containsAll(actualRanges);
     }
 
+    @VisibleForTesting
     public boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties() throws IOException {
         Model ontologyDomains = ontologyParser.getOntology()
             .listStatements(null, RDFS.domain, (RDFNode) null).toModel();

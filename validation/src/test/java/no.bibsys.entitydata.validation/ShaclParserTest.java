@@ -23,21 +23,20 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
-
 public class ShaclParserTest extends ModelParser {
 
     private static final String TEST_RESOURCES_FOLDER = "testQueries";
     private static final String PROPERTIES_COUNT_QUERY = "propertiesInShaclModel.sparql";
+    private static final String RESOURCES_FOLDER = "validation";
+    private static final String VALID_SHACL_SCHEMA_TTL = "validShaclValidationSchema.ttl";
     private final transient ShaclParser shaclParser;
 
     public ShaclParserTest() throws IOException {
         String shaclModelString = IoUtils
-            .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
+            .resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_SHACL_SCHEMA_TTL));
         Model model = loadData(shaclModelString, Lang.TURTLE);
         this.shaclParser = new ShaclParser(model);
-
     }
-
 
     @Test
     public void listProperties_shaclModel_listOfBlankNodeModels() throws IOException {
@@ -55,7 +54,6 @@ public class ShaclParserTest extends ModelParser {
         assertThat(properties.size(), is(equalTo(numberOfProperties)));
     }
 
-
     @Test
     public void generateDomainStatements_shaclModel_pathAndTargetClassPairs() throws IOException {
 
@@ -65,8 +63,6 @@ public class ShaclParserTest extends ModelParser {
 
         checkThatPropertyUrisAreSubjectsInGeneratedModel(domainStatements);
         checkThatTargetClassesAreObjectsInGeneratedModel(domainStatements);
-
-
     }
 
     private void checkThatTargetClassesAreObjectsInGeneratedModel(Model domainStatements) {
@@ -75,7 +71,6 @@ public class ShaclParserTest extends ModelParser {
             .stream()
             .map(node -> (Resource) node)
             .collect(Collectors.toSet());
-
         Set<RDFNode> domainUris = domainStatements.listObjectsOfProperty(RDFS.domain).toSet();
 
         assertThat(domainUris, is(equalTo(expectedDomainUris)));
@@ -91,6 +86,4 @@ public class ShaclParserTest extends ModelParser {
 
         assertThat(propertyUris, is(equalTo(expectedPropertyUris)));
     }
-
-
 }
