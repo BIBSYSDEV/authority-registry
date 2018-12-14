@@ -1,111 +1,129 @@
 package no.bibsys.entitydata.validation;
 
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.InputStream;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.nio.file.Paths;
 import no.bibsys.utils.IoUtils;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-public class ShaclValidatorTest {
+public class ShaclValidatorTest extends ModelParser {
 
-    private static final Property SH_CONFORMS = ResourceFactory
-        .createProperty("http://www.w3.org/ns/shacl#conforms");
-    private static final Property SH_VALIDATION_REPORT_CLASS = ResourceFactory
-        .createProperty("http://www.w3.org/ns/shacl#ValidationReport");
-    public static final String VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
-    public static final String RESOURCES_FOLDER = "validation";
 
+    private static final String RESOURCES_PATH = "validation";
+    private static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
+    private static final String VALID_SCHEMA = "validShaclValidationSchema.ttl";
+    private static final String INVALID_PATH_SCHEMA = "invalidPathObjectShaclValidationSchema.ttl";
+    private static final String INVALID_CLASS_SCHEMA = "invalidClassShaclValidationSchema.ttl";
+    private static final String INVALID_DATATYPE_SCHEMA = "invalidDatatypeRangeShaclValidationSchema.ttl";
+    private static final String INVALID_DOMAIN_SCEMA = "invalidPropertyDomainShaclValidationSchema.ttl";
 
     @Test
-    public void validationResult_validationSchemaAndValidGraph_true() {
-        TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
-        Model validationModel = testData.getValidationModel();
-        Model dataModel = testData.getDataModel();
-        ShaclValidator shaclValidator = new ShaclValidator(validationModel);
-        assertTrue(shaclValidator.validationResult(dataModel));
-
-
+    public void loadOntology_ontologyString_OntologyModel() throws IOException {
+        ShaclValidator shaclValidator = initializeOntologyValidator(VALID_SCHEMA);
+        Model model = shaclValidator.getOntology();
+        assertFalse(model.isEmpty());
     }
 
+
     @Test
-    public void validationResult_validationSchemaAndInvalidGraph_false() {
-        TestData testData = new TestData(Paths.get("validation", "invalidGraph.ttl")).invoke();
-        Model validationModel = testData.getValidationModel();
-        Model dataModel = testData.getDataModel();
+    public void shaclModelTargetClassesAreClassesOfOntology_validShaclSchema_valid()
+        throws IOException {
 
-        ShaclValidator shaclValidator = new ShaclValidator(validationModel);
-
-        assertFalse(shaclValidator.validationResult(dataModel));
+        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
+        boolean result = validator.shaclModelTargetClassesAreClassesOfOntology();
+        assertTrue(result);
+        assertTrue(validator.checkModel());
 
 
     }
 
 
     @Test
-    public void valiationReport_validSchemaAndValidGraph_report() {
-        TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
-        Model validationModel = testData.getValidationModel();
-        Model dataModel = testData.getDataModel();
+    public void shaclModelTargetClassesAreClassesOfOntology_invalidShackValidationSchema_notValid()
+        throws IOException {
 
-        ShaclValidator shaclValidator = new ShaclValidator(validationModel);
-
-        Model report = shaclValidator.validationReport(dataModel);
-
-        Model expectedModel = ModelFactory.createDefaultModel();
-        Resource blankNode = expectedModel.createResource();
-        expectedModel.add(expectedModel.createStatement(blankNode,
-            RDF.type, SH_VALIDATION_REPORT_CLASS));
-        expectedModel.add(expectedModel.createStatement(blankNode,
-            SH_CONFORMS,
-            expectedModel.createTypedLiteral("true", XSDDatatype.XSDboolean)));
-
-        assertTrue(expectedModel.isIsomorphicWith(report));
-
+        ShaclValidator validator = initializeOntologyValidator(INVALID_CLASS_SCHEMA);
+        boolean result = validator.shaclModelTargetClassesAreClassesOfOntology();
+        assertFalse(result);
+        assertFalse(validator.checkModel());
 
     }
 
 
-    private class TestData {
+    @Test
+    public void shaclModelPathObjectsAreOntologyProperties_validShaclShchema_valid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
+        assertTrue(validator.shaclModelPathObjectsAreOntologyProperties());
+        assertTrue(validator.checkModel());
 
-        private final transient Path dataModelPath;
-        private Model validationModel;
-        private Model dataModel;
 
-        public TestData(Path dataModelPath) {
-            this.dataModelPath = dataModelPath;
-        }
-
-        public Model getValidationModel() {
-            return validationModel;
-        }
-
-        public Model getDataModel() {
-            return dataModel;
-        }
-
-        public TestData invoke() {
-            validationModel = ModelFactory.createDefaultModel();
-            dataModel = ModelFactory.createDefaultModel();
-            InputStream validationSchemaStream = IoUtils
-                .resourceAsStream(Paths.get(RESOURCES_FOLDER, VALIDATION_SCHEMA_TTL));
-            RDFDataMgr.read(validationModel, validationSchemaStream, Lang.TURTLE);
-
-            InputStream dataStream = IoUtils
-                .resourceAsStream(dataModelPath);
-            RDFDataMgr.read(dataModel, dataStream, Lang.TURTLE);
-            return this;
-        }
     }
+
+    @Test
+    public void shaclModelPathObjectsAreOntologyProperties_invalidShaclShchema_notValid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(INVALID_PATH_SCHEMA);
+        assertFalse(validator.shaclModelPathObjectsAreOntologyProperties());
+        assertFalse(validator.checkModel());
+
+    }
+
+
+    @Test
+    public void shaclModelDatatypeObjectsMapExactlyPropertyRange_validShackSchema_valid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
+        assertTrue(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
+        assertTrue(validator.checkModel());
+
+    }
+
+    @Test
+    public void shaclModelDatatypeObjectsMapExactlyPropertyRange_invalidDatatypeRangeShaclSchema_notValid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(INVALID_DATATYPE_SCHEMA);
+        assertFalse(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
+        assertFalse(validator.checkModel());
+
+    }
+
+
+    @Test
+    public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_validShaclSchema_valid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
+        assertTrue(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
+        assertTrue(validator.checkModel());
+
+    }
+
+
+    @Test
+    public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_invalidShaclSchema_valid()
+        throws IOException {
+        ShaclValidator validator = initializeOntologyValidator(INVALID_DOMAIN_SCEMA);
+        assertFalse(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
+        assertFalse(validator.checkModel());
+
+    }
+
+
+    private ShaclValidator initializeOntologyValidator(String validationSchemeFilename)
+        throws IOException {
+        String ontologyString = IoUtils.resourceAsString(
+            Paths.get(RESOURCES_PATH, ENTITY_ONTOLOGY_TTL));
+        String shaclModelString = IoUtils
+            .resourceAsString(Paths.get(RESOURCES_PATH, validationSchemeFilename));
+
+        return new ShaclValidator(ontologyString, Lang.TURTLE, shaclModelString, Lang.TURTLE);
+
+    }
+
+
 }

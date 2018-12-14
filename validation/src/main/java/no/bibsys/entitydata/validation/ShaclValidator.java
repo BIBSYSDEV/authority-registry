@@ -1,46 +1,74 @@
 package no.bibsys.entitydata.validation;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.rdf.model.Literal;
+import com.google.common.annotations.VisibleForTesting;
+import java.io.IOException;
+import java.util.Set;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.topbraid.shacl.validation.ValidationUtil;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 public class ShaclValidator extends ModelParser {
 
-    private static final Property SH_CONFORMS = ResourceFactory
-        .createProperty("http://www.w3.org/ns/shacl#conforms");
-    private static final Literal BOOLEAN_FALSE = ResourceFactory
-        .createTypedLiteral("false", XSDDatatype.XSDboolean);
-    private final transient Model validationSchema;
+    private final transient OntologyParser ontologyParser;
+    private final transient ShaclParser shaclParser;
 
-    public ShaclValidator(Model validationSchema) {
+    public ShaclValidator(String ontologyString, Lang ontolgyLang,
+        String shaclModelString, Lang shaclModelLang) {
         super();
-        this.validationSchema = validationSchema;
+        Model ontology = loadData(ontologyString, ontolgyLang);
+        Model shaclModel = loadData(shaclModelString, shaclModelLang);
+        this.ontologyParser = new OntologyParser(ontology);
+        this.shaclParser = new ShaclParser(shaclModel);
     }
 
-    public Model validationReport(Model dataModel) {
-        return shaclValidation(dataModel);
+    public Model getOntology() {
+        return ontologyParser.getOntology();
     }
 
-    public boolean validationResult(Model dataModel) {
-        Model report = shaclValidation(dataModel);
-        return parseReportToBoolean(report);
+    public boolean checkModel() throws IOException {
+        return shaclModelPropertiesAreIncludedInOntology()
+            && shaclModelTargetClassesAreClassesOfOntology()
+            && shaclModelPathObjectsAreOntologyProperties()
+            && shaclModelDatatypeObjectsMapExactlyPropertyRange()
+            && shaclModelTargetClassesAreInDomainOfRespectiveProperties();
     }
 
-    private boolean parseReportToBoolean(Model report) {
-        return !report.contains(null, SH_CONFORMS, BOOLEAN_FALSE);
+    public boolean shaclModelPropertiesAreIncludedInOntology() {
+        Set<Resource> allowedPropeties = ontologyParser.listProperties();
+        Set<Resource> actualPropeties = shaclParser.listPropertyNames();
+        actualPropeties.removeAll(allowedPropeties);
+        return actualPropeties.isEmpty();
     }
 
-    private Model shaclValidation(Model dataModel) {
-        return ValidationUtil
-            .validateModel(dataModel, validationSchema, true)
-            .getModel();
+    @VisibleForTesting
+    public boolean shaclModelTargetClassesAreClassesOfOntology() {
+        Set<Resource> subjects = ontologyParser.listSubjects(RDF.type, RDFS.Class);
+        Set<Resource> objects = shaclParser
+            .resourceObjectNodes(ShaclConstants.TARGETCLASS_PROPERTY);
+        return subjects.containsAll(objects);
+
     }
 
-    public Model getValidationSchema() {
-        return validationSchema;
+    public boolean shaclModelPathObjectsAreOntologyProperties() {
+        Set<Resource> allowedProperties = ontologyParser.listProperties();
+        Set<Resource> actualProperties = shaclParser.listPropertyNames();
+        return allowedProperties.containsAll(actualProperties);
+
+    }
+    public boolean shaclModelDatatypeObjectsMapExactlyPropertyRange() throws IOException {
+        Model actualRanges = shaclParser.generateRangeModel();
+        Model validRanges = ontologyParser.propertiesWithRange();
+        return validRanges.containsAll(actualRanges);
     }
 
+    public boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties() throws IOException {
+        Model ontologyDomains = ontologyParser.getOntology()
+            .listStatements(null, RDFS.domain, (RDFNode) null).toModel();
+        Model shaclDomains = shaclParser.generateDomainModel();
+        return ontologyDomains.containsAll(shaclDomains);
+    }
 }
