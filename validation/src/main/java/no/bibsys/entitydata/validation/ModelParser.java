@@ -1,6 +1,5 @@
 package no.bibsys.entitydata.validation;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -15,13 +14,11 @@ import org.apache.jena.riot.RDFDataMgr;
 
 public class ModelParser {
 
-
     protected Model loadData(String rdfString, Lang lang) {
         Model model = ModelFactory.createDefaultModel();
         InputStream stream = new ByteArrayInputStream(rdfString.getBytes(StandardCharsets.UTF_8));
         RDFDataMgr.read(model, stream, lang);
         return model;
-
     }
 
     protected Set<Resource> getUriResourceObjects(Model model) {
@@ -31,5 +28,4 @@ public class ModelParser {
             .map(rdfNode -> (Resource) rdfNode)
             .collect(Collectors.toSet());
     }
-
 }
