@@ -86,6 +86,6 @@ task fixAws(type: Copy) {
     }
     into("${buildDir}/openapi-aws-modified")
     filter {
-       String line -> line.replaceAll('in: header',snippet)
+       String line -> line.replaceAll('      description: REPLACE_WITH_GRADLE',snippet)
    	}
 }
