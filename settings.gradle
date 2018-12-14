@@ -3,4 +3,5 @@ include 'api'
 include 'dynamo'
 include 'cypress'
 include 'common'
+include 'validation'
 
