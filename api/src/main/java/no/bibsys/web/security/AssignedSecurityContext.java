@@ -8,8 +8,8 @@ public class AssignedSecurityContext implements SecurityContext {
     private final transient String assignedRole;
     private final transient String registry;
     
-    public AssignedSecurityContext(String asssignedRole, String registry) {
-        this.assignedRole = asssignedRole;
+    public AssignedSecurityContext(String assignedRole, String registry) {
+        this.assignedRole = assignedRole;
         this.registry = registry;
     }
 
@@ -18,7 +18,7 @@ public class AssignedSecurityContext implements SecurityContext {
         return new Principal() {
             @Override
             public String getName() {
-                return "Jersey";
+                return registry;
             }
         };
     }

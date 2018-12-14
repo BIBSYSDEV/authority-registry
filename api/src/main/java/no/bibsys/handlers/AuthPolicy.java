@@ -27,6 +27,7 @@ import java.util.Map;
  *
  * @author Jack Kohn
  */
+@SuppressWarnings("PMD")
 public class AuthPolicy {
 
     // IAM Policy Constants
