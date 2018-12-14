@@ -311,6 +311,16 @@ public class DatabaseResourceTest extends JerseyTest {
         
         assertThat(newApiKey, is(not(equalTo(oldApiKey))));
     }
+    
+    @Test
+    public void replaceApiKey_RegistryNotExisting_ReturnsStatusNOT_FOUND() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        String oldApiKey = "dummy";
+        
+        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+        
+        assertThat(newApiKeyResponse.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
+    }
 
     private String createRegistry() {
         String registryName = UUID.randomUUID().toString();
