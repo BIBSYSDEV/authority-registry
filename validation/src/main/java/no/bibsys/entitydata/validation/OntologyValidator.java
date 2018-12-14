@@ -11,46 +11,38 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-public class OntologyValidator implements ModelParser {
-
+public class OntologyValidator extends ModelParser {
 
     private final transient OntologyParser ontologyParser;
     private final transient ShaclParser shaclParser;
 
     public OntologyValidator(String ontologyString, Lang ontolgyLang,
         String shaclModelString, Lang shaclModelLang) {
-        Model ontology = parseModel(ontologyString, ontolgyLang);
-        Model shaclModel = parseModel(shaclModelString, shaclModelLang);
+        super();
+        Model ontology = loadData(ontologyString, ontolgyLang);
+        Model shaclModel = loadData(shaclModelString, shaclModelLang);
         this.ontologyParser = new OntologyParser(ontology);
         this.shaclParser = new ShaclParser(shaclModel);
-
     }
-
 
     public Model getOntology() {
         return ontologyParser.getOntology();
     }
 
-
     public boolean checkModel() throws IOException {
-
         return shaclModelPropertiesAreIncludedInOntology()
             && shaclModelTargetClassesAreClassesOfOntology()
             && shaclModelPathObjectsAreOntologyProperties()
             && shaclModelDatatypeObjectsMapExactlyPropertyRange()
             && shaclModelTargetClassesAreInDomainOfRespectiveProperties();
-
-
     }
 
     public boolean shaclModelPropertiesAreIncludedInOntology() {
-
         Set<Resource> allowedPropeties = ontologyParser.listProperties();
         Set<Resource> actualPropeties = shaclParser.listPropertyNames();
         actualPropeties.removeAll(allowedPropeties);
         return actualPropeties.isEmpty();
     }
-
 
     @VisibleForTesting
     public boolean shaclModelTargetClassesAreClassesOfOntology() {
@@ -59,33 +51,24 @@ public class OntologyValidator implements ModelParser {
             .resourceObjectNodes(ShaclConstants.TARGETCLASS_PROPERTY);
         return subjects.containsAll(objects);
 
-
     }
-
 
     public boolean shaclModelPathObjectsAreOntologyProperties() {
         Set<Resource> allowedProperties = ontologyParser.listProperties();
         Set<Resource> actualProperties = shaclParser.listPropertyNames();
         return allowedProperties.containsAll(actualProperties);
 
-
     }
-
     public boolean shaclModelDatatypeObjectsMapExactlyPropertyRange() throws IOException {
-
         Model actualRanges = shaclParser.generateRangeModel();
         Model validRanges = ontologyParser.propertiesWithRange();
         return validRanges.containsAll(actualRanges);
-
     }
-
 
     public boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties() throws IOException {
         Model ontologyDomains = ontologyParser.getOntology()
             .listStatements(null, RDFS.domain, (RDFNode) null).toModel();
-
         Model shaclDomains = shaclParser.generateDomainModel();
-
         return ontologyDomains.containsAll(shaclDomains);
     }
 }

@@ -20,7 +20,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
-public class OntologyParserTest implements ModelParser {
+public class OntologyParserTest extends ModelParser {
 
 
     //    private final transient Model ontology;
@@ -29,7 +29,7 @@ public class OntologyParserTest implements ModelParser {
     public OntologyParserTest() throws IOException {
         String ontologyString = IoUtils.resourceAsString(
             Paths.get("validation", "unit-entity-ontology.ttl"));
-        Model ontology = parseModel(ontologyString, Lang.TURTLE);
+        Model ontology = loadData(ontologyString, Lang.TURTLE);
         this.ontologyParser = new OntologyParser(ontology);
     }
 

@@ -146,7 +146,7 @@ public class RegistryManager {
     }
     
     public void validateRegistryNotEmpty(String registryId) {
-        if (tableDriver.isTableEmpty(registryId)) {
+        if (!tableDriver.isTableEmpty(registryId)) {
             logger.warn("Registry is not empty, registryId={}", registryId);
             throw new RegistryNotEmptyException(registryId);
         }        

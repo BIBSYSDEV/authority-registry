@@ -24,7 +24,7 @@ import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
 
-public class ShaclParserTest implements ModelParser {
+public class ShaclParserTest extends ModelParser {
 
     private static final String TEST_RESOURCES_FOLDER = "testQueries";
     private static final String PROPERTIES_COUNT_QUERY = "propertiesInShaclModel.sparql";
@@ -33,7 +33,7 @@ public class ShaclParserTest implements ModelParser {
     public ShaclParserTest() throws IOException {
         String shaclModelString = IoUtils
             .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
-        Model model = parseModel(shaclModelString, Lang.TURTLE);
+        Model model = loadData(shaclModelString, Lang.TURTLE);
         this.shaclParser = new ShaclParser(model);
 
     }

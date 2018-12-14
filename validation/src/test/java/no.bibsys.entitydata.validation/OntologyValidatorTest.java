@@ -11,11 +11,11 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.junit.Test;
 
-public class OntologyValidatorTest implements ModelParser {
+public class OntologyValidatorTest extends ModelParser {
 
 
-    public static final String RESOURCES_PATH = "validation";
-    public static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
+    private static final String RESOURCES_PATH = "validation";
+    private static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
     private static final String VALID_SCHEMA = "validShaclValidationSchema.ttl";
     private static final String INVALID_PATH_SCHEMA = "invalidPathObjectShaclValidationSchema.ttl";
     private static final String INVALID_CLASS_SCHEMA = "invalidClassShaclValidationSchema.ttl";

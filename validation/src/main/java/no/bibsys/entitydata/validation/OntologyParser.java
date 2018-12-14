@@ -13,41 +13,30 @@ import org.apache.jena.vocabulary.RDFS;
 
 public class OntologyParser {
 
-
     private final transient Model ontology;
-
 
     public OntologyParser(Model ontology) {
         this.ontology = ontology;
     }
 
-
     public Set<Resource> listProperties() {
         return ontology.listResourcesWithProperty(RDF.type, RdfsConstants.PROPERTY_CLASS).toSet();
     }
-
-
-
-
 
     public Set<Resource> listSubjects(Property property, Resource object) {
         return ontology.listResourcesWithProperty(property, object).toSet();
     }
 
-
     public Model getOntology() {
         return this.ontology;
-
     }
-
 
     public Model propertiesWithRange() {
         return ontology.listStatements(null, RDFS.range, (RDFNode) null).toModel();
     }
 
-
-    public Set<Resource> getPropertyDomain(Resource propertySubject) {
-        return ontology.listStatements(propertySubject, RDFS.domain, (RDFNode) null)
+    public Set<Resource> getPropertyDomain(Resource subject) {
+        return ontology.listStatements(subject, RDFS.domain, (RDFNode) null)
             .toList().stream()
             .map(Statement::getObject)
             .map(rdfNode -> (Resource) rdfNode)

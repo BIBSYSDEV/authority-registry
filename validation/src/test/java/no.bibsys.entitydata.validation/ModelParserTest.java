@@ -19,13 +19,13 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-public class ModelParserTest implements ModelParser {
+public class ModelParserTest extends ModelParser {
 
 
     @Test
     public void parseJson_jsonLdString_model() throws IOException {
         String modelString = IoUtils.resourceAsString(Paths.get("validation", "validGraph.json"));
-        Model actual = parseModel(modelString, Lang.JSONLD);
+        Model actual = loadData(modelString, Lang.JSONLD);
 
         Model expected = ModelFactory.createDefaultModel();
         Resource subject = expected.createResource("http://example.org/a");
@@ -45,7 +45,7 @@ public class ModelParserTest implements ModelParser {
     public void getObjects_model_allObjectsThatAreIRIsOrLiterals() throws IOException {
         String modelString = IoUtils
             .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
-        Model model = parseModel(modelString, Lang.TURTLE);
+        Model model = loadData(modelString, Lang.TURTLE);
         Set<Resource> objects = getUriResourceObjects(model);
         Set<RDFNode> resources = model.listObjects().toSet()
             .stream()

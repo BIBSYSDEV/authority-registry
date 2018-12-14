@@ -21,7 +21,7 @@ public class IoUtils {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path.toString());
     }
 
-    public static List<String> resouceAsList(Path path) throws IOException {
+    public static List<String> resourceAsList(Path path) throws IOException {
         try (BufferedReader reader = new BufferedReader(
             new InputStreamReader(resourceAsStream(path), StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.toList());
@@ -29,7 +29,7 @@ public class IoUtils {
     }
 
     public static String resourceAsString(Path path) throws IOException {
-        List<String> lines = resouceAsList(path);
+        List<String> lines = resourceAsList(path);
         StringWriter writer = new StringWriter();
         for (String line : lines) {
             writer.append(line);
