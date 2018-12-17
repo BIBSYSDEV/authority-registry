@@ -317,18 +317,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryDto);
         
         
-        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
-        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
-        sampleEntityDto1.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto1);
-        
-        EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
-        sampleEntityDto2.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto2);
-        
-        EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
-        sampleEntityDto3.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto3);
+        List<EntityDto> sampleEntities = createSampleEntities();
         
         Response response = uploadEntities(registryName, sampleEntities);
         List<EntityDto> readEntityList = response.readEntity(new GenericType<List<EntityDto>>() {});
@@ -351,24 +340,27 @@ public class DatabaseResourceTest extends JerseyTest {
     public void uploadArrayOfThreeEntities_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
         
         String registryName = UUID.randomUUID().toString();
-        
-        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
-        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
-        sampleEntityDto1.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto1);
-        
-        EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
-        sampleEntityDto2.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto2);
-        
-        EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
-        sampleEntityDto3.setId(UUID.randomUUID().toString());
-        sampleEntities.add(sampleEntityDto3);
+        List<EntityDto> sampleEntities = createSampleEntities(); 
         
         Response response = uploadEntities(registryName, sampleEntities);
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
     }
 
+    private List<EntityDto> createSampleEntities() throws JsonProcessingException {
+        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        
+        return sampleEntities;
+    }
+
+    private EntityDto createSampleEntity(String identifier) throws JsonProcessingException {
+        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
+        sampleEntityDto1.setId(identifier);
+        return sampleEntityDto1;
+    }
+    
     private Response uploadEntities(String registryName, List<EntityDto> sampleEntities) {
 
         String path = String.format("/registry/%s/upload", registryName);
