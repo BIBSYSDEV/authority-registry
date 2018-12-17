@@ -362,7 +362,7 @@ public class DatabaseResource {
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
-    @Produces("application/json")
+    @Produces({MediaType.APPLICATION_JSON})
     public Response uploadEntities(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to add to",
