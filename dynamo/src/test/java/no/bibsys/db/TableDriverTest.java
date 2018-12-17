@@ -65,7 +65,7 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTable_TableNotEmpty_ReturnsFalse() throws JsonProcessingException {
+    public void deleteTable_TableNotEmpty_ReturnsTrue() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
 
@@ -73,7 +73,7 @@ public class TableDriverTest extends LocalDynamoTest {
         entityManager.addEntity(tableName, new Entity());
         
         boolean deleteTable = tableDriver.deleteTable(tableName);
-        assertThat(deleteTable, equalTo(false));
+        assertThat(deleteTable, equalTo(true));
     }
 
 
