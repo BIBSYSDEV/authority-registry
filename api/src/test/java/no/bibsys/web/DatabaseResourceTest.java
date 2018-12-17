@@ -340,7 +340,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void replaceApiKey_RegistryNotExisting_ReturnsStatusNOT_FOUND() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        String oldApiKey = "dummy";
+        String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
         
         Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
         
@@ -352,7 +352,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         createRegistry(registryDto);
-        String oldApiKey = "dummy";
+        String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
         
         Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
         
