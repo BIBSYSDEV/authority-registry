@@ -346,6 +346,20 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
     }
 
+    @Test
+    public void getEntity_textHtml_entityAsHtml() throws Exception{
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
+        createEntity(registryName);
+        
+        System.out.println(entity);
+        
+        Response entityAsHtml = getEntityAsHtml(registryName, entity.getId());
+        String html = entityAsHtml.readEntity(String.class);
+        System.out.println(html);
+        assertThat(html.toLowerCase(), containsString("html"));
+    }
+    
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
