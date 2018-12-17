@@ -354,6 +354,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @Produces({"text/html", "application/json"})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",
@@ -361,7 +362,6 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true,
                     description = "Id of entity to get",
                     schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId, @Context Request request) throws JsonProcessingException {
-
         
         EntityDto entity = entityService.getEntity(registryName, entityId);
         

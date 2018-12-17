@@ -35,10 +35,12 @@ dependencies {
 
     compile ("no.bibsys.aws:aws-build-tools:2018.12.01.20.46")
 
+	// Handlebars
+	compile("com.github.jknack:handlebars:4.1.2")
+
     // for testing
     testCompile ("org.hamcrest:hamcrest-junit:2.0.0.0")
     testCompile ("org.mockito:mockito-core:2.23.0")
-
 
 
 
