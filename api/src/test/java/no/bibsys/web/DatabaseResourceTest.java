@@ -4,26 +4,21 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -36,6 +31,10 @@ import no.bibsys.web.model.CreatedRegistryDto;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -297,6 +296,32 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(actual, is(equalTo(updatedLabel)));
 
     }
+    
+    @Test
+    public void uploadArrayOfThreeEntities_RegistryExists_RegistryContainsThreeEntities() throws Exception {
+        
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        
+        
+        List<EntityDto> sampleEntities = createSampleEntities();
+        
+        Response response = uploadEntities(registryName, sampleEntities);
+        List<EntityDto> readEntityList = response.readEntity(new GenericType<List<EntityDto>>() {});
+        AtomicInteger numberOfEntities = new AtomicInteger(0);
+        
+        readEntityList.forEach(entity -> {
+            try {
+                readEntity(registryName, entity.getId());
+                numberOfEntities.set(numberOfEntities.incrementAndGet());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+        assertThat(numberOfEntities.get() , is(equalTo(3)));        
+    }
 
     @Test
     public void replaceApiKey_RegistryExists_ReturnsNewApiKey() throws Exception {
@@ -347,6 +372,39 @@ public class DatabaseResourceTest extends JerseyTest {
                 .put(javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
     }
     
+
+    @Test
+    public void uploadArrayOfThreeEntities_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
+        
+        String registryName = UUID.randomUUID().toString();
+        List<EntityDto> sampleEntities = createSampleEntities(); 
+        
+        Response response = uploadEntities(registryName, sampleEntities);
+        assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
+    }
+
+    private List<EntityDto> createSampleEntities() throws JsonProcessingException {
+        List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
+        
+        return sampleEntities;
+    }
+
+    private EntityDto createSampleEntity(String identifier) throws JsonProcessingException {
+        EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
+        sampleEntityDto1.setId(identifier);
+        return sampleEntityDto1;
+    }
+    
+    private Response uploadEntities(String registryName, List<EntityDto> sampleEntities) {
+
+        String path = String.format("/registry/%s/upload", registryName);
+        return target(path).request(MediaType.APPLICATION_JSON).header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
+                .post(javax.ws.rs.client.Entity.entity(sampleEntities, MediaType.APPLICATION_JSON));
+    }
+
     private Response insertEntryRequest(String registryName, EntityDto entityDto) {
         String path = String.format("/registry/%s/entity", registryName);
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
@@ -401,18 +459,5 @@ public class DatabaseResourceTest extends JerseyTest {
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .put(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
 
-    }
-
-    private Response deleteEntity(String registryName, String entityId) {
-
-        return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
-    }
-
-    private Response entityStatus(String registryName, String entityId) {
-        Response response =
-                target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
-                        .request().get();
-        return response;
     }
 }
