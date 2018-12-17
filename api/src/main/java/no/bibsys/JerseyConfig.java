@@ -21,6 +21,7 @@ import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
 import no.bibsys.web.exception.EntityNotFoundExceptionMapper;
 import no.bibsys.web.exception.ExceptionLogger;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
+import no.bibsys.web.exception.IllegalArgumentExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
@@ -72,6 +73,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryNotEmptyExceptionMapper.class);
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
+        register(IllegalArgumentExceptionMapper.class);
     }
 
 }
