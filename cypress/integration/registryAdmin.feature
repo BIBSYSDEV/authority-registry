@@ -9,10 +9,10 @@ Feature: Registry admin features
     When the registry admin user submits the API key with a request to create a new entity with properly formatted data
     Then the entity is created
  
-#  Scenario: A registry admin user populates a registry
-#    And that the registry admin user has a set of properly schema-formatted data
-#    When the registry admin user submits an API key and a request to bulk upload the data to the entity registry
-#    Then the data is available in the entity registry
+  Scenario: A registry admin user populates a registry
+    And that the registry admin user has a set of properly schema-formatted data
+    When the registry admin user submits an API key and a request to bulk upload the data to the entity registry
+    Then the data is available in the entity registry
 
 #  Scenario: A registry admin adds registry admin API keys to an existing, populated entity registry
 #    When the API admin user adds registry admin API keys to the entity registry

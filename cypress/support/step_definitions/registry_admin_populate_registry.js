@@ -12,27 +12,34 @@ given('that the registry admin user has a set of properly schema-formatted data'
 })
 
 when('the registry admin user submits an API key and a request to bulk upload the data to the entity registry', () => {
-	let bulkUploadUrl = 'https://www.unit.no';
 	cy.get('@bulkUpload').then((bulkUpload) => {
-		cy.get('@registryAdminApiKey').then((apiKey) => {
-			cy.request({
-				url: bulkUploadUrl,
-				header: {
-					'api-key': apiKey
-				},
-				body: bulkUpload
+		cy.get('@registryName').then((registryName) => {
+			let bulkUploadUrl = '/registry/' + registryName + '/upload';
+			cy.get('@apiAdminApiKey').then((apiKey) => {
+				cy.request({
+					url: bulkUploadUrl,
+					method: 'POST',
+					headers: {
+						'api-key': apiKey,
+						'content-type': 'application/json'
+					},
+					body: bulkUpload
+				}).then((response) => {
+					cy.wrap(response.body).as('uploadResponse')
+				})
 			})
 		})
 	})
 })
 
 then('the data is available in the entity registry', () => {
-	// count number of entities
+	// get all added entities one at a time to see if they have been uploaded
 	cy.get('@registryName').then((registryName) => {
-
-		let countEntitiesUrl = '/registry/' + registryName + '/entity';
-		cy.request(countEntitiesUrl).then((response) => {
-			expect(Object.keys(response.body).length).to.equals(10)
+		cy.get('@uploadResponse').then((response) => {
+			response.forEach((entity, index) => {
+				cy.log('id = ' + entity.id)
+				cy.request('/registry/' + registryName + '/entity/' + entity.id)
+			})
 		})
 	})
 })
