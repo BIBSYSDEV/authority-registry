@@ -2,8 +2,8 @@ package no.bibsys.web;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -193,9 +193,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void getEntity_RegistryExists_ReturnsStatusOK() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
 
         EntityDto entity = sampleData.sampleEntityDto();
         Response response = insertEntryRequest(registryName, entity);
@@ -212,9 +210,7 @@ public class DatabaseResourceTest extends JerseyTest {
     
     @Test
     public void getEntity_Twice_RegistryExists_ReturnsStatusNotModified() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
 
         EntityDto entity = sampleData.sampleEntityDto();
         Response response = insertEntryRequest(registryName, entity);
@@ -230,9 +226,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void getRegistryStatus_registryExists_returnsStatusCreated() {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
 
         Response response = registryStatus(registryName);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
@@ -240,9 +234,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMETHOD_NOT_ALLOWED() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
 
         EntityDto entity = sampleData.sampleEntityDto();
         insertEntryRequest(registryName, entity);
@@ -255,9 +247,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Test
     public void putRegistrySchema_RegistryExists_ReturnsStatusOK() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
         
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
@@ -273,9 +263,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void updateEntity_EntityExists_ReturnsUpdatedEntity() throws Exception {
 
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
+        String registryName = createRegistry();
         
         EntityDto entity = sampleData.sampleEntityDto();
         Response writeResponse = insertEntryRequest(registryName, entity);
@@ -335,6 +323,55 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(numberOfEntities.get() , is(equalTo(3)));        
     }
 
+    @Test
+    public void replaceApiKey_RegistryExists_ReturnsNewApiKey() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        Response createRegistryResponse = createRegistry(registryDto);
+        RegistryDto newRegistry = createRegistryResponse.readEntity(RegistryDto.class);
+        String oldApiKey = newRegistry.getApiKey();
+        
+        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+        String newApiKey = newApiKeyResponse.readEntity(String.class);
+        
+        assertThat(newApiKey, is(not(equalTo(oldApiKey))));
+    }
+    
+    @Test
+    public void replaceApiKey_RegistryNotExisting_ReturnsStatusNOT_FOUND() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
+        
+        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+        
+        assertThat(newApiKeyResponse.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
+    }
+    
+    @Test
+    public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBAD_REQUEST() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
+        
+        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+        
+        assertThat(newApiKeyResponse.getStatus(), is(equalTo(Status.BAD_REQUEST.getStatusCode())));
+    }
+
+    private String createRegistry() {
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        return registryName;
+    }
+    
+    private Response replaceApiKey(String registryName, String oldApiKey) {
+        String path = String.format("/registry/%s/apikey", registryName);
+        return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
+                .put(javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
+    }
+    
 
     @Test
     public void uploadArrayOfThreeEntities_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {

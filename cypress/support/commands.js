@@ -87,7 +87,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 			
 			if(createEntity){
 				cy.log('creating test entity')
-				cy.get('@registryAdminApiKey').then(function (registryAdminApiKey) {
+				cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
 					let testDataFile = 'entityTestData.json'
 					cy.createEntity(registryName, registryAdminApiKey, testDataFile)
 				})
