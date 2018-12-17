@@ -323,15 +323,15 @@ public class DatabaseResourceTest extends JerseyTest {
         
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
-        sampleEntityDto1.setId("id1");
+        sampleEntityDto1.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto1);
         
         EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
-        sampleEntityDto2.setId("id2");
+        sampleEntityDto2.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto2);
         
         EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
-        sampleEntityDto3.setId("id3");
+        sampleEntityDto3.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto3);
         
         Response response = uploadEntities(registryName, sampleEntities);
@@ -357,15 +357,15 @@ public class DatabaseResourceTest extends JerseyTest {
         
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         EntityDto sampleEntityDto1 = sampleData.sampleEntityDto();
-        sampleEntityDto1.setId("id1");
+        sampleEntityDto1.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto1);
         
         EntityDto sampleEntityDto2 = sampleData.sampleEntityDto();
-        sampleEntityDto2.setId("id2");
+        sampleEntityDto2.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto2);
         
         EntityDto sampleEntityDto3 = sampleData.sampleEntityDto();
-        sampleEntityDto3.setId("id3");
+        sampleEntityDto3.setId(UUID.randomUUID().toString());
         sampleEntities.add(sampleEntityDto3);
         
         Response response = uploadEntities(registryName, sampleEntities);
@@ -433,18 +433,5 @@ public class DatabaseResourceTest extends JerseyTest {
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .put(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
 
-    }
-
-    private Response deleteEntity(String registryName, String entityId) {
-
-        return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
-    }
-
-    private Response entityStatus(String registryName, String entityId) {
-        Response response =
-                target(String.format("/registry/%s/entity/%s/status", registryName, entityId))
-                        .request().get();
-        return response;
     }
 }
