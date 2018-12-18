@@ -391,8 +391,6 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        System.out.println(entity);
-        
         Response entityAsHtml = getEntityAsHtml(registryName, entity.getId());
         String html = entityAsHtml.readEntity(String.class);
         System.out.println(html);

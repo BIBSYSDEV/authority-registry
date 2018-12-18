@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>{{id}}</title>
+<title>{{entity.id}}</title>
 </head>
 <body>
-<h1>{{id}}</h1>
-<script type="text/javascript">
-let bodyJson = JSON.parse({{{body}}})
-var listDiv = document.getElementById('entity-body');
-var ul = document.createElement('ul');
-listDiv.appendChild(ul);
-bodyJson.forEach((key, value) => {
-  var li = document.createElement('li');
-  var textnode = document.createTextNode(key + ' - ' + value);    
-  li.appendChild(textnode);
-  ul.appendChild(li);                                 
-})
-}
+<h1>{{entity.id}}</h1>
 </script>
-<div id='entity-body'>
-</div>
+<ul>
+{{#each body}}
+<li> {{@key}} - {{this}}
+{{/each}}
+</ul>
 </body>
 </html>
