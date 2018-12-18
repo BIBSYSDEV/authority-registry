@@ -28,6 +28,7 @@ import com.github.jknack.handlebars.Template;
 @Produces(MediaType.TEXT_HTML)
 public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
+    private static final String ID = "id";
     private static final String BODY = "body";
     private static final String UNKNOWN = "unknown";
     private static final String ENTITYTEMPLATE = "entitytemplate";
@@ -55,7 +56,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         });
         
         entityMap.put(BODY, bodyMap);
-        entityMap.put("id", entity.getId());
+        entityMap.put(ID, entity.getId());
         
         System.out.println(objectMapper.writeValueAsString(entityMap));
         

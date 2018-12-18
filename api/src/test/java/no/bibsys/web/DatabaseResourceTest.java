@@ -393,8 +393,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsHtml = getEntityAsHtml(registryName, entity.getId());
         String html = entityAsHtml.readEntity(String.class);
         
-        System.out.println(html);
-        
         assertThat(html.toLowerCase(), containsString("html"));
         assertThat(html.toLowerCase(), containsString("label"));
         assertThat(html.toLowerCase(), containsString("number"));
