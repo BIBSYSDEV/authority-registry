@@ -48,15 +48,17 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         
         ObjectMapper objectMapper = new ObjectMapper();
         
-        Map<String, List<String>> bodyMap = new ConcurrentHashMap<>();
+        Map<String, List<Object>> bodyMap = new ConcurrentHashMap<>();
         JsonNode tree = objectMapper.readTree(entity.getBody());
         tree.fields().forEachRemaining(field -> {
-            List<String> valueList = createValueList(field);
+            List<Object> valueList = createValueList(field);
             bodyMap.put(field.getKey(), valueList);
         });
         
-        entityMap.put(BODY,  bodyMap);
-        entityMap.put(ENTITY, entity);
+        entityMap.put(BODY, bodyMap);
+        entityMap.put("id", entity.getId());
+        
+        System.out.println(objectMapper.writeValueAsString(entityMap));
         
         try(Writer writer = new PrintWriter(entityStream)){
         
@@ -68,18 +70,27 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         }
     }
 
-    private List<String> createValueList(Entry<String, JsonNode> field) {
-        List<String> valueList = new CopyOnWriteArrayList<>();
+    private List<Object> createValueList(Entry<String, JsonNode> field) {
+        List<Object> valueList = new CopyOnWriteArrayList<>();
         if(field.getValue().isArray()) {
             field.getValue().forEach(value -> valueList.add(value.isLong()?Long.toString(value.asLong()):value.asText()));
-        }else if (field.getValue().isLong()){
-            valueList.add(Long.toString(field.getValue().asLong()));
-        }else if (field.getValue().isTextual()){
-            valueList.add(field.getValue().asText());
+        }else if (field.getValue().canConvertToLong()||field.getValue().isTextual()){
+            valueList.add(valueAsString(field));
         }else {
-            valueList.add(UNKNOWN);
+            Map<String, String> objectMap = new ConcurrentHashMap<>();
+            valueList.add(objectMap);
+            field.getValue().fields().forEachRemaining(objectField -> objectMap.put(objectField.getKey(), valueAsString(objectField)));
         }
         return valueList;
     }
 
+    private String valueAsString(Entry<String, JsonNode> field) {
+        String valueString = UNKNOWN;
+        if (field.getValue().canConvertToLong()){
+            valueString = Long.toString(field.getValue().asLong());
+        }else if (field.getValue().isTextual()){
+            valueString = field.getValue().asText();
+        }
+        return valueString;
+    }
 }

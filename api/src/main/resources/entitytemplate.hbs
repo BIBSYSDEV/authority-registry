@@ -7,7 +7,8 @@
 <h2>{{body.prefferedLabel.0.value}} - ({{entity.id}})</h2>
 </script>
 <ul>
-{{#each body as |value key|}}<li data-automation-id="{{key}}"> {{key}} - {{#each value as |output|}}{{output}};{{/each}}</li>
+{{{body}}}
+{{#each body as |value|}}<li data-automation-id="{{@key}}"> {{@key}} - {{#each value as |output|}}{{#if output.lang}}({{output.lang}}) {{output.value}}{{else}}{{output}}{{/if}};{{/each}}</li>
 {{/each}}
 </ul>
 </body>
