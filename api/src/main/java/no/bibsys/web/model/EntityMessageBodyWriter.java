@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -29,6 +28,9 @@ import com.github.jknack.handlebars.Template;
 @Produces(MediaType.TEXT_HTML)
 public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
+    private static final String ENTITY = "entity";
+    private static final String BODY = "body";
+    private static final String UNKNOWN = "unknown";
     private static final String ENTITYTEMPLATE = "entitytemplate";
 
     @Override
@@ -53,8 +55,8 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
             bodyMap.put(field.getKey(), valueList);
         });
         
-        entityMap.put("body",  bodyMap);
-        entityMap.put("entity", entity);
+        entityMap.put(BODY,  bodyMap);
+        entityMap.put(ENTITY, entity);
         
         try(Writer writer = new PrintWriter(entityStream)){
         
@@ -69,11 +71,13 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     private List<String> createValueList(Entry<String, JsonNode> field) {
         List<String> valueList = new CopyOnWriteArrayList<>();
         if(field.getValue().isArray()) {
-            field.getValue().forEach(value -> valueList.add("" + value));
-        }else if (field.getValue().isInt()){
-            valueList.add(Integer.toString(field.getValue().asInt()));
-        }else {
+            field.getValue().forEach(value -> valueList.add(value.isLong()?Long.toString(value.asLong()):value.asText()));
+        }else if (field.getValue().isLong()){
+            valueList.add(Long.toString(field.getValue().asLong()));
+        }else if (field.getValue().isTextual()){
             valueList.add(field.getValue().asText());
+        }else {
+            valueList.add(UNKNOWN);
         }
         return valueList;
     }
