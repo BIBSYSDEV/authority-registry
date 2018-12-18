@@ -28,7 +28,6 @@ import com.github.jknack.handlebars.Template;
 @Produces(MediaType.TEXT_HTML)
 public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
-    private static final String ENTITY = "entity";
     private static final String BODY = "body";
     private static final String UNKNOWN = "unknown";
     private static final String ENTITYTEMPLATE = "entitytemplate";
