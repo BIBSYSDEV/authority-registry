@@ -26,6 +26,13 @@ public class SampleData {
         ObjectNode langString = body.putObject("langString");
         langString.put("lang", "en");
         langString.put("value", "langStringValue");
+        ArrayNode langArray = body.putArray("myLangArray");
+        ObjectNode langArrayString1 = langArray.addObject();
+        langArrayString1.put("lang", "en");
+        langArrayString1.put("value", "langStringValue1");
+        ObjectNode langArrayString2 = langArray.addObject();
+        langArrayString2.put("lang", "no");
+        langArrayString2.put("value", "langStringValue2");
         
         EntityDto entityDto = new EntityDto();
 

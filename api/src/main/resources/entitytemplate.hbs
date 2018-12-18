@@ -8,7 +8,22 @@
 </script>
 <ul>
 {{{body}}}
-{{#each body as |value|}}<li data-automation-id="{{@key}}"> {{@key}} - {{#each value as |output|}}{{#if output.lang}}({{output.lang}}) {{output.value}}{{else}}{{output}}{{/if}};{{/each}}</li>
+{{#each body as |value key|}}<li data-automation-id="{{key}}"> {{key}} -&nbsp;
+	{{~#if value.lang}}
+		{{~#each value as |output|}}{{~output}};{{/each}}
+	{{~else}}
+		{{~#if value.0}}
+			{{~#each value as |element|}}
+				{{~#if element.lang}}
+					{{~#each element as |output|}}{{~output}};{{/each}}
+				{{~else}}
+					{{~element}};
+				{{~/if}}
+			{{~/each}}
+		{{~else}}
+			{{~value}}
+		{{~/if}}
+	{{~/if}}</li>
 {{/each}}
 </ul>
 </body>
