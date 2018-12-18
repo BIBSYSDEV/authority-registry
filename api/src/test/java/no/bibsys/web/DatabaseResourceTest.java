@@ -83,8 +83,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExisting_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        CreatedRegistryDto expected = new CreatedRegistryDto(
-                String.format("A registry with name=%s is being created", registryName));
+        new CreatedRegistryDto(String.format("A registry with name=%s is being created", registryName));
 
         Response response = createRegistry(registryName);
         RegistryDto registry = response.readEntity(RegistryDto.class);
@@ -393,6 +392,9 @@ public class DatabaseResourceTest extends JerseyTest {
         
         Response entityAsHtml = getEntityAsHtml(registryName, entity.getId());
         String html = entityAsHtml.readEntity(String.class);
+        
+        System.out.println(html);
+        
         assertThat(html.toLowerCase(), containsString("html"));
         assertThat(html.toLowerCase(), containsString("label"));
         assertThat(html.toLowerCase(), containsString("number"));

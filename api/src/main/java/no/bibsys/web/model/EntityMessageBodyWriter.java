@@ -6,8 +6,12 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -16,13 +20,16 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
 @Provider
-@Produces("text/html")
+@Produces(MediaType.TEXT_HTML)
 public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
+
+    private static final String ENTITYTEMPLATE = "entitytemplate";
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -38,17 +45,37 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
         
         ObjectMapper objectMapper = new ObjectMapper();
-        entityMap.put("body",  (Map<String, String[]>)objectMapper.readValue(entity.getBody(), Map.class));
+        
+        Map<String, List<String>> bodyMap = new ConcurrentHashMap<>();
+        JsonNode tree = objectMapper.readTree(entity.getBody());
+        tree.fields().forEachRemaining(field -> {
+            List<String> valueList = createValueList(field);
+            bodyMap.put(field.getKey(), valueList);
+        });
+        
+        entityMap.put("body",  bodyMap);
         entityMap.put("entity", entity);
         
         try(Writer writer = new PrintWriter(entityStream)){
         
             Handlebars handlebars = new Handlebars();
-            Template template = handlebars.compile("entitytemplate");
+            Template template = handlebars.compile(ENTITYTEMPLATE);
             writer.write(template.apply(entityMap));
             
             writer.flush();
         }
+    }
+
+    private List<String> createValueList(Entry<String, JsonNode> field) {
+        List<String> valueList = new CopyOnWriteArrayList<>();
+        if(field.getValue().isArray()) {
+            field.getValue().forEach(value -> valueList.add("" + value));
+        }else if (field.getValue().isInt()){
+            valueList.add(Integer.toString(field.getValue().asInt()));
+        }else {
+            valueList.add(field.getValue().asText());
+        }
+        return valueList;
     }
 
 }
