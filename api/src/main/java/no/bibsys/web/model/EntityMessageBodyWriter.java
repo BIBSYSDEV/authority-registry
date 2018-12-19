@@ -33,7 +33,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     private static final String LANG = "lang";
     private static final String LANG_NO = "no";
     private static final String LANG_EN = "en";
-    private static final String PREFFERED_LABEL = "prefferedLabel";
+    private static final String PREFERRED_LABEL = "preferredLabel";
     private static final String ID = "id";
     private static final String BODY = "body";
     private static final String ENTITYTEMPLATE = "entitytemplate";
@@ -57,7 +57,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
-        List<?> prefferedLabel = (List<?>)bodyMap.get(PREFFERED_LABEL);
+        List<?> prefferedLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
         String label = findTitle(prefferedLabel);
         entityMap.put(LABEL, label);
 

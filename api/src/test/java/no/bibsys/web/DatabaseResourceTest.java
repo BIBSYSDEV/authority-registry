@@ -396,6 +396,24 @@ public class DatabaseResourceTest extends JerseyTest {
         System.out.println(html);
         
         assertThat(html.toLowerCase(), containsString("html"));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"label\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"number\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"myarray\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"langstring\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"mylangarray\""));
+    }
+    
+    @Test
+    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception{
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
+        
+        Response entityAsHtml = getRegistryAsHtml(registryName);
+        String html = entityAsHtml.readEntity(String.class);
+        
+        System.out.println(html);
+        
+        assertThat(html.toLowerCase(), containsString("html"));
         assertThat(html.toLowerCase(), containsString("label"));
         assertThat(html.toLowerCase(), containsString("number"));
         assertThat(html.toLowerCase(), containsString("myarray"));
@@ -416,6 +434,11 @@ public class DatabaseResourceTest extends JerseyTest {
         return sampleEntityDto;
     }
     
+    private Response getRegistryAsHtml(String registryName) {
+        return target(String.format("/registry/%s", registryName)).request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
+    }
+
     private Response getEntityAsHtml(String registryName, String id) throws Exception {
         return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
