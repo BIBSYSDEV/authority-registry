@@ -24,6 +24,8 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 
 then('anonymous user can view the data in the given format', () => {
 	cy.get('@htmlResponse').then((response) => {
-		assert.contains(response.body, "html-kode");
+		expect(response.body).to.have.string("<html>");
+		expect(response.body).to.have.string("<body>");
+		expect(response.body).to.have.string("preferredLabelValue");
 	})
 })

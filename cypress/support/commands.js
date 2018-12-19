@@ -120,11 +120,12 @@ function createEntity(registryName, apiKey, dataFile) {
 
 function deleteRegistry(registryName, apiKey){
 	cy.log('deleting registry...')
-	
+
 	cy.log('api-key = ' + apiKey)
-	let emptyUrl = '/registry/' + registryName + '/empty'
+
+	let url = '/registry/' + registryName
 	cy.request({
-		url: emptyUrl,
+		url: url,
 		method: 'DELETE',
 		headers: {
 			'api-key': apiKey,
@@ -132,19 +133,6 @@ function deleteRegistry(registryName, apiKey){
 		},
 		failOnStatusCode: false
 	}).then(function (response) {
-		cy.log('empty registry status: ' + response.status)
-
-		let url = '/registry/' + registryName
-		cy.request({
-			url: url,
-			method: 'DELETE',
-			headers: {
-				'api-key': apiKey,
-				'content-type': 'application/json'
-			},
-			failOnStatusCode: false
-		}).then(function (response) {
-			cy.log('delete registry status: ' + response.status)
-		})
+		cy.log('delete registry status: ' + response.status)
 	})
 }
