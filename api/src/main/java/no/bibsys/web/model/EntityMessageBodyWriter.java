@@ -28,6 +28,12 @@ import com.google.gson.Gson;
 @Produces(MediaType.TEXT_HTML)
 public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
+    private static final String NO_LABEL = "(No label)";
+    private static final String VALUE = "value";
+    private static final String LANG = "lang";
+    private static final String LANG_NO = "no";
+    private static final String LANG_EN = "en";
+    private static final String PREFFERED_LABEL = "prefferedLabel";
     private static final String ID = "id";
     private static final String BODY = "body";
     private static final String ENTITYTEMPLATE = "entitytemplate";
@@ -51,7 +57,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
-        List<?> prefferedLabel = (List<?>)bodyMap.get("prefferedLabel");
+        List<?> prefferedLabel = (List<?>)bodyMap.get(PREFFERED_LABEL);
         String label = findTitle(prefferedLabel);
         entityMap.put(LABEL, label);
 
@@ -66,18 +72,19 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     }
 
     private String findTitle(List<?> prefferedLabel) {
-        String label = "(No label)";
+        String label = NO_LABEL;
         if(!Objects.isNull(prefferedLabel)) {
+            @SuppressWarnings("unchecked")
             Map<String, String> titleMap = prefferedLabel.stream().filter(labelObject -> 
-            ((Map<String, String>)labelObject).get("lang").equals("en")||
-            ((Map<String, String>)labelObject).get("lang").equals("no"))
+            ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
+            ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
             .collect(Collectors.toMap(
-                    labelObject -> ((Map<String, String>)labelObject).get("lang"), 
-                    labelObject -> ((Map<String,String>)labelObject).get("value")));
-            if(!Objects.isNull(titleMap.get("no"))) {
-                label = titleMap.get("no");
-            } else if(!Objects.isNull(titleMap.get("en"))) {
-                label = titleMap.get("en");
+                    labelObject -> ((Map<String, String>)labelObject).get(LANG), 
+                    labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
+            if(!Objects.isNull(titleMap.get(LANG_NO))) {
+                label = titleMap.get(LANG_NO);
+            } else if(!Objects.isNull(titleMap.get(LANG_EN))) {
+                label = titleMap.get(LANG_EN);
             }
         }
         return label;
