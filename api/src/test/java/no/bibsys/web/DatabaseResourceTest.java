@@ -480,7 +480,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private Response readEntity(String registryName, String entityId) throws Exception {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.APPLICATION_JSON).get();
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
     private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
