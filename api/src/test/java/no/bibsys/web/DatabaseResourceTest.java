@@ -284,7 +284,7 @@ public class DatabaseResourceTest extends JerseyTest {
                 updatedEntity);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readEntityResponse = readEntity(registryName, writeEntity.getId());
+        Response readEntityResponse = readEntity(registryName, writeEntity.getId(), MediaType.APPLICATION_JSON);
         
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
         String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
@@ -475,6 +475,11 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
+    private Response readEntity(String registryName, String entityId, String mediaType) throws Exception {
+        return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(mediaType).get();
+    }
+    
     private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
                 .header("If-None-Match", "\"" + entityTag.getValue() + "\"")
