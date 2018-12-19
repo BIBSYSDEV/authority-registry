@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>{{body.prefferedLabel.0.value}}</title>
+<title>{{label}}</title>
 </head>
 <body>
-<h2>{{body.prefferedLabel.0.value}} - ({{entity.id}})</h2>
+<h2>{{label}} - ({{id}})</h2>
 </script>
 <ul>
-{{{body}}}
 {{#each body as |value key|}}<li data-automation-id="{{key}}"> {{key}} -&nbsp;
 	{{~#if value.lang}}
 		{{~#each value as |output|}}{{~output}};{{/each}}

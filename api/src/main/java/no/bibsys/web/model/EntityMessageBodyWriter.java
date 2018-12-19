@@ -7,8 +7,11 @@ import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -28,6 +31,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     private static final String ID = "id";
     private static final String BODY = "body";
     private static final String ENTITYTEMPLATE = "entitytemplate";
+    private static final String LABEL = "label";
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -44,8 +48,12 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
         Gson gson = new Gson();
         
-        entityMap.put(BODY, gson.fromJson(entity.getBody(), LinkedHashMap.class));
+        LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
+        entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
+        List<?> prefferedLabel = (List<?>)bodyMap.get("prefferedLabel");
+        String label = findTitle(prefferedLabel);
+        entityMap.put(LABEL, label);
 
         try(Writer writer = new PrintWriter(entityStream)){
 
@@ -55,5 +63,23 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
             writer.flush();
         }
+    }
+
+    private String findTitle(List<?> prefferedLabel) {
+        String label = "(No label)";
+        if(!Objects.isNull(prefferedLabel)) {
+            Map<String, String> titleMap = prefferedLabel.stream().filter(labelObject -> 
+            ((Map<String, String>)labelObject).get("lang").equals("en")||
+            ((Map<String, String>)labelObject).get("lang").equals("no"))
+            .collect(Collectors.toMap(
+                    labelObject -> ((Map<String, String>)labelObject).get("lang"), 
+                    labelObject -> ((Map<String,String>)labelObject).get("value")));
+            if(!Objects.isNull(titleMap.get("no"))) {
+                label = titleMap.get("no");
+            } else if(!Objects.isNull(titleMap.get("en"))) {
+                label = titleMap.get("en");
+            }
+        }
+        return label;
     }
 }
