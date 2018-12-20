@@ -8,7 +8,7 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 	cy.log('-- anonymous_user_view_entity_HTML.js --')
 	cy.get('@registryName').then((registryName) => {
 		cy.get('@entityId').then((entityId) => {
-			let getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
+			const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
 		
 			cy.request({
 				url: getEntityUrl,

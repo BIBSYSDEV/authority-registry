@@ -23,11 +23,9 @@ dependencies {
     compile("org.glassfish.jersey.inject:jersey-hk2:2.27") {
         exclude group: 'javax.inject'
     }
-
 	compile ('com.google.code.gson:gson:2.8.5')
 
-    testCompile("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
-
+	// swagger
     compile("io.swagger.core.v3:swagger-jaxrs2:2.0.5")
     compile("io.swagger.core.v3:swagger-jaxrs2-servlet-initializer:2.0.5")
 
@@ -41,11 +39,9 @@ dependencies {
 	compile("com.github.jknack:handlebars:4.1.2")
 
     // for testing
+    testCompile("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
     testCompile ("org.hamcrest:hamcrest-junit:2.0.0.0")
     testCompile ("org.mockito:mockito-core:2.23.0")
-
-
-
 }
 
 

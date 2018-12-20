@@ -36,7 +36,7 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     private static final String PREFERRED_LABEL = "preferredLabel";
     private static final String ID = "id";
     private static final String BODY = "body";
-    private static final String ENTITYTEMPLATE = "entitytemplate";
+    private static final String ENTITY_TEMPLATE = "entitytemplate";
     private static final String LABEL = "label";
 
     @Override
@@ -57,33 +57,33 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
         LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
-        List<?> prefferedLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
-        String label = findTitle(prefferedLabel);
+        List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
+        String label = findTitle(preferredLabel);
         entityMap.put(LABEL, label);
 
         try(Writer writer = new PrintWriter(entityStream)){
 
             Handlebars handlebars = new Handlebars();
-            Template template = handlebars.compile(ENTITYTEMPLATE);
+            Template template = handlebars.compile(ENTITY_TEMPLATE);
             writer.write(template.apply(entityMap));
 
             writer.flush();
         }
     }
 
-    private String findTitle(List<?> prefferedLabel) {
+    private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
-        if(!Objects.isNull(prefferedLabel)) {
+        if(Objects.nonNull(preferredLabel)) {
             @SuppressWarnings("unchecked")
-            Map<String, String> titleMap = prefferedLabel.stream().filter(labelObject -> 
+            Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
             ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
             ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
             .collect(Collectors.toMap(
                     labelObject -> ((Map<String, String>)labelObject).get(LANG), 
                     labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
-            if(!Objects.isNull(titleMap.get(LANG_NO))) {
+            if(Objects.nonNull(titleMap.get(LANG_NO))) {
                 label = titleMap.get(LANG_NO);
-            } else if(!Objects.isNull(titleMap.get(LANG_EN))) {
+            } else if(Objects.nonNull(titleMap.get(LANG_EN))) {
                 label = titleMap.get(LANG_EN);
             }
         }
