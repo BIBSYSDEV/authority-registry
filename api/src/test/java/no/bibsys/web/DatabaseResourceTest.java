@@ -383,6 +383,15 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
     }
 
+    @Test
+    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception{
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
+        
+        Response entityAsHtml = getRegistryAsHtml(registryName);
+        System.out.println(entityAsHtml);
+    }
+    
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
@@ -424,6 +433,11 @@ public class DatabaseResourceTest extends JerseyTest {
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
                 .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
         return response;
+    }
+
+    private Response getRegistryAsHtml(String registryName) throws Exception {
+        return target(String.format("/registry/%s", registryName)).request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
     }
 
     private Response registryStatus(String registryName) {
