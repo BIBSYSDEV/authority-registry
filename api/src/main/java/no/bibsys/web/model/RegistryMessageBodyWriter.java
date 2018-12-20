@@ -32,27 +32,29 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
-        return type == EntityDto.class;
+        return type == RegistryDto.class;
     }
 
     @Override
-    public void writeTo(RegistryDto entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+    public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
                     throws IOException, WebApplicationException {
 
-        Map<String, Object> entityMap = new ConcurrentHashMap<>();
+        Map<String, Object> registryMap = new ConcurrentHashMap<>();
 
         Gson gson = new Gson();
         
-        LinkedHashMap<?,?> metadataMap = gson.fromJson(entity.getMetadata(), LinkedHashMap.class);
-        entityMap.put(METADATA, metadataMap);
-        entityMap.put(ID, entity.getId());
+        System.out.println(registry);
+        
+        LinkedHashMap<?,?> metadataMap = gson.fromJson(registry.getMetadata(), LinkedHashMap.class);
+        registryMap.put(METADATA, metadataMap);
+        registryMap.put(ID, registry.getId());
 
         try(Writer writer = new PrintWriter(entityStream)){
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile(REGISTRYTEMPLATE);
-            writer.write(template.apply(entityMap));
+            writer.write(template.apply(registryMap));
 
             writer.flush();
         }

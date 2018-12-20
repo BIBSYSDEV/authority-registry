@@ -3,6 +3,7 @@ package no.bibsys.web;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
@@ -225,7 +226,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getRegistryStatus_registryExists_returnsStatusCreated() {
+    public void getRegistryStatus_registryExists_returnsStatusCreated() throws Exception {
         String registryName = createRegistry();
 
         Response response = registryStatus(registryName);
@@ -359,7 +360,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(newApiKeyResponse.getStatus(), is(equalTo(Status.BAD_REQUEST.getStatusCode())));
     }
 
-    private String createRegistry() {
+    private String createRegistry() throws Exception{
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         createRegistry(registryDto);
@@ -389,7 +390,13 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName);
         
         Response entityAsHtml = getRegistryAsHtml(registryName);
-        System.out.println(entityAsHtml);
+        String html = entityAsHtml.readEntity(String.class);
+        
+        System.out.println(html);
+        
+        assertThat(html, containsString("<html>"));
+        assertThat(html, containsString("<body>"));
+        assertThat(html, containsString("<li data-automation-id=\"Publisher\">"));
     }
     
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
