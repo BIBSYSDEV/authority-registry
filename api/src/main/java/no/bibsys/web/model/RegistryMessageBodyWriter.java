@@ -44,8 +44,6 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
 
         Gson gson = new Gson();
         
-        System.out.println(registry);
-        
         LinkedHashMap<?,?> metadataMap = gson.fromJson(registry.getMetadata(), LinkedHashMap.class);
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
