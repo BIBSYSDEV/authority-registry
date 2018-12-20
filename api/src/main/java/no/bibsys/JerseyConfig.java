@@ -25,6 +25,7 @@ import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
+import no.bibsys.web.model.EntityMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -57,7 +58,9 @@ public class JerseyConfig extends ResourceConfig {
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
-        register(AcceptHeaderOpenApiResource.class);    
+        register(AcceptHeaderOpenApiResource.class);
+        
+        register(EntityMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

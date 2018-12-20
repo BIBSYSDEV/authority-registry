@@ -28,10 +28,10 @@ Feature: Anonymous user features
 #      | application/rdf         |
 #    Then anonymous user can view the data in the given serialization
 
-#  Scenario: An anonymous user views an entity as HTML
-#    And that there is an entity in the registry
-#    When the anonymous user requests the entity specifying an Accept header with value text/html
-#    Then anonymous user can view the data in the given format
+  Scenario: An anonymous user views an entity as HTML
+    And that there is an entity in the registry
+    When the anonymous user requests the entity specifying an Accept header with value text/html
+    Then anonymous user can view the data in the given format
 
 #  Scenario: An anonymous user views an entity specifying a specific MARC format
 #    And that there is an entity in the registry

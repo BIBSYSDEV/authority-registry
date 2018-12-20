@@ -8,11 +8,11 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 	cy.log('-- anonymous_user_view_entity_HTML.js --')
 	cy.get('@registryName').then((registryName) => {
 		cy.get('@entityId').then((entityId) => {
-			let getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
+			const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
 		
 			cy.request({
 				url: getEntityUrl,
-				header: {
+				headers: {
 					Accept: 'text/html'
 				}
 			}).then((response) => {
@@ -24,6 +24,8 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 
 then('anonymous user can view the data in the given format', () => {
 	cy.get('@htmlResponse').then((response) => {
-		assert.contains(response.body, "html-kode");
+		expect(response.body).to.have.string('<html>')
+		expect(response.body).to.have.string('<body>')
+		expect(response.body).to.have.string('<li data-automation-id="preferredLabel">')
 	})
 })

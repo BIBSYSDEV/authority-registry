@@ -24,10 +24,11 @@ Feature: API admin features
     When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
     Then the entity registry is updated
 
-  Scenario: An API admin user attempts to delete an existing, populated entity registry
-    And that there is an existing, populated entity registry with a schema
-    When the API admin user uses the API key and submits a request to delete the entity registry
-    Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
+# need to solve an async way to empty registry first 
+#  Scenario: An API admin user attempts to delete an existing, populated entity registry
+#    And that there is an existing, populated entity registry with a schema
+#    When the API admin user uses the API key and submits a request to delete the entity registry
+#    Then the API admin user receives information that they cannot delete the entity registry until the populated data is deleted
 
   Scenario: An API admin user attempts to update the validation schema of an existing, populated entity registry
     And that there is an existing, populated entity registry with a schema
