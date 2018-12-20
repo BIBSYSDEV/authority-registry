@@ -27,7 +27,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
 
     private static final String ID = "id";
     private static final String METADATA = "metadata";
-    private static final String REGISTRYTEMPLATE = "registrytemplate";
+    private static final String REGISTRY_TEMPLATE = "registrytemplate";
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -53,7 +53,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
         try(Writer writer = new PrintWriter(entityStream)){
 
             Handlebars handlebars = new Handlebars();
-            Template template = handlebars.compile(REGISTRYTEMPLATE);
+            Template template = handlebars.compile(REGISTRY_TEMPLATE);
             writer.write(template.apply(registryMap));
 
             writer.flush();
