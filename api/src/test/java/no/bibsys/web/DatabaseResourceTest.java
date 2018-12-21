@@ -176,7 +176,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getRegistryMetadata_RegistryExists_ReturnsMetadata() throws Exception {
+    public void getRegistryMetadata_RegistryExists_ReturnsStatusOk() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
@@ -184,11 +184,9 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryDto);
 
         Response response = target(String.format("/registry/%s", registryName)).request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
-
-        RegistryDto registry = response.readEntity(RegistryDto.class);
-
-        assertThat(registryDto, is(equalTo(registry)));
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
+        
+        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
     @Test
@@ -411,7 +409,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsHtml = getRegistryAsHtml(registryName);
         String html = entityAsHtml.readEntity(String.class);
         
-        System.out.println(html);
         assertThat(html, containsString("html"));
         assertThat(html, containsString("<title>Registry name value</title>"));
         assertThat(html, containsString("data-automation-id=\"Registry_name\""));
