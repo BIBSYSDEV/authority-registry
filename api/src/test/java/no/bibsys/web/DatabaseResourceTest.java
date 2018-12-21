@@ -409,6 +409,13 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName);
         
         Response entityAsHtml = getRegistryAsHtml(registryName);
+        String html = entityAsHtml.readEntity(String.class);
+        
+        System.out.println(html);
+        assertThat(html, containsString("html"));
+        assertThat(html, containsString("<title>Registry name value</title>"));
+        assertThat(html, containsString("data-automation-id=\"Registry_name\""));
+        assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
     
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
@@ -426,11 +433,6 @@ public class DatabaseResourceTest extends JerseyTest {
         return sampleEntityDto;
     }
     
-    private Response getRegistryAsHtml(String registryName) {
-        return target(String.format("/registry/%s", registryName)).request()
-                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
-    }
-
     private Response getEntityAsHtml(String registryName, String id) throws Exception {
         return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
