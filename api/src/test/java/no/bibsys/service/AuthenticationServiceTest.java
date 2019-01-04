@@ -1,23 +1,24 @@
 package no.bibsys.service;
 
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import com.amazonaws.services.dynamodbv2.model.TableDescription;
+import no.bibsys.testtemplates.LocalTestApi;
+import no.bibsys.web.security.Roles;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.amazonaws.services.dynamodbv2.model.TableDescription;
-import no.bibsys.LocalDynamoDBHelper;
-import no.bibsys.MockEnvironment;
-import no.bibsys.web.security.Roles;
 
-public class AuthenticationServiceTest {
+public class AuthenticationServiceTest extends LocalTestApi {
 
-    private AuthenticationService authenticationService;
     private DynamoDB dynamoDB;
+
+    public AuthenticationServiceTest() {
+        super();
+    }
 
     @BeforeClass
     public static void init() {
@@ -25,9 +26,8 @@ public class AuthenticationServiceTest {
     }
 
     @Before
-    public void setUp() throws Exception {
-        AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
-        authenticationService = new AuthenticationService(client, new MockEnvironment());
+    public void setUp() {
+        super.setUp();
         dynamoDB = new DynamoDB(client);
     }
 
