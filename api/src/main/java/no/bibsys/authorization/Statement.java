@@ -15,10 +15,8 @@ public class Statement {
 
     public static final String ALLOW_EFFECT = "Allow";
     public static final String DENY_EFFECT = "Deny";
-    public static final String ALL_RESOURCES = "*";
     public static final String ACTION_API_INVOKE = "execute-api:Invoke";
     public static final Map<String, Map<String, Object>> EMPTY_CONDITIONS = Collections.emptyMap();
-
     private static final ObjectMapper jsonMapper = JsonUtils.newJsonParser();
 
     @JsonProperty("Effect")
@@ -34,21 +32,16 @@ public class Statement {
     private Object resourceList;
 
 
-    public Statement(String effect, String action, String resourceList,
+    public Statement(String effect, List<String> actions, Resource resource,
         Map<String, Map<String, Object>> condition) {
-        this(effect, Collections.singletonList(action), null, condition);
-        this.resourceList = resourceList;
+        this.effect = effect;
+        this.action = actions;
+        this.condition = condition;
+        this.resourceList = resource;
 
     }
 
-
-    public Statement(String effect, String action, List<String> resourceList,
-        Map<String, Map<String, Object>> condition) {
-        this(effect, Collections.singletonList(action), resourceList, condition);
-
-    }
-
-    public Statement(String effect, List<String> action, List<String> resourceList,
+    public Statement(String effect, List<String> action, List<Resource> resourceList,
         Map<String, Map<String, Object>> condition) {
         this.effect = effect;
         this.action = action;
@@ -57,7 +50,8 @@ public class Statement {
     }
 
     public static Statement getEmptyInvokeStatement(String effect) {
-        return new Statement(effect, ACTION_API_INVOKE, new ArrayList<>(), new HashMap<>());
+        return new Statement(effect, Collections.singletonList(ACTION_API_INVOKE),
+            new ArrayList<>(), new HashMap<>());
     }
 
     public String getEffect() {
@@ -76,20 +70,22 @@ public class Statement {
         this.action = action;
     }
 
+    public Map<String, Map<String, Object>> getCondition() {
+        return condition;
+    }
+
 
     private boolean isResourceListValid() {
-        if (resourceList instanceof String &&
-            ((String) resourceList).equals(ALL_RESOURCES)
-        ) {
+        if (Resource.ANY_RESOURCE.equals(resourceList)) {
             return true;
         } else if (resourceList instanceof List
             && !(((List) resourceList).isEmpty())) {
             Object item = ((List) resourceList).get(0);
-            if (item instanceof String) {
-                return true;
-            }
+            return item instanceof Resource;
+        } else {
+            throw new IllegalArgumentException("Statement resources should be either "
+                + "Resource.ANY_RESOURCE or a  List<Resource> instance");
         }
-        return false;
     }
 
 
@@ -101,9 +97,7 @@ public class Statement {
         }
     }
 
-    public Map<String, Map<String, Object>> getCondition() {
-        return condition;
-    }
+
 
     public void addCondition(String operator, String key, Object value) {
         condition.put(operator, Collections.singletonMap(key, value));
@@ -112,5 +106,6 @@ public class Statement {
     public String toJson() throws JsonProcessingException {
         return jsonMapper.writeValueAsString(this);
     }
+
 
 }

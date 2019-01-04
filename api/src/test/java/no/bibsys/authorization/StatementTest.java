@@ -20,13 +20,19 @@ public class StatementTest {
     private static final String RESOURCE = "Resource";
     private static final String EFFECT = "Effect";
     private static final String ACTION = "Action";
+    public static final String REGION = "eu-west-1";
+    public static final String AWS_ACCOUNT_ID = "ACCOUNT_ID";
+    public static final String REST_API_ID = "REST_API_ID";
+    public static final String STAGE = "test";
     private final ObjectMapper jsonMapper = JsonUtils.newJsonParser();
 
 
     @Test
     public void constrcutor_effect_action_starResources_nonEmptyJsonString() throws IOException {
-        Statement statement = new Statement(Statement.ALLOW_EFFECT, "service:action",
-            Statement.ALL_RESOURCES, Collections.EMPTY_MAP);
+        Statement statement = new Statement(Statement.ALLOW_EFFECT,
+            Collections.singletonList("service:action"),
+            Resource.ANY_RESOURCE,
+            Collections.emptyMap());
         String json = statement.toJson();
         JsonNode rootNode = jsonMapper.readTree(json);
 
@@ -39,16 +45,20 @@ public class StatementTest {
         assertThat(action.get(0).asText(), is(equalTo("service:action")));
 
         String resource = rootNode.get(RESOURCE).asText();
-        assertThat(resource, is(equalTo(Statement.ALL_RESOURCES)));
+        assertThat(resource, is(equalTo("*")));
     }
 
     @Test
     public void constrcutor_effectActionResourcesList_nonEmptyJsonString() throws IOException {
-        List<String> resourceList = new ArrayList<>();
-        resourceList.add("resource1");
-        resourceList.add("resource2");
+        List<Resource> resourceList = new ArrayList<>();
+        resourceList.add(new Resource(REGION, AWS_ACCOUNT_ID, REST_API_ID, STAGE,
+            HttpMethod.GET, "resource1"));
+        resourceList.add(new Resource(REGION, AWS_ACCOUNT_ID, REST_API_ID, STAGE,
+            HttpMethod.GET, "resource2"));
 
-        Statement statement = new Statement(Statement.ALLOW_EFFECT, "service:action", resourceList
+        Statement statement = new Statement(Statement.ALLOW_EFFECT,
+            Collections.singletonList("service:action"),
+            resourceList
             , Collections.EMPTY_MAP);
         String json = statement.toJson();
 
@@ -57,8 +67,8 @@ public class StatementTest {
         JsonNode resources = rootNode.get(RESOURCE);
 
         assertTrue(resources.isArray());
-        assertThat(resources.get(0).asText(), is(equalTo("resource1")));
-        assertThat(resources.get(1).asText(), is(equalTo("resource2")));
+        assertThat(resources.get(0).asText(), is(equalTo(resourceList.get(0).toString())));
+        assertThat(resources.get(1).asText(), is(equalTo(resourceList.get(1).toString())));
     }
 
 
