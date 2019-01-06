@@ -1,8 +1,11 @@
 package no.bibsys.authorization;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ public class Statement {
     private List<String> action;
 
     @JsonProperty("Condition")
+    @JsonInclude(Include.NON_EMPTY)
     private Map<String, Map<String, Object>> condition;
 
     @JsonProperty("Resource")

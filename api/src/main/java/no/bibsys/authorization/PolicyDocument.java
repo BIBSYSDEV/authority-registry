@@ -1,6 +1,9 @@
 package no.bibsys.authorization;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,19 +16,31 @@ import java.util.List;
  */
 public class PolicyDocument {
 
+    //static final String EXECUTE_API_ARN_FORMAT = "arn:aws:execute-api:%s:%s:%s/%s/%s/%s";
 
-    //arn:aws:execute-api:{regionId}:{accountId}:{appId}/{stage}/{httpVerb}/[{resource}/[child-resources]]
-    static final String EXECUTE_API_ARN_FORMAT = "arn:aws:execute-api:%s:%s:%s/%s/%s/%s";
 
-    String Version = "2012-10-17"; // override if necessary
-    // context metadata
-    private transient String region;
-    private transient String awsAccountId;
-    private transient String restApiId;
-    private transient String stage;
-    private Statement allowStatement;
-    private Statement denyStatement;
+    @JsonProperty("Version")
+    private String version = "2012-10-17"; // override if necessary
+
+
+
+    @JsonProperty
+    private String principalId;
+
+    @JsonProperty("Statement")
     private List<Statement> statements;
+
+    @JsonIgnore
+    private transient String region;
+    @JsonIgnore
+    private transient String awsAccountId;
+    @JsonIgnore
+    private transient String restApiId;
+    @JsonIgnore
+    private transient String stage;
+
+    // context metadata
+
 
     /**
      * Creates a new PolicyDocument with the given context, and initializes two base Statement
@@ -36,16 +51,15 @@ public class PolicyDocument {
      * @param restApiId the RestApi identifier
      * @param stage and the Stage on the RestApi that the Policy will apply to
      */
-    public PolicyDocument(String region, String awsAccountId, String restApiId, String stage) {
+    public PolicyDocument(String principalId, String region, String awsAccountId, String restApiId,
+        String stage) {
+        this.principalId = principalId;
         this.region = region;
         this.awsAccountId = awsAccountId;
         this.restApiId = restApiId;
         this.stage = stage;
-        allowStatement = Statement.getEmptyInvokeStatement("Allow");
-        denyStatement = Statement.getEmptyInvokeStatement("Deny");
         this.statements = new ArrayList<>();
-        statements.add(allowStatement);
-        statements.add(denyStatement);
+
     }
 
     /**
@@ -60,11 +74,22 @@ public class PolicyDocument {
      * @param resourcePath Resource path to allow
      * @return new PolicyDocument that allows the requested method/resourcePath
      */
-    public static PolicyDocument getAllowOnePolicy(String region, String awsAccountId,
+    public static PolicyDocument getAllowOnePolicy(String principalId, String region,
+        String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument(region,
+        PolicyDocument policyDocument = new PolicyDocument(principalId, region,
             awsAccountId, restApiId, stage);
-        policyDocument.allowMethod(method, resourcePath);
+        Resource resource = new Resource(region, awsAccountId, restApiId, stage, method,
+            resourcePath);
+
+        Statement statement = new Statement(Statement.ALLOW_EFFECT,
+            Collections.singletonList(Statement.ACTION_API_INVOKE),
+            resource,
+            Collections.emptyMap()
+        );
+
+        policyDocument.addStatement(statement);
+
         return policyDocument;
 
     }
@@ -83,62 +108,37 @@ public class PolicyDocument {
      */
     public static PolicyDocument getDenyOnePolicy(String region, String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument(region,
+        PolicyDocument policyDocument = new PolicyDocument("lalala", region,
             awsAccountId, restApiId, stage);
-        policyDocument.denyMethod(method, resourcePath);
+
         return policyDocument;
 
     }
 
-    public static PolicyDocument getAllowAllPolicy(String region,
+    public static PolicyDocument getAllowAllPolicy(String principalId, String region,
         String awsAccountId, String restApiId, String stage) {
-        return getAllowOnePolicy(region, awsAccountId, restApiId, stage, HttpMethod.ALL, "*");
+
+        return getAllowOnePolicy(principalId,
+            region,
+            awsAccountId,
+            restApiId,
+            stage,
+            HttpMethod.ALL,
+            Resource.ANY_RESOURCE.toString());
     }
 
     public static PolicyDocument getDenyAllPolicy(String region, String awsAccountId,
         String restApiId, String stage) {
-        return getDenyOnePolicy(region, awsAccountId, restApiId, stage, HttpMethod.ALL, "*");
+        return getDenyOnePolicy(region, awsAccountId, restApiId, stage, HttpMethod.ALL,
+            Resource.ANY_RESOURCE.toString());
     }
 
-    public String getVersion() {
-        return Version;
-    }
-
-    public void setVersion(String version) {
-        Version = version;
-    }
-
-    public Statement[] getStatement() {
-        return statements.toArray(new Statement[statements.size()]);
-    }
-
-    // Static methods
-
-    public void allowMethod(HttpMethod httpMethod, String resourcePath) {
-        addResourceToStatement(allowStatement, httpMethod, resourcePath);
-    }
-
-    public void denyMethod(HttpMethod httpMethod, String resourcePath) {
-        addResourceToStatement(denyStatement, httpMethod, resourcePath);
-    }
 
     public void addStatement(Statement statement) {
         statements.add(statement);
     }
 
-    private void addResourceToStatement(Statement statement, HttpMethod httpMethod,
-        String resourcePath) {
-        // resourcePath must start with '/'
-        // to specify the root resource only, resourcePath should be an empty string
-        if (resourcePath.equals("/")) {
-            resourcePath = "";
-        }
-        String resource =
-            resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
 
-        statement.addResource(String
-            .format(EXECUTE_API_ARN_FORMAT, region, awsAccountId, restApiId, stage,
-                httpMethod.toString(),
-                resource));
-    }
+
+
 }

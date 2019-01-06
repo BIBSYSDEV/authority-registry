@@ -53,8 +53,9 @@ public class AuthorizerHandler implements RequestHandler<Map<String, Object>, Au
             responseContext.put("role", role);
             responseContext.put("registry", registry);
 
+
             return new AuthPolicy(principalId,
-                PolicyDocument.getAllowAllPolicy(authInfo.getRegion(), authInfo.getAwsAccountId(),
+                PolicyDocument.getAllowAllPolicy(principalId,authInfo.getRegion(), authInfo.getAwsAccountId(),
                     authInfo.getRestApiId(), authInfo.getStage()),
                 responseContext);
         } else {
