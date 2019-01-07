@@ -31,15 +31,15 @@ Resources:
           Name: 'AWS::Include'
           Parameters:
             Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
-      Auth:
-        Authorizers:
-          LambdaRequestAuthorizer:
-            FunctionPayloadType: REQUEST
-            FunctionArn: !GetAtt LambdaAuthorizerFunction.Arn
-            #FunctionInvokeRole: arn:aws:iam::123456789012:role/S3Access # OPTIONAL
-            Identity:
-              Headers: # OPTIONAL
-                - api-key
+  #      Auth:
+  #        Authorizers:
+  #          LambdaRequestAuthorizer:
+  #            FunctionPayloadType: REQUEST
+  #            FunctionArn: !GetAtt LambdaAuthorizerFunction.Arn
+  #            #FunctionInvokeRole: arn:aws:iam::123456789012:role/S3Access # OPTIONAL
+  #            Identity:
+  #              Headers: # OPTIONAL
+  #                - api-key
 
 
   LambdaFunction:
