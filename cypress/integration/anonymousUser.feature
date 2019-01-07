@@ -43,7 +43,6 @@ Feature: Anonymous user features
 #    Then anonymous user can view the data in the given MARC format
 
   Scenario: An anonymous user views the metadata for a registry as HTML
-    Given that there is an existing, populated entity registry with a schema
     When an anonymous user dereferences the base URI for the registry specifying mediatype text/html
     Then they see metadata related to the entity registry regarding:
       | Registry name                    |

@@ -24,7 +24,7 @@ when(/an anonymous user dereferences the base URI for the registry specifying me
 	
 	cy.get('@registryName').then((registryName) => {
 		
-		const getEntityMetadataUrl = '/registry/' + registryName;
+		const createRegistryEndpoint = '/registry/' + registryName;
 		cy.request({
 			url: createRegistryEndpoint, 
 			method: 'GET',
