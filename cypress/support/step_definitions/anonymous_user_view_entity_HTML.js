@@ -16,16 +16,24 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 					Accept: 'text/html'
 				}
 			}).then((response) => {
-				cy.wrap(response).as('htmlResponse')
+				cy.server()
+				cy.route('GET', getEntityUrl, response)
 			})
 		})
 	})
 })
 
 then('anonymous user can view the data in the given format', () => {
-	cy.get('@htmlResponse').then((response) => {
-		expect(response.body).to.have.string('<html>')
-		expect(response.body).to.have.string('<body>')
-		expect(response.body).to.have.string('<li data-automation-id="preferredLabel">')
+	cy.get('@registryName').then((registryName) => {
+		cy.get('@entityId').then((entityId) => {
+			const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
+			cy.visit(getEntityUrl)
+			
+			cy.contains('preferredLabelValue')
+//			cy.get('@htmlResponse').then((response) => {
+//			expect(response.body).to.have.string('<html>')
+//			expect(response.body).to.have.string('<body>')
+//			expect(response.body).to.have.string('<li data-automation-id="preferredLabel">')
+		})
 	})
 })

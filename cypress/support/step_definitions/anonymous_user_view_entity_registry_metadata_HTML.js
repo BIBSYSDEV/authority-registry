@@ -24,29 +24,28 @@ when(/an anonymous user dereferences the base URI for the registry specifying me
 	
 	cy.get('@registryName').then((registryName) => {
 		
-		const createRegistryEndpoint = '/registry/' + registryName;
+		const registryEndpoint = '/registry/' + registryName;
 		cy.request({
-			url: createRegistryEndpoint, 
+			url: registryEndpoint, 
 			method: 'GET',
 			headers: {
 				'Accept': 'text/html'
 			}
+		}).then((response) => {
+			cy.server()
+			cy.route('GET', registryEndpoint, response)
 		})
 	})
 
 })
 
 then('they see metadata related to the entity registry regarding:', (dataTable) =>{
-	let attributeArray = dataTable.rawTable;
+	const attributeArray = dataTable.rawTable;
 
 	cy.get('@registryName').then((registryName) => {
 		cy.visit('/registry/' + registryName)
 		
 		cy.contains(registryName)
 		cy.contains('descriptionValue')
-		
-//		expect(response.body).to.have.string('<html>')
-//		expect(response.body).to.have.string('<body>')
-//		expect(response.body).to.have.string('<li data-automation-id="description">')
 	})
 })
