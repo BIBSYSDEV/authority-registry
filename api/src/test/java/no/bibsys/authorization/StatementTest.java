@@ -33,7 +33,7 @@ public class StatementTest {
             Collections.singletonList("service:action"),
             Resource.ANY_RESOURCE,
             Collections.emptyMap());
-        String json = statement.toJson();
+        String json = JsonUtils.newJsonParser().writeValueAsString(statement);
         JsonNode rootNode = jsonMapper.readTree(json);
 
         String effect = rootNode.get(EFFECT).asText();
@@ -60,7 +60,7 @@ public class StatementTest {
             Collections.singletonList("service:action"),
             resourceList
             , Collections.EMPTY_MAP);
-        String json = statement.toJson();
+        String json = JsonUtils.newJsonParser().writeValueAsString(statement);
 
         JsonNode rootNode = jsonMapper.readTree(json);
 

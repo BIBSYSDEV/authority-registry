@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Resource {
 
-    private static final String EXECUTE_API_ARN_FORMAT = "arn:aws:execute-api:{regionId}:{accountId}:{appId}/{stage}/{httpVerb}/{resource}";
+    public static final Character PATH_SEPARATOR_CHAR = '/';
+    private static final String EXECUTE_API_ARN_FORMAT =
+        "arn:aws:execute-api:{regionId}:{accountId}:{appId}" + PATH_SEPARATOR_CHAR
+            + "{stage}/{httpVerb}/{resource}";
     public static Resource ANY_RESOURCE = anyResource();
     private transient String region;
     private transient String awsAccountId;
@@ -12,7 +15,7 @@ public class Resource {
     private transient String stage;
     private transient HttpMethod httpMethod;
     private transient String resourcePath;
-    private transient String resourceString;
+    private transient final String resourceString;
 
 
     public Resource(String region, String awsAccountId, String restApiId, String stage,
@@ -36,6 +39,7 @@ public class Resource {
     }
 
     @JsonValue
+    @Override
     public String toString() {
         return resourceString;
     }
@@ -60,9 +64,9 @@ public class Resource {
         // resourcePath must start with '/'
         // to specify the root resource only, resourcePath should be an empty string
 
-        if (resourcePath.equals("/")) {
+        if (PATH_SEPARATOR_CHAR.toString().equals(resourcePath)) {
             return "";
-        } else if (resourcePath.startsWith("/")) {
+        } else if (resourcePath.charAt(0) == PATH_SEPARATOR_CHAR) {
             return resourcePath.substring(1);
         } else {
             return resourcePath;
@@ -80,6 +84,12 @@ public class Resource {
             return false;
         }
 
+    }
+
+
+    @Override
+    public int hashCode() {
+        return this.resourceString.hashCode();
     }
 
 

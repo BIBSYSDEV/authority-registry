@@ -1,6 +1,5 @@
 package no.bibsys.authorization;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,43 +15,23 @@ import java.util.List;
  */
 public class PolicyDocument {
 
-    //static final String EXECUTE_API_ARN_FORMAT = "arn:aws:execute-api:%s:%s:%s/%s/%s/%s";
-
-
     @JsonProperty("Version")
+    @SuppressWarnings("PMD")
     private final transient String version = "2012-10-17"; // override if necessary
 
 
     @JsonProperty("Statement")
-    private List<Statement> statements;
+    private final transient List<Statement> statements;
 
-    @JsonIgnore
-    private transient String region;
-    @JsonIgnore
-    private transient String awsAccountId;
-    @JsonIgnore
-    private transient String restApiId;
-    @JsonIgnore
-    private transient String stage;
-
-    // context metadata
 
 
     /**
      * Creates a new PolicyDocument with the given context, and initializes two base Statement
      * objects for allowing and denying access to API Gateway methods
      *
-     * @param region the region where the RestApi is configured
-     * @param awsAccountId the AWS Account ID that owns the RestApi
-     * @param restApiId the RestApi identifier
-     * @param stage and the Stage on the RestApi that the Policy will apply to
      */
-    public PolicyDocument(String region, String awsAccountId, String restApiId,
-        String stage) {
-        this.region = region;
-        this.awsAccountId = awsAccountId;
-        this.restApiId = restApiId;
-        this.stage = stage;
+    public PolicyDocument() {
+
         this.statements = new ArrayList<>();
 
     }
@@ -72,8 +51,7 @@ public class PolicyDocument {
     public static PolicyDocument getAllowOnePolicy(String region,
         String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument(region,
-            awsAccountId, restApiId, stage);
+        PolicyDocument policyDocument = new PolicyDocument();
         Resource resource = new Resource(region, awsAccountId, restApiId, stage, method,
             resourcePath);
 
@@ -117,8 +95,7 @@ public class PolicyDocument {
      */
     public static PolicyDocument getDenyOnePolicy(String region, String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument(region,
-            awsAccountId, restApiId, stage);
+        PolicyDocument policyDocument = new PolicyDocument();
 
         Resource resource = new Resource(region, awsAccountId, restApiId, stage, method,
             resourcePath);
