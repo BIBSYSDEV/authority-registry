@@ -37,7 +37,7 @@ public class AuthorizerHandler implements RequestHandler<Map<String, Object>, Au
         @SuppressWarnings("unchecked")
         Map<String, String> headers = (Map<String, String>) input.get("headers");
 
-        Optional<String> apiKeyInHeader = Optional.ofNullable((String) headers.get("api-key"));
+        Optional<String> apiKeyInHeader = Optional.ofNullable(headers.get("api-key"));
 
         if (apiKeyInHeader.isPresent()) {
 
@@ -55,7 +55,7 @@ public class AuthorizerHandler implements RequestHandler<Map<String, Object>, Au
 
 
             return new AuthPolicy(principalId,
-                PolicyDocument.getAllowAllPolicy(principalId,authInfo.getRegion(), authInfo.getAwsAccountId(),
+                PolicyDocument.getAllowAllPolicy(authInfo.getRegion(), authInfo.getAwsAccountId(),
                     authInfo.getRestApiId(), authInfo.getStage()),
                 responseContext);
         } else {
