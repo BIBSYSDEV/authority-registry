@@ -45,6 +45,8 @@ then('they see metadata related to the entity registry regarding:', (dataTable) 
 	cy.get('@registryName').then((registryName) => {
 		cy.visit('/registry/' + registryName)
 		
+		cy.get('li[id=description]')
+		
 		cy.contains(registryName)
 		cy.contains('descriptionValue')
 	})
