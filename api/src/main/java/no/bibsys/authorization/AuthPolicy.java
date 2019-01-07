@@ -10,6 +10,10 @@ package no.bibsys.authorization;
  * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -35,41 +39,30 @@ public class AuthPolicy {
     public static final String RESOURCE = "Resource";
     public static final String NOT_RESOURCE = "NotResource";
     public static final String CONDITION = "Condition";
-    transient PolicyDocument policyDocumentObject;
-    private String principalId;
-    private Map<String, Object> policyDocument;
-    private Map<String, String> context;
 
-    public AuthPolicy(String principalId, PolicyDocument policyDocumentObject,
+
+    @JsonProperty("policyDocument")
+    private transient PolicyDocument policyDocument;
+    @JsonProperty("principalId")
+    private transient String principalId;
+
+    @JsonProperty("context")
+    @JsonInclude(Include.NON_EMPTY)
+    private transient Map<String, String> context;
+
+    public AuthPolicy(String principalId, PolicyDocument policyDocument,
         Map<String, String> context) {
         this.principalId = principalId;
-        this.policyDocumentObject = policyDocumentObject;
+        this.policyDocument = policyDocument;
         this.context = context;
+    }
+
+
+    public AuthPolicy(String principalId, PolicyDocument policyDocument) {
+        this(principalId, policyDocument, Collections.emptyMap());
     }
 
     public AuthPolicy() {
-    }
-
-    public String getPrincipalId() {
-        return principalId;
-    }
-
-    public void setPrincipalId(String principalId) {
-        this.principalId = principalId;
-    }
-
-
-    public void setPolicyDocument(PolicyDocument policyDocumentObject) {
-        this.policyDocumentObject = policyDocumentObject;
-    }
-
-
-    public Map<String, String> getContext() {
-        return context;
-    }
-
-    public void setContext(Map<String, String> context) {
-        this.context = context;
     }
 
 
