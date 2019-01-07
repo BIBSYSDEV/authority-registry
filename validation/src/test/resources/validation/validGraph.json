@@ -1,0 +1,10 @@
+{
+  "@id"     : "http://example.org/a",
+  "@type"   : "http://example.org/ClassA",
+  "name"    : "entityA",
+  "@context": {
+    "name": {
+      "@id": "http://example.org/name"
+    }
+  }
+}
