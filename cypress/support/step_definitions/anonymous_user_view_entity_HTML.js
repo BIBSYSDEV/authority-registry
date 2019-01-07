@@ -28,12 +28,18 @@ then('anonymous user can view the data in the given format', () => {
 		cy.get('@entityId').then((entityId) => {
 			const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
 			cy.visit(getEntityUrl)
-			
-			cy.contains('preferredLabelValue')
-//			cy.get('@htmlResponse').then((response) => {
-//			expect(response.body).to.have.string('<html>')
-//			expect(response.body).to.have.string('<body>')
-//			expect(response.body).to.have.string('<li data-automation-id="preferredLabel">')
+
+			cy.get('li[data-automation-id=name]').contains('nameValue')
+			cy.get('li[data-automation-id=identifier]').contains('identifierValue')
+			cy.get('li[data-automation-id=inScheme]').contains('schemeValue')
+			cy.get('li[data-automation-id=type]').contains('typeValue')
+			cy.get('li[data-automation-id=broader]').contains('broaderValue')
+			cy.get('li[data-automation-id=preferredLabel]').contains('preferredLabelValue')
+			cy.get('li[data-automation-id=alternativeLabel]').contains('alternativeLabelValue')
+			cy.get('li[data-automation-id=narrower]').contains('narrowerValue')
+			cy.get('li[data-automation-id=related]').contains('relatedValue')
+			cy.get('li[data-automation-id=definition]').contains('definitionValue')
+			cy.get('li[data-automation-id=seeAlso]').contains('seeAlsoValue')
 		})
 	})
 })

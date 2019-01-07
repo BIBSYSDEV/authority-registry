@@ -23,18 +23,7 @@ when(/an anonymous user dereferences the base URI for the registry specifying me
 	cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --')
 	
 	cy.get('@registryName').then((registryName) => {
-		
-		const registryEndpoint = '/registry/' + registryName;
-		cy.request({
-			url: registryEndpoint, 
-			method: 'GET',
-			headers: {
-				'Accept': 'text/html'
-			}
-		}).then((response) => {
-			cy.server()
-			cy.route('GET', registryEndpoint, response)
-		})
+		cy.visit('/registry/' + registryName)
 	})
 
 })
@@ -45,9 +34,11 @@ then('they see metadata related to the entity registry regarding:', (dataTable) 
 	cy.get('@registryName').then((registryName) => {
 		cy.visit('/registry/' + registryName)
 		
-		cy.get('li[id=description]')
-		
 		cy.contains(registryName)
-		cy.contains('descriptionValue')
+		
+		cy.get('li[data-automation-id=name]').contains('nameValue')
+		cy.get('li[data-automation-id=registryName]').contains('registryNameValue')
+		cy.get('li[data-automation-id=description]').contains('descriptionValue')
+		
 	})
 })
