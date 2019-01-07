@@ -12,7 +12,12 @@ when('the anonymous user requests the entity', () => {
 		cy.get('@entityId').then((entityId) => {
 			cy.wrap('').as('response')
 			let getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
-			cy.request(getEntityUrl).then((response) => {
+			cy.request({
+				url:getEntityUrl,
+				headers: {
+					Accept: 'application/json'
+				}
+			}).then((response) => {
 				cy.wrap(response).as('response')
 			})
 		})

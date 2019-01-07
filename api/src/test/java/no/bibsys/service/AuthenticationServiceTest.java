@@ -106,7 +106,7 @@ public class AuthenticationServiceTest extends LocalTestApi {
         authenticationService.deleteApiKeyForRegistry(registryName);
 
         apiKeyFromDB = authenticationService.getApiKey(apiKeyKey);
-        Assert.assertNull("API Key should be deleted", apiKeyFromDB);
+        Assert.assertNull("API Key should be deleted", apiKeyFromDB.getKey());
     }
 
 

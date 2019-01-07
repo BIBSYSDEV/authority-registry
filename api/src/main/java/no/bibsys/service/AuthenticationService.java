@@ -2,6 +2,8 @@ package no.bibsys.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -47,7 +49,11 @@ public class AuthenticationService {
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
-        return mapper.load(ApiKey.class, apiKeyInHeader, config);
+        ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
+        if(Objects.isNull(apiKey)) {
+            apiKey = new ApiKey();
+        }
+        return apiKey;
     }
 
     public String getApiKeyTableName() {

@@ -16,6 +16,7 @@ import no.bibsys.service.AuthenticationService;
 public class AuthorizerHandler implements RequestHandler<Map<String, Object>, AuthPolicy> {
 
 
+    public static final String API_KEY_FIELD = "api-key";
     private final transient AuthenticationService authenticationService;
 
     public AuthorizerHandler() {
@@ -37,7 +38,7 @@ public class AuthorizerHandler implements RequestHandler<Map<String, Object>, Au
         @SuppressWarnings("unchecked")
         Map<String, String> headers = (Map<String, String>) input.get("headers");
 
-        Optional<String> apiKeyInHeader = Optional.ofNullable(headers.get("api-key"));
+        Optional<String> apiKeyInHeader = Optional.ofNullable(headers.get(API_KEY_FIELD));
 
         if (apiKeyInHeader.isPresent()) {
 
@@ -52,7 +53,6 @@ public class AuthorizerHandler implements RequestHandler<Map<String, Object>, Au
             Map<String, String> responseContext = new ConcurrentHashMap<>();
             responseContext.put("role", role);
             responseContext.put("registry", registry);
-
 
             return new AuthPolicy(principalId,
                 PolicyDocument.getAllowAllPolicy(authInfo.getRegion(), authInfo.getAwsAccountId(),

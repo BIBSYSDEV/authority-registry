@@ -2,7 +2,10 @@ package no.bibsys.service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
 import javax.ws.rs.core.Response.Status;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -87,5 +90,20 @@ public class RegistryService {
             throw new RegistryNotFoundException(registryName);
         }
 }
+
+    public String replaceApiKey(String registryName, String oldApiKey) {
+        
+        ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
+        if(Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {
+            throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
+        }
+        
+        Registry registry = registryManager.getRegistry(validationSchemaTableName, registryName);
+        ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
+        authenticationService.deleteApiKeyForRegistry(registryName);
+        String savedApiKey = authenticationService.saveApiKey(apiKey);
+
+        return savedApiKey;
+    }
     
 }
