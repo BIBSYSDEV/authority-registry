@@ -2,48 +2,66 @@ package no.bibsys.authorization;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Collections;
 import no.bibsys.aws.tools.JsonUtils;
 import org.junit.Test;
 
-public class PolicyDocumentTest {
+public class PolicyDocumentTest extends AccessPolicyTest {
 
-
-    public static final String REGION = "Region";
-    public static final String AWS_ACCOUNT_ID = "AwsAccountId";
-    public static final String REST_API_ID = "RESTAPIID";
-    public static final String STAGE = "Stage";
-    public static final String PRINCIPAL_ID="principalId";
-
-    @Test
-    public void test() {
-        PolicyDocument policyDocument = new PolicyDocument(PRINCIPAL_ID,
-            REGION,
-            AWS_ACCOUNT_ID,
-            REST_API_ID,
-            STAGE);
-        policyDocument.addStatement(sampleStatement());
-
-
-    }
 
 
 
     @Test
     public void acceptAll_RegionAccountApiIdStage_acceptAllActionsPolicyDocument()
-        throws JsonProcessingException {
-        PolicyDocument policyDocument = PolicyDocument.getAllowAllPolicy(PRINCIPAL_ID,
+        throws IOException {
+        PolicyDocument policyDocument = PolicyDocument.getAllowAllPolicy(
             REGION,
             AWS_ACCOUNT_ID,
-            REST_API_ID,STAGE);
+            REST_API_ID, STAGE);
 
-        String json= JsonUtils.newJsonParser().writeValueAsString(policyDocument);
+        String json = JsonUtils.newJsonParser().writeValueAsString(policyDocument);
+        ObjectMapper jsonParser = JsonUtils.newJsonParser();
+        JsonNode root = jsonParser.readTree(json);
 
-        assertThat(policyDocument,is(not(equalTo(null))));
+        assertTrue(root.has(VERSION_FIELD));
+        assertTrue(root.has(STATEMENT_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(ACTION_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(EFFECT_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(RESOURCE_FIELD));
+
+        assertThat(root.get(STATEMENT_FIELD).get(0).get(EFFECT_FIELD).asText(),
+            is(equalTo(Statement.ALLOW_EFFECT)));
+
+
+    }
+
+
+    @Test
+    public void denyAll_RegionAccountApiIdStage_denyAllActionsPolicyDocument()
+        throws IOException {
+        PolicyDocument policyDocument = PolicyDocument.getDenyAllPolicy(REGION,
+            AWS_ACCOUNT_ID, REST_API_ID, STAGE);
+
+        String json = JsonUtils.newJsonParser().writeValueAsString(policyDocument);
+        ObjectMapper jsonParser = JsonUtils.newJsonParser();
+        JsonNode root = jsonParser.readTree(json);
+
+        assertTrue(root.has(VERSION_FIELD));
+        assertTrue(root.has(STATEMENT_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(ACTION_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(EFFECT_FIELD));
+        assertTrue(root.get(STATEMENT_FIELD).get(0).has(RESOURCE_FIELD));
+
+        assertThat(root.get(STATEMENT_FIELD).get(0).get(EFFECT_FIELD).asText(),
+            is(equalTo(Statement.DENY_EFFECT)));
+
+
 
     }
 

@@ -20,12 +20,8 @@ public class PolicyDocument {
 
 
     @JsonProperty("Version")
-    private String version = "2012-10-17"; // override if necessary
+    private final transient String version = "2012-10-17"; // override if necessary
 
-
-
-    @JsonProperty
-    private String principalId;
 
     @JsonProperty("Statement")
     private List<Statement> statements;
@@ -51,9 +47,8 @@ public class PolicyDocument {
      * @param restApiId the RestApi identifier
      * @param stage and the Stage on the RestApi that the Policy will apply to
      */
-    public PolicyDocument(String principalId, String region, String awsAccountId, String restApiId,
+    public PolicyDocument(String region, String awsAccountId, String restApiId,
         String stage) {
-        this.principalId = principalId;
         this.region = region;
         this.awsAccountId = awsAccountId;
         this.restApiId = restApiId;
@@ -74,10 +69,10 @@ public class PolicyDocument {
      * @param resourcePath Resource path to allow
      * @return new PolicyDocument that allows the requested method/resourcePath
      */
-    public static PolicyDocument getAllowOnePolicy(String principalId, String region,
+    public static PolicyDocument getAllowOnePolicy(String region,
         String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument(principalId, region,
+        PolicyDocument policyDocument = new PolicyDocument(region,
             awsAccountId, restApiId, stage);
         Resource resource = new Resource(region, awsAccountId, restApiId, stage, method,
             resourcePath);
@@ -94,6 +89,20 @@ public class PolicyDocument {
 
     }
 
+
+    public static PolicyDocument getAllowAllPolicy(String region,
+        String awsAccountId, String restApiId, String stage) {
+
+        return getAllowOnePolicy(region,
+            awsAccountId,
+            restApiId,
+            stage,
+            HttpMethod.ALL,
+            Resource.ANY_RESOURCE.toString());
+    }
+
+
+
     /**
      * Generates a new PolicyDocument with a single statement that denies the requested
      * method/resourcePath
@@ -108,23 +117,22 @@ public class PolicyDocument {
      */
     public static PolicyDocument getDenyOnePolicy(String region, String awsAccountId,
         String restApiId, String stage, HttpMethod method, String resourcePath) {
-        PolicyDocument policyDocument = new PolicyDocument("lalala", region,
+        PolicyDocument policyDocument = new PolicyDocument(region,
             awsAccountId, restApiId, stage);
+
+        Resource resource = new Resource(region, awsAccountId, restApiId, stage, method,
+            resourcePath);
+        Statement statement = new Statement(Statement.DENY_EFFECT,
+            Collections.singletonList(Statement.ACTION_API_INVOKE),
+            resource,
+            Collections.emptyMap()
+        );
+
+        policyDocument.addStatement(statement);
+
 
         return policyDocument;
 
-    }
-
-    public static PolicyDocument getAllowAllPolicy(String principalId, String region,
-        String awsAccountId, String restApiId, String stage) {
-
-        return getAllowOnePolicy(principalId,
-            region,
-            awsAccountId,
-            restApiId,
-            stage,
-            HttpMethod.ALL,
-            Resource.ANY_RESOURCE.toString());
     }
 
     public static PolicyDocument getDenyAllPolicy(String region, String awsAccountId,
