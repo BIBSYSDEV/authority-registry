@@ -31,8 +31,6 @@ when(/an anonymous user dereferences the base URI for the registry specifying me
 			headers: {
 				'Accept': 'text/html'
 			}
-		}).then((response) => {
-			cy.wrap(response).as('metadataResponse');
 		})
 	})
 
@@ -41,9 +39,14 @@ when(/an anonymous user dereferences the base URI for the registry specifying me
 then('they see metadata related to the entity registry regarding:', (dataTable) =>{
 	let attributeArray = dataTable.rawTable;
 
-	cy.get('@metadataResponse').then((response) => {
-		expect(response.body).to.have.string('<html>')
-		expect(response.body).to.have.string('<body>')
-		expect(response.body).to.have.string('<li data-automation-id="description">')
+	cy.get('@registryName').then((registryName) => {
+		cy.visit('/registry/' + registryName)
+		
+		cy.contains(registryName)
+		cy.contains('descriptionValue')
+		
+//		expect(response.body).to.have.string('<html>')
+//		expect(response.body).to.have.string('<body>')
+//		expect(response.body).to.have.string('<li data-automation-id="description">')
 	})
 })
