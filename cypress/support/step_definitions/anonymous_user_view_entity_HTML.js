@@ -10,15 +10,7 @@ when(/the anonymous user requests the entity specifying an Accept header with va
 		cy.get('@entityId').then((entityId) => {
 			const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
 		
-			cy.request({
-				url: getEntityUrl,
-				headers: {
-					Accept: 'text/html'
-				}
-			}).then((response) => {
-				cy.server()
-				cy.route('GET', getEntityUrl, response)
-			})
+			cy.visit(getEntityUrl)
 		})
 	})
 })
