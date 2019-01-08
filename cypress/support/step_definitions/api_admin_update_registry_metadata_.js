@@ -18,7 +18,7 @@ when('the API admin user changes the metadata for the entity registry', () => {
 					'api-key': apiKey
 				}
 			}).then((response) => {
-				expect(response.body.metadata.description).to.equals('descriptionValue')
+				expect(response.body).to.have.string('descriptionValue')
 			})
 			
 			let registryUpdateUrl = '/registry/' + registryName;
@@ -51,7 +51,7 @@ then('the metadata for the entity registry is updated', () => {
 					'api-key': apiKey
 				}
 			}).then((response) => {
-				expect(response.body.metadata.description).to.equals('updatedDescriptionValue')
+				expect(response.body).to.have.string('updatedDescriptionValue')
 			})
 		})
 	})
