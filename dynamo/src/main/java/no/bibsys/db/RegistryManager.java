@@ -119,7 +119,11 @@ public class RegistryManager {
                 throw new SchemaTableBeingCreatedException();
             }
         }else {
-            validateRegistryExists(schemaTable);
+            try {
+                validateRegistryExists(schemaTable);
+            }catch(RegistryUnavailableException | RegistryNotFoundException e ) {
+                throw new SchemaTableBeingCreatedException();
+            }
         }
     }
 
