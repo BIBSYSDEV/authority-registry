@@ -75,8 +75,10 @@ public class RegistryDto {
                 && Objects.equals(schema, other.schema);
     }
 
-
-    
-    
+    @Override
+    public String toString() {
+        return "RegistryDto [id=" + id + ", apiKey=" + apiKey + ", path=" + path + ", metadata=" + metadata
+                + ", schema=" + schema + "]";
+    }
     
 }

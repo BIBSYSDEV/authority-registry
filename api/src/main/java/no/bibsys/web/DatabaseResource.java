@@ -131,8 +131,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
-    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
+    @Produces({MediaType.TEXT_HTML})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,

@@ -43,11 +43,20 @@ public class SampleData {
         return entityDto;
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) {
+    public RegistryDto sampleRegistryDto(String registryName) throws JsonProcessingException {
         
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode metadata = mapper.createObjectNode();
+      
+        metadata.put("Registry_name", "Registry name value");
+        metadata.put("Registry_type", "Registry type value");
+        metadata.put("Publisher", "Publisher value");
         
+        registryDto.setMetadata(mapper.writeValueAsString(metadata));
+
         return registryDto;
     }
 

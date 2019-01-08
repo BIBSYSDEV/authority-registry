@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{metadata.Registry_name}}</title>
+	</head>
+	<body>
+
+		<h1>{{metadata.Registry_name}} - ({{id}})</h1>
+
+		<ul>
+			{{~#each metadata as |value key|}}
+			<li data-automation-id="{{key}}">{{key}} - {{value}}</li>{{/each}}
+		</ul>
+
+	</body>
+</html>
