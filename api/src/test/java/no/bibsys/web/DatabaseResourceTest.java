@@ -388,10 +388,8 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        Response entityAsHtml = getEntityAsHtml(registryName, entity.getId());
+        Response entityAsHtml = readEntity(registryName, entity.getId());
         String html = entityAsHtml.readEntity(String.class);
-        
-        System.out.println(html);
         
         assertThat(html.toLowerCase(), containsString("html"));
         assertThat(html.toLowerCase(), containsString("data-automation-id=\"label\""));
@@ -399,6 +397,21 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(html.toLowerCase(), containsString("data-automation-id=\"myarray\""));
         assertThat(html.toLowerCase(), containsString("data-automation-id=\"langstring\""));
         assertThat(html.toLowerCase(), containsString("data-automation-id=\"mylangarray\""));
+    }
+    
+    @Test
+    public void getEntity_applicationJson_entityAsJson() throws Exception{
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsJson = getEntityAsJson(registryName, entity.getId());
+        String json = entityAsJson.readEntity(String.class);
+        
+        ObjectMapper mapper = new ObjectMapper();
+        EntityDto readEntity = mapper.readValue(json, EntityDto.class);
+        
+        assertThat(readEntity.getBody(), containsString(entity.getBody()));
     }
     
     @Test
@@ -433,6 +446,11 @@ public class DatabaseResourceTest extends JerseyTest {
     private Response getEntityAsHtml(String registryName, String id) throws Exception {
         return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
+    }
+    
+    private Response getEntityAsJson(String registryName, String id) throws Exception {
+        return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.APPLICATION_JSON).get();
     }
     
     private Response uploadEntities(String registryName, List<EntityDto> sampleEntities) {
