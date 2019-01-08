@@ -411,9 +411,7 @@ public class DatabaseResourceTest extends JerseyTest {
         ObjectMapper mapper = new ObjectMapper();
         EntityDto readEntity = mapper.readValue(json, EntityDto.class);
         
-        assertThat(readEntity.getBody(), containsString("label"));
-        assertThat(readEntity.getBody(), containsString("number"));
-        assertThat(readEntity.getBody(), containsString("myArray"));
+        assertThat(readEntity.getBody(), containsString(entity.getBody()));
     }
     
     @Test
