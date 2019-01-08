@@ -9,6 +9,7 @@ import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
+import no.bibsys.db.exceptions.SchemaTableBeingCreatedException;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
@@ -76,6 +77,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
+        register(SchemaTableBeingCreatedException.class);
     }
 
 }

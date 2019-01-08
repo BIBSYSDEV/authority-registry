@@ -12,6 +12,7 @@ import no.bibsys.db.RegistryManager;
 import no.bibsys.db.RegistryManager.RegistryStatus;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.exceptions.SchemaTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
@@ -32,7 +33,7 @@ public class RegistryService {
         validationSchemaTableName = environmentReader.readEnv(EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME);
     }
     
-    public RegistryDto createRegistry(RegistryDto registryDto) {
+    public RegistryDto createRegistry(RegistryDto registryDto) throws SchemaTableBeingCreatedException {
         
         Registry registry = registryManager.createRegistry(
                 validationSchemaTableName, RegistryConverter.toRegistry(registryDto)

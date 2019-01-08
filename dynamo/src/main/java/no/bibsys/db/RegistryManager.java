@@ -13,11 +13,14 @@ import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.exceptions.SchemaTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegistryManager {
+
+    private static final String TABLE_CREATED = "CREATED";
 
     public enum RegistryStatus {
         CREATING, UPDATING, DELETING, ACTIVE, NOT_FOUND;
@@ -33,7 +36,7 @@ public class RegistryManager {
 
     }
 
-    public Registry createRegistry(String validationSchemaTableName, Registry registry) {
+    public Registry createRegistry(String validationSchemaTableName, Registry registry) throws SchemaTableBeingCreatedException {
         checkIfSchemaTableExistsOrCreate(validationSchemaTableName);
         checkIfRegistryExistsInSchemaTable(validationSchemaTableName, registry.getId());
         return createRegistryTable(validationSchemaTableName, registry);
@@ -95,7 +98,7 @@ public class RegistryManager {
 
     private void validateSchemaTable(String validationSchemaTableName) {
         if (!tableDriver.tableExists(validationSchemaTableName)) {
-            throw new RegistryNotFoundException(validationSchemaTableName); //TODO: fix exception
+            throw new RegistryNotFoundException(validationSchemaTableName); 
         } 
     }
 
@@ -108,11 +111,15 @@ public class RegistryManager {
         }
     }
 
-    private void checkIfSchemaTableExistsOrCreate(String schemaTable) {
+    private void checkIfSchemaTableExistsOrCreate(String schemaTable) throws SchemaTableBeingCreatedException {
         if (!tableDriver.tableExists(schemaTable)) {
-            logger.info(
-                    "Schema table does not exist, creating new one, schemaTable={}", schemaTable);
+            logger.info("Schema table does not exist, creating new one, schemaTable={}", schemaTable);
             tableDriver.createRegistryMetadataTable(schemaTable);
+            if(!TABLE_CREATED.equals(validateRegistryExists(schemaTable))){
+                throw new SchemaTableBeingCreatedException();
+            }
+        }else {
+            validateRegistryExists(schemaTable);
         }
     }
 
@@ -129,7 +136,7 @@ public class RegistryManager {
     	RegistryStatus status = status(registryName);
     	switch(status) {
         case ACTIVE:
-            return "CREATED";
+            return TABLE_CREATED;
         case CREATING:
         case UPDATING:
             throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));

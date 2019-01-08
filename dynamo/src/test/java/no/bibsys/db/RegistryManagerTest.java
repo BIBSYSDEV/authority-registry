@@ -5,9 +5,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import java.io.IOException;
+
 import org.junit.Test;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -17,7 +17,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
 
     @Test
-    public void createRegistry_RegistryNotExisting_RegistryExists() throws IOException {
+    public void createRegistry_RegistryNotExisting_RegistryExists() throws Exception {
 
         String registryName = "createARegistry";
         boolean existsBeforeCreation = registryManager.registryExists(validationSchemaTableName, registryName);
@@ -31,7 +31,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
     @Test
-    public void updateMetadata_RegistryExisting_MetadataUpdated() throws IOException {
+    public void updateMetadata_RegistryExisting_MetadataUpdated() throws Exception {
 
         String registryName = "addMetadataRegistry";
 
@@ -45,7 +45,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
     @Test
-    public void updateMetadata_NonEmptyRegistryExisting_MetadataUpdated() throws IOException {
+    public void updateMetadata_NonEmptyRegistryExisting_MetadataUpdated() throws Exception {
         
         String registryName = "updateNonEmptyMetadataRegistry";
         
@@ -71,7 +71,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test(expected = RegistryAlreadyExistsException.class)
     public void createRegistry_RegistryAlreadyExists_ThrowsException()
-            throws JsonProcessingException {
+            throws Exception {
 
         String registryName = "tableAlreadyExists";
         boolean existsBeforeCreation = registryManager.registryExists(validationSchemaTableName, registryName);
@@ -87,7 +87,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
     @Test
-    public void emptyRegistry_RegistryExists_RegistryIsEmpty() throws IOException {
+    public void emptyRegistry_RegistryExists_RegistryIsEmpty() throws Exception {
 
         String registryName = "emptyRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
@@ -104,7 +104,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test
     public void createRegistryFromTemplate_RegistryDoesNotExist_RegistryExists()
-            throws IOException, InterruptedException {
+            throws Exception {
         String registryName = "addSchemaToRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
 

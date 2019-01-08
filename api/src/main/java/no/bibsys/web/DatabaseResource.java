@@ -93,7 +93,7 @@ public class DatabaseResource {
             @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
                             implementation = RegistryDto.class))) RegistryDto registryDto)
-            throws JsonProcessingException {
+            throws Exception {
 
         RegistryDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
