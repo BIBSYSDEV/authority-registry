@@ -27,20 +27,20 @@ Resources:
       StageName: !Ref Stage
       # Waiting for open issue to be resolved: https://github.com/awslabs/serverless-application-model/issues/627
       #      Cors: "'amazonaws.com'"
-#      DefinitionBody:
-#        Fn::Transform:
-#          Name: 'AWS::Include'
-#          Parameters:
-#            Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
-      Auth:
-        Authorizers:
-          LambdaRequestAuthorizer:
-          FunctionPayloadType: REQUEST
-          FunctionArn: !GetAtt LambdaAuthorizerFunction.Arn
-          #FunctionInvokeRole: arn:aws:iam::123456789012:role/S3Access # OPTIONAL
-          Identity:
-            Headers: # OPTIONAL
-              - api-key
+      DefinitionBody:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
+            Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
+  #      Auth:
+  #        Authorizers:
+  #          LambdaRequestAuthorizer:
+  #          FunctionPayloadType: REQUEST
+  #          FunctionArn: !GetAtt LambdaAuthorizerFunction.Arn
+  #          #FunctionInvokeRole: arn:aws:iam::123456789012:role/S3Access # OPTIONAL
+  #          Identity:
+  #            Headers: # OPTIONAL
+  #              - api-key
 
 
   LambdaFunction:
