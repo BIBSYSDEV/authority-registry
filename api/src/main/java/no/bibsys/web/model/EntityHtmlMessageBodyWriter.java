@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
-public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
+public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
     private static final String NO_LABEL = "(No label)";
     private static final String VALUE = "value";

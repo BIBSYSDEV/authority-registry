@@ -429,7 +429,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",
