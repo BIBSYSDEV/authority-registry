@@ -116,6 +116,7 @@ public class RegistryManager {
             logger.info("Schema table does not exist, creating new one, schemaTable={}", schemaTable);
             tableDriver.createRegistryMetadataTable(schemaTable);
             if(!TABLE_CREATED.equals(validateRegistryExists(schemaTable))){
+                logger.debug("SchemaTable not finished initializing");
                 throw new SchemaTableBeingCreatedException();
             }
         }else {
