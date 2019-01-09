@@ -3,13 +3,14 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
-import no.bibsys.db.exceptions.SchemaTableBeingCreatedException;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
@@ -26,8 +27,9 @@ import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
-import no.bibsys.web.model.RegistryMessageBodyWriter;
+import no.bibsys.web.exception.SchemaTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
+import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
