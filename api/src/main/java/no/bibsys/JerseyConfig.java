@@ -77,7 +77,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
-        register(SchemaTableBeingCreatedException.class);
+        register(SchemaTableBeingCreatedExceptionMapper.class);
     }
 
 }
