@@ -57,7 +57,7 @@ afterEach(function(){
 })
 
 function waitUntilRegistryIsReady(registryName, count) {
-	let statusUrl = '/registry/' + registryName + '/status'
+	const statusUrl = '/registry/' + registryName + '/status'
 	cy.log('waiting...')
 	cy.log('counter: ' + count)
 
@@ -65,7 +65,7 @@ function waitUntilRegistryIsReady(registryName, count) {
 		url: statusUrl,
 		failOnStatusCode: false
 	}).then(function (response){
-		if(response.status === 303){
+		if(response.status === 303||response.status === 503){
 			const newCount = count + 1;
 			cy.log('newCount: ' + newCount)
 			if(newCount < 5){
