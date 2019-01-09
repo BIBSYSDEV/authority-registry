@@ -20,12 +20,12 @@ public class RegistryManagerTest extends LocalDynamoTest {
     public void createRegistry_RegistryNotExisting_RegistryExists() throws Exception {
 
         String registryName = "createARegistry";
-        boolean existsBeforeCreation = registryManager.registryExists(validationSchemaTableName, registryName);
+        boolean existsBeforeCreation = registryManager.registryExists(registryMetadataTableName, registryName);
 
         Registry registry = sampleData.sampleRegistry(registryName);
 
-        registryManager.createRegistry(validationSchemaTableName, registry);
-        boolean existsAfterCreation = registryManager.registryExists(validationSchemaTableName, registryName);
+        registryManager.createRegistry(registryMetadataTableName, registry);
+        boolean existsAfterCreation = registryManager.registryExists(registryMetadataTableName, registryName);
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
     }
@@ -36,9 +36,9 @@ public class RegistryManagerTest extends LocalDynamoTest {
         String registryName = "addMetadataRegistry";
 
         Registry registry = sampleData.sampleRegistry(registryName);
-        registryManager.createRegistry(validationSchemaTableName, registry);
-        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
-        Registry metadata = registryManager.getRegistry(validationSchemaTableName, registryName);
+        registryManager.createRegistry(registryMetadataTableName, registry);
+        registryManager.updateRegistryMetadata(registryMetadataTableName, registry);
+        Registry metadata = registryManager.getRegistry(registryMetadataTableName, registryName);
 
         assertThat(metadata.getId(), is(equalTo(registryName)));
 
@@ -50,7 +50,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
         String registryName = "updateNonEmptyMetadataRegistry";
         
         Registry registry = sampleData.sampleRegistry(registryName);
-        registryManager.createRegistry(validationSchemaTableName, registry); 
+        registryManager.createRegistry(registryMetadataTableName, registry); 
 
         assertThat(registry.getMetadata().get("label").asText(), is(equalTo("label")));
         
@@ -61,8 +61,8 @@ public class RegistryManagerTest extends LocalDynamoTest {
         
         registry.getMetadata().put("label", updatedLabel);
         
-        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
-        Registry metadata = registryManager.getRegistry(validationSchemaTableName, registryName);
+        registryManager.updateRegistryMetadata(registryMetadataTableName, registry);
+        Registry metadata = registryManager.getRegistry(registryMetadataTableName, registryName);
 
         assertThat(metadata.getId(), is(equalTo(registryName)));
         assertThat(registry.getMetadata().get("label").asText(), is(equalTo(updatedLabel)));
@@ -74,16 +74,16 @@ public class RegistryManagerTest extends LocalDynamoTest {
             throws Exception {
 
         String registryName = "tableAlreadyExists";
-        boolean existsBeforeCreation = registryManager.registryExists(validationSchemaTableName, registryName);
+        boolean existsBeforeCreation = registryManager.registryExists(registryMetadataTableName, registryName);
         assertThat("The table should not exist before creation", existsBeforeCreation,
                 is(equalTo(false)));
         Registry registry = sampleData.sampleRegistry(registryName);
-        registryManager.createRegistry(validationSchemaTableName, registry);
-        boolean existsAfterCreation = registryManager.registryExists(validationSchemaTableName, registryName);
+        registryManager.createRegistry(registryMetadataTableName, registry);
+        boolean existsAfterCreation = registryManager.registryExists(registryMetadataTableName, registryName);
         assertThat("The table should  exist before creation", existsAfterCreation,
                 is(equalTo(true)));
 
-        registryManager.createRegistry(validationSchemaTableName, registry);
+        registryManager.createRegistry(registryMetadataTableName, registry);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
         String registryName = "emptyRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
-        registryManager.createRegistry(validationSchemaTableName, registry);
+        registryManager.createRegistry(registryMetadataTableName, registry);
         Entity entity = sampleData.sampleEntity();
         Entity addEntity = entityManager.addEntity(registryName, entity);
         boolean entityExists = entityManager.entityExists(registryName, addEntity.getId());
@@ -108,11 +108,11 @@ public class RegistryManagerTest extends LocalDynamoTest {
         String registryName = "addSchemaToRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
 
-        registryManager.createRegistry(validationSchemaTableName, registry);
+        registryManager.createRegistry(registryMetadataTableName, registry);
         String schemaAsJson = "JSON validation schema";
         registry.setSchema(schemaAsJson);
-        registryManager.updateRegistryMetadata(validationSchemaTableName, registry);
+        registryManager.updateRegistryMetadata(registryMetadataTableName, registry);
 
-        assertThat(registryManager.getRegistry(validationSchemaTableName, registryName), is(equalTo(registry)));
+        assertThat(registryManager.getRegistry(registryMetadataTableName, registryName), is(equalTo(registry)));
     }
 }
