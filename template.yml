@@ -24,6 +24,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      Name: !Join ['-',[!Ref ProjectId, !Ref Branch, !Ref Stage]]
       # Waiting for open issue to be resolved: https://github.com/awslabs/serverless-application-model/issues/627
       #      Cors: "'amazonaws.com'"
       DefinitionBody:
