@@ -19,6 +19,10 @@ import './commands'
 //Alternatively you can use CommonJS syntax:
 //require('./commands')
 
+const SERVICE_UNAVAILABLE = 503
+const SEE_OTHER = 303
+
+
 beforeEach(function(){
 	let uuid = require('uuid');
 	let whoami = Cypress.env('whoami');
@@ -65,7 +69,7 @@ function waitUntilRegistryIsReady(registryName, count) {
 		url: statusUrl,
 		failOnStatusCode: false
 	}).then(function (response){
-		if(response.status === 303||response.status === 503){
+		if(response.status === SEE_OTHER||response.status === SERVICE_UNAVAILABLE){
 			const newCount = count + 1;
 			cy.log('newCount: ' + newCount)
 			if(newCount < 5){

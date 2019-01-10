@@ -115,19 +115,12 @@ public class RegistryManager {
         if (!tableDriver.tableExists(metadataTable)) {
             logger.info("Registry metadata table does not exist, creating new one, metadataTable={}", metadataTable);
             tableDriver.createRegistryMetadataTable(metadataTable);
-            try {
-                validateRegistryExists(metadataTable);
-                validateRegistryExists(metadataTable);
-            }catch(RegistryUnavailableException | RegistryNotFoundException e ) {
-                logger.info("Registry metadata table not finished initializing");
-                throw new RegistryMetadataTableBeingCreatedException();
-            }
-        }else {
-            try {
-                validateRegistryExists(metadataTable);
-            }catch(RegistryUnavailableException | RegistryNotFoundException e ) {
-                throw new RegistryMetadataTableBeingCreatedException();
-            }
+        }
+        try {
+            validateRegistryExists(metadataTable);
+        } catch(RegistryUnavailableException | RegistryNotFoundException e ) {
+            logger.info("Registry metadata table not finished initializing");
+            throw new RegistryMetadataTableBeingCreatedException();
         }
     }
 
