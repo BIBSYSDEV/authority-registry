@@ -17,7 +17,7 @@ public class MockEnvironment extends Environment {
             value = API_KEYS_FOR_UNIT_TESTS;
         } else if (EnvironmentVariables.STAGE_NAME.equals(name)) {
             value = "test";
-        } else if (EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME.equals(name)) {
+        } else if (EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME.equals(name)) {
             value = "unitTestsValidationSchemaTable";
         }
 

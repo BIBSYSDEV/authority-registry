@@ -23,6 +23,16 @@ public class SampleData {
         array.add(1);
         array.add(2);
         array.add(3);
+        ObjectNode langString = body.putObject("langString");
+        langString.put("lang", "en");
+        langString.put("value", "langStringValue");
+        ArrayNode langArray = body.putArray("myLangArray");
+        ObjectNode langArrayString1 = langArray.addObject();
+        langArrayString1.put("lang", "en");
+        langArrayString1.put("value", "langStringValue1");
+        ObjectNode langArrayString2 = langArray.addObject();
+        langArrayString2.put("lang", "no");
+        langArrayString2.put("value", "langStringValue2");
         
         EntityDto entityDto = new EntityDto();
 
@@ -33,11 +43,20 @@ public class SampleData {
         return entityDto;
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) {
+    public RegistryDto sampleRegistryDto(String registryName) throws JsonProcessingException {
         
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode metadata = mapper.createObjectNode();
+      
+        metadata.put("Registry_name", "Registry name value");
+        metadata.put("Registry_type", "Registry type value");
+        metadata.put("Publisher", "Publisher value");
         
+        registryDto.setMetadata(mapper.writeValueAsString(metadata));
+
         return registryDto;
     }
 

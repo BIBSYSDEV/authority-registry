@@ -2,13 +2,17 @@ package no.bibsys.service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
 import javax.ws.rs.core.Response.Status;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.RegistryManager.RegistryStatus;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
@@ -17,7 +21,7 @@ public class RegistryService {
 
     private final transient RegistryManager registryManager;
     private final transient AuthenticationService authenticationService;
-    private final transient String validationSchemaTableName;
+    private final transient String registryMetadataTableName;
 
     
     public RegistryService(RegistryManager registryManager, 
@@ -26,13 +30,13 @@ public class RegistryService {
         this.registryManager = registryManager;
         this.authenticationService = authenticationService;
         
-        validationSchemaTableName = environmentReader.readEnv(EnvironmentVariables.VALIDATION_SCHEMA_TABLE_NAME);
+        registryMetadataTableName = environmentReader.readEnv(EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME);
     }
     
-    public RegistryDto createRegistry(RegistryDto registryDto) {
+    public RegistryDto createRegistry(RegistryDto registryDto) throws RegistryMetadataTableBeingCreatedException {
         
         Registry registry = registryManager.createRegistry(
-                validationSchemaTableName, RegistryConverter.toRegistry(registryDto)
+                registryMetadataTableName, RegistryConverter.toRegistry(registryDto)
                 );
         
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
@@ -45,26 +49,26 @@ public class RegistryService {
     }
     
     public RegistryDto getRegistry(String registryId) {
-        Registry registry = registryManager.getRegistry(validationSchemaTableName, registryId);
+        Registry registry = registryManager.getRegistry(registryMetadataTableName, registryId);
         return RegistryConverter.toRegistryDto(registry);
     }
     
     public void deleteRegistry(String registryId) {
-        registryManager.deleteRegistry(validationSchemaTableName, registryId);
+        registryManager.deleteRegistry(registryMetadataTableName, registryId);
         authenticationService.deleteApiKeyForRegistry(registryId);
     }
 
     public List<String> getRegistries() {
-        return registryManager.getRegistries(validationSchemaTableName);
+        return registryManager.getRegistries(registryMetadataTableName);
     }
 
     public RegistryDto updateRegistrySchema(String registryId, String schema) {
-        Registry registry = registryManager.uppdateRegistrySchema(validationSchemaTableName, registryId, schema);
+        Registry registry = registryManager.uppdateRegistrySchema(registryMetadataTableName, registryId, schema);
         return RegistryConverter.toRegistryDto(registry);
     }
     
     public RegistryDto updateRegistryMetadata(RegistryDto registryDto) {
-        Registry registry = registryManager.updateRegistryMetadata(validationSchemaTableName, RegistryConverter.toRegistry(registryDto));
+        Registry registry = registryManager.updateRegistryMetadata(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
         return RegistryConverter.toRegistryDto(registry);
     }
 
@@ -87,5 +91,20 @@ public class RegistryService {
             throw new RegistryNotFoundException(registryName);
         }
 }
+
+    public String replaceApiKey(String registryName, String oldApiKey) {
+        
+        ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
+        if(Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {
+            throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
+        }
+        
+        Registry registry = registryManager.getRegistry(registryMetadataTableName, registryName);
+        ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
+        authenticationService.deleteApiKeyForRegistry(registryName);
+        String savedApiKey = authenticationService.saveApiKey(apiKey);
+
+        return savedApiKey;
+    }
     
 }

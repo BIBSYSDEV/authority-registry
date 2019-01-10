@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{label}}</title>
+	</head>
+	<body>
+		<h2>{{label}} - ({{id}})</h2>
+		<ul>
+			{{#each body as |value key|}}<li data-automation-id="{{key}}"> {{key}} -&nbsp;
+				{{~#if value.lang}}
+					{{~#each value as |output|}}{{~output}};{{/each}}
+				{{~else}}
+					{{~#if value.0}}
+						{{~#each value as |element|}}
+							{{~#if element.lang}}
+								{{~#each element as |output|}}{{~output}};{{/each}}
+							{{~else}}
+								{{~element}};
+							{{~/if}}
+						{{~/each}}
+					{{~else}}
+						{{~value}}
+					{{~/if}}
+				{{~/if}}</li>
+			{{/each}}
+		</ul>
+	</body>
+</html>

@@ -6,7 +6,7 @@ public class EnvironmentVariables {
     public static final String STAGE_NAME = "STAGE_NAME";
 
     public static final String API_KEY_TABLE_NAME = "API_KEY_TABLE_NAME";
-    public static final String VALIDATION_SCHEMA_TABLE_NAME = "VALIDATION_SCHEMA_TABLE_NAME";
+    public static final String REGISTRY_METADATA_TABLE_NAME = "VALIDATION_SCHEMA_TABLE_NAME";
 
     /** Stack name. Should be always equal to !Ref AWS::Stack_name.*/
     public static final String STACK_NAME = "STACK_NAME";

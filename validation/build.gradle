@@ -1,0 +1,9 @@
+dependencies{
+
+    compile project (":common")
+    compile group: 'org.apache.jena', name: 'jena-core', version: '3.9.0'
+    compile group: 'org.apache.jena', name: 'jena-arq', version: '3.9.0'
+    compile  ('org.topbraid:shacl:1.1.0') {
+        exclude group: 'org.apache.jena', module: 'jena-arq'
+    }
+}

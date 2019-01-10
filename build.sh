@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 
-./gradlew --build-cache  build fatJar
+./gradlew build fatJar
 

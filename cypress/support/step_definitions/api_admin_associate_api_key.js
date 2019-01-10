@@ -24,20 +24,3 @@ when('the API admin user submits a new API key to replace the current valid API 
 	})
 })
 
-then('the API key is updated', () => {
-	cy.get('@returnId').then((returnId) => {
-		cy.get('@newApiKey').then((newApiKey) => {
-			cy.fixture('entityTestData.json').then((testData) => {
-				let updateEntityUrl = "/registry/" + registryName + "/entity"
-				cy.request({
-					url: updateEntityUrl,
-					method: 'POST',
-					body: testData,
-					headers: {
-						'api-key': newApiKey
-					}
-				})
-			})
-		})
-	})
-})

@@ -21,7 +21,8 @@ jar.enabled = false
 dependencies {
     compile project(":api")
     compile project(":cypress")
-
+    compile project(":validation")
+    
 }
 
 task fatJar {
