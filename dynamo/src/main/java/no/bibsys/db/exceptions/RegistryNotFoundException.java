@@ -8,9 +8,9 @@ public class RegistryNotFoundException extends RuntimeException {
         super(String.format("Registry with name %s does not exist", registryName));
     }
 
-    public RegistryNotFoundException(String registryName, String validationSchemaTableName) {
+    public RegistryNotFoundException(String registryName, String registryMetadataTableName) {
         super(String.format("Schema for registry with name %s does not exist in schema table %s",
-                registryName, validationSchemaTableName));
+                registryName, registryMetadataTableName));
     }
 
 }
