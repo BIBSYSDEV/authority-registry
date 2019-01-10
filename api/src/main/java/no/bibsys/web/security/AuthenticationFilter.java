@@ -2,6 +2,8 @@ package no.bibsys.web.security;
 
 import java.io.IOException;
 import java.util.Optional;
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -11,6 +13,7 @@ import no.bibsys.service.AuthenticationService;
 
 @Provider
 @PreMatching
+@Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
     private final transient AuthenticationService authenticationService;
