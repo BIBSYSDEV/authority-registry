@@ -49,7 +49,7 @@ Resources:
           - dynamodb:CreateTable
           - dynamodb:DeleteTable
           - dynamodb:DescribeTable
-          - dynamodb:ListTable
+          - dynamodb:ListTables
           - dynamodb:BatchGetItem
           - dynamodb:BatchWriteItem
           - dynamodb:PutItem
