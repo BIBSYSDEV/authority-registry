@@ -49,6 +49,7 @@ Resources:
           - dynamodb:CreateTable
           - dynamodb:DeleteTable
           - dynamodb:DescribeTable
+          - dynamodb:ListTable
           - dynamodb:BatchGetItem
           - dynamodb:BatchWriteItem
           - dynamodb:PutItem
@@ -58,6 +59,7 @@ Resources:
           - dynamodb:Scan
           - s3:*
           - apigateway:GET
+
           Resource: "*"
           Effect: Allow
         - Action:
