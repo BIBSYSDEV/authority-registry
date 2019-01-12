@@ -87,7 +87,7 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN })
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response createRegistry(
         @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
@@ -110,7 +110,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON,})
     public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey)
             throws JsonProcessingException {
 
@@ -131,7 +131,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
