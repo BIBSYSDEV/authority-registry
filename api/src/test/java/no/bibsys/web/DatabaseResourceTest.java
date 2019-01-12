@@ -552,6 +552,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private Response createRegistry(RegistryDto registryDto, String apiKey) {
         Response response = target("/registry").request()
+            .accept(MediaType.APPLICATION_JSON)
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey)
             .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
         return response;
