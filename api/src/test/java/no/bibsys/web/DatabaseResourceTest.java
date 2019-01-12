@@ -107,6 +107,7 @@ public class DatabaseResourceTest extends JerseyTest {
 //        new CreatedRegistryDto(String.format("A registry with name=%s is being created", registryName));
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = target(REGISTRY_PATH).request()
+            .accept(MediaType.APPLICATION_JSON)
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
             .buildPost(
                 javax.ws.rs.client.Entity.entity(expectedRegistry, MediaType.APPLICATION_JSON))

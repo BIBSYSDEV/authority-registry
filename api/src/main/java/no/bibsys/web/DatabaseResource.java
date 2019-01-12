@@ -34,6 +34,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
@@ -86,6 +87,7 @@ public class DatabaseResource {
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN })
+    @Produces({MediaType.APPLICATION_JSON,MediaType.TEXT_HTML})
     public Response createRegistry(
         @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
@@ -128,7 +130,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
-    @Produces({MediaType.TEXT_HTML})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,

@@ -1,5 +1,6 @@
 package no.bibsys;
 
+import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -65,6 +66,7 @@ public class JerseyConfig extends ResourceConfig {
         register(AcceptHeaderOpenApiResource.class);
         
         register(RegistryMessageBodyWriter.class);
+        register(RegistryMessageJsonBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
     }
 
