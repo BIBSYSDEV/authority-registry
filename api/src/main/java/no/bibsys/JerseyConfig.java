@@ -33,6 +33,7 @@ import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
+@SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
@@ -45,7 +46,7 @@ public class JerseyConfig extends ResourceConfig {
         EntityManager entityManager = new EntityManager(client);
         EntityService entityService = new EntityService(entityManager);
         AuthenticationService authenticationService =
-                new AuthenticationService(client, environmentReader);
+            new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = new RegistryManager(client);
         RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
@@ -64,7 +65,7 @@ public class JerseyConfig extends ResourceConfig {
 
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
-        
+
         register(RegistryMessageBodyWriter.class);
         register(RegistryMessageJsonBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);

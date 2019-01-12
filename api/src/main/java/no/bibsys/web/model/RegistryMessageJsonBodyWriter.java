@@ -23,10 +23,7 @@ import no.bibsys.utils.JsonUtils;
 @Produces(MediaType.APPLICATION_JSON)
 public class RegistryMessageJsonBodyWriter implements MessageBodyWriter<RegistryDto> {
 
-    public static final String METADATA_FIELD = "metadata";
-    private static final String ID = "id";
-    private static final String METADATA = "metadata";
-    private static final String REGISTRY_TEMPLATE = "registrytemplate";
+    private static final String METADATA_FIELD = "metadata";
     private final transient ObjectMapper mapper = JsonUtils.newJsonParser();
 
 
