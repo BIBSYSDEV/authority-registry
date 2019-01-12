@@ -1,6 +1,7 @@
 package no.bibsys.testtemplates;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -55,7 +56,7 @@ public class SampleData {
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");
         
-        registryDto.setMetadata(mapper.writeValueAsString(metadata));
+        registryDto.setMetadata(metadata);
 
         return registryDto;
     }

@@ -1,5 +1,6 @@
 package no.bibsys.web.model;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -20,6 +21,7 @@ import javax.ws.rs.ext.Provider;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.gson.Gson;
+import no.bibsys.utils.JsonUtils;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
@@ -42,9 +44,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
 
         Map<String, Object> registryMap = new ConcurrentHashMap<>();
 
-        Gson gson = new Gson();
-        
-        LinkedHashMap<?,?> metadataMap = gson.fromJson(registry.getMetadata(), LinkedHashMap.class);
+        Map<String,Object> metadataMap = (Map<String,Object>)JsonUtils.newJsonParser().convertValue(registry.getMetadata(), Map.class);
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
 
