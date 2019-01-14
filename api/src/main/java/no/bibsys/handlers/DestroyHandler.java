@@ -3,13 +3,16 @@ package no.bibsys.handlers;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
+
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.tools.Environment;
@@ -19,12 +22,12 @@ import no.bibsys.staticurl.UrlUpdater;
 public class DestroyHandler extends ResourceHandler {
 
 
-    private final static Logger logger= LoggerFactory.getLogger(DestroyHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DestroyHandler.class);
 
     private final transient AuthenticationService authenticationService;
 
 
-    public DestroyHandler(){
+    public DestroyHandler() {
         this(new Environment());
     }
 
@@ -46,17 +49,16 @@ public class DestroyHandler extends ResourceHandler {
 
 
 
-    private void deleteStaticUrl(){
-        UrlUpdater urlUpdater=createUrlUpdater();
+    private void deleteStaticUrl() {
+        UrlUpdater urlUpdater = createUrlUpdater();
         Optional<ChangeResourceRecordSetsRequest> deleteRequest = urlUpdater
             .createDeleteRequest();
         Optional<ChangeResourceRecordSetsResult> result = deleteRequest
             .map(urlUpdater::executeDelete);
 
-        if(result.isPresent()){
+        if (result.isPresent()) {
             logger.info(result.get().toString());
-        }
-        else {
+        } else {
             logger.warn("Could not delete static URL for stack {}",stackName);
         }
 

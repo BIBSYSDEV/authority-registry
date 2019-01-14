@@ -48,7 +48,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
 
-        try(Writer writer = new PrintWriter(entityStream)){
+        try (Writer writer = new PrintWriter(entityStream)) {
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile(REGISTRY_TEMPLATE);

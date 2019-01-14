@@ -2,6 +2,7 @@ package no.bibsys.web.model;
 
 import java.io.IOException;
 import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,10 +16,6 @@ public class BaseConverter {
         @SuppressWarnings("unchecked")
         Map<String,Object> map = mapper.convertValue(objectNode, Map.class);
         return map;
-    }
-    
-    protected static ObjectNode toObjectNode(Map<String,Object> map) {
-        return mapper.convertValue(map, ObjectNode.class);    
     }
     
     protected static JsonNode toJsonNode(ObjectNode objectNode) {
@@ -39,6 +36,10 @@ public class BaseConverter {
 
     }
 
+    protected static ObjectNode toObjectNode(Map<String,Object> map) {
+        return mapper.convertValue(map, ObjectNode.class);    
+    }
+    
     protected static ObjectNode toObjectNode(String json) {
         if (json == null) {
             return null;

@@ -44,13 +44,13 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     }
 
     @Override
-    public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+    public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, 
+            MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
                     throws IOException {
 
         Map<String, Object> entityMap = createEntityMap(entity);
 
-        try(Writer writer = new PrintWriter(entityStream)){
+        try (Writer writer = new PrintWriter(entityStream)) {
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile(ENTITY_TEMPLATE);
@@ -76,17 +76,15 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
 
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
-        if(Objects.nonNull(preferredLabel)) {
+        if (Objects.nonNull(preferredLabel)) {
             @SuppressWarnings("unchecked")
-            Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
-            .collect(Collectors.toMap(
-                    labelObject -> ((Map<String, String>)labelObject).get(LANG), 
+            Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> ((Map<String, String>)labelObject)
+                    .get(LANG).equals(LANG_EN) || ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
+                .collect(Collectors.toMap(labelObject -> ((Map<String, String>)labelObject).get(LANG), 
                     labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
-            if(Objects.nonNull(titleMap.get(LANG_NO))) {
+            if (Objects.nonNull(titleMap.get(LANG_NO))) {
                 label = titleMap.get(LANG_NO);
-            } else if(Objects.nonNull(titleMap.get(LANG_EN))) {
+            } else if (Objects.nonNull(titleMap.get(LANG_EN))) {
                 label = titleMap.get(LANG_EN);
             }
         }

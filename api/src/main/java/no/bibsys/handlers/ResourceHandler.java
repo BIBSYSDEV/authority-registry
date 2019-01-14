@@ -1,9 +1,11 @@
 package no.bibsys.handlers;
 
 import org.apache.commons.codec.digest.DigestUtils;
+
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.cloudformation.helpers.ResourceType;
@@ -38,11 +40,11 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
         applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
-        this.branch=environment.readEnv(EnvironmentVariables.BRANCH);
+        this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
     }
 
     protected UrlUpdater createUrlUpdater() {
-    StaticUrlInfo urlInfo=initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
+        StaticUrlInfo urlInfo = initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
 
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
@@ -66,17 +68,17 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         Stage stage,
         String gitBranch) {
 
-        StaticUrlInfo staticUrlInfo=new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
+        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
             String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
-            staticUrlInfo=new StaticUrlInfo(hostedZoneName, newUrl,
+            staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl,
                 staticUrlInfo.getStage());
         }
         if (Stage.TEST.equals(stage)) {
-            String newUrl="test."+staticUrlInfo.getRecordSetName();
-            staticUrlInfo=new StaticUrlInfo(staticUrlInfo.getZoneName(),
+            String newUrl = "test." + staticUrlInfo.getRecordSetName();
+            staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(),
                 newUrl,
                 staticUrlInfo.getStage());
         }

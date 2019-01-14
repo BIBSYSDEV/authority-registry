@@ -5,21 +5,30 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -32,10 +41,6 @@ import no.bibsys.web.model.CreatedRegistryDto;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -259,10 +264,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void updateEntity_EntityExists_ReturnsUpdatedEntity() throws Exception {
 
-        String registryName = createRegistry();
         
-        Response writeResponse = createEntity(registryName);
-        EntityDto writeEntity = writeResponse.readEntity(EntityDto.class);
 
         SampleData updatedSampleData = new SampleData();
 
@@ -278,10 +280,13 @@ public class DatabaseResourceTest extends JerseyTest {
         
         updatedEntity.setBody(mapper.writeValueAsString(body));
         
+        String registryName = createRegistry();
         Response response = updateEntityRequest(registryName,
                 updatedEntity);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
+        Response writeResponse = createEntity(registryName);
+        EntityDto writeEntity = writeResponse.readEntity(EntityDto.class);
         Response readEntityResponse = readEntity(registryName, writeEntity.getId(), MediaType.APPLICATION_JSON);
         
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
@@ -319,7 +324,7 @@ public class DatabaseResourceTest extends JerseyTest {
             }
         });
         
-        assertThat(numberOfEntities.get() , is(equalTo(3)));        
+        assertThat(numberOfEntities.get(), is(equalTo(3)));        
     }
 
     @Test
@@ -358,20 +363,6 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(newApiKeyResponse.getStatus(), is(equalTo(Status.BAD_REQUEST.getStatusCode())));
     }
 
-    private String createRegistry() throws Exception{
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        createRegistry(registryDto);
-        return registryName;
-    }
-    
-    private Response replaceApiKey(String registryName, String oldApiKey) {
-        String path = String.format("/registry/%s/apikey", registryName);
-        return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-                .put(javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
-    }
-    
-
     @Test
     public void uploadArrayOfThreeEntities_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
         
@@ -383,7 +374,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getEntity_textHtml_entityAsHtml() throws Exception{
+    public void getEntity_textHtml_entityAsHtml() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
@@ -400,7 +391,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
-    public void getEntity_applicationJson_entityAsJson() throws Exception{
+    public void getEntity_applicationJson_entityAsJson() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
@@ -415,7 +406,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
-    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception{
+    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName);
         
@@ -467,7 +458,19 @@ public class DatabaseResourceTest extends JerseyTest {
 
     }
 
+    private Response replaceApiKey(String registryName, String oldApiKey) {
+        String path = String.format("/registry/%s/apikey", registryName);
+        return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
+                .put(javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
+    }
 
+    private String createRegistry() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        createRegistry(registryDto);
+        return registryName;
+    }
+    
     private Response createRegistry(String registryName) throws Exception {
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         return createRegistry(registryDto);

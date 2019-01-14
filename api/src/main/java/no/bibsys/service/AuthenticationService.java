@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -23,6 +24,7 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.tools.Environment;
@@ -50,7 +52,7 @@ public class AuthenticationService {
 
     public ApiKey getApiKey(String apiKeyInHeader) {
         ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
-        if(Objects.isNull(apiKey)) {
+        if (Objects.isNull(apiKey)) {
             apiKey = new ApiKey();
         }
         return apiKey;
@@ -86,7 +88,7 @@ public class AuthenticationService {
     }
 
     public void setUpInitialApiKeys() {
-        Stage currentStage=Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
+        Stage currentStage = Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
         if (currentStage.equals(Stage.TEST)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");

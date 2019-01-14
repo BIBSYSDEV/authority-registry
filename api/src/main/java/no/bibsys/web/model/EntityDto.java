@@ -4,7 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
+
 import javax.xml.bind.DatatypeConverter;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,7 +62,7 @@ public class EntityDto {
     }
     
     /**
-     * Relative path to this resource, set in the API level
+     * Relative path to this resource, set in the API level.
      * @return
      */
     public String getPath() {

@@ -10,9 +10,9 @@ import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.RegistryManager.RegistryStatus;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
-import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
@@ -79,23 +79,23 @@ public class RegistryService {
 
     public Status validateRegistryExists(String registryName) {
         RegistryStatus status = registryManager.status(registryName);
-        switch(status) {
-        case ACTIVE:
-            return Status.CREATED;
-        case CREATING:
-        case UPDATING:
-            throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
-        case DELETING:
-        case NOT_FOUND:
-        default:
-            throw new RegistryNotFoundException(registryName);
+        switch (status) {
+            case ACTIVE:
+                return Status.CREATED;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+            default:
+                throw new RegistryNotFoundException(registryName);
         }
-}
+    }
 
     public String replaceApiKey(String registryName, String oldApiKey) {
         
         ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
-        if(Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {
+        if (Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {
             throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
         }
         

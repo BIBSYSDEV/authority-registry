@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -14,6 +16,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.Change;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
@@ -23,7 +26,7 @@ import no.bibsys.staticurl.UrlUpdater;
 
 public class InitHandler extends ResourceHandler {
 
-    private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitHandler.class);
 
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
@@ -31,10 +34,9 @@ public class InitHandler extends ResourceHandler {
 
     public InitHandler() {
         this(new Environment());
-
     }
 
-    public InitHandler(Environment environment){
+    public InitHandler(Environment environment) {
         super(environment);
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         this.certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
@@ -69,10 +71,10 @@ public class InitHandler extends ResourceHandler {
 
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater
             .createUpdateRequest(certificateArn);
-        List<String> changeList= request.map(req -> req.getChangeBatch().getChanges().stream())
+        List<String> changeList = request.map(req -> req.getChangeBatch().getChanges().stream())
             .orElse(Stream.empty())
             .map(Change::toString).collect(Collectors.toList());
-        changeList.forEach(change->logger.debug("Change:{}",change));
+        changeList.forEach(change -> logger.debug("Change:{}",change));
         ChangeResourceRecordSetsResult result = request
             .map(urlUpdater::executeUpdate)
             .orElseThrow(() -> new NotFoundException("Could not update Static URL settings"));

@@ -47,7 +47,8 @@ public class JerseyConfig extends ResourceConfig {
                 new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = new RegistryManager(client);
-        RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
+        RegistryService registryService = 
+                new RegistryService(registryManager, authenticationService, environmentReader);
 
         register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);
@@ -70,7 +71,6 @@ public class JerseyConfig extends ResourceConfig {
     private void registerMessageBodyWriters() {
         register(RegistryMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
-//        register(EntityRdfMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

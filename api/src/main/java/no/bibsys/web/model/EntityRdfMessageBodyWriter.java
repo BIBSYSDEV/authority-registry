@@ -55,7 +55,7 @@ public class EntityRdfMessageBodyWriter implements MessageBodyWriter<Entity> {
         
         Lang outputLang = Lang.JSONLD;
         
-        switch(mediaType.toString()) {
+        switch (mediaType.toString()) {
             case MEDIATYPE_RDF: // RDF
                 outputLang = Lang.RDFJSON;
                 break;
