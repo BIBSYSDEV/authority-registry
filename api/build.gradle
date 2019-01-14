@@ -33,7 +33,7 @@ dependencies {
     compile("com.amazonaws:aws-lambda-java-core:1.2.0")
     compile("com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1")
 
-    compile ("no.bibsys.aws:aws-build-tools:2018.12.11.08.45")
+    compile ("no.bibsys.aws:aws-build-tools:2019.01.14.10.33")
 
 	// Handlebars
 	compile("com.github.jknack:handlebars:4.1.2")
