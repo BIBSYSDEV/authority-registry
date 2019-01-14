@@ -24,12 +24,11 @@ import no.bibsys.web.exception.ExceptionLogger;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
 import no.bibsys.web.exception.IllegalArgumentExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
+import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
-import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
-import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
@@ -58,16 +57,20 @@ public class JerseyConfig extends ResourceConfig {
 
         register(new AuthenticationFilter(authenticationService));
 
-        registerExceptionMappers();
 
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
         
+        registerExceptionMappers();
+        registerMessageBodyWriters();
+    }
+
+    private void registerMessageBodyWriters() {
         register(RegistryMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
-        register(EntityRdfMessageBodyWriter.class);
+//        register(EntityRdfMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

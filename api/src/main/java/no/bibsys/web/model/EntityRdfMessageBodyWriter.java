@@ -32,11 +32,11 @@ import no.bibsys.db.structures.Entity;
     MediaType.APPLICATION_JSON})
 public class EntityRdfMessageBodyWriter implements MessageBodyWriter<Entity> {
 
-    static final String MEDIATYPE_RDF = "application/rdf";
-    static final String MEDIATYPE_TURTLE = "application/turtle";
-    static final String MEDIATYPE_RDF_XML = "application/rdf+xml";
-    static final String MEDIATYPE_N_TRIPLES = "application/n-triples";
-    static final String MEDIATYPE_JSON_LD = "application/ld+json";
+    public static final String MEDIATYPE_RDF = "application/rdf";
+    public static final String MEDIATYPE_TURTLE = "application/turtle";
+    public static final String MEDIATYPE_RDF_XML = "application/rdf+xml";
+    public static final String MEDIATYPE_N_TRIPLES = "application/n-triples";
+    public static final String MEDIATYPE_JSON_LD = "application/ld+json";
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -56,23 +56,23 @@ public class EntityRdfMessageBodyWriter implements MessageBodyWriter<Entity> {
         Lang outputLang = Lang.JSONLD;
         
         switch(mediaType.toString()) {
-        case MEDIATYPE_RDF:
-        case MediaType.APPLICATION_JSON:
-            outputLang = Lang.RDFJSON;
-            break;
-        case MEDIATYPE_TURTLE:
-            outputLang = Lang.TURTLE;
-            break;
-        case MEDIATYPE_RDF_XML:
-            outputLang = Lang.RDFXML;
-            break;
-        case MEDIATYPE_N_TRIPLES:
-            outputLang = Lang.NTRIPLES;
-            break;
-        case MEDIATYPE_JSON_LD:
-        default:
-            outputLang = Lang.JSONLD;
-            break;
+            case MEDIATYPE_RDF: // RDF
+                outputLang = Lang.RDFJSON;
+                break;
+            case MEDIATYPE_TURTLE: // Turtle
+                outputLang = Lang.TURTLE;
+                break;
+            case MEDIATYPE_RDF_XML: // XML
+                outputLang = Lang.RDFXML;
+                break;
+            case MEDIATYPE_N_TRIPLES: // N-triples
+                outputLang = Lang.NTRIPLES;
+                break;
+            case MediaType.APPLICATION_JSON: // Json
+            case MEDIATYPE_JSON_LD:
+            default:
+                outputLang = Lang.JSONLD;
+                break;
         }
         
         RDFDataMgr.write(entityStream, model, outputLang);

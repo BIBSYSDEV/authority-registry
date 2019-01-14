@@ -70,7 +70,8 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 			failOnStatusCode: false,
 			headers: {
 				'api-key': apiAdminApiKey,
-				'content-type': 'application/json'
+				'content-type': 'application/json',
+				'accept': 'application/json'
 			}
 		}).then((response) => {
 			if(response.status === SERVICE_UNAVAILABLE) {

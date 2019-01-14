@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -48,7 +46,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     @Override
     public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-                    throws IOException, WebApplicationException {
+                    throws IOException {
 
         Map<String, Object> entityMap = createEntityMap(entity);
 
@@ -67,7 +65,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
 
         Gson gson = new Gson();
         
-        LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
+        Map<?,?> bodyMap = gson.fromJson(entity.getBody(), Map.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
         List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
