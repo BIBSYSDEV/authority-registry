@@ -9,7 +9,7 @@ when('the API admin user uses the API key and requests deletion of an entity reg
 	cy.log('-- api_admin_delete_empty_registry.js --')
 	// delete empty registry
 	cy.get("@registryName").then((registryName) => {
-		cy.get("@registryAdminApiKey").then((apiKey) => {
+		cy.get("@apiAdminApiKey").then((apiKey) = > {
 			let url = '/registry/' + registryName;
 			cy.request({
 				url: url,
@@ -19,7 +19,7 @@ when('the API admin user uses the API key and requests deletion of an entity reg
 					'content-type': 'application/json'
 				}
 			}).then(function (response) {
-			})
+			});
 		})
 	})
 })
@@ -37,7 +37,9 @@ then('the empty entity registry is deleted', () => {
 					'api-key': apiKey
 				}
 			}).then((response) => {
-				expect(response.status).equals(404)
+				expect(response.status;
+).
+equals(404);
 			})
 		})
 	})
