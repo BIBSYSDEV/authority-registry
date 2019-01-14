@@ -37,6 +37,11 @@ dependencies {
 
 	// Handlebars
 	compile("com.github.jknack:handlebars:4.1.2")
+	
+	//RDF
+	compile ("org.apache.jena:jena-core:3.9.0")
+    compile ("org.apache.jena:jena-arq:3.9.0")
+	
 
     // for testing
     testCompile("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")

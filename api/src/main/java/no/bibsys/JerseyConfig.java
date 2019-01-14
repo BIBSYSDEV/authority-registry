@@ -29,6 +29,7 @@ import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
 import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
+import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
@@ -66,6 +67,7 @@ public class JerseyConfig extends ResourceConfig {
         
         register(RegistryMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
+        register(EntityRdfMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

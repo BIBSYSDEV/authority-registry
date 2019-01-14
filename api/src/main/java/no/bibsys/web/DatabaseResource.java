@@ -119,7 +119,7 @@ public class DatabaseResource {
     }
 
 
-    @GET
+    @GET 
     @Path("/{registryName}")
     @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
             @ExtensionProperty(name = AwsApiGatewayIntegration.URI,

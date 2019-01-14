@@ -50,6 +50,19 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
                     throws IOException, WebApplicationException {
 
+        Map<String, Object> entityMap = createEntityMap(entity);
+
+        try(Writer writer = new PrintWriter(entityStream)){
+
+            Handlebars handlebars = new Handlebars();
+            Template template = handlebars.compile(ENTITY_TEMPLATE);
+            writer.write(template.apply(entityMap));
+
+            writer.flush();
+        }
+    }
+
+    private Map<String, Object> createEntityMap(EntityDto entity) {
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
 
         Gson gson = new Gson();
@@ -60,15 +73,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
         List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
         String label = findTitle(preferredLabel);
         entityMap.put(LABEL, label);
-
-        try(Writer writer = new PrintWriter(entityStream)){
-
-            Handlebars handlebars = new Handlebars();
-            Template template = handlebars.compile(ENTITY_TEMPLATE);
-            writer.write(template.apply(entityMap));
-
-            writer.flush();
-        }
+        return entityMap;
     }
 
     private String findTitle(List<?> preferredLabel) {
