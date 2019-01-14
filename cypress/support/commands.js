@@ -16,7 +16,7 @@ const RECURSION_COUNT = 5;
 const RECURSION_DELAY = 2000; // milliseconds
 
 Cypress.Commands.add('registryReady', (registryName) => {
-	waitUntilRegistryIsReady(registryName, 0;
+  waitUntilRegistryIsReady(registryName, 0;
 )
 })
 
@@ -25,12 +25,12 @@ Cypress.Commands.add('deleteRegistry', (registryName, apiKey) => {
 })
 
 Cypress.Commands.add('createEmptyRegistry', (registryName, apiKey, metadataFile) => {
-	createRegistry(registryName, apiKey, metadataFile, false, 0;
+  createRegistry(registryName, apiKey, metadataFile, false, 0;
 )
 })
 
 Cypress.Commands.add('createNonEmptyRegistry', (registryName, apiKey, metadataFile) => {
-	createRegistry(registryName, apiKey, metadataFile, true, 0;
+  createRegistry(registryName, apiKey, metadataFile, true, 0;
 )
 })
 
