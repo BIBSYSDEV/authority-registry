@@ -76,8 +76,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 				'accept': 'application/json'
 			}
 		}).then((response) => {
-			if(response.status === SERVICE_UNAVAILABLE;
-	)
+			if(response.status === SERVICE_UNAVAILABLE)
 		{
 				const newCount = count + 1;
 				if(newCount < RECURSION_COUNT){
@@ -95,8 +94,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 					cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
 						const testDataFile = 'entityTestData.json'
 							cy.createEntity(registryName, registryAdminApiKey, testDataFile)
-					};
-				)
+					})
 				}
 			}
 		})
