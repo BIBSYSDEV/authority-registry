@@ -27,11 +27,11 @@ Resources:
       Name: !Join ['-',[!Ref ProjectId, !Ref Branch, !Ref Stage]]
       # Waiting for open issue to be resolved: https://github.com/awslabs/serverless-application-model/issues/627
       #      Cors: "'amazonaws.com'"
-      DefinitionBody:
-        Fn::Transform:
-          Name: 'AWS::Include'
-          Parameters:
-            Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
+#      DefinitionBody:
+#        Fn::Transform:
+#          Name: 'AWS::Include'
+#          Parameters:
+#            Location: !Join ['', ['s3://', !Ref 'CodeBucket', '/openapi.yaml']]
   LambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
