@@ -51,7 +51,7 @@ import no.bibsys.web.security.Roles;
 @OpenAPIDefinition(info = @Info(title = "Entity Registry", version = "0.0",
         description = "API documentation for Entity Registry",
         license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
-        contact = @Contact(url = "http://example.org", name = "Entity registry team",
+        contact = @Contact(url = "<SERVER_PLACEHOLDER>", name = "Entity registry team",
                 email = "entity@example.org")))
 @SecurityScheme(name = ApiKeyConstants.API_KEY, paramName = ApiKeyConstants.API_KEY_PARAM_NAME,
         type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
@@ -70,16 +70,7 @@ public class DatabaseResource {
 
     @POST
     @Path("/")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
+
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN })
     @Consumes(MediaType.APPLICATION_JSON)
@@ -96,16 +87,6 @@ public class DatabaseResource {
 
     @GET
     @Path("/")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON,})
     public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey)
             throws JsonProcessingException {
@@ -117,16 +98,6 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -141,16 +112,6 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response updateRegistryMetadata(
@@ -170,16 +131,6 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response deleteRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -194,16 +145,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/status")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
+
     public Response registryStatus(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry in which to get status", schema = @Schema(
@@ -216,16 +158,6 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}/apikey")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//            value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//            value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//            value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN })
     @Produces(MediaType.APPLICATION_JSON)
@@ -247,16 +179,6 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/schema")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response getRegistrySchema(
@@ -273,16 +195,6 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}/schema")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response updateRegistrySchema(
@@ -302,17 +214,6 @@ public class DatabaseResource {
 
     @POST
     @Path("/{registryName}/entity")
-
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response createEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -333,16 +234,6 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/entity")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     public Response entitiesSummary(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity summary from", schema = @Schema(
@@ -353,16 +244,6 @@ public class DatabaseResource {
 
     @POST
     @Path("/{registryName}/upload")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     @Produces({MediaType.APPLICATION_JSON})
@@ -390,16 +271,6 @@ public class DatabaseResource {
     
     @GET
     @Path("/{registryName}/entity/{entityId}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -424,16 +295,6 @@ public class DatabaseResource {
 
     @DELETE
     @Path("/{registryName}/entity/{entityId}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN })
     public Response deleteEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -453,16 +314,6 @@ public class DatabaseResource {
 
     @PUT
     @Path("/{registryName}/entity/{entityId}")
-//    @Operation(extensions = { @Extension(name = AwsApiGatewayIntegration.INTEGRATION, properties = {
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.URI,
-//                    value = AwsApiGatewayIntegration.URI_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.REQUEST_PARAMETERS,
-//                    value = AwsApiGatewayIntegration.REQUEST_PARAMETERS_OBJECT, parseValue = true),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.PASSTHROUGH_BEHAVIOR,
-//                    value = AwsApiGatewayIntegration.WHEN_NO_MATCH),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
-//            @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
-//                    value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response updateEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
