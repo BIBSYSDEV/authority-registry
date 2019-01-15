@@ -5,41 +5,43 @@
 //    When the registry admin user submits an API key and a request to bulk upload the data to the entity registry
 //    Then the data is available in the entity registry
 
-given('that the registry admin user has a set of properly schema-formatted data', () => {
-	cy.log('-- registry_admin_populate_registry.js --')
-	cy.fixture('testDataBulk.json').as('bulkUpload')
-	// test against schema here?
-})
+import {Given, Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-when('the registry admin user submits an API key and a request to bulk upload the data to the entity registry', () => {
-	cy.get('@bulkUpload').then((bulkUpload) => {
-		cy.get('@registryName').then((registryName) => {
-			let bulkUploadUrl = '/registry/' + registryName + '/upload';
-			cy.get('@apiAdminApiKey').then((apiKey) => {
-				cy.request({
-					url: bulkUploadUrl,
-					method: 'POST',
-					headers: {
-						'api-key': apiKey,
-						'content-type': 'application/json'
-					},
-					body: bulkUpload
-				}).then((response) => {
-					cy.wrap(response.body).as('uploadResponse')
-				})
-			})
-		})
-	})
-})
+Given('that the registry admin user has a set of properly schema-formatted data', () => {
+  cy.log('-- registry_admin_populate_registry.js --');
+  cy.fixture('testDataBulk.json').as('bulkUpload');
+  // test against schema here?
+});
 
-then('the data is available in the entity registry', () => {
-	// get all added entities one at a time to see if they have been uploaded
-	cy.get('@registryName').then((registryName) => {
-		cy.get('@uploadResponse').then((response) => {
-			response.forEach((entity, index) => {
-				cy.log('id = ' + entity.id)
-				cy.request('/registry/' + registryName + '/entity/' + entity.id)
-			})
-		})
-	})
-})
+When('the registry admin user submits an API key and a request to bulk upload the data to the entity registry', () => {
+  cy.get('@bulkUpload').then((bulkUpload) => {
+    cy.get('@registryName').then((registryName) => {
+      let bulkUploadUrl = '/registry/' + registryName + '/upload';
+      cy.get('@apiAdminApiKey').then((apiKey) => {
+        cy.request({
+          url: bulkUploadUrl,
+          method: 'POST',
+          headers: {
+            'api-key': apiKey,
+            'content-type': 'application/json',
+          },
+          body: bulkUpload,
+        }).then((response) => {
+          cy.wrap(response.body).as('uploadResponse');
+        });
+      });
+    });
+  });
+});
+
+Then('the data is available in the entity registry', () => {
+  // get all added entities one at a time to see if they have been uploaded
+  cy.get('@registryName').then((registryName) => {
+    cy.get('@uploadResponse').then((response) => {
+      response.forEach((entity, index) => {
+        cy.log('id = ' + entity.id);
+        cy.request('/registry/' + registryName + '/entity/' + entity.id);
+      });
+    });
+  });
+});

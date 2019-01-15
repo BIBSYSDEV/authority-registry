@@ -3,9 +3,7 @@ package no.bibsys;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.aws.tools.Environment;
@@ -15,6 +13,7 @@ import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.DatabaseResource;
+import no.bibsys.web.EntityMessageBodyWriter;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.BaseExceptionMapper;
@@ -27,9 +26,6 @@ import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
-import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
-import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
-import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -64,8 +60,7 @@ public class JerseyConfig extends ResourceConfig {
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
         
-        register(RegistryMessageBodyWriter.class);
-        register(EntityHtmlMessageBodyWriter.class);
+        register(EntityMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {
@@ -79,7 +74,6 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
-        register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
     }
 
 }

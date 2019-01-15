@@ -93,7 +93,7 @@ public class DatabaseResource {
             @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
                             implementation = RegistryDto.class))) RegistryDto registryDto)
-            throws Exception {
+            throws JsonProcessingException {
 
         RegistryDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
@@ -131,7 +131,8 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.HTTPMETHOD, value = HttpMethod.POST),
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
-    @Produces({MediaType.TEXT_HTML})
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
@@ -428,7 +429,7 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
+    @Produces({"text/html", "application/json"})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",

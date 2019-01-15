@@ -1,6 +1,6 @@
-/* global defineParameterType, Given, When, Then */
+import {Given} from 'cypress-cucumber-preprocessor/steps';
 
-given('no cleanup', () =>{
-	cy.log('-- api_admin__common.js --')
-	cy.wrap(false).as('cleanUp');
-})
+Given('no cleanup', () => {
+  cy.log('-- api_admin__common.js --');
+  cy.wrap(false).as('cleanUp');
+});
