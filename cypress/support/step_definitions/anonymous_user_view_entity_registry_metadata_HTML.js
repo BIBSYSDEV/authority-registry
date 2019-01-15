@@ -18,37 +18,35 @@
 //      | Location of SPARQL endpoint      |
 //      | Description of available formats |
 
+import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-when(/an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/, (tableData) =>{
-	cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --')
-	
-	let attributeArray = dataTable.rawTable;
-	cy.wrap(attributeArray).as('attributeNames')
-	
-	cy.get('@registryName').then((registryName) => {
-		
-		let getEntityMetadataUrl = '/registry/' + registryName;
-		cy.request({
-			url: createRegistryEndpoint, 
-			method: 'GET',
-			headers: {
-				'content-type': 'text/html'
-			}
-		}).then((response) => {
-			cy.wrap(response).as('registryMetadata');
-		})
-	})
+When(/an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/, (dataTable) => {
+  cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --');
 
-})
+  let attributeArray = dataTable.rawTable;
+  cy.wrap(attributeArray).as('attributeNames');
 
-then('they see metadata related to the entity registry regarding:', (dataTable) =>{
-	let attributeArray = dataTable.rawTable;
+  cy.get('@registryName').then((registryName) => {
+    const createRegistryEndpoint = '/registry/' + registryName;
+    cy.request({
+      url: createRegistryEndpoint,
+      method: 'GET',
+      headers: {
+        'content-type': 'text/html',
+      },
+    }).then((response) => {
+      cy.wrap(response).as('registryMetadata');
+    });
+  });
 
-	cy.get('@registryMetadata').then((metadata) => {
-		cy.get('attributeNames').then((attributeNames) => {
-			attributeNames.forEach(attribute => {
-				assert.notNull(metadata[attribute])
-			})
-		})
-	})
-})
+});
+
+Then('they see metadata related to the entity registry regarding:', () => {
+  cy.get('@registryMetadata').then((metadata) => {
+    cy.get('attributeNames').then((attributeNames) => {
+      attributeNames.forEach(attribute => {
+        assert.notNull(metadata[attribute]);
+      });
+    });
+  });
+});

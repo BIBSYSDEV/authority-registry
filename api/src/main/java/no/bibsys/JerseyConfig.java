@@ -13,6 +13,7 @@ import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.DatabaseResource;
+import no.bibsys.web.EntityMessageBodyWriter;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.BaseExceptionMapper;
@@ -57,7 +58,9 @@ public class JerseyConfig extends ResourceConfig {
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
-        register(AcceptHeaderOpenApiResource.class);    
+        register(AcceptHeaderOpenApiResource.class);
+        
+        register(EntityMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

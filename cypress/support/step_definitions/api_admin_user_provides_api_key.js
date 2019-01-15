@@ -3,34 +3,36 @@
 //    When they submit the API key
 //    Then they can access the administration APIs
 
-when('they submit the API key', () => {
-	cy.log('-- api_admin_user_provides_api_key.js --')
-	cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
-		cy.get('@registryName').then((registryName) => {
-			// create new test registry metadata
-			cy.fixture('registryTestMetadata.json')
-			.then((testSchema) => {
-				testSchema.id = registryName;
-				let createUrl = '/registry';
-				cy.request({
-					url: createUrl,
-					method: 'POST',
-					body: testSchema, 
-					headers: {
-						'api-key': apiAdminApiKey,
-						'content-type': 'application/json'
-					}
-				}).then((response) => {
-					cy.wrap(response.status).as('responseStatus')
-					cy.wrap(response.body.apiKey).as('registryAdminApiKey');
-				})
-			})
-		})
-	})
-})
+import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-then('they can access the administration APIs', () => {
-	cy.get('@responseStatus').then((status) => {
-		expect(status).to.not.equal(403)
-	})
-})
+When('they submit the API key', () => {
+  cy.log('-- api_admin_user_provides_api_key.js --');
+  cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
+    cy.get('@registryName').then((registryName) => {
+      // create new test registry metadata
+      cy.fixture('registryTestMetadata.json')
+        .then((testSchema) => {
+          testSchema.id = registryName;
+          let createUrl = '/registry';
+          cy.request({
+            url: createUrl,
+            method: 'POST',
+            body: testSchema,
+            headers: {
+              'api-key': apiAdminApiKey,
+              'content-type': 'application/json',
+            },
+          }).then((response) => {
+            cy.wrap(response.status).as('responseStatus');
+            cy.wrap(response.body.apiKey).as('registryAdminApiKey');
+          });
+        });
+    });
+  });
+});
+
+Then('they can access the administration APIs', () => {
+  cy.get('@responseStatus').then((status) => {
+    expect(status).to.not.equal(403);
+  });
+});
