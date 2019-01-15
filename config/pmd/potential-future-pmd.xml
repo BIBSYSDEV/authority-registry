@@ -62,6 +62,7 @@
 
   <rule ref="category/java/design.xml">
     <exclude name="LoosePackageCoupling"/>
+    <exclude name="CouplingBetweenObjects"/>
     <exclude name="LawOfDemeter"/>
     <exclude name="DataClass"/>
     <exclude name="ExcessiveImports"/>

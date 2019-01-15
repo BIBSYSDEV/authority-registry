@@ -48,6 +48,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
@@ -428,7 +429,8 @@ public class DatabaseResource {
             @ExtensionProperty(name = AwsApiGatewayIntegration.TYPE,
                     value = AwsApiGatewayIntegration.AWS_PROXY), }) })
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, EntityRdfMessageBodyWriter.MEDIATYPE_RDF, EntityRdfMessageBodyWriter.MEDIATYPE_JSON_LD, 
+        EntityRdfMessageBodyWriter.MEDIATYPE_N_TRIPLES, EntityRdfMessageBodyWriter.MEDIATYPE_RDF_XML, EntityRdfMessageBodyWriter.MEDIATYPE_TURTLE})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",
