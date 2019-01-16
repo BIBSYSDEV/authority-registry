@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 
-./gradlew  clean build fatJar api:resolve
+./gradlew  clean build fatJar
 

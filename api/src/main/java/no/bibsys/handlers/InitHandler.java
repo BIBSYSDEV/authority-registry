@@ -10,18 +10,16 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.Change;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.swagger.v3.core.util.Yaml;
+import com.google.common.annotations.VisibleForTesting;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.api.OpenApiContext;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,11 +35,8 @@ import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.swaggerhub.SwaggerDriver;
 import no.bibsys.aws.swaggerhub.SwaggerHubInfo;
 import no.bibsys.aws.tools.Environment;
-import no.bibsys.aws.tools.IoUtils;
-import no.bibsys.aws.tools.JsonUtils;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
@@ -50,13 +45,10 @@ import org.slf4j.LoggerFactory;
 public class InitHandler extends ResourceHandler {
 
     public static final String BASE_PATH_FIELD = "basePath";
-    public static final String OPENAPI_FOLDER = "openapi";
-    public static final String OPENAPI_YAML = "openapi.yaml";
     public static final String URL_FIELD = "url";
     public static final String DEFAULT_FIELD = "default";
     public static final String VARIABLES_FIELD = "variables";
     public static final String SERVERS_FIELD = "servers";
-    private static final String BUILD_FOLDER = "build";
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
@@ -67,7 +59,7 @@ public class InitHandler extends ResourceHandler {
     private final transient String stackName;
     private final transient Stage stage;
 
-    private final transient ObjectMapper yamlParser = JsonUtils.newYamlParser();
+    private final transient ObjectMapper jsonParser = Json.mapper(); //Swagger specific ObjectMapper
 
     public InitHandler() {
         this(new Environment());
@@ -92,56 +84,83 @@ public class InitHandler extends ResourceHandler {
         Context context) throws IOException, URISyntaxException {
         createApiKeysTable();
         updateUrl();
-//        updateSwaggerHub();
+        updateSwaggerHub();
         return new SimpleResponse("Success initializing resources.");
 
     }
 
 
     public void updateSwaggerHub()
-        throws IOException, URISyntaxException, OpenApiConfigurationException {
-        String swaggerString = generateOpenApiSpecification();
-        SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId, apiVersion, swaggerOrganization);
-        SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
-        String apiKey = swaggerHubInfo.getSwaggerAuth();
-        HttpDelete deleteRequest = swaggerDriver
-            .createDeleteApiRequest(apiKey);
-        swaggerDriver.executeDelete(deleteRequest);
-        HttpPost updateRequest = swaggerDriver
-                .createUpdateRequest(swaggerString, swaggerHubInfo.getSwaggerAuth());
-            swaggerDriver.executePost(updateRequest);
+        throws IOException, URISyntaxException {
+
+        try{
+            ObjectNode swaggerRoot = (ObjectNode) jsonParser.readTree(
+                generateOpenApiSpecificationFromCode());
+            Optional<ObjectNode> updatedSwaggerRootDoc =
+                updateSwaggerRootWithServerInfoFromApiGateway(swaggerRoot);
+
+            if (updatedSwaggerRootDoc.isPresent()) {
+
+                SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId,
+                    apiVersion,
+                    swaggerOrganization);
+                SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
+                String apiKey = swaggerHubInfo.getSwaggerAuth();
+
+                deletePreviousSwaggerHubSpecification(swaggerDriver, apiKey);
+                updateSwaggerHubSpecification(updatedSwaggerRootDoc.get(), swaggerHubInfo, swaggerDriver);
+            }
+            else{
+                logger.error("Could not generate SwaggerHub specification");
+            }
+        }
+        catch(OpenApiConfigurationException e){
+            logger.error(e.getMessage());
+            throw new IOException(e);
+        }
+
+
     }
 
-    private String generateOpenApiSpecification()
+    private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc,
+        SwaggerHubInfo swaggerHubInfo, SwaggerDriver swaggerDriver)
+        throws URISyntaxException, IOException {
+        String swaggerString= Json.pretty(updatedSwaggerRootDoc);
+        HttpPost updateRequest = swaggerDriver
+            .createUpdateRequest(swaggerString,swaggerHubInfo.getSwaggerAuth());
+        swaggerDriver.executePost(updateRequest);
+    }
+
+    private void deletePreviousSwaggerHubSpecification(SwaggerDriver swaggerDriver, String apiKey)
+        throws URISyntaxException, IOException {
+        HttpDelete deleteRequest = swaggerDriver.createDeleteApiRequest(apiKey);
+        swaggerDriver.executeDelete(deleteRequest);
+    }
+
+    private String generateOpenApiSpecificationFromCode()
         throws OpenApiConfigurationException {
         OpenApiContext context = new JaxrsOpenApiContextBuilder().buildContext(true);
-        return Yaml.pretty(context.read());
+        return Json.pretty(context.read());
     }
 
-    private Optional<String> createSwaggerJsonString() throws IOException {
+
+    private Optional<ObjectNode> updateSwaggerRootWithServerInfoFromApiGateway(ObjectNode swaggerDocRoot)
+        throws IOException {
         Optional<ServerInfo> serverInfo = readServerInfo();
-        ObjectNode openApiDocRoot = readLocalSwaggerFile();
-        return serverInfo
-            .map(si -> updateSwaggerHubDocWithServerInfo(openApiDocRoot, si))
-            .flatMap(docRoot -> nodeAsJsonString(docRoot));
+        Optional<ObjectNode> newDoc = serverInfo
+            .map(si -> updateSwaggerHubDocWithServerInfo(swaggerDocRoot, si));
+        return newDoc;
+
     }
 
 
-    private Optional<String> nodeAsJsonString(ObjectNode node) {
-        try {
-            return Optional.of(JsonUtils.newJsonParser().writeValueAsString(node));
-        } catch (JsonProcessingException e) {
-            logger.error("Failed to write ObjectNode to YAML string");
-            return Optional.empty();
-        }
+    @VisibleForTesting
+    public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
+        ServerInfo serverInfo) {
+        ArrayNode serversNode = serversNode(serverInfo);
+        return (ObjectNode) openApiDocRoot.set(SERVERS_FIELD, serversNode);
     }
 
-    private String restApiId(String stackName) {
-        StackResources stackResources = new StackResources(stackName);
-        String result = stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
-            .orElseThrow(() -> new NotFoundException("RestApi not Found for stack:" + stackName));
-        return result;
-    }
 
     private void createApiKeysTable() {
         try {
@@ -172,14 +191,6 @@ public class InitHandler extends ResourceHandler {
     }
 
 
-    public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
-        ServerInfo serverInfo) {
-
-        ArrayNode serversNode = serversNode(serverInfo);
-        ObjectNode newApiObjectDoc = (ObjectNode) openApiDocRoot.set(SERVERS_FIELD, serversNode);
-        return newApiObjectDoc;
-    }
-
     private Optional<ServerInfo> readServerInfo() throws IOException {
         String restApiId = restApiId(stackName);
         AmazonApiGateway apiGatewayClient = AmazonApiGatewayClientBuilder.defaultClient();
@@ -190,14 +201,24 @@ public class InitHandler extends ResourceHandler {
     }
 
 
-    public ArrayNode serversNode(ServerInfo serverInfo) {
-        ArrayNode servers = yamlParser.createArrayNode();
+    private String restApiId(String stackName) {
+        StackResources stackResources = new StackResources(stackName);
+        String result = stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
+            .orElseThrow(() -> new NotFoundException("RestApi not Found for stack:" + stackName));
+        return result;
+    }
 
-        ObjectNode serverNode = yamlParser.createObjectNode();
+
+    @VisibleForTesting
+    public ArrayNode serversNode(ServerInfo serverInfo) {
+
+        ArrayNode servers = jsonParser.createArrayNode();
+
+        ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());
 
-        ObjectNode variablesNode = yamlParser.createObjectNode();
-        ObjectNode basePathNode = yamlParser.createObjectNode();
+        ObjectNode variablesNode = jsonParser.createObjectNode();
+        ObjectNode basePathNode = jsonParser.createObjectNode();
         basePathNode.put(DEFAULT_FIELD, serverInfo.getStage());
         variablesNode.set(BASE_PATH_FIELD, basePathNode);
         serverNode.set(VARIABLES_FIELD, variablesNode);
@@ -208,41 +229,4 @@ public class InitHandler extends ResourceHandler {
     }
 
 
-    public ObjectNode readLocalSwaggerFile() throws IOException {
-        Path path = Paths.get(BUILD_FOLDER, OPENAPI_FOLDER, OPENAPI_YAML);
-        return readFile(path).flatMap(this::parseYamlFile)
-            .orElseThrow(() -> new IOException("Could not read or parse swagger file"));
-
-
-    }
-
-
-    private Optional<String> readFile(Path path) throws IOException {
-        try {
-            String contents = IoUtils.fileAsString(path);
-            if (StringUtils.isNotEmpty(contents)) {
-                return Optional.ofNullable(contents);
-            } else {
-                return Optional.empty();
-            }
-
-        } catch (IOException e) {
-            logger.warn("Could not find Swagger file in " + path.toString());
-            return Optional.empty();
-        }
-    }
-
-    private Optional<ObjectNode> parseYamlFile(String openApiString) {
-        try {
-            return Optional
-                .of(yamlParser.readTree(openApiString))
-                .filter(root -> root instanceof ObjectNode)
-                .map(root -> (ObjectNode) root);
-
-        } catch (IOException e) {
-            logger.warn("Error parsing Swagger file.");
-            return Optional.empty();
-        }
-
-    }
 }
