@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -88,7 +89,7 @@ public class InitHandlerTest {
 
     @Test
     public void updateSwaggerHubDocWithServerInfo_swaggerFile_swaggerFileWithServerInfo()
-        throws IOException, URISyntaxException {
+        throws IOException, URISyntaxException, OpenApiConfigurationException {
         ObjectNode openApiRoot=(ObjectNode)yamlParser.readTree(openApiString);
 
         ObjectNode updatedApiRoot = initHandler

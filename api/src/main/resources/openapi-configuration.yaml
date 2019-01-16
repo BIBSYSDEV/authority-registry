@@ -1,18 +1,17 @@
+# This file is required by swagger-core to generate automaticaaly the OpenApi specification
+# More information here: https://github.com/swagger-api/swagger-core
 resourcePackages:
-  - io.swagger.sample.resource
+  - no.bibsys.web
 prettyPrint: true
 cacheTTL: 0
 openAPI:
   info:
     version: '1.0'
-    title: Swagger Pet Sample App Config File
-    description: 'This is a sample server Petstore server.  You can find out more
-      about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
-      #swagger](http://swagger.io/irc/).  For this sample, you can use the api key
-      `special-key` to test the authorization filters.'
+    title: A cool entity registry
+    description: 'This is a very cool registry'
     termsOfService: http://swagger.io/terms/
     contact:
-      email: apiteam@swagger.io
+      email: coolemail@lycos.com
     license:
       name: Apache 2.0
       url: http://www.apache.org/licenses/LICENSE-2.0.html

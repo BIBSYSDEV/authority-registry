@@ -2,14 +2,10 @@ package no.bibsys.web;
 
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,13 +44,12 @@ import no.bibsys.web.security.Roles;
 @Path("/registry")
 @Consumes({ MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_JSON })
-@OpenAPIDefinition(info = @Info(title = "Entity Registry", version = "0.0",
-        description = "API documentation for Entity Registry",
-        license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
-        contact = @Contact(url = "<SERVER_PLACEHOLDER>", name = "Entity registry team",
-                email = "entity@example.org")))
-@SecurityScheme(name = ApiKeyConstants.API_KEY, paramName = ApiKeyConstants.API_KEY_PARAM_NAME,
-        type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
+//@OpenAPIDefinition(info = @Info(title = "Entity Registry", version = "0.0",
+//        description = "API documentation for Entity Registry",
+//        license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
+//        contact = @Contact(url = "<SERVER_PLACEHOLDER>", name = "Entity registry team",
+//                email = "entity@example.org")))
+@SecurityScheme(name = ApiKeyConstants.API_KEY_PARAM_NAME,type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String ENTITY_ID = "entityId";

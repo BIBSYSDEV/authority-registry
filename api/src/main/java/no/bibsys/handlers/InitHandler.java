@@ -15,9 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.core.util.Yaml;
-import io.swagger.v3.jaxrs2.Reader;
-import io.swagger.v3.oas.integration.SwaggerConfiguration;
-import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
+import io.swagger.v3.oas.integration.OpenApiConfigurationException;
+import io.swagger.v3.oas.integration.api.OpenApiContext;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -41,7 +41,6 @@ import no.bibsys.aws.tools.IoUtils;
 import no.bibsys.aws.tools.JsonUtils;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import no.bibsys.web.DatabaseResource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
@@ -99,11 +98,9 @@ public class InitHandler extends ResourceHandler {
     }
 
 
-    public void updateSwaggerHub() throws IOException, URISyntaxException {
-        Reader reader = new Reader(new SwaggerConfiguration());
-        OpenAPI openAPI = reader.read(DatabaseResource.class);
-
-        String swaggerString= Yaml.pretty(openAPI);
+    public void updateSwaggerHub()
+        throws IOException, URISyntaxException, OpenApiConfigurationException {
+        String swaggerString = generateOpenApiSpecification();
         SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId, apiVersion, swaggerOrganization);
         SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
         String apiKey = swaggerHubInfo.getSwaggerAuth();
@@ -113,7 +110,12 @@ public class InitHandler extends ResourceHandler {
         HttpPost updateRequest = swaggerDriver
                 .createUpdateRequest(swaggerString, swaggerHubInfo.getSwaggerAuth());
             swaggerDriver.executePost(updateRequest);
+    }
 
+    private String generateOpenApiSpecification()
+        throws OpenApiConfigurationException {
+        OpenApiContext context = new JaxrsOpenApiContextBuilder().buildContext(true);
+        return Yaml.pretty(context.read());
     }
 
     private Optional<String> createSwaggerJsonString() throws IOException {
