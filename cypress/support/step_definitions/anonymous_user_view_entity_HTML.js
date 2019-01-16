@@ -6,8 +6,6 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-const TEXT_HTML = 'text/html';
-
 When(/the anonymous user requests the entity specifying an Accept header with value text\/html/, () => {
   cy.log('-- anonymous_user_view_entity_HTML.js --')
   cy.get('@registryName').then((registryName) => {

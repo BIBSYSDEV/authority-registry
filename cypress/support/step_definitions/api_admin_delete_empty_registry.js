@@ -17,7 +17,6 @@ When('the API admin user uses the API key and requests deletion of an entity reg
         method: 'DELETE',
         headers: {
           'api-key': apiKey,
-          'content-type': 'application/json',
         },
       }).then(function(response) {
       });
