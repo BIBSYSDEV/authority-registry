@@ -11,31 +11,26 @@
 //      | Metatata                |
 //      | Available data profiles |
 
+import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-when('an anonymous user dereferences the base URI for the registry specifying mediatypes:', (dataTable) =>{
-	cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --')
-	let attributeArray = dataTable.rawTable;
+When('an anonymous user dereferences the base URI for the registry specifying mediatypes:', () => {
+  cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
 
-	cy.get('@registryName').then((registryName) => {
-		
-		let getEntityMetadataUrl = '/registry/' + registryName;
-		cy.request({
-			url: createRegistryEndpoint, 
-			method: 'GET',
-			headers: {
-				'content-type': 'text/html'
-			}
-		}).then((response) => {
-			cy.wrap(response).as('registryMetadata');
-		})
-	})
+  cy.get('@registryName').then((registryName) => {
+    const createRegistryEndpoint = '/registry/' + registryName;
+    cy.request({
+      url: createRegistryEndpoint,
+      method: 'GET',
+      headers: {
+        'accept': 'application/rdf',
+      },
+    }).then((response) => {
+      cy.wrap(response).as('registryMetadata');
+    });
+  });
 
-})
+});
 
-then('they see metadata related to the entity registry regarding:', (dataTable) =>{
-	let attributeArray = dataTable.rawTable;
-
-	cy.get('@registryMetadata').then((metadata) => {
-		
-	})
-})
+Then('they see metadata related to the entity registry regarding:', () => {
+  cy.get('@registryMetadata').then((metadata) => {});
+});
