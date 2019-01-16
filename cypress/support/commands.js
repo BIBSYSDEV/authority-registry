@@ -130,7 +130,6 @@ function deleteRegistry(registryName, apiKey){
     method: 'DELETE',
     headers: {
       'api-key': apiKey,
-      'content-type': 'application/json',
     },
     failOnStatusCode: false,
   }).then(function(response) {

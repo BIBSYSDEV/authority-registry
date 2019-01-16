@@ -18,7 +18,6 @@ When('the API admin user uses the API key and submits a request to delete the en
         method: 'DELETE',
         headers: {
           'api-key': apiKey,
-          'content-type': 'application/json',
         },
         failOnStatusCode: false,
       }).then(function(response) {
