@@ -35,11 +35,9 @@ public class EntityMessageBodyWriter implements MessageBodyWriter<EntityDto> {
             throws IOException, WebApplicationException {
         
         try(Writer writer = new PrintWriter(entityStream)){
-        
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile("entitytemplate");
             writer.write(template.apply(entity));
-            
             writer.flush();
         }
     }
