@@ -52,6 +52,7 @@ Then('the metadata for the entity registry is updated', () => {
         method: 'GET',
         headers: {
           'api-key': apiKey,
+          'accept': 'application/json'
         },
       }).then((response) => {
         expect(response.body.metadata.description).to.equals('updatedDescriptionValue');
