@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import no.bibsys.aws.apigateway.ServerInfo;
 import no.bibsys.aws.cloudformation.Stage;
@@ -87,13 +88,13 @@ public class InitHandlerTest {
 
     @Test
     public void updateSwaggerHubDocWithServerInfo_swaggerFile_swaggerFileWithServerInfo()
-        throws IOException {
+        throws IOException, URISyntaxException {
         ObjectNode openApiRoot=(ObjectNode)yamlParser.readTree(openApiString);
 
         ObjectNode updatedApiRoot = initHandler
             .updateSwaggerHubDocWithServerInfo(openApiRoot, serverInfo);
 
-
+        initHandler.updateSwaggerHub();
         assertThat(updatedApiRoot.has(SERVERS_FIELD),is(equalTo(true)));
         assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(URL_FIELD).asText(),is(equalTo(serverInfo.getServerUrl())));
         assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(VARIABLES_FIELD)
