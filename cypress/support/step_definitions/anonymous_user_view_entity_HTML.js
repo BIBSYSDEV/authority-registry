@@ -7,7 +7,7 @@
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
 When(/the anonymous user requests the entity specifying an Accept header with value text\/html/, () => {
-  cy.log('-- anonymous_user_view_entity_HTML.js --')
+  cy.log('-- anonymous_user_view_entity_HTML.js --');
   cy.get('@registryName').then((registryName) => {
     cy.get('@entityId').then((entityId) => {
       const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
@@ -21,6 +21,7 @@ Then('anonymous user can view the data in the given format', () => {
   cy.get('@registryName').then((registryName) => {
     cy.get('@entityId').then((entityId) => {
       const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
+      
       cy.visit(getEntityUrl);
 
       cy.get('li[data-automation-id=name]').contains('nameValue');
