@@ -65,14 +65,21 @@ public class JerseyConfig extends ResourceConfig {
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
         
+<<<<<<< HEAD
         registerExceptionMappers();
         registerMessageBodyWriters();
     }
 
     private void registerMessageBodyWriters() {
         register(RegistryMessageBodyWriter.class);
+=======
+>>>>>>> refs/remotes/origin/master
         register(EntityHtmlMessageBodyWriter.class);
+<<<<<<< HEAD
         register(EntityRdfMessageBodyWriter.class);
+=======
+        register(RegistryMessageBodyWriter.class);
+>>>>>>> refs/remotes/origin/master
     }
 
     private void registerExceptionMappers() {
@@ -86,7 +93,6 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
-        register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
     }
 
 }

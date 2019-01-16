@@ -121,7 +121,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
-        Response readResponse = getEntity(registryName, readEntity.getId());
+        Response readResponse = getEntity(registryName, readEntity.getId(), MediaType.APPLICATION_JSON);
         assertThat(readResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
@@ -206,7 +206,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         EntityDto readEntity = response.readEntity(EntityDto.class);
 
-        Response readEntityResponse = getEntity(registryName, readEntity.getId());
+        Response readEntityResponse = getEntity(registryName, readEntity.getId(), MediaType.APPLICATION_JSON);
         assertThat(readEntityResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         
         Assert.assertNotNull(readEntityResponse.getEntityTag());

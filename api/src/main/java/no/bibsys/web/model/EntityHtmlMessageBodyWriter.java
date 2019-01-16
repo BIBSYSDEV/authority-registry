@@ -38,6 +38,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     private static final String LABEL = "label";
 
     @Override
+    @Produces({MediaType.TEXT_HTML})
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
         return type == EntityDto.class;
