@@ -45,6 +45,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
@@ -93,7 +94,7 @@ public class DatabaseResource {
             @RequestBody(description = "Request object to create registry",
                     content = @Content(schema = @Schema(
                             implementation = RegistryDto.class))) RegistryDto registryDto)
-            throws JsonProcessingException {
+            throws JsonProcessingException, RegistryMetadataTableBeingCreatedException {
 
         RegistryDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
