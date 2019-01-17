@@ -157,7 +157,8 @@ public class InitHandler extends ResourceHandler {
     public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
         ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
-        return (ObjectNode) openApiDocRoot.set(SERVERS_FIELD, serversNode);
+        return ((ObjectNode) openApiDocRoot
+            .set(SERVERS_FIELD, serversNode)).put("openapi","3.0");
     }
 
 
@@ -212,7 +213,6 @@ public class InitHandler extends ResourceHandler {
     public ArrayNode serversNode(ServerInfo serverInfo) {
 
         ArrayNode servers = jsonParser.createArrayNode();
-
         ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());
         servers.add(serverNode);
