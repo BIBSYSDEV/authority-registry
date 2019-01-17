@@ -104,7 +104,6 @@ public class InitHandlerTest {
     @Test
     public void updateSwaggerHubDocWithServerInfo_swaggerFile_swaggerFileWithServerInfo()
         throws IOException, OpenApiConfigurationException, URISyntaxException {
-        initHandler.updateSwaggerHub();
 
         OpenAPI openApi = new JaxrsOpenApiContextBuilder()
             .buildContext(true).read();
