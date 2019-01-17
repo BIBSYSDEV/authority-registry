@@ -142,7 +142,7 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
-          HOSTED_ZONE_NAME: "aws.unit.no."
+          HOSTED_ZONE_NAME: "entitydata.aws.unit.no."
           APPLICATION_URL: "api.entitydata.aws.unit.no."
           STACK_NAME: !Ref AWS::StackName
           BRANCH: !Ref Branch
@@ -175,6 +175,6 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           STACK_NAME: !Ref AWS::StackName
-          HOSTED_ZONE_NAME: "aws.unit.no."
+          HOSTED_ZONE_NAME: "entitydata.aws.unit.no."
           APPLICATION_URL: "api.entitydata.aws.unit.no."
           BRANCH: !Ref Branch
