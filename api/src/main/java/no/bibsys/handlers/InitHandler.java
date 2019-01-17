@@ -53,9 +53,7 @@ public class InitHandler extends ResourceHandler {
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
 
-    private final transient String apiId;
-    private final transient String apiVersion;
-    private final transient String swaggerOrganization;
+
     private final transient String stackName;
     private final transient Stage stage;
 
@@ -70,9 +68,6 @@ public class InitHandler extends ResourceHandler {
         super(environment);
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         this.certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
-        this.apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
-        this.apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
-        this.swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
         this.stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
         authenticationService = new AuthenticationService(client, environment);
@@ -100,7 +95,6 @@ public class InitHandler extends ResourceHandler {
                 updateSwaggerRootWithServerInfoFromApiGateway(swaggerRoot);
 
             if (updatedSwaggerRootDoc.isPresent()) {
-
                 SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId,
                     apiVersion,
                     swaggerOrganization);

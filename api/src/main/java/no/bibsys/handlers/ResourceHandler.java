@@ -29,6 +29,11 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     protected final transient String stackName;
     private final transient String branch;
 
+    protected final transient String apiId;
+    protected final transient String apiVersion;
+    protected final transient String swaggerOrganization;
+
+
 
     public ResourceHandler(Environment environment) {
         super();
@@ -37,6 +42,9 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         this.applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
         this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
+        this.apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
+        this.apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
+        this.swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
     }
 
     protected UrlUpdater createUrlUpdater() {
