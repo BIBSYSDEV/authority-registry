@@ -69,6 +69,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryMessageBodyWriter.class);
         register(RegistryMessageJsonBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
+        register(RegistryMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {
