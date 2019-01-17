@@ -28,7 +28,8 @@ import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
-import no.bibsys.web.model.RegistryMessageBodyWriter;
+import no.bibsys.web.model.EntityRdfMessageBodyWriter;
+import no.bibsys.web.model.RegistryHtmlMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 public class JerseyConfig extends ResourceConfig {
@@ -46,7 +47,8 @@ public class JerseyConfig extends ResourceConfig {
                 new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = new RegistryManager(client);
-        RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
+        RegistryService registryService = 
+                new RegistryService(registryManager, authenticationService, environmentReader);
 
         register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);
@@ -56,15 +58,20 @@ public class JerseyConfig extends ResourceConfig {
 
         register(new AuthenticationFilter(authenticationService));
 
-        registerExceptionMappers();
 
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
         
+        registerExceptionMappers();
+        registerMessageBodyWriters();
+    }
+
+    private void registerMessageBodyWriters() {
+        register(RegistryHtmlMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
-        register(RegistryMessageBodyWriter.class);
+        register(EntityRdfMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {
