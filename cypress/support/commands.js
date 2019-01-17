@@ -100,41 +100,41 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 
 // create entity in existing registry
 function createEntity(registryName, apiKey, dataFile) {
-	cy.log('creating entity...')
-	
-	const entityAddUrl = '/registry/' + registryName + '/entity';
-	cy.fixture(dataFile) // add testData to registry
-	.then(function (testData) {
-		cy.request({
-			url: entityAddUrl,
-			method: 'POST',
-			body: testData,
-			headers: {
-				'api-key': apiKey,
-				'content-type': 'application/json'
-			}
-		}).then(function (response) {
-			const entityId = response.body.id
-			cy.wrap(entityId).as('entityId');
-		})
-	})
+  cy.log('creating entity...');
+
+  const entityAddUrl = '/registry/' + registryName + '/entity';
+  cy.fixture(dataFile) // add testData to registry
+  .then((testData) => {
+    cy.request({
+      url: entityAddUrl,
+      method: 'POST',
+      body: testData,
+      headers: {
+        'api-key': apiKey,
+        'content-type': 'application/json',
+      },
+    }).then(function (response) {
+      const entityId = response.body.id;
+      cy.wrap(entityId).as('entityId');
+    });
+  });
 }
 
 function deleteRegistry(registryName, apiKey){
-	cy.log('deleting registry...')
+  cy.log('deleting registry...');
 
-	cy.log('api-key = ' + apiKey)
+  cy.log('api-key = ' + apiKey);
 
-	const url = '/registry/' + registryName
-	cy.request({
-		url: url,
-		method: 'DELETE',
-		headers: {
-			'api-key': apiKey,
-			'content-type': 'application/json'
-		},
-		failOnStatusCode: false
-	}).then(function (response) {
-		cy.log('delete registry status: ' + response.status)
-	})
+  const url = '/registry/' + registryName;
+  cy.request({
+    url: url,
+    method: 'DELETE',
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json'
+    },
+    failOnStatusCode: false
+  }).then((response) => {
+    cy.log('delete registry status: ' + response.status);
+  });
 }
