@@ -215,12 +215,6 @@ public class InitHandler extends ResourceHandler {
 
         ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());
-
-        ObjectNode variablesNode = jsonParser.createObjectNode();
-        ObjectNode basePathNode = jsonParser.createObjectNode();
-        basePathNode.put(DEFAULT_FIELD, serverInfo.getStage());
-        variablesNode.set(BASE_PATH_FIELD, basePathNode);
-        serverNode.set(VARIABLES_FIELD, variablesNode);
         servers.add(serverNode);
         return servers;
 
