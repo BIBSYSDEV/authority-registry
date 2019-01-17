@@ -49,6 +49,7 @@ import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
