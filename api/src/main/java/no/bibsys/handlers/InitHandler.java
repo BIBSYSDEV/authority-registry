@@ -106,7 +106,6 @@ public class InitHandler extends ResourceHandler {
                     swaggerOrganization);
                 SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
                 String apiKey = swaggerHubInfo.getSwaggerAuth();
-
                 deletePreviousSwaggerHubSpecification(swaggerDriver, apiKey);
                 updateSwaggerHubSpecification(updatedSwaggerRootDoc.get(), swaggerHubInfo, swaggerDriver);
             }
