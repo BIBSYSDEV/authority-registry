@@ -50,6 +50,7 @@ public class InitHandler extends ResourceHandler {
     public static final String VARIABLES_FIELD = "variables";
     public static final String SERVERS_FIELD = "servers";
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
+    public static final String SWAGGER_DOC_VERSION = "3.0.0";
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
 
@@ -152,7 +153,7 @@ public class InitHandler extends ResourceHandler {
         ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
         return ((ObjectNode) openApiDocRoot
-            .set(SERVERS_FIELD, serversNode)).put("openapi","3.0");
+            .set(SERVERS_FIELD, serversNode)).put("openapi", SWAGGER_DOC_VERSION);
     }
 
 
