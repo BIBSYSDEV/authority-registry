@@ -21,6 +21,7 @@ import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.models.OpenAPI;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.apigateway.ServerInfo;
 import no.bibsys.aws.cloudformation.Stage;
@@ -32,7 +33,7 @@ public class InitHandlerTest {
 
 
     public static final String STAGE = "STAGE";
-    private static final String STACK_NAME_VALUE= "arn:someStack";
+    private static final String STACK_NAME_VALUE= "arn:aws:cloudformation:eu-west-1:933878624978:stack/aut-reg-jersey-2-author-service-stack-test/759d2d50-18d0-11e9-8173-061b9f50c2ce";
     private final transient InitHandler initHandler;
 
     private final ObjectMapper jsonParser =Json.mapper();
@@ -50,6 +51,15 @@ public class InitHandlerTest {
                 else if(input.equalsIgnoreCase(EnvironmentVariables.STACK_NAME)){
                     return STACK_NAME_VALUE;
                 }
+                else if(input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_OWNER)){
+                    return "axthosarouris";
+                }
+                else if(input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_ID)){
+                    return "aut-reg-service";
+                }
+                else if(input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_VERSION)){
+                    return "1.0";
+                }
 
                 return invocation.getArgument(0);
 
@@ -62,7 +72,8 @@ public class InitHandlerTest {
 
 
     @Test
-    public void serversNode_serverInfo_ObjectNodeWithCorrectServerInformation() throws IOException {
+    public void serversNode_serverInfo_ObjectNodeWithCorrectServerInformation()
+        throws IOException, URISyntaxException {
 
         ArrayNode serversNode = initHandler.serversNode(serverInfo);
 
@@ -92,7 +103,9 @@ public class InitHandlerTest {
 
     @Test
     public void updateSwaggerHubDocWithServerInfo_swaggerFile_swaggerFileWithServerInfo()
-        throws IOException, OpenApiConfigurationException {
+        throws IOException, OpenApiConfigurationException, URISyntaxException {
+        initHandler.updateSwaggerHub();
+
         OpenAPI openApi = new JaxrsOpenApiContextBuilder()
             .buildContext(true).read();
 
