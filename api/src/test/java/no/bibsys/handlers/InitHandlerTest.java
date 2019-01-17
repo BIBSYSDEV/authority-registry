@@ -1,10 +1,7 @@
 package no.bibsys.handlers;
 
-import static no.bibsys.handlers.InitHandler.BASE_PATH_FIELD;
-import static no.bibsys.handlers.InitHandler.DEFAULT_FIELD;
 import static no.bibsys.handlers.InitHandler.SERVERS_FIELD;
 import static no.bibsys.handlers.InitHandler.URL_FIELD;
-import static no.bibsys.handlers.InitHandler.VARIABLES_FIELD;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
@@ -90,12 +87,7 @@ public class InitHandlerTest {
         assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).isObject());
         assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).has(URL_FIELD));
         assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).get(URL_FIELD).isTextual());
-        assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).has(VARIABLES_FIELD));
-        assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).get(VARIABLES_FIELD).has(BASE_PATH_FIELD));
-        assertTrue(expectedRoot.get(SERVERS_FIELD).get(0).get(VARIABLES_FIELD)
-            .get(BASE_PATH_FIELD).has(DEFAULT_FIELD));
-        assertThat(expectedRoot.get(SERVERS_FIELD).get(0).get(VARIABLES_FIELD)
-            .get(BASE_PATH_FIELD).get(DEFAULT_FIELD).asText(),is(equalTo(Stage.TEST.toString())));
+
 
 
     }
@@ -108,21 +100,17 @@ public class InitHandlerTest {
         OpenAPI openApi = new JaxrsOpenApiContextBuilder()
             .buildContext(true).read();
 
-        String openApiString=Json.pretty(openApi);
+        String openApiString = Json.pretty(openApi);
 
-        ObjectNode openApiRoot=(ObjectNode) jsonParser.readTree(openApiString);
+        ObjectNode openApiRoot = (ObjectNode) jsonParser.readTree(openApiString);
 
         ObjectNode updatedApiRoot = initHandler
             .updateSwaggerHubDocWithServerInfo(openApiRoot, serverInfo);
 
+        assertThat(updatedApiRoot.has(SERVERS_FIELD), is(equalTo(true)));
+        assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(URL_FIELD).asText(),
+            is(equalTo(serverInfo.getServerUrl())));
 
-        assertThat(updatedApiRoot.has(SERVERS_FIELD),is(equalTo(true)));
-        assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(URL_FIELD).asText(),is(equalTo(serverInfo.getServerUrl())));
-        assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(VARIABLES_FIELD)
-            .get(BASE_PATH_FIELD)
-            .get(DEFAULT_FIELD)
-            .asText(),is(equalTo(serverInfo.getStage())));
     }
-
 
 }
