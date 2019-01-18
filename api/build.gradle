@@ -44,6 +44,11 @@ dependencies {
     compile ("org.apache.jena:jena-arq:3.9.0")
 	
 
+	// RDF
+	compile group: 'org.apache.jena', name: 'jena-core', version: '3.9.0'
+    compile group: 'org.apache.jena', name: 'jena-arq', version: '3.9.0'
+	
+
     // for testing
     testCompile ("org.hamcrest:hamcrest-junit:2.0.0.0")
     testCompile ("org.mockito:mockito-core:2.23.0")

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package no.bibsys.web.model;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ import com.google.gson.Gson;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
-public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
+public class RegistryHtmlMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
 
     private static final String ID = "id";
     private static final String METADATA = "metadata";
@@ -59,5 +58,3 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
         }
     }
 }
-=======
->>>>>>> refs/heads/AUTREG-123_Create_registry_rdf_presentation

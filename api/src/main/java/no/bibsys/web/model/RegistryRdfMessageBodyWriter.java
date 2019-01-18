@@ -1,4 +1,3 @@
-
 package no.bibsys.web.model;
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +9,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -27,22 +27,23 @@ import org.apache.jena.riot.RDFDataMgr;
     MediaTypeRdf.APPLICATION_RDF_XML, 
     MediaTypeRdf.APPLICATION_N_TRIPLES, 
     MediaTypeRdf.APPLICATION_JSON_LD
-    })
-public class EntityRdfMessageBodyWriter implements MessageBodyWriter<EntityDto> {
+})
+public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return type == EntityDto.class;
+
+        return type == RegistryDto.class;
     }
 
     @Override
-    public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+    public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-            throws IOException {
+                    throws IOException, WebApplicationException {
 
         Model model = ModelFactory.createDefaultModel();
 
-        String body = entity.getBody();
+        String body = registry.getMetadata();
         InputStream stream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
         RDFDataMgr.read(model, stream, Lang.JSONLD);
         
@@ -70,5 +71,4 @@ public class EntityRdfMessageBodyWriter implements MessageBodyWriter<EntityDto> 
         
         RDFDataMgr.write(entityStream, model, outputLang);
     }
-
 }

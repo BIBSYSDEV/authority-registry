@@ -27,8 +27,8 @@ import com.google.gson.Gson;
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
     private static final String NO_LABEL = "(No label)";
-    private static final String VALUE = "value";
-    private static final String LANG = "lang";
+    private static final String VALUE = "@value";
+    private static final String LANG = "@language";
     private static final String LANG_NO = "no";
     private static final String LANG_EN = "en";
     private static final String PREFERRED_LABEL = "preferredLabel";
