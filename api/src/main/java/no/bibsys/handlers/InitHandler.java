@@ -48,7 +48,6 @@ public class InitHandler extends ResourceHandler {
     public static final String URL_FIELD = "url";
     public static final String SERVERS_FIELD = "servers";
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
-    public static final String SWAGGER_DOC_VERSION = "3.0.0";
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
 
@@ -72,7 +71,6 @@ public class InitHandler extends ResourceHandler {
         authenticationService = new AuthenticationService(client, environment);
     }
 
-
     @Override
     protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery,
         Context context) throws IOException, URISyntaxException {
@@ -80,11 +78,9 @@ public class InitHandler extends ResourceHandler {
         updateUrl();
         updateSwaggerHub();
         return new SimpleResponse("Success initializing resources.");
-
     }
 
-
-    public void updateSwaggerHub()
+    private void updateSwaggerHub()
         throws IOException, URISyntaxException {
 
         try{
@@ -110,8 +106,6 @@ public class InitHandler extends ResourceHandler {
             logger.error(e.getMessage());
             throw new IOException(e);
         }
-
-
     }
 
     private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc,
@@ -135,7 +129,6 @@ public class InitHandler extends ResourceHandler {
         return Json.pretty(context.read());
     }
 
-
     private Optional<ObjectNode> updateSwaggerRootWithServerInfoFromApiGateway(ObjectNode swaggerDocRoot)
         throws IOException {
         Optional<ServerInfo> serverInfo = readServerInfo();
@@ -145,15 +138,13 @@ public class InitHandler extends ResourceHandler {
 
     }
 
-
     @VisibleForTesting
     public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
         ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
         return ((ObjectNode) openApiDocRoot
-            .set(SERVERS_FIELD, serversNode)).put("openapi", SWAGGER_DOC_VERSION);
+            .set(SERVERS_FIELD, serversNode));
     }
-
 
     private void createApiKeysTable() {
         try {
@@ -164,7 +155,6 @@ public class InitHandler extends ResourceHandler {
             logger.warn(e.getErrorMessage());
         }
     }
-
 
     private void updateUrl() {
         logger.debug("Updating URL.");
@@ -183,7 +173,6 @@ public class InitHandler extends ResourceHandler {
 
     }
 
-
     private Optional<ServerInfo> readServerInfo() throws IOException {
         String restApiId = restApiId(stackName);
         AmazonApiGateway apiGatewayClient = AmazonApiGatewayClientBuilder.defaultClient();
@@ -193,7 +182,6 @@ public class InitHandler extends ResourceHandler {
         return apiGatewayApiInfo.readServerInfo();
     }
 
-
     private String restApiId(String stackName) {
         StackResources stackResources = new StackResources(stackName);
         String result = stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
@@ -201,18 +189,12 @@ public class InitHandler extends ResourceHandler {
         return result;
     }
 
-
-    @VisibleForTesting
-    public ArrayNode serversNode(ServerInfo serverInfo) {
+    private ArrayNode serversNode(ServerInfo serverInfo) {
 
         ArrayNode servers = jsonParser.createArrayNode();
         ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());
         servers.add(serverNode);
         return servers;
-
-
     }
-
-
 }
