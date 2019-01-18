@@ -35,7 +35,7 @@ allprojects {
     apply plugin: 'pmd'
 
     checkstyle {
-        configFile = rootProject.resources.text.fromFile('config/checkstyle/google_checks.xml').asFile()
+        configFile = rootProject.resources.text.fromFile('config/checkstyle/checkstyle.xml').asFile()
         showViolations = true
         toolVersion '8.12'
     }
@@ -51,7 +51,7 @@ allprojects {
 
     pmd {
         toolVersion = "6.7.0"
-        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/potential-future-pmd.xml')
+        ruleSetConfig = rootProject.resources.text.fromFile('config/pmd/pmd.xml')
         ruleSets = []
         ignoreFailures = false
     }
