@@ -18,7 +18,7 @@ When('the anonymous user requests the entity', () => {
         url: getEntityUrl,
         headers: {
           accept: 'application/json',
-        }
+        },
       }).then((response) => {
         cy.wrap(response).as('response');
       });
