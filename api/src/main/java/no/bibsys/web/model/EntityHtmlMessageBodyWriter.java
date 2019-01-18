@@ -22,7 +22,7 @@ import javax.ws.rs.ext.Provider;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.google.gson.Gson;
+import no.bibsys.aws.tools.JsonUtils;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
@@ -53,9 +53,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
 
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
 
-        Gson gson = new Gson();
-        
-        LinkedHashMap<?,?> bodyMap = gson.fromJson(entity.getBody(), LinkedHashMap.class);
+        LinkedHashMap<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), LinkedHashMap.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
         List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);

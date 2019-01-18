@@ -1,0 +1,418 @@
+openapi: 3.0.1
+info:
+  title: Entity Registry
+  description: API documentation for Entity Registry
+  contact:
+    name: Entity registry team
+    url: <SERVER_PLACEHOLDER>
+    email: entity@example.org
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "0.0"
+paths:
+  /registry/{registryName}/entity/{entityId}:
+    get:
+      operationId: getEntity
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to get entity from
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: Id of entity to get
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/html: {}
+            application/json: {}
+      security:
+      - apiKey: []
+    put:
+      operationId: updateEntity
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry in which to update entity
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: Id of entity to be updated
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Entity to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityDto'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+    delete:
+      operationId: deleteEntity
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to delete entity from
+        required: true
+        schema:
+          type: string
+      - name: entityId
+        in: path
+        description: Id of entity to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry:
+    get:
+      operationId: getRegistryList
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/html: {}
+            application/json: {}
+    post:
+      operationId: createRegistry
+      requestBody:
+        description: Request object to create registry
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistryDto'
+      responses:
+        default:
+          description: default response
+          content:
+            text/html: {}
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry/{registryName}:
+    get:
+      operationId: getRegistryMetadata
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of new registry
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            text/html: {}
+            application/json: {}
+    put:
+      operationId: updateRegistryMetadata
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of new registry
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Validation schema
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistryDto'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+    delete:
+      operationId: deleteRegistry
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry/{registryName}/status:
+    get:
+      operationId: registryStatus
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry in which to get status
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+  /registry/{registryName}/schema:
+    get:
+      operationId: getRegistrySchema
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to get schema
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+    put:
+      operationId: updateRegistrySchema
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Validation schema
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry/{registryName}/apikey:
+    put:
+      operationId: replaceApiKey
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry in which to update entity
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Old apikey
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry/{registryName}/entity:
+    get:
+      operationId: entitiesSummary
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to get entity summary from
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+    post:
+      operationId: createEntity
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to add to
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Entity to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntityDto'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /registry/{registryName}/upload:
+    post:
+      operationId: uploadEntities
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      - name: registryName
+        in: path
+        description: Name of registry to add to
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Array of Entity to upload
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EntityDto'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json: {}
+      security:
+      - apiKey: []
+  /ping:
+    get:
+      operationId: ping
+      parameters:
+      - name: api-key
+        in: header
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+      x-amazon-apigateway-integration:
+        passthroughBehavior: when_no_match
+        requestParameters:
+          integration.request.header.api-key: method.request.header.api-key
+        httpMethod: POST
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations
+components:
+  schemas:
+    EntityDto:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+        path:
+          type: string
+        body:
+          type: string
+    RegistryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        apiKey:
+          type: string
+        path:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: object
+        schema:
+          type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: api-key
+      in: header

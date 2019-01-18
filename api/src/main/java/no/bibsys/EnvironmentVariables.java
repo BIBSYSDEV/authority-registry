@@ -24,5 +24,13 @@ public class EnvironmentVariables {
     /** Git branch */
     public static final String BRANCH="BRANCH";
 
+    public static final String SWAGGER_API_ID = "SWAGGER_API_ID";
+
+    public static final String SWAGGER_API_VERSION = "SWAGGER_API_VERSION";
+
+    public static final String SWAGGER_API_OWNER = "SWAGGER_API_OWNER";
+
+    public static final String SWAGGER_API_KEY = "SWAGGER_API_KEY";
+
 
 }

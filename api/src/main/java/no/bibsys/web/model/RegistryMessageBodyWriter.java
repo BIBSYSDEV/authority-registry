@@ -1,25 +1,22 @@
 package no.bibsys.web.model;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.google.gson.Gson;
+import no.bibsys.utils.JsonUtils;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
@@ -42,9 +39,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
 
         Map<String, Object> registryMap = new ConcurrentHashMap<>();
 
-        Gson gson = new Gson();
-        
-        LinkedHashMap<?,?> metadataMap = gson.fromJson(registry.getMetadata(), LinkedHashMap.class);
+        Map<String,Object> metadataMap = (Map<String,Object>)JsonUtils.newJsonParser().convertValue(registry.getMetadata(), Map.class);
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Map;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 
@@ -49,13 +50,14 @@ public class SampleData {
         registryDto.setId(registryName);
 
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode metadata = mapper.createObjectNode();
+        Map<String,Object> metadata = (Map<String, Object>)mapper.convertValue(
+            mapper.createObjectNode(), Map.class);
       
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");
         
-        registryDto.setMetadata(mapper.writeValueAsString(metadata));
+        registryDto.setMetadata(metadata);
 
         return registryDto;
     }

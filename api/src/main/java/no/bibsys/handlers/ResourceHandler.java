@@ -1,6 +1,5 @@
 package no.bibsys.handlers;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
@@ -14,13 +13,13 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
+import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
- *  Class for common methods of InitHandler and DestroyHandler.
+ * Class for common methods of InitHandler and DestroyHandler.
  */
 public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
-
 
 
     private final transient Stage stage;
@@ -30,19 +29,26 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     protected final transient String stackName;
     private final transient String branch;
 
+    protected final transient String apiId;
+    protected final transient String apiVersion;
+    protected final transient String swaggerOrganization;
+
+
 
     public ResourceHandler(Environment environment) {
         super();
-
-        hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
-        stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
-        applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
+        this.hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
+        this.stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
+        this.applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
-        this.branch=environment.readEnv(EnvironmentVariables.BRANCH);
+        this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
+        this.apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
+        this.apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
+        this.swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
     }
 
     protected UrlUpdater createUrlUpdater() {
-    StaticUrlInfo urlInfo=initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
+        StaticUrlInfo urlInfo = initStaticUrlInfo(hostedZoneName, applicationUrl, stage, branch);
 
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
@@ -60,33 +66,28 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     }
 
 
-
     protected StaticUrlInfo initStaticUrlInfo(String hostedZoneName,
         String applicationUrl,
         Stage stage,
         String gitBranch) {
 
-        StaticUrlInfo staticUrlInfo=new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
+        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
             String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
-            staticUrlInfo=new StaticUrlInfo(hostedZoneName, newUrl,
+            staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl,
                 staticUrlInfo.getStage());
         }
         if (Stage.TEST.equals(stage)) {
-            String newUrl="test."+staticUrlInfo.getRecordSetName();
-            staticUrlInfo=new StaticUrlInfo(staticUrlInfo.getZoneName(),
+            String newUrl = "test." + staticUrlInfo.getRecordSetName();
+            staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(),
                 newUrl,
                 staticUrlInfo.getStage());
         }
         return staticUrlInfo;
 
-
     }
-
-
-
 
 
 }

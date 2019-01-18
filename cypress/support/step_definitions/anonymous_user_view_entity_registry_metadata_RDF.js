@@ -22,7 +22,7 @@ When('an anonymous user dereferences the base URI for the registry specifying me
       url: createRegistryEndpoint,
       method: 'GET',
       headers: {
-        'accept': 'application/rdf',
+        accept: 'application/rdf',
       },
     }).then((response) => {
       cy.wrap(response).as('registryMetadata');
