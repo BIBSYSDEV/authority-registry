@@ -1,10 +1,7 @@
 package no.bibsys.handlers;
 
-<<<<<<< HEAD
 import org.apache.commons.codec.digest.DigestUtils;
 
-=======
->>>>>>> refs/heads/master
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
@@ -19,7 +16,6 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
@@ -48,20 +44,13 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         this.applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
         this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
-<<<<<<< HEAD
-=======
         this.apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
         this.apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
         this.swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
->>>>>>> refs/heads/master
     }
 
     protected UrlUpdater createUrlUpdater() {
-<<<<<<< HEAD
-        StaticUrlInfo urlInfo = initStaticUrlInfo(hostedZoneName,applicationUrl,stage,branch);
-=======
         StaticUrlInfo urlInfo = initStaticUrlInfo(hostedZoneName, applicationUrl, stage, branch);
->>>>>>> refs/heads/master
 
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
@@ -84,11 +73,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         Stage stage,
         String gitBranch) {
 
-<<<<<<< HEAD
         StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
-=======
-        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
->>>>>>> refs/heads/master
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
