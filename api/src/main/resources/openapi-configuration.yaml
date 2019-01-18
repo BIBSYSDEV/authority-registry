@@ -1,0 +1,17 @@
+# This file is required by swagger-core to generate automaticaaly the OpenApi specification
+# More information here: https://github.com/swagger-api/swagger-core
+resourcePackages:
+  - no.bibsys.web
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+  info:
+    version: '1.0'
+    title: A cool entity registry
+    description: 'This is a very cool registry'
+    termsOfService: http://swagger.io/terms/
+    contact:
+      email: coolemail@lycos.com
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html

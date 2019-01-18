@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package no.bibsys.web.model;
 
 import java.io.IOException;
@@ -59,5 +58,3 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
         }
     }
 }
-=======
->>>>>>> refs/heads/AUTREG-123_Create_registry_rdf_presentation

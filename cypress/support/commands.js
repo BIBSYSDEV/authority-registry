@@ -71,6 +71,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
         failOnStatusCode: false,
         headers: {
           'api-key': apiAdminApiKey,
+          accept: 'application/json',
           'content-type': 'application/json',
         },
       }).then((response) => {

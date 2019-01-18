@@ -1,5 +1,6 @@
 package no.bibsys;
 
+import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,11 +28,13 @@ import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
+import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryHtmlMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
+@SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
@@ -44,7 +47,7 @@ public class JerseyConfig extends ResourceConfig {
         EntityManager entityManager = new EntityManager(client);
         EntityService entityService = new EntityService(entityManager);
         AuthenticationService authenticationService =
-                new AuthenticationService(client, environmentReader);
+            new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = new RegistryManager(client);
         RegistryService registryService = 
@@ -63,7 +66,9 @@ public class JerseyConfig extends ResourceConfig {
 
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
-        
+
+        register(RegistryMessageBodyWriter.class);
+        register(RegistryMessageJsonBodyWriter.class);
         registerExceptionMappers();
         registerMessageBodyWriters();
     }
@@ -85,6 +90,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
+        register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
     }
 
 }

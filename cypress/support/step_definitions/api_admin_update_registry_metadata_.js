@@ -18,7 +18,7 @@ When('the API admin user changes the metadata for the entity registry', () => {
         method: 'GET',
         headers: {
           'api-key': apiKey,
-          'accept': 'application/json',
+          accept: 'application/json',
         },
       }).then((response) => {
         expect(response.body.metadata.description).to.equals('descriptionValue');
@@ -52,7 +52,7 @@ Then('the metadata for the entity registry is updated', () => {
         method: 'GET',
         headers: {
           'api-key': apiKey,
-          'accept': 'application/json'
+          accept: 'application/json',
         },
       }).then((response) => {
         expect(response.body.metadata.description).to.equals('updatedDescriptionValue');
