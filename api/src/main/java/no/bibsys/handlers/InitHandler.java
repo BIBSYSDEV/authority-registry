@@ -48,6 +48,12 @@ public class InitHandler extends ResourceHandler {
     public static final String URL_FIELD = "url";
     public static final String SERVERS_FIELD = "servers";
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
+    public static final String SUCCESS_MESSAGE = "Success initializing resources.";
+    public static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub "
+        + "specification";
+    public static final String UPDATING_URL_LOGGER_DEBUG = "Could not update Static URL settings";
+    public static final String CHANGE_DEBUG_MESSAGE = "Change:{}";
+    public static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
 
@@ -77,7 +83,7 @@ public class InitHandler extends ResourceHandler {
         createApiKeysTable();
         updateUrl();
         updateSwaggerHub();
-        return new SimpleResponse("Success initializing resources.");
+        return new SimpleResponse(SUCCESS_MESSAGE);
     }
 
     private void updateSwaggerHub()
@@ -99,7 +105,7 @@ public class InitHandler extends ResourceHandler {
                 updateSwaggerHubSpecification(updatedSwaggerRootDoc.get(), swaggerHubInfo, swaggerDriver);
             }
             else{
-                logger.error("Could not generate SwaggerHub specification");
+                logger.error(FAILURE_WITH_SWAGGERHUB);
             }
         }
         catch(OpenApiConfigurationException e){
@@ -135,15 +141,14 @@ public class InitHandler extends ResourceHandler {
         Optional<ObjectNode> newDoc = serverInfo
             .map(si -> updateSwaggerHubDocWithServerInfo(swaggerDocRoot, si));
         return newDoc;
-
     }
 
     @VisibleForTesting
     public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
         ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
-        return ((ObjectNode) openApiDocRoot
-            .set(SERVERS_FIELD, serversNode));
+        return (ObjectNode) openApiDocRoot
+            .set(SERVERS_FIELD, serversNode);
     }
 
     private void createApiKeysTable() {
@@ -157,7 +162,6 @@ public class InitHandler extends ResourceHandler {
     }
 
     private void updateUrl() {
-        logger.debug("Updating URL.");
         UrlUpdater urlUpdater = createUrlUpdater();
 
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater
@@ -165,12 +169,11 @@ public class InitHandler extends ResourceHandler {
         List<String> changeList = request.map(req -> req.getChangeBatch().getChanges().stream())
             .orElse(Stream.empty())
             .map(Change::toString).collect(Collectors.toList());
-        changeList.forEach(change -> logger.debug("Change:{}", change));
+        changeList.forEach(change -> logger.debug(CHANGE_DEBUG_MESSAGE, change));
         ChangeResourceRecordSetsResult result = request
             .map(urlUpdater::executeUpdate)
-            .orElseThrow(() -> new NotFoundException("Could not update Static URL settings"));
+            .orElseThrow(() -> new NotFoundException(UPDATING_URL_LOGGER_DEBUG));
         logger.info(result.toString());
-
     }
 
     private Optional<ServerInfo> readServerInfo() throws IOException {
@@ -184,13 +187,12 @@ public class InitHandler extends ResourceHandler {
 
     private String restApiId(String stackName) {
         StackResources stackResources = new StackResources(stackName);
-        String result = stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
-            .orElseThrow(() -> new NotFoundException("RestApi not Found for stack:" + stackName));
-        return result;
+        return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
+            .orElseThrow(() -> new NotFoundException(STACK_NOT_FOUND_MESSAGE + stackName));
     }
 
-    private ArrayNode serversNode(ServerInfo serverInfo) {
-
+    @VisibleForTesting
+    public ArrayNode serversNode(ServerInfo serverInfo) {
         ArrayNode servers = jsonParser.createArrayNode();
         ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());
