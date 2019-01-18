@@ -44,10 +44,8 @@ import org.slf4j.LoggerFactory;
 
 public class InitHandler extends ResourceHandler {
 
-    public static final String BASE_PATH_FIELD = "basePath";
+
     public static final String URL_FIELD = "url";
-    public static final String DEFAULT_FIELD = "default";
-    public static final String VARIABLES_FIELD = "variables";
     public static final String SERVERS_FIELD = "servers";
     private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
     public static final String SWAGGER_DOC_VERSION = "3.0.0";
