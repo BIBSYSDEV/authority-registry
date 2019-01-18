@@ -19,9 +19,9 @@ wrapper {
 jar.enabled = false
 
 dependencies {
-    compile project(":api")
-    compile project(":cypress")
-    compile project(":validation")
+    implementation project(":api")
+    implementation project(":cypress")
+    implementation project(":validation")
     
 }
 
@@ -55,6 +55,10 @@ allprojects {
         ruleSets = []
         ignoreFailures = false
     }
+
+    test{
+        failFast = true
+    }
     
     
 }
@@ -68,18 +72,19 @@ subprojects {
         mavenCentral()
     }
 
+
     dependencies {
 
-	    compile ("io.symphonia:lambda-logging:1.0.3")
+	    implementation ("io.symphonia:lambda-logging:1.0.3")
 
         //useful libraries from google
-        compile ("com.google.guava:guava:26.0-jre")
+        implementation ("com.google.guava:guava:26.0-jre")
 
         //libraries for more expressive testing
-        testCompile ("org.hamcrest:hamcrest-all:1.3")
+        testImplementation ("org.hamcrest:hamcrest-all:1.3")
 
         //JUnit should be the same version as spring
-        testCompile ("junit:junit:4.12")
+        testImplementation ("junit:junit:4.12")
 
         shadowJar { zip64 true }
     }
