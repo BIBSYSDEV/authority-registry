@@ -18,9 +18,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.jknack.handlebars.Handlebars;
@@ -32,8 +29,6 @@ import no.bibsys.aws.tools.JsonUtils;
 @Produces(MediaType.TEXT_HTML)
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     
-    private static final transient Logger logger = LoggerFactory.getLogger(EntityHtmlMessageBodyWriter.class);
-
     private static final String NO_LABEL = "(No label)";
     private static final String VALUE = "@value";
     private static final String LANG = "@language";
