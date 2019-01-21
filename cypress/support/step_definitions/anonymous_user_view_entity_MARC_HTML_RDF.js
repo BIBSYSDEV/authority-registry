@@ -5,25 +5,6 @@ When('the anonymous user requests the entity specifying an Accept header with va
   const formats = dataTable.rawTable;
   cy.wrap(formats).as('formats');
   let resultMap = [];
-
-  cy.get('@registryName').then((registryName) => {
-    cy.get('@entityId').then((entityId) => {
-      const getUrl = 'registry/' + registryName + '/entity/' + entityId;
-      formats.forEach(format => {
-        cy.request({
-          url: getUrl,
-          headers: {
-            Accept: format,
-          },
-        }).then((response) => {
-          resultMap.push({
-            format: response,
-          });
-        });
-      });
-      cy.wrap(resultMap).as('results');
-    });
-  });
 });
 
 // Scenario: An anonymous user views an entity specifying a specific MARC format
@@ -95,12 +76,22 @@ Then('anonymous user can view the data in the serialization and profile requeste
 // Then anonymous user can view the data in the given serialization
 
 Then('anonymous user can view the data in the given serialization', () => {
-  cy.get('@getResponse').then((response) => {
-    cy.get('@format').then((format) => {
-      //			expect(response.headers['content-type']).contains(format)
-      //			test response body for something?
-      //			set up multiple tests for all the formats?
+  cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --')
+  cy.get('@registryName').then((registryName) => {
+    cy.get('@entityId').then((entityId) => {
+      const getUrl = 'registry/' + registryName + '/entity/' + entityId;
+      cy.get('@formats').then((formats) => {
+        formats.forEach(format => {
+          cy.request({
+            url: getUrl,
+            headers: {
+              Accept: format[0],
+            },
+          }).then((response) => {
+            expect(response.headers['content-type']).to.be.equal(format[0]);
+          });
+        });
+      });
     });
   });
-
 });

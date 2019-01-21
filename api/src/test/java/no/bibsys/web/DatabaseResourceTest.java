@@ -495,6 +495,64 @@ public class DatabaseResourceTest extends JerseyTest {
     }
     
     @Test
+    public void getEntity_applicationNtriples_entityAsNtriples() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsTriples = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_N_TRIPLES);
+        String triples = entityAsTriples.readEntity(String.class);
+        
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> \"Animals\"@en ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> \"Dyr\"@no ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> \"http://example.org/fakevoc/c00001\" ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> \"http://example.org/fakevoc/c00003\" ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#inScheme> \"http://example.org/fakevoc\" ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#alternativeLabel> \"Animalia\"@no ."));
+        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <bsa:Concept> ."));
+                    
+    }
+    
+    @Test
+    public void getEntity_applicationRdfXml_entityAsRdfXml() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsRdfXml = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_RDF_XML);
+        String rdfXml = entityAsRdfXml.readEntity(String.class);
+        
+        assertThat(rdfXml, containsString("<j.0:Concept rdf:about=\"http://example.org/fakevoc/c00000\">"));
+        assertThat(rdfXml, containsString("<j.1:preferredLabel xml:lang=\"en\">Animals</j.1:preferredLabel>"));
+        assertThat(rdfXml, containsString("<j.1:preferredLabel xml:lang=\"no\">Dyr</j.1:preferredLabel>"));
+        assertThat(rdfXml, containsString("<j.1:narrower>http://example.org/fakevoc/c00001</j.1:narrower>"));
+        assertThat(rdfXml, containsString("<j.1:narrower>http://example.org/fakevoc/c00003</j.1:narrower>"));
+        assertThat(rdfXml, containsString("<j.1:inScheme>http://example.org/fakevoc</j.1:inScheme>"));
+        assertThat(rdfXml, containsString("<j.1:alternativeLabel xml:lang=\"no\">Animalia</j.1:alternativeLabel>"));
+    }
+    
+    @Test
+    public void getEntity_applicationTurtle_entityAsTurtle() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsTurtle = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_TURTLE);
+        String turtle = entityAsTurtle.readEntity(String.class);
+        
+        assertThat(turtle, containsString("<http://example.org/fakevoc/c00000>"));
+        assertThat(turtle, containsString("<http://example.org/vocab#alternativeLabel>"));
+        assertThat(turtle, containsString("\"Animalia\"@no ;"));
+        assertThat(turtle, containsString("<http://example.org/vocab#inScheme>"));
+        assertThat(turtle, containsString("\"http://example.org/fakevoc\" ;"));
+        assertThat(turtle, containsString("<http://example.org/vocab#narrower>"));
+        assertThat(turtle, containsString("\"http://example.org/fakevoc/c00001\" , \"http://example.org/fakevoc/c00003\" ;"));
+        assertThat(turtle, containsString("<http://example.org/vocab#preferredLabel>"));
+        assertThat(turtle, containsString("\"Animals\"@en , \"Dyr\"@no ."));
+            
+    }
+    
+    @Test
     public void getEntity_applicationJson_entityAsJson() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
