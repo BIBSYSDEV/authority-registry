@@ -20,6 +20,10 @@ public class SampleData {
         ObjectMapper mapper = new ObjectMapper();
 
         ObjectNode body = mapper.createObjectNode();
+
+        ObjectNode context = body.putObject("@context");
+        context.put("@vocab", "http://example.org/vocab#");
+        
         body.put("@id","http://example.org/fakevoc/c00000");
         body.put("@type", "bsa:Concept");
         
@@ -37,23 +41,6 @@ public class SampleData {
         ObjectNode pref2 = prefLabel.addObject();
         pref2.put("@language", "en");
         pref2.put("@value", "Animals");
-        
-//        body.put("label", "A random label");
-//        body.put("number", 5);
-//        ArrayNode array = body.putArray("myArray");
-//        array.add(1);
-//        array.add(2);
-//        array.add(3);
-//        ObjectNode langString = body.putObject("langString");
-//        langString.put("@language", "en");
-//        langString.put("@value", "langStringValue");
-//        ArrayNode langArray = body.putArray("myLangArray");
-//        ObjectNode langArrayString1 = langArray.addObject();
-//        langArrayString1.put("@language", "en");
-//        langArrayString1.put("@value", "langStringValue1");
-//        ObjectNode langArrayString2 = langArray.addObject();
-//        langArrayString2.put("@language", "no");
-//        langArrayString2.put("@value", "langStringValue2");
         
         EntityDto entityDto = new EntityDto();
 
