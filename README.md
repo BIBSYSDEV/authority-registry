@@ -1,6 +1,4 @@
-Sample Lambda function connected to API Gateway
+Entity registry
 ==============================================
 
-This sample code contains a simple Lambda function that stores a json object into a Dynamo table.
-The project is build based on Spring boot
-
+APIs for entity registry, to be deployed on AWS. Build dependency on [../authority-registry-infrastructure](Authority registry infrastructure). See the [wiki](wiki).
