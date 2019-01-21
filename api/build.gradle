@@ -15,38 +15,45 @@ apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
 dependencies {
 
-    compile project(":dynamo")
-    testCompile("com.amazonaws:DynamoDBLocal:1.11.+")
+    implementation project(":dynamo")
 
     //jersey libraries
-    compile("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
-    compile("org.glassfish.jersey.inject:jersey-hk2:2.27") {
+    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
+    implementation("org.glassfish.jersey.inject:jersey-hk2:2.27") {
         exclude group: 'javax.inject'
     }
-    compile('com.google.code.gson:gson:2.8.5')
 
     // swagger
-    compile('io.swagger.core.v3:swagger-jaxrs2:2.0.0')
-    compile('io.swagger.core.v3:swagger-annotations:2.0.0')
-    compile('io.swagger.core.v3:swagger-models:2.0.0')
-    //connection to amazon
-    compile("com.amazonaws:aws-lambda-java-core:1.2.0")
-    compile("com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1")
+    implementation('io.swagger.core.v3:swagger-jaxrs2:2.0.0')
+    implementation('io.swagger.core.v3:swagger-annotations:2.0.0')
+    implementation('io.swagger.core.v3:swagger-models:2.0.0')
 
-    compile("no.bibsys.aws:aws-build-tools:1.0.2")
+    //connection to amazon
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1")
+
+    implementation("no.bibsys.aws:aws-build-tools:1.0.2")
 
     // Handlebars
-    compile("com.github.jknack:handlebars:4.1.2")
+    implementation("com.github.jknack:handlebars:4.1.2")
+
 
     // for testing
-    testCompile("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
-    testCompile("org.hamcrest:hamcrest-junit:2.0.0.0")
-    testCompile("org.mockito:mockito-core:2.23.0")
+    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
+
+    //Add library files for SQLite to classpath because we need them during test initialization
+    // This is for simulating DynamoDB locally
+    testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.+")
+
+    testImplementation("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
+    testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
+    testImplementation("org.mockito:mockito-core:2.23.0")
 }
 
 
+
 task copyNativeDeps(type: Copy) {
-    from(configurations.compile + configurations.testCompile) {
+    from(configurations.testRuntimeClasspath) {
         include '*.dll'
         include '*.dylib'
         include '*.so'
