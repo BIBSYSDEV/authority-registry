@@ -18,6 +18,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.jknack.handlebars.Handlebars;
@@ -28,6 +31,8 @@ import no.bibsys.aws.tools.JsonUtils;
 @Provider
 @Produces(MediaType.TEXT_HTML)
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
+    
+    Logger logger = LoggerFactory.getLogger(EntityHtmlMessageBodyWriter.class);
 
     private static final String NO_LABEL = "(No label)";
     private static final String VALUE = "@value";
@@ -67,6 +72,8 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     private Map<String, Object> createEntityMap(EntityDto entity) throws JsonParseException, JsonMappingException, IOException {
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
 
+        logger.info(entity.getBody());
+        
         Map<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), Map.class);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
@@ -79,6 +86,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
 
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
+        logger.info(preferredLabel.toString());
         if(Objects.nonNull(preferredLabel)) {
             @SuppressWarnings("unchecked")
             Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
