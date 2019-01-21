@@ -72,9 +72,8 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     private Map<String, Object> createEntityMap(EntityDto entity) throws JsonParseException, JsonMappingException, IOException {
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
 
-        logger.info(entity.getBody());
-        
         Map<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), Map.class);
+        bodyMap.remove("@context");
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
         List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
@@ -86,8 +85,7 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
 
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
-        logger.info(preferredLabel.toString());
-        if(Objects.nonNull(preferredLabel)) {
+        if(Objects.nonNull(preferredLabel)&&!preferredLabel.isEmpty()) {
             @SuppressWarnings("unchecked")
             Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
             ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
