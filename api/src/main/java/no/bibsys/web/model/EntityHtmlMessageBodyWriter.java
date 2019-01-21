@@ -32,7 +32,7 @@ import no.bibsys.aws.tools.JsonUtils;
 @Produces(MediaType.TEXT_HTML)
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
     
-    Logger logger = LoggerFactory.getLogger(EntityHtmlMessageBodyWriter.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(EntityHtmlMessageBodyWriter.class);
 
     private static final String NO_LABEL = "(No label)";
     private static final String VALUE = "@value";

@@ -39,6 +39,7 @@ import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.MediaTypeRdf;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
@@ -466,21 +467,30 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
-        System.out.println(entity.getBody());
-        
         Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
         
-        System.out.println(html);
-
         assertThat(html.toLowerCase(), containsString("html"));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"label\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"number\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"myarray\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"langstring\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"mylangarray\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"alternativelabel\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"inscheme\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"narrower\""));
+        assertThat(html.toLowerCase(), containsString("data-automation-id=\"preferredlabel\""));
     }
 
+    @Test
+    public void getEntity_applicationRdf_entityAsRdf() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        System.out.println(entity.getBody());
+        
+        Response entityAsRdf = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_RDF);
+        String rdf = entityAsRdf.readEntity(String.class);
+        
+        System.out.println(rdf);
+    }
+    
     @Test
     public void getEntity_applicationJson_entityAsJson() throws Exception {
         String registryName = UUID.randomUUID().toString();
