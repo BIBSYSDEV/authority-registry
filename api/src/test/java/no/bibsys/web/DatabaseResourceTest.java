@@ -470,11 +470,11 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
         
-        assertThat(html.toLowerCase(), containsString("html"));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"alternativelabel\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"inscheme\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"narrower\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"preferredlabel\""));
+        assertThat(html, containsString("html"));
+        assertThat(html, containsString("data-automation-id=\"alternativeLabel\""));
+        assertThat(html, containsString("data-automation-id=\"inScheme\""));
+        assertThat(html, containsString("data-automation-id=\"narrower\""));
+        assertThat(html, containsString("data-automation-id=\"preferredLabel\""));
     }
 
     @Test
@@ -483,12 +483,14 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        System.out.println(entity.getBody());
-        
         Response entityAsRdf = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_RDF);
         String rdf = entityAsRdf.readEntity(String.class);
         
         System.out.println(rdf);
+        assertThat(rdf, containsString("http://example.org/fakevoc/c00000"));
+        assertThat(rdf, containsString("http://example.org/vocab#preferredLabel"));
+        assertThat(rdf, containsString("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+        assertThat(rdf, containsString("\"value\" : \"Animals\""));
     }
     
     @Test
