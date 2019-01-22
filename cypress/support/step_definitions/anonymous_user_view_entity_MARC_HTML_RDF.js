@@ -76,7 +76,7 @@ Then('anonymous user can view the data in the serialization and profile requeste
 // Then anonymous user can view the data in the given serialization
 
 Then('anonymous user can view the data in the given serialization', () => {
-  cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --')
+  cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --');
   cy.get('@registryName').then((registryName) => {
     cy.get('@entityId').then((entityId) => {
       const getUrl = 'registry/' + registryName + '/entity/' + entityId;

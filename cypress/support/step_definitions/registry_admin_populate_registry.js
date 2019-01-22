@@ -40,11 +40,11 @@ Then('the data is available in the entity registry', () => {
     cy.get('@uploadResponse').then((response) => {
       response.forEach((entity, index) => {
         cy.log('id = ' + entity.id);
-        const url = '/registry/' + registryName + '/entity/' + entity.id; 
+        const url = '/registry/' + registryName + '/entity/' + entity.id;
         cy.request({
           url: url,
           headers: {
-            'Accept': 'application/json',
+            accept: 'application/json',
           },
         });
       });
