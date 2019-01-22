@@ -10,6 +10,4 @@
 //      | application/rdf         |
 //    Then anonymous user can view the data in the given serialization
 
-import {Then} from 'cypress-cucumber-preprocessor/steps';
-
 // implemented in anonymous_user_view_entity_MARC_HTML_RDF.js

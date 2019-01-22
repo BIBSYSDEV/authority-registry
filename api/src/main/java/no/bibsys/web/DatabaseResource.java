@@ -41,7 +41,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.MediaTypeRdf;
+import no.bibsys.web.model.MediaTypeRdfHelper;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
@@ -98,7 +98,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdf.APPLICATION_RDF, MediaTypeRdf.APPLICATION_JSON_LD, MediaTypeRdf.APPLICATION_N_TRIPLES, MediaTypeRdf.APPLICATION_RDF_XML, MediaTypeRdf.APPLICATION_TURTLE})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdfHelper.APPLICATION_RDF, MediaTypeRdfHelper.APPLICATION_JSON_LD, MediaTypeRdfHelper.APPLICATION_N_TRIPLES, MediaTypeRdfHelper.APPLICATION_RDF_XML, MediaTypeRdfHelper.APPLICATION_TURTLE})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
@@ -272,7 +272,7 @@ public class DatabaseResource {
     @GET
     @Path("/{registryName}/entity/{entityId}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdf.APPLICATION_RDF, MediaTypeRdf.APPLICATION_RDF_XML, MediaTypeRdf.APPLICATION_JSON_LD, MediaTypeRdf.APPLICATION_N_TRIPLES, MediaTypeRdf.APPLICATION_TURTLE})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdfHelper.APPLICATION_RDF, MediaTypeRdfHelper.APPLICATION_RDF_XML, MediaTypeRdfHelper.APPLICATION_JSON_LD, MediaTypeRdfHelper.APPLICATION_N_TRIPLES, MediaTypeRdfHelper.APPLICATION_TURTLE})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",

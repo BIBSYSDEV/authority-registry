@@ -22,11 +22,11 @@ import org.apache.jena.riot.RDFDataMgr;
 
 @Provider
 @Produces({
-    MediaTypeRdf.APPLICATION_RDF, 
-    MediaTypeRdf.APPLICATION_TURTLE, 
-    MediaTypeRdf.APPLICATION_RDF_XML, 
-    MediaTypeRdf.APPLICATION_N_TRIPLES, 
-    MediaTypeRdf.APPLICATION_JSON_LD
+    MediaTypeRdfHelper.APPLICATION_RDF, 
+    MediaTypeRdfHelper.APPLICATION_TURTLE, 
+    MediaTypeRdfHelper.APPLICATION_RDF_XML, 
+    MediaTypeRdfHelper.APPLICATION_N_TRIPLES, 
+    MediaTypeRdfHelper.APPLICATION_JSON_LD
     })
 public class EntityRdfMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
@@ -49,20 +49,20 @@ public class EntityRdfMessageBodyWriter implements MessageBodyWriter<EntityDto> 
         Lang outputLang;
         
         switch (mediaType.toString()) {
-            case MediaTypeRdf.APPLICATION_RDF: // RDF
+            case MediaTypeRdfHelper.APPLICATION_RDF: // RDF
                 outputLang = Lang.RDFJSON;
                 break;
-            case MediaTypeRdf.APPLICATION_TURTLE: // Turtle
+            case MediaTypeRdfHelper.APPLICATION_TURTLE: // Turtle
                 outputLang = Lang.TURTLE;
                 break;
-            case MediaTypeRdf.APPLICATION_RDF_XML: // XML
+            case MediaTypeRdfHelper.APPLICATION_RDF_XML: // XML
                 outputLang = Lang.RDFXML;
                 break;
-            case MediaTypeRdf.APPLICATION_N_TRIPLES: // N-triples
+            case MediaTypeRdfHelper.APPLICATION_N_TRIPLES: // N-triples
                 outputLang = Lang.NTRIPLES;
                 break;
             case MediaType.APPLICATION_JSON: // Json
-            case MediaTypeRdf.APPLICATION_JSON_LD:
+            case MediaTypeRdfHelper.APPLICATION_JSON_LD:
             default:
                 outputLang = Lang.JSONLD;
                 break;

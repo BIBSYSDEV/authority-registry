@@ -4,7 +4,6 @@ When('the anonymous user requests the entity specifying an Accept header with va
   cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --');
   const formats = dataTable.rawTable;
   cy.wrap(formats).as('formats');
-  let resultMap = [];
 });
 
 // Scenario: An anonymous user views an entity specifying a specific MARC format
