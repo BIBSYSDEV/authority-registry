@@ -1,12 +1,14 @@
 package no.bibsys.testtemplates;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import no.bibsys.aws.tools.JsonUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 
@@ -56,10 +58,13 @@ public class SampleData {
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonUtils.newJsonParser();
         Map<String,Object> metadata = (Map<String, Object>)mapper.convertValue(
             mapper.createObjectNode(), Map.class);
-      
+        Map<String, String> vocabMap = new ConcurrentHashMap<String, String>();
+        vocabMap.put("@vocab", "http://example.org/vocab#");
+        metadata.put("@context", vocabMap);
+        
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");
