@@ -1,0 +1,7 @@
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> "Animals"@en .
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> "Dyr"@no .
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> "http://example.org/fakevoc/c00001" .
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> "http://example.org/fakevoc/c00003" .
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#inScheme> "http://example.org/fakevoc" .
+<http://example.org/fakevoc/c00000> <http://example.org/vocab#alternativeLabel> "Animalia"@no .
+<http://example.org/fakevoc/c00000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <bsa:Concept> .

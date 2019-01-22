@@ -32,6 +32,7 @@ import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
+import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 @SuppressWarnings("PMD")
@@ -75,6 +76,7 @@ public class JerseyConfig extends ResourceConfig {
 
     private void registerMessageBodyWriters() {
         register(RegistryMessageBodyWriter.class);
+        register(RegistryRdfMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
         register(EntityRdfMessageBodyWriter.class);
     }

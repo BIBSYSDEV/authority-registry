@@ -98,7 +98,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdf.APPLICATION_RDF, MediaTypeRdf.APPLICATION_JSON_LD, MediaTypeRdf.APPLICATION_N_TRIPLES, MediaTypeRdf.APPLICATION_RDF_XML, MediaTypeRdf.APPLICATION_TURTLE})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,

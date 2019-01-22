@@ -7,6 +7,11 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,6 +24,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -46,6 +55,7 @@ import no.bibsys.web.security.ApiKeyConstants;
 
 public class DatabaseResourceTest extends JerseyTest {
 
+    private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/example_entity.%s";
     public static String REGISTRY_PATH = "/registry";
     private final SampleData sampleData = new SampleData();
     private String apiAdminKey;
@@ -479,6 +489,12 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(html, containsString("data-automation-id=\"preferredLabel\""));
     }
 
+    private Model createModel(InputStream actualStream, Lang lang) {
+        Model actualModel = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(actualModel, actualStream, lang);
+        return actualModel;
+    }
+
     @Test
     public void getEntity_applicationRdf_entityAsRdf() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -487,13 +503,15 @@ public class DatabaseResourceTest extends JerseyTest {
         
         Response entityAsRdf = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_RDF);
         String rdf = entityAsRdf.readEntity(String.class);
-        
-        assertThat(rdf, containsString("http://example.org/fakevoc/c00000"));
-        assertThat(rdf, containsString("http://example.org/vocab#preferredLabel"));
-        assertThat(rdf, containsString("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
-        assertThat(rdf, containsString("\"value\" : \"Animals\""));
+
+        Lang lang = Lang.RDFJSON;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
-    
+
     @Test
     public void getEntity_applicationNtriples_entityAsNtriples() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -502,15 +520,13 @@ public class DatabaseResourceTest extends JerseyTest {
         
         Response entityAsTriples = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_N_TRIPLES);
         String triples = entityAsTriples.readEntity(String.class);
-        
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> \"Animals\"@en ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#preferredLabel> \"Dyr\"@no ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> \"http://example.org/fakevoc/c00001\" ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#narrower> \"http://example.org/fakevoc/c00003\" ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#inScheme> \"http://example.org/fakevoc\" ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://example.org/vocab#alternativeLabel> \"Animalia\"@no ."));
-        assertThat(triples, containsString("<http://example.org/fakevoc/c00000> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <bsa:Concept> ."));
-                    
+
+        Lang lang = Lang.NTRIPLES;
+        Model actualModel = createModel(new ByteArrayInputStream(triples.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
     
     @Test
@@ -522,13 +538,12 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsRdfXml = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_RDF_XML);
         String rdfXml = entityAsRdfXml.readEntity(String.class);
         
-        assertThat(rdfXml, containsString("<j.0:Concept rdf:about=\"http://example.org/fakevoc/c00000\">"));
-        assertThat(rdfXml, containsString("<j.1:preferredLabel xml:lang=\"en\">Animals</j.1:preferredLabel>"));
-        assertThat(rdfXml, containsString("<j.1:preferredLabel xml:lang=\"no\">Dyr</j.1:preferredLabel>"));
-        assertThat(rdfXml, containsString("<j.1:narrower>http://example.org/fakevoc/c00001</j.1:narrower>"));
-        assertThat(rdfXml, containsString("<j.1:narrower>http://example.org/fakevoc/c00003</j.1:narrower>"));
-        assertThat(rdfXml, containsString("<j.1:inScheme>http://example.org/fakevoc</j.1:inScheme>"));
-        assertThat(rdfXml, containsString("<j.1:alternativeLabel xml:lang=\"no\">Animalia</j.1:alternativeLabel>"));
+        Lang lang = Lang.RDFXML;
+        Model actualModel = createModel(new ByteArrayInputStream(rdfXml.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
     
     @Test
@@ -540,16 +555,12 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsTurtle = readEntity(registryName, entity.getId(), MediaTypeRdf.APPLICATION_TURTLE);
         String turtle = entityAsTurtle.readEntity(String.class);
         
-        assertThat(turtle, containsString("<http://example.org/fakevoc/c00000>"));
-        assertThat(turtle, containsString("<http://example.org/vocab#alternativeLabel>"));
-        assertThat(turtle, containsString("\"Animalia\"@no ;"));
-        assertThat(turtle, containsString("<http://example.org/vocab#inScheme>"));
-        assertThat(turtle, containsString("\"http://example.org/fakevoc\" ;"));
-        assertThat(turtle, containsString("<http://example.org/vocab#narrower>"));
-        assertThat(turtle, containsString("\"http://example.org/fakevoc/c00001\" , \"http://example.org/fakevoc/c00003\" ;"));
-        assertThat(turtle, containsString("<http://example.org/vocab#preferredLabel>"));
-        assertThat(turtle, containsString("\"Animals\"@en , \"Dyr\"@no ."));
-            
+        Lang lang = Lang.TURTLE;
+        Model actualModel = createModel(new ByteArrayInputStream(turtle.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
     
     @Test
@@ -572,7 +583,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        Response entityAsHtml = getRegistryAsHtml(registryName);
+        Response entityAsHtml = getRegistry(registryName, MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html, containsString("html"));
@@ -581,6 +592,17 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
 
+    @Test
+    public void getRegistryMetadata_applicationRdf_registryAsRdf() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_TURTLE);
+        String rdf = entityAsRdf.readEntity(String.class);
+        
+        System.out.println(rdf);
+    }
+    
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
@@ -594,12 +616,6 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityDto sampleEntityDto = sampleData.sampleEntityDto();
         sampleEntityDto.setId(identifier);
         return sampleEntityDto;
-    }
-
-    private Response getEntityAsHtml(String registryName, String id) throws Exception {
-        return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML)
-            .get();
     }
 
     private Response getEntityAsJson(String registryName, String id) throws Exception {
@@ -638,9 +654,9 @@ public class DatabaseResourceTest extends JerseyTest {
         return response;
     }
 
-    private Response getRegistryAsHtml(String registryName) throws Exception {
+    private Response getRegistry(String registryName, String mediaType) throws Exception {
         return target(String.format("/registry/%s", registryName)).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML)
+            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(mediaType)
             .get();
     }
 
