@@ -104,8 +104,7 @@ function createEntity(registryName, apiKey, dataFile) {
   cy.log('creating entity...');
 
   const entityAddUrl = '/registry/' + registryName + '/entity';
-  cy.fixture(dataFile) // add testData to registry
-  .then((testData) => {
+  cy.fixture(dataFile).then((testData) => {
     cy.request({
       url: entityAddUrl,
       method: 'POST',
