@@ -56,6 +56,7 @@ import no.bibsys.web.security.ApiKeyConstants;
 public class DatabaseResourceTest extends JerseyTest {
 
     private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/example_entity.%s";
+    private static final String REGISTRY_METADATA_EXAMPLE_FILE = "src/test/resources/example_registry.%s";
     public static String REGISTRY_PATH = "/registry";
     private final SampleData sampleData = new SampleData();
     private String apiAdminKey;
@@ -597,10 +598,63 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_RDF);
+        String rdf = entityAsRdf.readEntity(String.class);
+        
+        Lang lang = Lang.RDFJSON;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
+    @Test
+    public void getRegistryMetadata_applicationRdfXml_registryAsRdfXml() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_RDF_XML);
+        String rdf = entityAsRdf.readEntity(String.class);
+        
+        Lang lang = Lang.RDFXML;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
+    @Test
+    public void getRegistryMetadata_applicationTurtle_registryAsTurtle() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        
         Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_TURTLE);
         String rdf = entityAsRdf.readEntity(String.class);
         
-        System.out.println(rdf);
+        Lang lang = Lang.TURTLE;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
+    @Test
+    public void getRegistryMetadata_applicationNtriples_registryAsNtriples() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_N_TRIPLES);
+        String rdf = entityAsRdf.readEntity(String.class);
+        
+        Lang lang = Lang.NTRIPLES;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
     
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {

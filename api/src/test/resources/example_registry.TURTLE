@@ -1,0 +1,7 @@
+[ <http://example.org/vocab#Publisher>
+          "Publisher value" ;
+  <http://example.org/vocab#Registry_name>
+          "Registry name value" ;
+  <http://example.org/vocab#Registry_type>
+          "Registry type value"
+] .
