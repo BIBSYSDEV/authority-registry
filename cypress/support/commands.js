@@ -114,7 +114,7 @@ function createEntity(registryName, apiKey, dataFile) {
         'api-key': apiKey,
         'content-type': 'application/json',
       },
-    }).then(function (response) {
+    }).then((response) => {
       const entityId = response.body.id;
       cy.wrap(entityId).as('entityId');
     });
@@ -132,9 +132,9 @@ function deleteRegistry(registryName, apiKey){
     method: 'DELETE',
     headers: {
       'api-key': apiKey,
-      'content-type': 'application/json'
+      'content-type': 'application/json',
     },
-    failOnStatusCode: false
+    failOnStatusCode: false,
   }).then((response) => {
     cy.log('delete registry status: ' + response.status);
   });

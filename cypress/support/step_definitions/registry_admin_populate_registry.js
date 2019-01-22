@@ -42,8 +42,8 @@ Then('the data is available in the entity registry', () => {
         cy.log('id = ' + entity.id);
         const url = '/registry/' + registryName + '/entity/' + entity.id; 
         cy.request({
-          'url': url,
-          'headers': {
+          url: url,
+          headers: {
             'Accept': 'application/json',
           },
         });
