@@ -28,7 +28,7 @@ import no.bibsys.aws.tools.JsonUtils;
 @Provider
 @Produces(MediaType.TEXT_HTML)
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
-    
+
     private static final String NO_LABEL = "(No label)";
     private static final String VALUE = "@value";
     private static final String LANG = "@language";
@@ -74,23 +74,23 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
         List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
         String label = findTitle(preferredLabel);
         entityMap.put(LABEL, label);
-        
+
         return entityMap;
     }
 
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
-        if(Objects.nonNull(preferredLabel)&&!preferredLabel.isEmpty()) {
+        if (Objects.nonNull(preferredLabel) && !preferredLabel.isEmpty()) {
             @SuppressWarnings("unchecked")
             Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
-            .collect(Collectors.toMap(
+                ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)
+                || ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
+                .collect(Collectors.toMap(
                     labelObject -> ((Map<String, String>)labelObject).get(LANG), 
                     labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
-            if(Objects.nonNull(titleMap.get(LANG_NO))) {
+            if (Objects.nonNull(titleMap.get(LANG_NO))) {
                 label = titleMap.get(LANG_NO);
-            } else if(Objects.nonNull(titleMap.get(LANG_EN))) {
+            } else if (Objects.nonNull(titleMap.get(LANG_EN))) {
                 label = titleMap.get(LANG_EN);
             }
         }
