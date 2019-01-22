@@ -34,7 +34,7 @@ public class ShaclParserTest extends ModelParser {
     public ShaclParserTest() throws IOException {
         String shaclModelString = IoUtils
             .resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_SHACL_SCHEMA_TTL));
-        Model model = loadData(shaclModelString, Lang.TURTLE);
+        Model model = parseModel(shaclModelString, Lang.TURTLE);
         this.shaclParser = new ShaclParser(model);
     }
 

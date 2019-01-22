@@ -10,15 +10,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
-import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.entitydata.validation.ModelParser;
+import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegistryManager {
+public class RegistryManager extends ModelParser {
 
     private static final String TABLE_CREATED = "CREATED";
 
@@ -39,9 +43,18 @@ public class RegistryManager {
     public Registry createRegistry(String registryMetadataTableName, Registry registry) throws RegistryMetadataTableBeingCreatedException {
         checkIfRegistryMetadataTableExistsOrCreate(registryMetadataTableName);
         checkIfRegistryExistsInRegistryMetadataTable(registryMetadataTableName, registry.getId());
+
+        Model model= parseValidationSchema(registry.getSchema());
+
+
         return createRegistryTable(registryMetadataTableName, registry);
     }
-    
+
+    private Model parseValidationSchema(String schema) throws ValidationSchemaSyntaxErrorException {
+        return parseModel(schema, Lang.TURTLE);
+
+    }
+
     public Registry getRegistry(String registryMetadataTableName, String registryId) {
  
         validateRegistryeMetadataTable(registryMetadataTableName);

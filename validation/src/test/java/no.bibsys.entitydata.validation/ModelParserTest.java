@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
+import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -24,7 +25,7 @@ public class ModelParserTest extends ModelParser {
     @Test
     public void parseJson_jsonLdString_model() throws IOException {
         String modelString = IoUtils.resourceAsString(Paths.get("validation", "validGraph.json"));
-        Model actual = loadData(modelString, Lang.JSONLD);
+        Model actual = parseModel(modelString, Lang.JSONLD);
         Model expected = ModelFactory.createDefaultModel();
         Resource subject = expected.createResource("http://example.org/a");
         Resource classObject = expected.createResource("http://example.org/ClassA");
@@ -38,7 +39,21 @@ public class ModelParserTest extends ModelParser {
     public void getObjects_model_allObjectsThatAreIRIsOrLiterals() throws IOException {
         String modelString = IoUtils
             .resourceAsString(Paths.get("validation", "validShaclValidationSchema.ttl"));
-        Model model = loadData(modelString, Lang.TURTLE);
+        Model model = parseModel(modelString, Lang.TURTLE);
+        Set<Resource> objects = getUriResourceObjects(model);
+        Set<RDFNode> resources = model.listObjects().toSet()
+            .stream()
+            .filter(RDFNode::isURIResource)
+            .collect(Collectors.toSet());
+        int expectedNumberOfObjects = resources.size();
+        assertThat(objects.size(), is(equalTo(expectedNumberOfObjects)));
+    }
+
+
+
+    @Test(expected = ValidationSchemaSyntaxErrorException.class)
+    public void getObjects_invalidInput_throwsException() throws IOException {
+        Model model = parseModel("InvalidInput", Lang.TURTLE);
         Set<Resource> objects = getUriResourceObjects(model);
         Set<RDFNode> resources = model.listObjects().toSet()
             .stream()

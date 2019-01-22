@@ -19,8 +19,8 @@ public class ShaclValidator extends ModelParser {
     public ShaclValidator(String ontologyString, Lang ontolgyLang,
         String shaclModelString, Lang shaclModelLang) {
         super();
-        Model ontology = loadData(ontologyString, ontolgyLang);
-        Model shaclModel = loadData(shaclModelString, shaclModelLang);
+        Model ontology = parseModel(ontologyString, ontolgyLang);
+        Model shaclModel = parseModel(shaclModelString, shaclModelLang);
         this.ontologyParser = new OntologyParser(ontology);
         this.shaclParser = new ShaclParser(shaclModel);
     }
