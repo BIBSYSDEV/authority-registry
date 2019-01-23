@@ -6,8 +6,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -18,9 +16,7 @@ import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
-import no.bibsys.entitydata.validation.ShaclValidator;
 import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
-import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -38,26 +34,23 @@ public class RegistryManager extends ModelParser {
 
     private final transient TableDriver tableDriver;
     private final transient DynamoDBMapper mapper;
+    private final transient RegistryMetadataManager registryMetadataManager;
+
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
     public RegistryManager(AmazonDynamoDB client) {
+        super();
         this.tableDriver = TableDriver.create(client);
         this.mapper = new DynamoDBMapper(client);
+        this.registryMetadataManager = new RegistryMetadataManager(tableDriver, mapper);
 
-    }
-
-
-    private ShaclValidator initShaclValidator() throws IOException {
-        String ontologySting=IoUtils.
-            resourceAsString(Paths.get(VALIDATION_FOLDER,"unit-entity-ontology.ttl"));
-        ShaclValidator shaclValidator= new ShaclValidator(ontologySting,Lang.TURTLE);
     }
 
 
     public Registry createRegistry(String registryMetadataTableName, Registry registry) throws RegistryMetadataTableBeingCreatedException {
         checkIfRegistryMetadataTableExistsOrCreate(registryMetadataTableName);
         checkIfRegistryExistsInRegistryMetadataTable(registryMetadataTableName, registry.getId());
-        Model model= parseValidationSchema(registry.getSchema());
+        parseValidationSchema(registry.getSchema());
 
         return createRegistryTable(registryMetadataTableName, registry);
     }
@@ -67,8 +60,8 @@ public class RegistryManager extends ModelParser {
     }
 
     public Registry getRegistry(String registryMetadataTableName, String registryId) {
- 
-        validateRegistryeMetadataTable(registryMetadataTableName);
+
+        registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName))
@@ -93,7 +86,8 @@ public class RegistryManager extends ModelParser {
         boolean created = tableDriver.createEntityRegistryTable(registry.getId());
 
         if (created) {
-            addRegistryToRegistryMetadataTable(registryMetadataTable, registry);
+            registryMetadataManager
+                .addRegistryToRegistryMetadataTable(registryMetadataTable, registry);
             logger.info("Registry created successfully, registryId={}", registry.getId());
             return registry;
 
@@ -104,29 +98,6 @@ public class RegistryManager extends ModelParser {
 
     }
 
-    private Registry addRegistryToRegistryMetadataTable(String registryMetadataTableName, Registry registry) {
-        
-        validateRegistryeMetadataTable(registryMetadataTableName);
-        
-        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
-                .withSaveBehavior(SaveBehavior.PUT)
-                .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName))
-                .build();
-        
-        try {
-            mapper.save(registry, config);
-            return registry;
-        } catch (ResourceNotFoundException e) {
-            throw new RegistryNotFoundException(registryMetadataTableName); //TODO: fix exception            
-        }
-        
-    }
-
-    private void validateRegistryeMetadataTable(String registryMetadataTableName) {
-        if (!tableDriver.tableExists(registryMetadataTableName)) {
-            throw new RegistryNotFoundException(registryMetadataTableName); 
-        } 
-    }
 
     private void checkIfRegistryExistsInRegistryMetadataTable(String registryMetadataTableName, String registryId) {
         if (registryExists(registryMetadataTableName, registryId)) {
@@ -222,7 +193,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public Registry uppdateRegistrySchema(String registryMetadataTableName, String registryId, String schema) {
-        validateRegistryeMetadataTable(registryMetadataTableName);
+        registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
         validateRegistryNotEmpty(registryId);
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
@@ -245,7 +216,7 @@ public class RegistryManager extends ModelParser {
     }
     
     public Registry updateRegistryMetadata(String registryMetadataTableName, Registry registry) {
-        validateRegistryeMetadataTable(registryMetadataTableName);
+        registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.UPDATE)
