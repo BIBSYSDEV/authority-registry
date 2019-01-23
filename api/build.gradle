@@ -77,10 +77,3 @@ shadowJar {
     exclude('org.apache.tomcat.embed:*')
 }
 
-resolve {
-    outputFormat = 'YAML'
-    prettyPrint = 'TRUE'
-    classpath = sourceSets.main.runtimeClasspath
-    resourcePackages = ['no.bibsys.web']
-    outputPath = "${buildDir}/openapi"
-}
