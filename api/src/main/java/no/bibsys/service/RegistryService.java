@@ -1,5 +1,6 @@
 package no.bibsys.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
 
@@ -32,8 +34,9 @@ public class RegistryService {
         
         registryMetadataTableName = environmentReader.readEnv(EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME);
     }
-    
-    public RegistryDto createRegistry(RegistryDto registryDto) throws RegistryMetadataTableBeingCreatedException {
+
+    public RegistryDto createRegistry(RegistryDto registryDto)
+        throws RegistryMetadataTableBeingCreatedException, IOException, ShaclModelValidationException {
         
         Registry registry = registryManager.createRegistry(
                 registryMetadataTableName, RegistryConverter.toRegistry(registryDto)
