@@ -7,6 +7,9 @@ import org.apache.jena.rdf.model.Resource;
 
 public class ShaclModelPropertiesAreNotIcludedInOntologyException extends ShaclModelValidationException {
 
+    private static final long serialVersionUID = -3141111264142245459L;
+
+
 
     public ShaclModelPropertiesAreNotIcludedInOntologyException(String  message) {
         super(message);
