@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -16,7 +18,10 @@ import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
+import no.bibsys.entitydata.validation.ShaclValidator;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
+import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -27,6 +32,9 @@ public class RegistryManager extends ModelParser {
     private static final String TABLE_CREATED = "CREATED";
     private static final Lang SUPPORTED_LANGUAGE= Lang.JSONLD;
     public static final String VALIDATION_FOLDER = "validation";
+    public static final String UNIT_ONTOLOGY = "unit-entity-ontology.ttl";
+
+    private final transient ShaclValidator shaclValidator;
 
     public enum RegistryStatus {
         CREATING, UPDATING, DELETING, ACTIVE, NOT_FOUND;
@@ -38,20 +46,24 @@ public class RegistryManager extends ModelParser {
 
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);
 
-    public RegistryManager(AmazonDynamoDB client) {
+    public RegistryManager(AmazonDynamoDB client) throws IOException {
         super();
         this.tableDriver = TableDriver.create(client);
         this.mapper = new DynamoDBMapper(client);
         this.registryMetadataManager = new RegistryMetadataManager(tableDriver, mapper);
+        String ontologyString = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, UNIT_ONTOLOGY));
+        this.shaclValidator = new ShaclValidator(ontologyString, Lang.TURTLE);
 
     }
 
 
-    public Registry createRegistry(String registryMetadataTableName, Registry registry) throws RegistryMetadataTableBeingCreatedException {
+    public Registry createRegistry(String registryMetadataTableName, Registry registry)
+        throws RegistryMetadataTableBeingCreatedException, IOException, ShaclModelValidationException {
         checkIfRegistryMetadataTableExistsOrCreate(registryMetadataTableName);
         checkIfRegistryExistsInRegistryMetadataTable(registryMetadataTableName, registry.getId());
-        parseValidationSchema(registry.getSchema());
-
+        Model model = parseValidationSchema(registry.getSchema());
+        shaclValidator.checkModel(model);
         return createRegistryTable(registryMetadataTableName, registry);
     }
 

@@ -13,7 +13,7 @@ import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
-import no.bibsys.entitydata.validation.exceptions.InvalidValidationSchemaException;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
@@ -26,8 +26,8 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     public static final String VALID_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
     public static final String VALIDATION_FOLDER = "validation";
-    public static final String INVALID_SHACL_VALIDATION_SCHEMA_TTL =
-        "invalidDatatypeRangeShaclValidationSchema.ttl";
+    public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON =
+        "invalidDatatypeRangeShaclValidationSchema.json";
     public static final String VALID_SHACL_VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
     private ModelParser modelParser=new ModelParser();
 
@@ -145,19 +145,19 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test(expected = ValidationSchemaSyntaxErrorException.class)
     public void createRegistry_RegistryNotExistsInValidJsonDocument_invalidSchemaException()
-        throws IOException, RegistryMetadataTableBeingCreatedException {
+        throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException {
         String registryName= "aRegistry";
         Registry registry= sampleData.sampleRegistry(registryName);
 
         registry.setSchema("InvalidInput");
-        Registry createdRegistry = registryManager.createRegistry(registryMetadataTableName, registry);
+        registryManager.createRegistry(registryMetadataTableName, registry);
 
     }
 
 
     @Test
     public void createRegistry_RegistryNotExistsValidShema_registryWithValidSchema()
-        throws IOException, RegistryMetadataTableBeingCreatedException {
+        throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException {
         String registryName= "aRegistry";
         Registry registry= sampleData.sampleRegistry(registryName);
         String validationSchemaStr=IoUtils
@@ -171,13 +171,13 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
 
-    @Test(expected = InvalidValidationSchemaException.class)
+    @Test(expected = ShaclModelValidationException.class)
     public void createRegistry_RegistryNotExistingInValidSchema_exception()
-        throws IOException, RegistryMetadataTableBeingCreatedException {
+        throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException {
         String registryName= "aRegistry";
         Registry registry= sampleData.sampleRegistry(registryName);
         String validationSchemaStr=IoUtils
-            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_TTL));
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
         registry.setSchema(validationSchemaStr);
         registryManager.createRegistry(registryMetadataTableName,registry);
 
