@@ -1,5 +1,7 @@
 package no.bibsys;
 
+import java.io.IOException;
+import no.bibsys.web.exception.ProcessingExceptionMapper;
 import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
@@ -32,9 +34,13 @@ import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
+
+    private static Logger logger = LoggerFactory.getLogger(JerseyConfig.class);
 
     public JerseyConfig() {
         this(DynamoDBHelper.getClient(), new Environment());
@@ -48,7 +54,13 @@ public class JerseyConfig extends ResourceConfig {
         AuthenticationService authenticationService =
             new AuthenticationService(client, environmentReader);
 
-        RegistryManager registryManager = new RegistryManager(client);
+        RegistryManager registryManager = null;
+        try {
+            registryManager = new RegistryManager(client);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            logger.error("Could not create RegistryManager");
+        }
         RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
 
         register(new DatabaseResource(registryService, entityService));
@@ -84,6 +96,7 @@ public class JerseyConfig extends ResourceConfig {
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
         register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
+        register(ProcessingExceptionMapper.class);
     }
 
 }
