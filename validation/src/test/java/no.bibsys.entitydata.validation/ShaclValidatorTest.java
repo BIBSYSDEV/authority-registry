@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotClassesOfOntology;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelPropertiesAreNotIcludedInOntologyException;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotClassesOfOntologyException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
@@ -45,7 +47,7 @@ public class ShaclValidatorTest extends ModelParser {
 
     }
 
-    @Test(expected = ShaclModelTargetClassesAreNotClassesOfOntology.class)
+    @Test(expected = ShaclModelTargetClassesAreNotClassesOfOntologyException.class)
     public void shaclModelTargetClassesAreClassesOfOntology_invalidShackValidationSchema_notValid()
         throws IOException, ShaclModelValidationException {
         boolean result = validator.checkModel(parseModel(INVALID_CLASS_SCHEMA));
@@ -53,59 +55,27 @@ public class ShaclValidatorTest extends ModelParser {
 
     }
 
-    @Test
-    public void shaclModelPathObjectsAreOntologyProperties_validShaclShchema_valid()
-        throws IOException, ShaclModelValidationException {
-        assertTrue(validator.checkModel(parseModel(VALID_SCHEMA)));
 
+    @Test(expected = ShaclModelPropertiesAreNotIcludedInOntologyException.class)
+    public void shaclModelPathObjectsAreOntologyProperties_invalidShaclShchema_notValid()
+        throws IOException, ShaclModelValidationException {
+        assertFalse(validator.checkModel(parseModel(INVALID_PATH_SCHEMA)));
     }
 
-//    @Test
-//    public void shaclModelPathObjectsAreOntologyProperties_invalidShaclShchema_notValid()
-//        throws IOException {
-//
-//        ShaclValidator validator = initializeOntologyValidator(INVALID_PATH_SCHEMA);
-//        assertFalse(validator.shaclModelPathObjectsAreOntologyProperties());
-//        assertFalse(validator.checkModel());
-//    }
-//
-//
-//    @Test
-//    public void shaclModelDatatypeObjectsMapExactlyPropertyRange_validShackSchema_valid()
-//        throws IOException {
-//
-//        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
-//        assertTrue(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
-//        assertTrue(validator.checkModel());
-//    }
-//
-//    @Test
-//    public void shaclModelDatatypeObjectsMapExactlyPropertyRange_invalidDatatypeRangeShaclSchema_notValid()
-//        throws IOException {
-//
-//        ShaclValidator validator = initializeOntologyValidator(INVALID_DATATYPE_SCHEMA);
-//        assertFalse(validator.shaclModelDatatypeObjectsMapExactlyPropertyRange());
-//        assertFalse(validator.checkModel());
-//    }
-//
-//    @Test
-//    public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_validShaclSchema_valid()
-//        throws IOException {
-//
-//        ShaclValidator validator = initializeOntologyValidator(VALID_SCHEMA);
-//        assertTrue(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
-//        assertTrue(validator.checkModel());
-//    }
-//
-//    @Test
-//    public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_invalidShaclSchema_valid()
-//        throws IOException {
-//
-//        ShaclValidator validator = initializeOntologyValidator(INVALID_DOMAIN_SCEMA);
-//        assertFalse(validator.shaclModelTargetClassesAreInDomainOfRespectiveProperties());
-//        assertFalse(validator.checkModel());
-//    }
-//
+
+    @Test(expected = ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException.class)
+    public void shaclModelDatatypeObjectsMapExactlyPropertyRange_invalidDatatypeRangeShaclSchema_notValid()
+        throws IOException, ShaclModelValidationException {
+
+        assertFalse(validator.checkModel(parseModel(INVALID_DATATYPE_SCHEMA)));
+    }
+
+    @Test(expected = ShaclModelValidationException.class)
+    public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_invalidShaclSchema_valid()
+        throws IOException, ShaclModelValidationException {
+        assertFalse(validator.checkModel(parseModel(INVALID_DOMAIN_SCEMA)));
+    }
+
     private ShaclValidator initializeOntologyValidator()
         throws IOException {
 
