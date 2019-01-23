@@ -1,0 +1,65 @@
+{
+  "@graph" : [ {
+    "@id" : "_:b0",
+    "in" : {
+      "@list" : [ "unit:Concept", "unit:ConceptScheme" ]
+    },
+    "sh:minCount" : 1,
+    "path" : "rdf:type"
+  }, {
+    "@id" : "_:b3",
+    "datatype" : "rdf:langString",
+    "path" : "unit:preferredLabel"
+  }, {
+    "@id" : "unit:invalidShape",
+    "@type" : "sh:NodeShape",
+    "property" : "_:b0",
+    "targetSubjectsOf" : "rdf:type"
+  }, {
+    "@id" : "unit:nodeshape",
+    "@type" : "sh:NodeShape",
+    "property" : "_:b3",
+    "targetClass" : "unit:Concept"
+  } ],
+  "@context" : {
+    "property" : {
+      "@id" : "http://www.w3.org/ns/shacl#property",
+      "@type" : "@id"
+    },
+    "targetSubjectsOf" : {
+      "@id" : "http://www.w3.org/ns/shacl#targetSubjectsOf",
+      "@type" : "@id"
+    },
+    "rest" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+      "@type" : "@id"
+    },
+    "first" : {
+      "@id" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+      "@type" : "@id"
+    },
+    "minCount" : {
+      "@id" : "http://www.w3.org/ns/shacl#minCount",
+      "@type" : "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "in" : {
+      "@id" : "http://www.w3.org/ns/shacl#in",
+      "@type" : "@id"
+    },
+    "path" : {
+      "@id" : "http://www.w3.org/ns/shacl#path",
+      "@type" : "@id"
+    },
+    "datatype" : {
+      "@id" : "http://www.w3.org/ns/shacl#datatype",
+      "@type" : "@id"
+    },
+    "targetClass" : {
+      "@id" : "http://www.w3.org/ns/shacl#targetClass",
+      "@type" : "@id"
+    },
+    "unit" : "http://unit.no/entitydata#",
+    "sh" : "http://www.w3.org/ns/shacl#",
+    "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  }
+}

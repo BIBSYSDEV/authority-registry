@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -16,7 +18,9 @@ import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
+import no.bibsys.entitydata.validation.ShaclValidator;
 import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
+import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -25,6 +29,8 @@ import org.slf4j.LoggerFactory;
 public class RegistryManager extends ModelParser {
 
     private static final String TABLE_CREATED = "CREATED";
+    private static final Lang SUPPORTED_LANGUAGE= Lang.JSONLD;
+    public static final String VALIDATION_FOLDER = "validation";
 
     public enum RegistryStatus {
         CREATING, UPDATING, DELETING, ACTIVE, NOT_FOUND;
@@ -40,19 +46,24 @@ public class RegistryManager extends ModelParser {
 
     }
 
+
+    private ShaclValidator initShaclValidator() throws IOException {
+        String ontologySting=IoUtils.
+            resourceAsString(Paths.get(VALIDATION_FOLDER,"unit-entity-ontology.ttl"));
+        ShaclValidator shaclValidator= new ShaclValidator(ontologySting,Lang.TURTLE);
+    }
+
+
     public Registry createRegistry(String registryMetadataTableName, Registry registry) throws RegistryMetadataTableBeingCreatedException {
         checkIfRegistryMetadataTableExistsOrCreate(registryMetadataTableName);
         checkIfRegistryExistsInRegistryMetadataTable(registryMetadataTableName, registry.getId());
-
         Model model= parseValidationSchema(registry.getSchema());
-
 
         return createRegistryTable(registryMetadataTableName, registry);
     }
 
     private Model parseValidationSchema(String schema) throws ValidationSchemaSyntaxErrorException {
-        return parseModel(schema, Lang.TURTLE);
-
+        return parseModel(schema, SUPPORTED_LANGUAGE);
     }
 
     public Registry getRegistry(String registryMetadataTableName, String registryId) {
@@ -84,11 +95,13 @@ public class RegistryManager extends ModelParser {
         if (created) {
             addRegistryToRegistryMetadataTable(registryMetadataTable, registry);
             logger.info("Registry created successfully, registryId={}", registry.getId());
+            return registry;
+
         } else {
             logger.error("Registry not created, registryId={}", registry.getId());
             throw new RegistryNotFoundException(registry.getId());
         }
-        return registry;
+
     }
 
     private Registry addRegistryToRegistryMetadataTable(String registryMetadataTableName, Registry registry) {

@@ -16,8 +16,6 @@ public class SampleData {
     public Registry sampleRegistry(String tableName) {
         Registry registry = new Registry();
         registry.setId(tableName);
-        
-        
         ObjectNode metadata = mapper.createObjectNode();
         metadata.put("label", "label");
 
