@@ -4,12 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
+import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 
 
 public class SampleData {
+
+    public static final String VALIDATION_FOLDER = "validation";
+    public static final String VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
 
     public SampleData() {}
 
@@ -44,7 +50,7 @@ public class SampleData {
         return entityDto;
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) throws JsonProcessingException {
+    public RegistryDto sampleRegistryDto(String registryName) throws IOException {
         
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
@@ -58,6 +64,9 @@ public class SampleData {
         metadata.put("Publisher", "Publisher value");
         
         registryDto.setMetadata(metadata);
+        String validationSchema = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER,
+            VALIDATION_SCHEMA_JSON));
+        registryDto.setSchema(validationSchema);
 
         return registryDto;
     }
