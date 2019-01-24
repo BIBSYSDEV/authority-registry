@@ -1,7 +1,5 @@
 package no.bibsys.db;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -11,6 +9,8 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EntityManager {
 
@@ -121,5 +121,9 @@ public class EntityManager {
         }
         
     }
+
+
+
+
     
 }
