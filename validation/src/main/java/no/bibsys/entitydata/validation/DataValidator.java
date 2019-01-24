@@ -1,5 +1,6 @@
 package no.bibsys.entitydata.validation;
 
+import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -22,6 +23,17 @@ public class DataValidator extends ModelParser {
 
     public Model validationReport(Model dataModel) {
         return shaclValidation(dataModel);
+    }
+
+
+    public boolean isValidEntry(Model dataModel) throws EntryFailedShaclValidationException {
+        if(!validationResult(dataModel)){
+            throw new EntryFailedShaclValidationException() ;
+        }
+        else{
+            return true;
+        }
+
     }
 
     public boolean validationResult(Model dataModel) {

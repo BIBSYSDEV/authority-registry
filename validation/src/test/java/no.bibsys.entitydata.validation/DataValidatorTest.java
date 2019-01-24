@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -61,6 +62,19 @@ public class DataValidatorTest {
             expectedModel.createTypedLiteral("true", XSDDatatype.XSDboolean)));
         assertTrue(expectedModel.isIsomorphicWith(report));
     }
+
+
+
+    @Test(expected =  EntryFailedShaclValidationException.class)
+    public void isValidEntry_validationSchemaAndInvalidGraph_f()
+        throws EntryFailedShaclValidationException {
+        TestData testData = new TestData(Paths.get("validation", "invalidGraph.ttl")).invoke();
+        Model validationModel = testData.getValidationModel();
+        Model dataModel = testData.getDataModel();
+        DataValidator dataValidator = new DataValidator(validationModel);
+        assertFalse(dataValidator.isValidEntry(dataModel));
+    }
+
 
     private class TestData {
 
