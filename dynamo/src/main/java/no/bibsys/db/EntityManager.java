@@ -25,7 +25,7 @@ public class EntityManager {
 
     public Entity addEntity(String registryId, Entity entity) {
         validateRegistry(registryId);
-        
+
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId))
