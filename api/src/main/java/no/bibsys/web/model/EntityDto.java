@@ -77,6 +77,12 @@ public class EntityDto extends ModelParser {
         return result;
     }
 
+
+    /**
+     * Checks for equality according to the values of the fields. The checked fields are: {@code
+     * id}, {@code created},  {@code modified},  and {@code body} The {@code body} field is parsed
+     * into model and the comparison ,* @param o
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -87,13 +93,8 @@ public class EntityDto extends ModelParser {
         }
 
         EntityDto other = (EntityDto) o;
-        return Objects.equals(id, other.getId()) &&
-            Objects.equals(created, other.getCreated()) &&
-            Objects.equals(modified, other.getModified()) &&
-            Objects.equals(path, other.getPath()) && (
-             isIsomorphic(other)
-        );
-
+        return Objects.equals(id, other.getId()) && Objects.equals(created, other.getCreated()) && Objects.equals(modified, other.getModified()) && isIsomorphic(
+            other);
     }
 
     public String getId() {

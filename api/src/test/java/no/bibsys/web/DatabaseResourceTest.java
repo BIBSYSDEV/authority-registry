@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
@@ -29,6 +32,7 @@ import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
+import no.bibsys.utils.JsonUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -147,7 +151,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityDto readEntity = readResponse.readEntity(EntityDto.class);
 
         assertThat(actualEntity.getId(), is(equalTo(expectedEntity.getId())));
-        assertThat(actualEntity.getBody(), is(equalTo(expectedEntity.getBody())));
+        assertThat(actualEntity.isIsomorphic(expectedEntity), is(equalTo(true)));
         assertThat(readEntity, is(equalTo(actualEntity)));
 
 
@@ -465,11 +469,16 @@ public class DatabaseResourceTest extends JerseyTest {
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html.toLowerCase(), containsString("html"));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"label\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"number\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"myarray\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"langstring\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"mylangarray\""));
+        JsonNode body = JsonUtils.newJsonParser().readTree(entity.getBody());
+        Iterable<String> bodyIter = body::fieldNames;
+        List<String> bodyFields = StreamSupport.stream(bodyIter.spliterator(), false)
+            .collect(Collectors.toList());
+
+        assertThat(html.toLowerCase(), containsString("html"));
+
+        bodyFields.stream().forEach(field -> assertThat(html.toLowerCase(),
+            containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
+
     }
 
     @Test

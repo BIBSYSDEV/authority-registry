@@ -33,11 +33,9 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements
     MessageBodyWriter<EntityDto> {
 
     private static final String NO_LABEL = "(No label)";
-    private static final String VALUE = "value";
-    private static final String LANG = "lang";
+
     private static final String LANG_NO = "no";
     private static final String LANG_EN = "en";
-    private static final String PREFERRED_LABEL = "preferredLabel";
     private static final String ID = "id";
     private static final String BODY = "body";
     private static final String ENTITY_TEMPLATE = "entitytemplate";
