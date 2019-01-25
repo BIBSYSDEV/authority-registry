@@ -1,15 +1,14 @@
 package no.bibsys.testtemplates;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
+import no.bibsys.entitydata.validation.ModelParser;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
+import org.apache.jena.riot.Lang;
 
 
 public class SampleData {
@@ -17,37 +16,36 @@ public class SampleData {
     public static final String VALIDATION_FOLDER = "validation";
     public static final String VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
 
+    public static final String VALID_GRAPH_JSON = "validGraph.json";
+    public static final String INVALID_GRAPH_JSON= "invalidGraph.json";
+
     public SampleData() {}
 
-    public EntityDto sampleEntityDto() throws JsonProcessingException {
+    public EntityDto sampleEntityDto() throws IOException {
 
-        ObjectMapper mapper = new ObjectMapper();
+        return sampleEntityDtoWithValidData();
+    }
 
-        ObjectNode body = mapper.createObjectNode();
-        body.put("label", "A random label");
-        body.put("number", 5);
-        ArrayNode array = body.putArray("myArray");
-        array.add(1);
-        array.add(2);
-        array.add(3);
-        ObjectNode langString = body.putObject("langString");
-        langString.put("lang", "en");
-        langString.put("value", "langStringValue");
-        ArrayNode langArray = body.putArray("myLangArray");
-        ObjectNode langArrayString1 = langArray.addObject();
-        langArrayString1.put("lang", "en");
-        langArrayString1.put("value", "langStringValue1");
-        ObjectNode langArrayString2 = langArray.addObject();
-        langArrayString2.put("lang", "no");
-        langArrayString2.put("value", "langStringValue2");
-        
-        EntityDto entityDto = new EntityDto();
 
+    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
+        return  sampleEntityDto(INVALID_GRAPH_JSON);
+    }
+
+
+    public EntityDto sampleEntityDtoWithValidData() throws IOException {
+        return sampleEntityDto(VALID_GRAPH_JSON);
+    }
+
+    private EntityDto sampleEntityDto(String bodyFilename) throws IOException {
         String id = "sampleId";
+        EntityDto entityDto = new EntityDto();
         entityDto.setId(id);
-        entityDto.setBody(mapper.writeValueAsString(body));
-        
+        String body=IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
+        new ModelParser().parseModel(body,Lang.JSONLD);
+
+        entityDto.setBody(body);
         return entityDto;
+
     }
 
     public RegistryDto sampleRegistryDto(String registryName) throws IOException {
