@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -34,6 +33,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
@@ -217,7 +217,7 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Entity to create",
                     content = @Content(schema = @Schema(implementation = EntityDto.class))) EntityDto entityDto)
-            throws IOException {
+        throws IOException, EntryFailedShaclValidationException {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
@@ -248,17 +248,16 @@ public class DatabaseResource {
                     schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @RequestBody(description = "Array of Entity to upload",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
-            throws IOException {
+        throws IOException, EntryFailedShaclValidationException {
 
         List<EntityDto> persistedEntities = new ArrayList<EntityDto>();
-        Arrays.asList(entityDtos).forEach(entityDto -> {
+        for(EntityDto entityDto:entityDtos){
             EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
             String entityId = persistedEntity.getId();
             persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
             persistedEntities.add(persistedEntity);
-        });
+        }
 
-        
         return Response.status(Status.OK).entity(new GenericEntity<List<EntityDto>>(persistedEntities) {}).type(MediaType.APPLICATION_JSON).build();
     }
 
