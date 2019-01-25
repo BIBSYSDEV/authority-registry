@@ -8,9 +8,9 @@ import static org.junit.Assert.assertThat;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -360,7 +360,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     }
 
-    private Response createEntity(String registryName) throws JsonProcessingException {
+    private Response createEntity(String registryName) throws IOException {
         EntityDto entity = sampleData.sampleEntityDto();
         Response writeResponse = insertEntryRequest(registryName, entity, apiAdminKey);
         return writeResponse;
@@ -501,7 +501,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
 
-    private List<EntityDto> createSampleEntities() throws JsonProcessingException {
+    private List<EntityDto> createSampleEntities() throws IOException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
@@ -510,7 +510,7 @@ public class DatabaseResourceTest extends JerseyTest {
         return sampleEntities;
     }
 
-    private EntityDto createSampleEntity(String identifier) throws JsonProcessingException {
+    private EntityDto createSampleEntity(String identifier) throws IOException {
         EntityDto sampleEntityDto = sampleData.sampleEntityDto();
         sampleEntityDto.setId(identifier);
         return sampleEntityDto;
