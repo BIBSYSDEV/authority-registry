@@ -11,4 +11,5 @@
 
 :a rdf:type unit:Concept .
 :a unit:preferredLabel "someLabel"@en .
+:a unit:preferredLabel "norskLabel"@no .
 
