@@ -204,9 +204,13 @@ public class RegistryManager extends ModelParser {
                 .collect(Collectors.toList());
     }
 
-    public Registry uppdateRegistrySchema(String registryMetadataTableName, String registryId, String schema) {
+    public Registry updateRegistrySchema(String registryMetadataTableName, String registryId,
+        String schema) throws IOException, ShaclModelValidationException {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
         validateRegistryNotEmpty(registryId);
+
+        Model model = parseValidationSchema(schema);
+        shaclValidator.checkModel(model);
         
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(SaveBehavior.UPDATE)
