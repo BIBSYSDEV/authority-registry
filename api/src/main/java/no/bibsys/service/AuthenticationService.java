@@ -1,11 +1,5 @@
 package no.bibsys.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -23,18 +17,23 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.tools.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthenticationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
     private final transient Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
@@ -44,13 +43,12 @@ public class AuthenticationService {
         apiKeyTableName = environmentReader.readEnv(EnvironmentVariables.API_KEY_TABLE_NAME);
 
         config = DynamoDBMapperConfig.builder()
-                .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
-                .build();
+            .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName)).build();
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
         ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
-        if(Objects.isNull(apiKey)) {
+        if (Objects.isNull(apiKey)) {
             apiKey = new ApiKey();
         }
         return apiKey;
@@ -62,18 +60,15 @@ public class AuthenticationService {
 
     public String createApiKeyTable() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-        attributeDefinitions
-                .add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
+        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
 
         List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
         keySchema.add(new KeySchemaElement().withAttributeName("Key").withKeyType(KeyType.HASH));
 
         CreateTableRequest request = new CreateTableRequest();
-        request.withTableName(apiKeyTableName).withKeySchema(keySchema)
-                .withAttributeDefinitions(attributeDefinitions)
-                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
-                        .withWriteCapacityUnits(1L))
-                .withSSESpecification(new SSESpecification().withEnabled(true));
+        request.withTableName(apiKeyTableName).withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions)
+            .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L))
+            .withSSESpecification(new SSESpecification().withEnabled(true));
 
         Table table = dynamoDB.createTable(request);
         try {
@@ -86,7 +81,7 @@ public class AuthenticationService {
     }
 
     public void setUpInitialApiKeys() {
-        Stage currentStage=Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
+        Stage currentStage = Stage.fromString(environmentReader.readEnv(EnvironmentVariables.STAGE_NAME));
         if (currentStage.equals(Stage.TEST)) {
             ApiKey apiAdminApiKey = ApiKey.createApiAdminApiKey();
             apiAdminApiKey.setKey("testApiAdminApiKey");
@@ -94,6 +89,11 @@ public class AuthenticationService {
         } else {
             saveApiKey(ApiKey.createApiAdminApiKey());
         }
+    }
+
+    public String saveApiKey(ApiKey apiKey) {
+        mapper.save(apiKey, config);
+        return apiKey.getKey();
     }
 
     public String deleteApiKeyTable() {
@@ -108,17 +108,11 @@ public class AuthenticationService {
         return table.getTableName();
     }
 
-    public String saveApiKey(ApiKey apiKey) {
-        mapper.save(apiKey, config);
-        return apiKey.getKey();
-    }
-
     public void deleteApiKeyForRegistry(String registryName) {
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        scanExpression.addFilterCondition("Registry",
-                new Condition().withComparisonOperator(ComparisonOperator.EQ)
-                        .withAttributeValueList(new AttributeValue().withS(registryName)));
+        scanExpression.addFilterCondition("Registry", new Condition().withComparisonOperator(ComparisonOperator.EQ)
+            .withAttributeValueList(new AttributeValue().withS(registryName)));
 
         PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
 

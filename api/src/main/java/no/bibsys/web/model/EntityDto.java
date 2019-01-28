@@ -35,24 +35,6 @@ public class EntityDto extends ModelParser {
 
     }
 
-
-    @JsonIgnore
-    public boolean isIsomorphic(EntityDto other) {
-        if(this.body==null && other.getBody()==null){
-            return true;
-        }
-        else if(this.body!=null && other.getBody()!=null){
-            Model thisModel = parseModel(getBody(), Lang.JSONLD);
-            Model thatModel = parseModel(other.getBody(), Lang.JSONLD);
-            return thisModel.isIsomorphicWith(thatModel);
-        }
-        else {
-            // one null and the other is not
-            return false;
-        }
-
-    }
-
     @JsonRawValue
     @JsonDeserialize(using = JsonAsStringDeserializer.class)
     public String getBody() {
@@ -77,11 +59,11 @@ public class EntityDto extends ModelParser {
         return result;
     }
 
-
     /**
-     * Checks for equality according to the values of the fields. The checked fields are: {@code
-     * id}, {@code created},  {@code modified},  and {@code body} The {@code body} field is parsed
-     * into model and the comparison ,* @param o
+     * Checks for equality according to the values of the fields. The checked fields are: {@code id}, {@code created},
+     * {@code modified},  and {@code body}. The {@code body} field is parsed into model and the two bodies are equal
+     * if their respective models are isomorphic.
+     * @param o The object to compare with
      */
     @Override
     public boolean equals(Object o) {
@@ -93,8 +75,28 @@ public class EntityDto extends ModelParser {
         }
 
         EntityDto other = (EntityDto) o;
-        return Objects.equals(id, other.getId()) && Objects.equals(created, other.getCreated()) && Objects.equals(modified, other.getModified()) && isIsomorphic(
-            other);
+        return Objects.equals(id, other.getId()) && Objects.equals(created, other.getCreated()) && Objects
+            .equals(modified, other.getModified()) && isIsomorphic(other);
+    }
+
+    @JsonIgnore
+    public boolean isIsomorphic(EntityDto other) {
+        if (this.body == null && other.getBody() == null) {
+            return true;
+        } else if (this.body != null && other.getBody() != null) {
+            Model thisModel = parseModel(getBody(), Lang.JSONLD);
+            Model thatModel = parseModel(other.getBody(), Lang.JSONLD);
+            return thisModel.isIsomorphicWith(thatModel);
+        } else {
+            // one null and the other is not
+            return false;
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        return "EntityDto [id=" + id + ", created=" + created + ", modified=" + modified + ", body=" + body + "]";
     }
 
     public String getId() {
@@ -122,7 +124,7 @@ public class EntityDto extends ModelParser {
     }
 
     /**
-     * Relative path to this resource, set in the API level
+     * Relative path to this resource, set in the API level.
      */
     public String getPath() {
         return path;
@@ -130,12 +132,6 @@ public class EntityDto extends ModelParser {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    @Override
-    public String toString() {
-        return "EntityDto [id=" + id + ", created=" + created + ", modified=" + modified + ", body="
-            + body + "]";
     }
 
 }

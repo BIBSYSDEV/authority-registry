@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class DestroyHandler extends ResourceHandler {
 
 
-    private final static Logger logger = LoggerFactory.getLogger(DestroyHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DestroyHandler.class);
 
     private final transient AuthenticationService authenticationService;
 
@@ -37,12 +37,11 @@ public class DestroyHandler extends ResourceHandler {
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         authenticationService = new AuthenticationService(client, new Environment());
 
-
     }
 
     @Override
-    protected SimpleResponse processInput(DeployEvent inputObject, String apiGatewayQuery,
-        Context context) throws IOException, URISyntaxException {
+    protected SimpleResponse processInput(DeployEvent inputObject, String apiGatewayQuery, Context context)
+        throws IOException, URISyntaxException {
         authenticationService.deleteApiKeyTable();
         deleteStaticUrl();
         deleteSwaggerHubDoc();
@@ -52,10 +51,8 @@ public class DestroyHandler extends ResourceHandler {
 
     private void deleteStaticUrl() {
         UrlUpdater urlUpdater = createUrlUpdater();
-        Optional<ChangeResourceRecordSetsRequest> deleteRequest = urlUpdater
-            .createDeleteRequest();
-        Optional<ChangeResourceRecordSetsResult> result = deleteRequest
-            .map(urlUpdater::executeDelete);
+        Optional<ChangeResourceRecordSetsRequest> deleteRequest = urlUpdater.createDeleteRequest();
+        Optional<ChangeResourceRecordSetsResult> result = deleteRequest.map(urlUpdater::executeDelete);
 
         if (result.isPresent()) {
             logger.info(result.get().toString());
@@ -66,13 +63,10 @@ public class DestroyHandler extends ResourceHandler {
     }
 
     public void deleteSwaggerHubDoc() throws IOException, URISyntaxException {
-        SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId,
-            apiVersion,
-            swaggerOrganization);
+        SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId, apiVersion, swaggerOrganization);
         SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
         String apiKey = swaggerHubInfo.getSwaggerAuth();
-        HttpDelete deleteRequest = swaggerDriver
-            .createDeleteVersionRequest(apiKey);
+        HttpDelete deleteRequest = swaggerDriver.createDeleteVersionRequest(apiKey);
         swaggerDriver.executeDelete(deleteRequest);
 
     }

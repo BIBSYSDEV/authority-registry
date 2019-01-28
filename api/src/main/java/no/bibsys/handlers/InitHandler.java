@@ -47,13 +47,12 @@ public class InitHandler extends ResourceHandler {
 
     public static final String URL_FIELD = "url";
     public static final String SERVERS_FIELD = "servers";
-    private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
     public static final String SUCCESS_MESSAGE = "Success initializing resources.";
-    public static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub "
-        + "specification";
+    public static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub " + "specification";
     public static final String UPDATING_URL_LOGGER_DEBUG = "Could not update Static URL settings";
     public static final String CHANGE_DEBUG_MESSAGE = "Change:{}";
     public static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
+    private static final Logger logger = LoggerFactory.getLogger(InitHandler.class);
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
 
@@ -78,48 +77,39 @@ public class InitHandler extends ResourceHandler {
     }
 
     @Override
-    protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery,
-        Context context) throws IOException, URISyntaxException {
+    protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery, Context context)
+        throws IOException, URISyntaxException {
         createApiKeysTable();
         updateUrl();
         updateSwaggerHub();
         return new SimpleResponse(SUCCESS_MESSAGE);
     }
 
-    private void updateSwaggerHub()
-        throws IOException, URISyntaxException {
+    private void updateSwaggerHub() throws IOException, URISyntaxException {
 
-        try{
-            ObjectNode swaggerRoot = (ObjectNode) jsonParser.readTree(
-                generateOpenApiSpecificationFromCode());
-            Optional<ObjectNode> updatedSwaggerRootDoc =
-                updateSwaggerRootWithServerInfoFromApiGateway(swaggerRoot);
+        try {
+            ObjectNode swaggerRoot = (ObjectNode) jsonParser.readTree(generateOpenApiSpecificationFromCode());
+            Optional<ObjectNode> updatedSwaggerRootDoc = updateSwaggerRootWithServerInfoFromApiGateway(swaggerRoot);
 
             if (updatedSwaggerRootDoc.isPresent()) {
-                SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId,
-                    apiVersion,
-                    swaggerOrganization);
+                SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId, apiVersion, swaggerOrganization);
                 SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
                 String apiKey = swaggerHubInfo.getSwaggerAuth();
                 deletePreviousSwaggerHubSpecification(swaggerDriver, apiKey);
                 updateSwaggerHubSpecification(updatedSwaggerRootDoc.get(), swaggerHubInfo, swaggerDriver);
-            }
-            else{
+            } else {
                 logger.error(FAILURE_WITH_SWAGGERHUB);
             }
-        }
-        catch(OpenApiConfigurationException e){
+        } catch (OpenApiConfigurationException e) {
             logger.error(e.getMessage());
             throw new IOException(e);
         }
     }
 
-    private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc,
-        SwaggerHubInfo swaggerHubInfo, SwaggerDriver swaggerDriver)
-        throws URISyntaxException, IOException {
-        String swaggerString= Json.pretty(updatedSwaggerRootDoc);
-        HttpPost updateRequest = swaggerDriver
-            .createUpdateRequest(swaggerString,swaggerHubInfo.getSwaggerAuth());
+    private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc, SwaggerHubInfo swaggerHubInfo,
+        SwaggerDriver swaggerDriver) throws URISyntaxException, IOException {
+        String swaggerString = Json.pretty(updatedSwaggerRootDoc);
+        HttpPost updateRequest = swaggerDriver.createUpdateRequest(swaggerString, swaggerHubInfo.getSwaggerAuth());
         swaggerDriver.executePost(updateRequest);
     }
 
@@ -129,8 +119,7 @@ public class InitHandler extends ResourceHandler {
         swaggerDriver.executeDelete(deleteRequest);
     }
 
-    private String generateOpenApiSpecificationFromCode()
-        throws OpenApiConfigurationException {
+    private String generateOpenApiSpecificationFromCode() throws OpenApiConfigurationException {
         OpenApiContext context = new JaxrsOpenApiContextBuilder().buildContext(true);
         return Json.pretty(context.read());
     }
@@ -138,17 +127,36 @@ public class InitHandler extends ResourceHandler {
     private Optional<ObjectNode> updateSwaggerRootWithServerInfoFromApiGateway(ObjectNode swaggerDocRoot)
         throws IOException {
         Optional<ServerInfo> serverInfo = readServerInfo();
-        Optional<ObjectNode> newDoc = serverInfo
-            .map(si -> updateSwaggerHubDocWithServerInfo(swaggerDocRoot, si));
+        Optional<ObjectNode> newDoc = serverInfo.map(si -> updateSwaggerHubDocWithServerInfo(swaggerDocRoot, si));
         return newDoc;
     }
 
     @VisibleForTesting
-    public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot,
-        ServerInfo serverInfo) {
+    public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot, ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
-        return (ObjectNode) openApiDocRoot
-            .set(SERVERS_FIELD, serversNode);
+        return (ObjectNode) openApiDocRoot.set(SERVERS_FIELD, serversNode);
+    }
+
+    @VisibleForTesting
+    public ArrayNode serversNode(ServerInfo serverInfo) {
+        ArrayNode servers = jsonParser.createArrayNode();
+        ObjectNode serverNode = jsonParser.createObjectNode();
+        serverNode.put(URL_FIELD, serverInfo.getServerUrl());
+        servers.add(serverNode);
+        return servers;
+    }
+
+    private Optional<ServerInfo> readServerInfo() throws IOException {
+        String restApiId = restApiId(stackName);
+        AmazonApiGateway apiGatewayClient = AmazonApiGatewayClientBuilder.defaultClient();
+        ApiGatewayApiInfo apiGatewayApiInfo = new ApiGatewayApiInfo(stage, apiGatewayClient, restApiId);
+        return apiGatewayApiInfo.readServerInfo();
+    }
+
+    private String restApiId(String stackName) {
+        StackResources stackResources = new StackResources(stackName);
+        return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
+            .orElseThrow(() -> new NotFoundException(STACK_NOT_FOUND_MESSAGE + stackName));
     }
 
     private void createApiKeysTable() {
@@ -164,39 +172,12 @@ public class InitHandler extends ResourceHandler {
     private void updateUrl() {
         UrlUpdater urlUpdater = createUrlUpdater();
 
-        Optional<ChangeResourceRecordSetsRequest> request = urlUpdater
-            .createUpdateRequest(certificateArn);
-        List<String> changeList = request.map(req -> req.getChangeBatch().getChanges().stream())
-            .orElse(Stream.empty())
+        Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createUpdateRequest(certificateArn);
+        List<String> changeList = request.map(req -> req.getChangeBatch().getChanges().stream()).orElse(Stream.empty())
             .map(Change::toString).collect(Collectors.toList());
         changeList.forEach(change -> logger.debug(CHANGE_DEBUG_MESSAGE, change));
-        ChangeResourceRecordSetsResult result = request
-            .map(urlUpdater::executeUpdate)
+        ChangeResourceRecordSetsResult result = request.map(urlUpdater::executeUpdate)
             .orElseThrow(() -> new NotFoundException(UPDATING_URL_LOGGER_DEBUG));
         logger.info(result.toString());
-    }
-
-    private Optional<ServerInfo> readServerInfo() throws IOException {
-        String restApiId = restApiId(stackName);
-        AmazonApiGateway apiGatewayClient = AmazonApiGatewayClientBuilder.defaultClient();
-        ApiGatewayApiInfo apiGatewayApiInfo = new ApiGatewayApiInfo(stage,
-            apiGatewayClient,
-            restApiId);
-        return apiGatewayApiInfo.readServerInfo();
-    }
-
-    private String restApiId(String stackName) {
-        StackResources stackResources = new StackResources(stackName);
-        return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
-            .orElseThrow(() -> new NotFoundException(STACK_NOT_FOUND_MESSAGE + stackName));
-    }
-
-    @VisibleForTesting
-    public ArrayNode serversNode(ServerInfo serverInfo) {
-        ArrayNode servers = jsonParser.createArrayNode();
-        ObjectNode serverNode = jsonParser.createObjectNode();
-        serverNode.put(URL_FIELD, serverInfo.getServerUrl());
-        servers.add(serverNode);
-        return servers;
     }
 }

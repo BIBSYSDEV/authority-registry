@@ -36,8 +36,6 @@ public class RegistryDto {
         this.path = path;
     }
 
-//    @JsonRawValue
-//    @JsonDeserialize(using = JsonAsStringDeserializer.class)
     public Map<String,Object> getMetadata() {
         return metadata;
     }

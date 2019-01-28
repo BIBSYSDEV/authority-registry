@@ -54,9 +54,7 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig(AmazonDynamoDB client, Environment environmentReader) {
         super();
 
-
-        AuthenticationService authenticationService =
-            new AuthenticationService(client, environmentReader);
+        AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = null;
         try {
@@ -65,10 +63,11 @@ public class JerseyConfig extends ResourceConfig {
             logger.error(e.getMessage());
             logger.error("Could not create RegistryManager");
         }
-        RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
+        RegistryService registryService = new RegistryService(registryManager, authenticationService,
+            environmentReader);
 
         EntityManager entityManager = new EntityManager(client);
-        EntityService entityService = new EntityService(entityManager,registryService);
+        EntityService entityService = new EntityService(entityManager, registryService);
 
         register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);

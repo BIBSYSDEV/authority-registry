@@ -33,17 +33,18 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
     }
 
     @Override
-    public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-                    throws IOException, WebApplicationException {
+    public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations,
+        MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+        throws IOException, WebApplicationException {
 
         Map<String, Object> registryMap = new ConcurrentHashMap<>();
 
-        Map<String,Object> metadataMap = (Map<String,Object>)JsonUtils.newJsonParser().convertValue(registry.getMetadata(), Map.class);
+        Map<String, Object> metadataMap = (Map<String, Object>) JsonUtils.newJsonParser()
+            .convertValue(registry.getMetadata(), Map.class);
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
 
-        try(Writer writer = new PrintWriter(entityStream)){
+        try (Writer writer = new PrintWriter(entityStream)) {
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile(REGISTRY_TEMPLATE);
