@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,7 +33,9 @@ import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
+import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
+import no.bibsys.web.exception.validationexceptions.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -44,6 +47,9 @@ import org.junit.Test;
 
 public class DatabaseResourceTest extends JerseyTest {
 
+    public static final String VALIDATION_FOLDER = "validation";
+    public static final String ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON =
+        "alternativeValidShaclValidationSchema.json";
     public static String REGISTRY_PATH = "/registry";
     private final SampleData sampleData = new SampleData();
     private String apiAdminKey;
@@ -107,13 +113,10 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() throws Exception {
         String registryName = "TheRegistryName";
-
 //        new CreatedRegistryDto(String.format("A registry with name=%s is being created", registryName));
-        RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
-        Response response = target(REGISTRY_PATH).request()
-            .accept(MediaType.APPLICATION_JSON)
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-            .buildPost(
+        RegistryDto expectedRegistry = sampleData.sampleRegistryDtoWithValidSchema(registryName);
+        Response response = target(REGISTRY_PATH).request().accept(MediaType.APPLICATION_JSON)
+            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).buildPost(
                 javax.ws.rs.client.Entity.entity(expectedRegistry, MediaType.APPLICATION_JSON))
             .invoke();
 
@@ -122,6 +125,29 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         assertThat(actualRegistry.getId(), is(equalTo(expectedRegistry.getId())));
         assertThat(actualRegistry.getMetadata(), is(equalTo(expectedRegistry.getMetadata())));
+
+    }
+
+
+    @Test
+    public void createRegistry_RegistryNotExistingUserAuthorizedInvalidSchema_StatusOK()
+        throws Exception {
+        String registryName = "TheRegistryName";
+        //        new CreatedRegistryDto(String.format("A registry with name=%s is being
+        //        created", registryName));
+        RegistryDto expectedRegistry = sampleData.sampleRegistryDtoWithInValidSchema(registryName);
+        Response response = target(REGISTRY_PATH).request()
+            .accept(MediaType.APPLICATION_JSON)
+            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
+            .buildPost(
+                javax.ws.rs.client.Entity.entity(expectedRegistry, MediaType.APPLICATION_JSON))
+            .invoke();
+
+        String actualMessage = response.readEntity(String.class);
+        String expectedMessage =
+            ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper.MESSAGE;
+        assertThat(response.getStatus(), is(equalTo(Status.BAD_REQUEST.getStatusCode())));
+        assertThat(expectedMessage, is(equalTo(actualMessage)));
 
     }
 
@@ -232,7 +258,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void callEndpoint_WrongRole_ReturnsStatusForbidden() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         Response response = target("/registry").request()
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
             .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
@@ -245,7 +271,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void getRegistryMetadata_RegistryExists_ReturnsStatusOk() throws Exception {
 
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
 
         createRegistry(registryDto, apiAdminKey);
 
@@ -318,7 +344,8 @@ public class DatabaseResourceTest extends JerseyTest {
     public void putRegistrySchema_RegistryExists_ReturnsStatusOK() throws Exception {
         String registryName = createRegistry();
 
-        String schemaAsJson = "Schema as Json";
+        String schemaAsJson = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON));
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
@@ -375,7 +402,7 @@ public class DatabaseResourceTest extends JerseyTest {
         throws Exception {
 
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         createRegistry(registryDto, apiAdminKey);
 
         List<EntityDto> sampleEntities = createSampleEntities();
@@ -400,7 +427,7 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void replaceApiKey_RegistryExists_ReturnsNewApiKey() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
         RegistryDto newRegistry = createRegistryResponse.readEntity(RegistryDto.class);
         String oldApiKey = newRegistry.getApiKey();
@@ -425,7 +452,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBAD_REQUEST()
         throws Exception {
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         createRegistry(registryDto, apiAdminKey);
         String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
 
@@ -436,7 +463,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private String createRegistry() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         createRegistry(registryDto, apiAdminKey);
         return registryName;
     }
@@ -554,7 +581,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     private Response createRegistry(String registryName, String apiKey) throws Exception {
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        RegistryDto registryDto = sampleData.sampleRegistryDtoWithValidSchema(registryName);
         return createRegistry(registryDto, apiKey);
     }
 
