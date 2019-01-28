@@ -1,4 +1,5 @@
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
+import * as jsonld from 'jsonld'
 
 When('the anonymous user requests the entity specifying an Accept header with value:', (dataTable) => {
   cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --');
@@ -51,11 +52,9 @@ Then('anonymous user can view the data in the serialization and profile requeste
   cy.get('@entityGetUrl').then((entityGetUrl) => {
     cy.get('@entityId').then((entityId) => {
       cy.request(entityGetUrl)
-      //			cy.request(entityGetUrl + entityId)
         .then((response) => {
           cy.get('@profile').then((profile) => {
             expect('native-uri').to.contains(profile);
-            //					expect(response.headers['content-type']).to.contains(profile)
           });
         });
     });
@@ -81,13 +80,22 @@ Then('anonymous user can view the data in the given serialization', () => {
       const getUrl = 'registry/' + registryName + '/entity/' + entityId;
       cy.get('@formats').then((formats) => {
         formats.forEach(format => {
+          const formatType = format[0];
           cy.request({
             url: getUrl,
             headers: {
-              Accept: format[0],
+              Accept: formatType,
             },
           }).then((response) => {
-            expect(response.headers['content-type']).to.be.equal(format[0]);
+            cy.log(response.body);
+            expect(response.headers['content-type']).to.be.equal(formatType);
+            const canonized = jsonld.canonize(response.body, {
+              algorithm: 'URDNA2015',
+              format: 'application/ld+json',
+            });
+            cy.log('************************************');
+            cy.log(canonized);
+            
           });
         });
       });
