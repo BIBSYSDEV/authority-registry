@@ -14,23 +14,20 @@ import org.apache.jena.riot.Lang;
 public class SampleData {
 
     public static final String VALIDATION_FOLDER = "validation";
-    public static final String VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    public static final String VALID_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    public static final String INVALID_VALIDATION_SCHEMA_JSON =
+        "invalidDatatypeRangeShaclValidationSchema.json";
 
     public static final String VALID_GRAPH_JSON = "validGraph.json";
-    public static final String INVALID_GRAPH_JSON= "invalidGraph.json";
+    public static final String INVALID_GRAPH_JSON = "invalidGraph.json";
 
-    public SampleData() {}
+    public SampleData() {
+    }
 
     public EntityDto sampleEntityDto() throws IOException {
 
         return sampleEntityDtoWithValidData();
     }
-
-
-    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
-        return  sampleEntityDto(INVALID_GRAPH_JSON);
-    }
-
 
     public EntityDto sampleEntityDtoWithValidData() throws IOException {
         return sampleEntityDto(VALID_GRAPH_JSON);
@@ -40,30 +37,56 @@ public class SampleData {
         String id = "sampleId";
         EntityDto entityDto = new EntityDto();
         entityDto.setId(id);
-        String body=IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
-        new ModelParser().parseModel(body,Lang.JSONLD);
+        String body = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
+        new ModelParser().parseModel(body, Lang.JSONLD);
 
         entityDto.setBody(body);
         return entityDto;
 
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) throws IOException {
-        
+    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
+        return sampleEntityDto(INVALID_GRAPH_JSON);
+    }
+
+    public RegistryDto sampleRegistryDtoWithInValidSchema(String registryName) throws IOException {
+
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String,Object> metadata = (Map<String, Object>)mapper.convertValue(
-            mapper.createObjectNode(), Map.class);
-      
+        Map<String, Object> metadata = (Map<String, Object>) mapper
+            .convertValue(mapper.createObjectNode(), Map.class);
+
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");
-        
+
         registryDto.setMetadata(metadata);
-        String validationSchema = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER,
-            VALIDATION_SCHEMA_JSON));
+        String validationSchema = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_VALIDATION_SCHEMA_JSON));
+        registryDto.setSchema(validationSchema);
+
+        return registryDto;
+    }
+
+
+    public RegistryDto sampleRegistryDtoWithValidSchema(String registryName) throws IOException {
+
+        RegistryDto registryDto = new RegistryDto();
+        registryDto.setId(registryName);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> metadata = (Map<String, Object>) mapper
+            .convertValue(mapper.createObjectNode(), Map.class);
+
+        metadata.put("Registry_name", "Registry name value");
+        metadata.put("Registry_type", "Registry type value");
+        metadata.put("Publisher", "Publisher value");
+
+        registryDto.setMetadata(metadata);
+        String validationSchema = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
         registryDto.setSchema(validationSchema);
 
         return registryDto;

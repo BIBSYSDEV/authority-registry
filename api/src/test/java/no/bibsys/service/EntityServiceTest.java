@@ -54,7 +54,7 @@ public class EntityServiceTest {
         RegistryService registryService=new RegistryService(registyManager,authenticationService,environment);
 
         authenticationService.createApiKeyTable();
-        registryDto = new SampleData().sampleRegistryDto(REGISTRY_ID);
+        registryDto = new SampleData().sampleRegistryDtoWithValidSchema(REGISTRY_ID);
         registryService.createRegistry(registryDto);
 
         EntityManager entityManager=new EntityManager(client);
