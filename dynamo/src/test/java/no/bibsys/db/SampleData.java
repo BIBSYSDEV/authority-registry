@@ -8,19 +8,24 @@ import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
-import org.apache.jena.rdf.model.Model;
 
 
 public class SampleData {
 
     public static final String VALIDATION_FOLDER = "validation";
     public static final String SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     private final transient ObjectMapper mapper = JsonUtils.newJsonParser();
-    private final transient String validationSchemaString;
+    private final transient String validValidationSchemaString;
+    private final transient String invalidValidationSchemaString;
 
     public SampleData() throws IOException {
-        validationSchemaString = IoUtils.resourceAsString(
+        validValidationSchemaString = IoUtils.resourceAsString(
             Paths.get(VALIDATION_FOLDER, SHACL_VALIDATION_SCHEMA_JSON));
+
+        invalidValidationSchemaString = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
+
     }
 
     public Registry sampleRegistry(String tableName) {
@@ -30,7 +35,7 @@ public class SampleData {
         metadata.put("label", "label");
 
         registry.setMetadata(metadata);
-        registry.setSchema(validationSchemaString);
+
 
         return registry;
     }
@@ -43,6 +48,14 @@ public class SampleData {
         entity.setBody(body);
         
         return entity;
+    }
+
+    public String getValidValidationSchemaString() {
+        return validValidationSchemaString;
+    }
+
+    public String getInvalidValidationSchemaString() {
+        return invalidValidationSchemaString;
     }
 
 }
