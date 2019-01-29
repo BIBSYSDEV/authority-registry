@@ -1,0 +1,12 @@
+<j.0:entity rdf:about="http://example.org/fakevoc/c00000">,
+<j.0:seeAlso>seeAlsoValue</j.0:seeAlso>,
+<j.0:narrower>narrowerValue</j.0:narrower>,
+<j.0:preferredLabel xml:lang="en">preferredLabelValue</j.0:preferredLabel>,
+<j.0:related>relatedValue</j.0:related>,
+<j.0:definition xml:lang="en">definitionValue</j.0:definition>,
+<j.0:type>typeValue</j.0:type>,
+<j.0:alternativeLabel xml:lang="en">alternativeLabelValue</j.0:alternativeLabel>,
+<j.0:inScheme>schemeValue</j.0:inScheme>,
+<j.0:identifier>identifierValue</j.0:identifier>,
+<j.0:name>nameValue</j.0:name>,
+<j.0:broader>broaderValue</j.0:broader>

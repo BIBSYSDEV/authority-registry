@@ -1,0 +1,9 @@
+"@id" : "http://example.org/fakevoc/c00000",
+"@value" : "preferredLabelValue",
+"identifier" : "identifierValue",
+"inScheme" : "schemeValue",
+"name" : "nameValue",
+"narrower" : "narrowerValue",
+"related" : "relatedValue",
+"seeAlso" : "seeAlsoValue",
+"type" : "typeValue"

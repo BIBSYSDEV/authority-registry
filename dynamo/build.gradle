@@ -7,25 +7,29 @@ repositories {
 dependencies {
 
     compile project(":common")
-    compile ("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
-    testCompile ("com.amazonaws:DynamoDBLocal:1.11.+")
+    implementation ("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
 
     //library for using embedded DynamoDB during local tests
-    testCompile ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
-    testCompile ("com.almworks.sqlite4java:sqlite4java-win32-x86:1.0.392")
-    testCompile ("com.almworks.sqlite4java:sqlite4java-win32-x64:1.0.392")
-    testCompile ("com.almworks.sqlite4java:libsqlite4java-osx:1.0.392")
-    testCompile ("com.almworks.sqlite4java:libsqlite4java-linux-i386:1.0.392")
-    testCompile ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:sqlite4java-win32-x86:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:sqlite4java-win32-x64:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:libsqlite4java-osx:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-i386:1.0.392")
+    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
     //slf4j logging
-    compile ('org.slf4j:slf4j-api:1.7.25')
+    implementation ('org.slf4j:slf4j-api:1.7.25')
+    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
+    
+    //Add library files for SQLite to classpath because we need them during test initialization
+    // This is for simulating DynamoDB locally
+    testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.+")
 }
 
 
 task copyNativeDeps(type: Copy) {
-    from(configurations.compile + configurations.testCompile) {
+    from(configurations.compileClasspath + configurations.testCompileClasspath) {
         include '*.dll'
         include '*.dylib'
         include '*.so'
