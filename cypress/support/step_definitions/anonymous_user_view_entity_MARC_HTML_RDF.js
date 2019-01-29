@@ -90,7 +90,7 @@ Then('anonymous user can view the data in the given serialization', () => {
               },
             }).then((response) => {
               if (formatType === "application/json") {
-                  expect(response.body.body).to.deep.equal(testData);
+                expect(response.body.body).to.deep.equal(testData);
               } else {
                 const tests = testData.split(',\r\n');
                 tests.forEach((test) => {
@@ -104,23 +104,3 @@ Then('anonymous user can view the data in the given serialization', () => {
     });
   });
 });
-
-function canonize(body) {
-  
-  return new Cypress.Promise((resolve, reject) => {
-    const options = {
-        algorithm: 'URDNA2015',
-        format: 'application/n-quads',
-    };
-    
-    
-    debugger;
-    jsonld.canonize(body, options, (err, canonized) => {
-      return canonized;
-    }).then((canonized) => {
-      debugger;
-      resolve(canonized)
-      });
-    debugger;
-  });
-}

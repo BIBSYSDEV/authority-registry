@@ -98,7 +98,13 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdfHelper.APPLICATION_RDF, MediaTypeRdfHelper.APPLICATION_JSON_LD, MediaTypeRdfHelper.APPLICATION_N_TRIPLES, MediaTypeRdfHelper.APPLICATION_RDF_XML, MediaTypeRdfHelper.APPLICATION_TURTLE})
+    @Produces({MediaType.TEXT_HTML, 
+        MediaType.APPLICATION_JSON,
+        MediaTypeRdfHelper.APPLICATION_RDF,
+        MediaTypeRdfHelper.APPLICATION_JSON_LD,
+        MediaTypeRdfHelper.APPLICATION_N_TRIPLES,
+        MediaTypeRdfHelper.APPLICATION_RDF_XML,
+        MediaTypeRdfHelper.APPLICATION_TURTLE})
     public Response getRegistryMetadata(
             @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
@@ -272,7 +278,13 @@ public class DatabaseResource {
     @GET
     @Path("/{registryName}/entity/{entityId}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, MediaTypeRdfHelper.APPLICATION_RDF, MediaTypeRdfHelper.APPLICATION_RDF_XML, MediaTypeRdfHelper.APPLICATION_JSON_LD, MediaTypeRdfHelper.APPLICATION_N_TRIPLES, MediaTypeRdfHelper.APPLICATION_TURTLE})
+    @Produces({MediaType.TEXT_HTML,
+        MediaType.APPLICATION_JSON,
+        MediaTypeRdfHelper.APPLICATION_RDF,
+        MediaTypeRdfHelper.APPLICATION_RDF_XML,
+        MediaTypeRdfHelper.APPLICATION_JSON_LD,
+        MediaTypeRdfHelper.APPLICATION_N_TRIPLES,
+        MediaTypeRdfHelper.APPLICATION_TURTLE})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                     description = "Name of registry to get entity from",
