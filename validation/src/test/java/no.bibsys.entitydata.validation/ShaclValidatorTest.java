@@ -85,4 +85,5 @@ public class ShaclValidatorTest extends ModelParser {
         throws IOException, ShaclModelValidationException {
         assertFalse(validator.checkModel(parseModel(INVALID_DOMAIN_SCEMA)));
     }
+
 }

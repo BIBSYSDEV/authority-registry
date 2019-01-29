@@ -16,6 +16,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DataValidatorTest extends ModelParser {
@@ -31,30 +32,33 @@ public class DataValidatorTest extends ModelParser {
     private static final Property SH_VALIDATION_REPORT_CLASS = ResourceFactory
         .createProperty("http://www.w3.org/ns/shacl#ValidationReport");
 
+    private transient DataValidator dataValidator;
+
+
+    public DataValidatorTest() throws IOException {
+        Model validationModel = parseModel(
+            IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TTL);
+        dataValidator = new DataValidator(validationModel);
+    }
+
     @Test
     public void validationResult_validationSchemaAndValidGraph_true() throws IOException {
         TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
-        Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-        DataValidator dataValidator = new DataValidator(validationModel);
         assertTrue(dataValidator.validationResult(dataModel));
     }
 
     @Test
     public void validationResult_validationSchemaAndInvalidGraph_false() throws IOException {
         TestData testData = new TestData(Paths.get("validation", "invalidGraph.ttl")).invoke();
-        Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-        DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.validationResult(dataModel));
     }
 
     @Test
     public void valiationReport_validSchemaAndValidGraphTTL_report() throws IOException {
         TestData testData = new TestData(Paths.get("validation", VALID_GRAPH_TTL)).invoke();
-        Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-        DataValidator dataValidator = new DataValidator(validationModel);
         Model report = dataValidator.validationReport(dataModel);
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
@@ -67,11 +71,10 @@ public class DataValidatorTest extends ModelParser {
 
     @Test
     public void valiationReport_validSchemaAndValidGraphJsonLd_report() throws IOException {
-        Model validationModel = parseModel(
-            IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TTL);
+
         Model dataModel = parseModel(IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_JSON)),
             Lang.JSONLD);
-        DataValidator dataValidator = new DataValidator(validationModel);
+
         Model report = dataValidator.validationReport(dataModel);
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
@@ -86,9 +89,7 @@ public class DataValidatorTest extends ModelParser {
     public void isValidEntry_validationSchemaAndInvalidGraph_f()
         throws EntryFailedShaclValidationException, IOException {
         TestData testData = new TestData(Paths.get("validation", INVALID_GRAPH_TTL)).invoke();
-        Model validationModel = testData.getValidationModel();
         Model dataModel = testData.getDataModel();
-        DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.isValidEntry(dataModel));
     }
 
@@ -103,6 +104,16 @@ public class DataValidatorTest extends ModelParser {
             Lang.JSONLD);
         DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.isValidEntry(dataModel));
+    }
+
+
+    @Ignore
+    @Test
+    public void test() throws IOException, EntryFailedShaclValidationException {
+        String json = IoUtils.resourceAsString(Paths.get("validation", "entityTestData.json"));
+        boolean result = dataValidator.isValidEntry(parseModel(json, Lang.JSONLD));
+        assertTrue(result);
+
     }
 
 

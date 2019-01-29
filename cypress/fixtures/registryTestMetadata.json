@@ -1,6 +1,5 @@
 {
 	"id": "test",
-	"schema": "testSchema",
 	"metadata": {
 		"name": "nameValue",
 		"registryName": "registryNameValue",

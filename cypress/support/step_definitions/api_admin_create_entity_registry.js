@@ -12,7 +12,7 @@ When('the API admin user submits the API key and a properly formatted create-ent
   cy.log('-- api_admin_create_entity_registry.js --');
   cy.get('@registryName').then((registryName) => {
     cy.get('@apiAdminApiKey').then((apiKey) => {
-      cy.createEmptyRegistry(registryName, apiKey, 'registryTestMetadata.json', false);
+      cy.createEmptyRegistry(registryName, apiKey, 'registryTestMetadata.json');
     });
   });
 });

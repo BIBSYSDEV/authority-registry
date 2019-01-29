@@ -11,10 +11,10 @@
     "datatype" : "rdf:langString",
     "path" : "unit:preferredLabel"
   }, {
-    "@id" : "unit:invalidShape",
-    "@type" : "sh:NodeShape",
-    "property" : "_:b0",
-    "targetSubjectsOf" : "rdf:type"
+    "@id"             : "unit:validShape",
+    "@type"           : "sh:NodeShape",
+    "property"        : "_:b0",
+    "targetSubjectsOf": "rdf:type"
   }, {
     "@id" : "unit:nodeshape",
     "@type" : "sh:NodeShape",

@@ -10,7 +10,7 @@ unit:nodeshape a sh:NodeShape ;
   ] .
 
 
-unit:invalidShape a sh:NodeShape ;
+unit:validShape a sh:NodeShape ;
   sh:targetSubjectsOf rdf:type ;
   sh:property [
     sh:path rdf:type ;
