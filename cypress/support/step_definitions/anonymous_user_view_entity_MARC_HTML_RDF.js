@@ -95,9 +95,9 @@ Then('anonymous user can view the data in the given serialization', () => {
                 const tests = testData.split(',\r\n');
                 tests.forEach((test) => {
                   expect(response.body).to.contain(test);
-                })
+                });
               }
-            })
+            });
           });
         });
       });
