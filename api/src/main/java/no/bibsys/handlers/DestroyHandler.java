@@ -1,13 +1,19 @@
 package no.bibsys.handlers;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Optional;
+
+import org.apache.http.client.methods.HttpDelete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Optional;
+
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.swaggerhub.SwaggerDriver;
@@ -15,9 +21,6 @@ import no.bibsys.aws.swaggerhub.SwaggerHubInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.http.client.methods.HttpDelete;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DestroyHandler extends ResourceHandler {
 

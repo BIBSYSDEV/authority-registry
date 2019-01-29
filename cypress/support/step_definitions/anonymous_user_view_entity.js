@@ -36,11 +36,11 @@ Then("anonymous user can view the entity's data in the native database format", 
     expect(entityData.body.body.narrower[0]).to.be.equal('narrowerValue');
     expect(entityData.body.body.related[0]).to.be.equal('relatedValue');
     expect(entityData.body.body.seeAlso[0]).to.be.equal('seeAlsoValue');
-    expect(entityData.body.body.preferredLabel[0].lang).to.be.equal('en');
-    expect(entityData.body.body.preferredLabel[0].value).to.be.equal('preferredLabelValue');
-    expect(entityData.body.body.alternativeLabel[0].lang).to.be.equal('en');
-    expect(entityData.body.body.alternativeLabel[0].value).to.be.equal('alternativeLabelValue');
-    expect(entityData.body.body.definition[0].lang).to.be.equal('en');
-    expect(entityData.body.body.definition[0].value).to.be.equal('definitionValue');
+    expect(entityData.body.body.preferredLabel[0]['@language']).to.be.equal('en');
+    expect(entityData.body.body.preferredLabel[0]['@value']).to.be.equal('preferredLabelValue');
+    expect(entityData.body.body.alternativeLabel[0]['@language']).to.be.equal('en');
+    expect(entityData.body.body.alternativeLabel[0]['@value']).to.be.equal('alternativeLabelValue');
+    expect(entityData.body.body.definition[0]['@language']).to.be.equal('en');
+    expect(entityData.body.body.definition[0]['@value']).to.be.equal('definitionValue');
   });
 });

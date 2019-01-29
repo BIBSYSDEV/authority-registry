@@ -55,6 +55,7 @@ function waitUntilRegistryIsReady(registryName, count){
 
 // create registry
 function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity, count) {
+
   cy.log('creating registry...');
 
   cy.log('Using apiKey ' + apiAdminApiKey);
@@ -103,21 +104,20 @@ function createEntity(registryName, apiKey, dataFile) {
   cy.log('creating entity...');
 
   const entityAddUrl = '/registry/' + registryName + '/entity';
-  cy.fixture(dataFile) // add testData to registry
-    .then(function(testData) {
-      cy.request({
-        url: entityAddUrl,
-        method: 'POST',
-        body: testData,
-        headers: {
-          'api-key': apiKey,
-          'content-type': 'application/json',
-        },
-      }).then(function(response) {
-        const entityId = response.body.id;
-        cy.wrap(entityId).as('entityId');
-      });
+  cy.fixture(dataFile).then((testData) => {
+    cy.request({
+      url: entityAddUrl,
+      method: 'POST',
+      body: testData,
+      headers: {
+        'api-key': apiKey,
+        'content-type': 'application/json',
+      },
+    }).then((response) => {
+      const entityId = response.body.id;
+      cy.wrap(entityId).as('entityId');
     });
+  });
 }
 
 function deleteRegistry(registryName, apiKey){
@@ -131,9 +131,10 @@ function deleteRegistry(registryName, apiKey){
     method: 'DELETE',
     headers: {
       'api-key': apiKey,
+      'content-type': 'application/json',
     },
     failOnStatusCode: false,
-  }).then(function(response) {
+  }).then((response) => {
     cy.log('delete registry status: ' + response.status);
   });
 }

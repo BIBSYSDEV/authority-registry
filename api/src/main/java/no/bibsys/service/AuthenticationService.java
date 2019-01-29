@@ -17,9 +17,7 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.tools.Environment;
@@ -35,6 +33,7 @@ public class AuthenticationService {
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
 
+
     public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
@@ -43,7 +42,8 @@ public class AuthenticationService {
         apiKeyTableName = environmentReader.readEnv(EnvironmentVariables.API_KEY_TABLE_NAME);
 
         config = DynamoDBMapperConfig.builder()
-            .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName)).build();
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
+                .build();
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) {
@@ -60,15 +60,18 @@ public class AuthenticationService {
 
     public String createApiKeyTable() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
-        attributeDefinitions.add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
+        attributeDefinitions
+                .add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
 
         List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
         keySchema.add(new KeySchemaElement().withAttributeName("Key").withKeyType(KeyType.HASH));
 
         CreateTableRequest request = new CreateTableRequest();
-        request.withTableName(apiKeyTableName).withKeySchema(keySchema).withAttributeDefinitions(attributeDefinitions)
-            .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L))
-            .withSSESpecification(new SSESpecification().withEnabled(true));
+        request.withTableName(apiKeyTableName).withKeySchema(keySchema)
+                .withAttributeDefinitions(attributeDefinitions)
+                .withProvisionedThroughput(new ProvisionedThroughput().withReadCapacityUnits(1L)
+                        .withWriteCapacityUnits(1L))
+                .withSSESpecification(new SSESpecification().withEnabled(true));
 
         Table table = dynamoDB.createTable(request);
         try {
@@ -106,6 +109,11 @@ public class AuthenticationService {
             logger.error("Error deleting api keys table, reason={}", e.getMessage());
         }
         return table.getTableName();
+    }
+
+    public String saveApiKey(ApiKey apiKey) {
+        mapper.save(apiKey, config);
+        return apiKey.getKey();
     }
 
     public void deleteApiKeyForRegistry(String registryName) {

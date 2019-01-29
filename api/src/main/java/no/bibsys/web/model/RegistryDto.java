@@ -1,6 +1,7 @@
 package no.bibsys.web.model;
 
 import java.util.Map;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement

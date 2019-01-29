@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -34,10 +35,25 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
@@ -71,7 +87,7 @@ public class DatabaseResource {
     @POST
     @Path("/")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN})
+    @RolesAllowed({ Roles.API_ADMIN })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response createRegistry(
@@ -86,17 +102,24 @@ public class DatabaseResource {
     @GET
     @Path("/")
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON,})
-    public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) {
+    public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey)
+            throws JsonProcessingException {
+
         List<String> registryList = registryService.getRegistries();
         return Response.ok(registryList).build();
     }
 
+
     @GET
     @Path("/{registryName}")
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
-    public Response getRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_RDF, CustomMediaType.APPLICATION_JSON_LD, CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_RDF_XML, CustomMediaType.APPLICATION_TURTLE})
+    public Response getRegistryMetadata(
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                    description = NAME_OF_NEW_REGISTRY,
+                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+            throws IOException {
+
         RegistryDto registryDto = registryService.getRegistry(registryName);
         return Response.ok(registryDto).build();
     }
@@ -104,25 +127,32 @@ public class DatabaseResource {
     @PUT
     @Path("/{registryName}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
-    public Response updateRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
-            RegistryDto.class))) RegistryDto registryDto) {
+    @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
+    public Response updateRegistryMetadata(
+            @HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                    description = NAME_OF_NEW_REGISTRY,
+                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
+            @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(
+                    implementation = RegistryDto.class))) RegistryDto registryDto)
+            throws InterruptedException, JsonProcessingException {
 
         RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
-        return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId())).build();
+        return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId()))
+                .build();
     }
 
 
     @DELETE
     @Path("/{registryName}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    @RolesAllowed({ Roles.API_ADMIN, Roles.REGISTRY_ADMIN })
     public Response deleteRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
-            + "delete", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                    description =NAME_OF_REGISTRY_TO+"delete",
+                    schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+            throws InterruptedException {
+
         registryService.deleteRegistry(registryName);
         return Response.ok(String.format("Registry %s has been deleted", registryName)).build();
     }
@@ -141,7 +171,7 @@ public class DatabaseResource {
     @PUT
     @Path("/{registryName}/apikey")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN})
+    @RolesAllowed({ Roles.API_ADMIN })
     @Produces(MediaType.APPLICATION_JSON)
     public Response replaceApiKey(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
@@ -152,7 +182,6 @@ public class DatabaseResource {
         String newApiKey = registryService.replaceApiKey(registryName, oldApiKey);
         return Response.ok(newApiKey).build();
     }
-
 
     @GET
     @Path("/{registryName}/schema")
@@ -238,7 +267,7 @@ public class DatabaseResource {
     @GET
     @Path("/{registryName}/entity/{entityId}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_RDF, CustomMediaType.APPLICATION_RDF_XML, CustomMediaType.APPLICATION_JSON_LD, CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_TURTLE})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "get entity from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
@@ -247,14 +276,11 @@ public class DatabaseResource {
         @Context Request request) {
 
         EntityDto entity = entityService.getEntity(registryName, entityId);
-
         EntityTag etag = new EntityTag(entity.getEtagValue());
-
         ResponseBuilder builder = request.evaluatePreconditions(etag);
         if (builder != null) {
             return builder.build();
         }
-
         return Response.ok(entity).tag(etag).header(Headers.LAST_MODIFIED, entity.getModified()).build();
     }
 

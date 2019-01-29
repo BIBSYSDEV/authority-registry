@@ -7,12 +7,12 @@
 		<h2>{{label}} - ({{id}})</h2>
 		<ul>
 			{{#each body as |value key|}}<li data-automation-id="{{key}}"> {{key}} -&nbsp;
-				{{~#if value.lang}}
-					{{~#each value as |output|}}{{~output}};{{/each}}
+				{{~#if value.@language}}
+					{{~#each @value as |output|}}{{~output}};{{/each}}
 				{{~else}}
 					{{~#if value.0}}
 						{{~#each value as |element|}}
-							{{~#if element.lang}}
+							{{~#if element.@language}}
 								{{~#each element as |output|}}{{~output}};{{/each}}
 							{{~else}}
 								{{~element}};

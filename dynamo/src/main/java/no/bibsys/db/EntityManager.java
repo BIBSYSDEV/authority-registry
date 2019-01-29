@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
@@ -16,7 +17,7 @@ public class EntityManager {
 
     private final transient DynamoDBMapper mapper;
     private final transient TableDriver tableDriver;
-    private final static Logger logger = LoggerFactory.getLogger(EntityManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityManager.class);
 
     public EntityManager(AmazonDynamoDB client) {
         this.tableDriver = TableDriver.create(client);
@@ -112,18 +113,13 @@ public class EntityManager {
     }
     
     /**
-     * Method to validate a registry and if it exists as a DynamoDB table on AWS
+     * Method to validate a registry and if it exists as a DynamoDB table on AWS.
      * @param registryId
      */
     private void validateRegistry(String registryId) {
         if (!tableDriver.tableExists(registryId)) {
             throw new RegistryNotFoundException(registryId);
         }
-        
     }
-
-
-
-
     
 }

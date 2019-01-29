@@ -6,10 +6,13 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
 import com.amazonaws.services.apigateway.model.GetBasePathMappingsResult;
@@ -20,6 +23,7 @@ import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
+
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
@@ -27,8 +31,8 @@ import no.bibsys.aws.route53.StaticUrlInfo;
 public class UrlUpdaterTest {
 
 
-    private  final static String DEFAULT_ZONE_NAME = "aws.unit.no";
-    private  final static String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
+    private static final String DEFAULT_ZONE_NAME = "aws.unit.no";
+    private static final String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
     private final transient String certificateArn = "TheCerificate";
     private final transient String hostedZoneId = "HOSTEDZONEID";
     private final transient String domainName = "DomainName";
@@ -100,8 +104,8 @@ public class UrlUpdaterTest {
 
         assertThat(recordSet.getName(), is(equalTo(staticUrlInfo.getRecordSetName())));
 
-        String cNameRecord = recordSet.getResourceRecords().get(0).getValue();
-        assertThat(cNameRecord, is(equalTo(domainName)));
+        String cnameRecord = recordSet.getResourceRecords().get(0).getValue();
+        assertThat(cnameRecord, is(equalTo(domainName)));
 
 
     }
@@ -117,8 +121,8 @@ public class UrlUpdaterTest {
     public void createUpdateRequest_stage_RecordSetWithCorrectDomainName() {
         assertThat(recordSet.getResourceRecords().size(), is(equalTo(1)));
 
-        String cNameRecord = recordSet.getResourceRecords().get(0).getValue();
-        assertThat(cNameRecord, is(equalTo(domainName)));
+        String cnameRecord = recordSet.getResourceRecords().get(0).getValue();
+        assertThat(cnameRecord, is(equalTo(domainName)));
     }
 
 
