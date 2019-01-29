@@ -121,7 +121,6 @@ public class DatabaseResourceTest extends JerseyTest {
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() throws Exception {
         String registryName = "TheRegistryName";
 
-//        new CreatedRegistryDto(String.format("A registry with name=%s is being created", registryName));
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = target(REGISTRY_PATH).request()
             .accept(MediaType.APPLICATION_JSON)
@@ -481,8 +480,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
         
-        System.out.println(html);
-        
         assertThat(html, containsString("html"));
         assertThat(html, containsString("data-automation-id=\"alternativeLabel\""));
         assertThat(html, containsString("data-automation-id=\"inScheme\""));
@@ -598,7 +595,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_RDF);
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_RDF);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.RDFJSON;
@@ -614,7 +611,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_RDF_XML);
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_RDF_XML);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.RDFXML;
@@ -630,7 +627,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_TURTLE);
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_TURTLE);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.TURTLE;
@@ -646,7 +643,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdf.APPLICATION_N_TRIPLES);
+        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_N_TRIPLES);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.NTRIPLES;

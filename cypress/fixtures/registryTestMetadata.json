@@ -1,4 +1,7 @@
 {
+	"@context": {
+		"@vocab": "http://example.org/vocab#"
+	},
 	"id": "test",
 	"schema": "testSchema",
 	"metadata": {
