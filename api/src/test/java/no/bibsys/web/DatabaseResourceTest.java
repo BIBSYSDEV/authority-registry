@@ -47,8 +47,8 @@ import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
-import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.CustomMediaType;
+import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
@@ -595,7 +595,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_RDF);
+        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.RDFJSON;
@@ -611,7 +611,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_RDF_XML);
+        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF_XML);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.RDFXML;
@@ -627,7 +627,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_TURTLE);
+        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_TURTLE);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.TURTLE;
@@ -643,7 +643,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, MediaTypeRdfHelper.APPLICATION_N_TRIPLES);
+        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_N_TRIPLES);
         String rdf = entityAsRdf.readEntity(String.class);
         
         Lang lang = Lang.NTRIPLES;
