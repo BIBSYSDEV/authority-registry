@@ -16,6 +16,7 @@ import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
 import no.bibsys.entitydata.validation.ShaclValidator;
@@ -57,14 +58,21 @@ public class RegistryManager extends ModelParser {
 
     }
 
-
     public Registry createRegistry(String registryMetadataTableName, Registry registry)
-        throws RegistryMetadataTableBeingCreatedException, IOException, ShaclModelValidationException {
+        throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
         checkIfRegistryMetadataTableExistsOrCreate(registryMetadataTableName);
-        checkIfRegistryExistsInRegistryMetadataTable(registryMetadataTableName, registry.getId());
-        Model model = parseValidationSchema(registry.getSchema());
-        shaclValidator.checkModel(model);
-        return createRegistryTable(registryMetadataTableName, registry);
+        checkIfRegistryExistsInRegistryMetadataTable(registry.getId());
+        if (registry.getSchema() != null) {
+            throw new SettingValidationSchemaUponCreationException();
+        }
+        return createRegistryTable(registryMetadataTableName, registryWithEmptySchema(registry));
+    }
+
+    private Registry registryWithEmptySchema(Registry registry) {
+        Registry registyWithEmptySchema = new Registry();
+        registyWithEmptySchema.setId(registry.getId());
+        registyWithEmptySchema.setMetadata(registry.getMetadata());
+        return registyWithEmptySchema;
     }
 
     private Model parseValidationSchema(String schema) throws ValidationSchemaSyntaxErrorException {
@@ -111,11 +119,9 @@ public class RegistryManager extends ModelParser {
     }
 
 
-    private void checkIfRegistryExistsInRegistryMetadataTable(String registryMetadataTableName, String registryId) {
-        if (registryExists(registryMetadataTableName, registryId)) {
-            String message = String.format(
-                    "Registry already exists in metadata table, registryId=%s, schemeTable=%s",
-                    registryId, registryId);
+    private void checkIfRegistryExistsInRegistryMetadataTable(String registryId) {
+        if (!status(registryId).equals(RegistryStatus.NOT_FOUND)) {
+            String message = String.format("Registry already exists in metadata table, registryId=%s", registryId);
             throw new RegistryAlreadyExistsException(message);
         }
     }
@@ -133,14 +139,6 @@ public class RegistryManager extends ModelParser {
         }
     }
 
-    public boolean registryExists(String registryMetadataTableName, String registryId) {
-        try {
-            getRegistry(registryMetadataTableName, registryId);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     public String validateRegistryExists(String registryName) {
     	RegistryStatus status = status(registryName);
