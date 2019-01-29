@@ -1,5 +1,7 @@
 package no.bibsys.web.model;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
@@ -9,7 +11,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,18 +21,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-
 import no.bibsys.aws.tools.JsonUtils;
 import no.bibsys.entitydata.validation.ModelParser;
 import no.bibsys.entitydata.validation.ontology.UnitOntology;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.riot.Lang;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
@@ -83,7 +75,7 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements
         bodyMap.remove("@context");
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
-        List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
+        List<?> preferredLabel = (List<?>)bodyMap.get(UnitOntology.PREFERRED_LABEL);
         String label = findTitle(preferredLabel);
         entityMap.put(LABEL, label);
 

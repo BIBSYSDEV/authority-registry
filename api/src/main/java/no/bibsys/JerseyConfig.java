@@ -1,9 +1,5 @@
 package no.bibsys;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -41,7 +37,6 @@ import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
-import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -63,7 +58,6 @@ public class JerseyConfig extends ResourceConfig {
         super();
 
         AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
-
         RegistryManager registryManager = null;
         try {
             registryManager = new RegistryManager(client);
@@ -76,13 +70,6 @@ public class JerseyConfig extends ResourceConfig {
 
         EntityManager entityManager = new EntityManager(client);
         EntityService entityService = new EntityService(entityManager, registryService);
-        EntityService entityService = new EntityService(entityManager);
-        AuthenticationService authenticationService =
-            new AuthenticationService(client, environmentReader);
-
-        RegistryManager registryManager = new RegistryManager(client);
-        RegistryService registryService =
-                new RegistryService(registryManager, authenticationService, environmentReader);
 
         register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);
@@ -91,7 +78,6 @@ public class JerseyConfig extends ResourceConfig {
         register(JacksonFeature.class);
 
         register(new AuthenticationFilter(authenticationService));
-
 
         register(ExceptionLogger.class);
 
