@@ -8,13 +8,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import no.bibsys.db.RegistryManager.RegistryStatus;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
+import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ModelParser;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
-import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -36,14 +37,12 @@ public class RegistryManagerTest extends LocalDynamoTest {
     public void createRegistry_RegistryNotExisting_RegistryExists() throws Exception {
 
         String registryName = "createARegistry";
-        boolean existsBeforeCreation = registryManager
-            .registryExists(registryMetadataTableName, registryName);
+        boolean existsBeforeCreation = registryManager.status(registryName).equals(RegistryStatus.ACTIVE);
 
         Registry registry = sampleData.sampleRegistry(registryName);
 
         registryManager.createRegistry(registryMetadataTableName, registry);
-        boolean existsAfterCreation = registryManager
-            .registryExists(registryMetadataTableName, registryName);
+        boolean existsAfterCreation = registryManager.status(registryName).equals(RegistryStatus.ACTIVE);
         assertFalse(existsBeforeCreation);
         assertTrue(existsAfterCreation);
     }
@@ -69,20 +68,17 @@ public class RegistryManagerTest extends LocalDynamoTest {
     public void createRegistry_RegistryAlreadyExists_ThrowsException() throws Exception {
 
         String registryName = "tableAlreadyExists";
-        boolean existsBeforeCreation = registryManager
-            .registryExists(registryMetadataTableName, registryName);
+        boolean existsBeforeCreation = registryManager.status(registryName).equals(RegistryStatus.ACTIVE);
         assertThat("The table should not exist before creation", existsBeforeCreation,
             is(equalTo(false)));
         Registry registry = sampleData.sampleRegistry(registryName);
         registryManager.createRegistry(registryMetadataTableName, registry);
-        boolean existsAfterCreation = registryManager
-            .registryExists(registryMetadataTableName, registryName);
+        boolean existsAfterCreation = registryManager.status(registryName).equals(RegistryStatus.ACTIVE);
         assertThat("The table should  exist before creation", existsAfterCreation,
             is(equalTo(true)));
 
         registryManager.createRegistry(registryMetadataTableName, registry);
     }
-
 
     @Test
     public void updateMetadata_RegistryExisting_MetadataUpdated() throws Exception {
@@ -141,10 +137,9 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
 
-    @Test(expected = ValidationSchemaSyntaxErrorException.class)
-    public void createRegistry_RegistryNotExistsInValidJsonDocument_invalidSchemaException()
-        throws IOException, RegistryMetadataTableBeingCreatedException,
-        ShaclModelValidationException {
+    @Test(expected = SettingValidationSchemaUponCreationException.class)
+    public void createRegistry_RegistryNotExistsInValidJsonDocument_cannotSetSchemaUponCreationException()
+        throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
         String registryName = "aRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
 
@@ -156,11 +151,12 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test
     public void createRegistry_RegistryNotExistsValidShema_registryWithValidSchema()
-        throws IOException, RegistryMetadataTableBeingCreatedException,
+        throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
         ShaclModelValidationException {
         String validationSchemaStr = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
-        Registry createdRegistry = createRegistryWithValidationSchema(validationSchemaStr);
+        Registry createdRegistry = createRegistry();
+        createdRegistry = updateRegistryWithValidSchema(createdRegistry);
 
         Model expectedValidationSchema = modelParser.parseModel(validationSchemaStr, Lang.JSONLD);
         Model actualValidationSchema = modelParser
@@ -169,35 +165,30 @@ public class RegistryManagerTest extends LocalDynamoTest {
         assertTrue(expectedValidationSchema.isIsomorphicWith(actualValidationSchema));
     }
 
-    private Registry createRegistryWithValidationSchema(String validationSchemaStr)
-        throws IOException, ShaclModelValidationException,
-        RegistryMetadataTableBeingCreatedException {
+    private Registry createRegistry()
+        throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
         String registryName = "aRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
-        registry.setSchema(validationSchemaStr);
         return registryManager.createRegistry(registryMetadataTableName, registry);
 
     }
 
     @Test(expected = ShaclModelValidationException.class)
-    public void createRegistry_RegistryNotExistingInValidSchema_exception()
-        throws IOException, RegistryMetadataTableBeingCreatedException,
+    public void createRegistry_RegistryNotExistingInValidSchema_invalidSchemaException()
+        throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
         ShaclModelValidationException {
-        String validationSchemaStr = IoUtils
-            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
-        createRegistryWithValidationSchema(validationSchemaStr);
+
+        Registry registry = createRegistry();
+        updateRegistryWithInvalidSchema(registry);
     }
 
     @Test
     public void updateRegistry_RegistryExistsValidShema_registryWithValidSchema()
-        throws IOException, RegistryMetadataTableBeingCreatedException,
-        ShaclModelValidationException {
+        throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
+        SettingValidationSchemaUponCreationException {
 
-        String validationSchemaStr = IoUtils
-            .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
-
-        Registry createdRegistry = createRegistryWithValidationSchema(validationSchemaStr);
-
+        Registry createdRegistry = createRegistry();
+        createdRegistry = updateRegistryWithValidSchema(createdRegistry);
         String alternativeValidationSchema = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON));
         createdRegistry = registryManager
@@ -213,20 +204,29 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test(expected = ShaclModelValidationException.class)
     public void updateRegistry_RegistryExistsInValidShema_registryWithValidSchema()
-        throws IOException, RegistryMetadataTableBeingCreatedException,
-        ShaclModelValidationException {
+        throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
+        SettingValidationSchemaUponCreationException {
 
-        String validationSchemaStr = IoUtils
-            .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
-
-        Registry createdRegistry = createRegistryWithValidationSchema(validationSchemaStr);
-
+        Registry createdRegistry = createRegistry();
+        createdRegistry = updateRegistryWithValidSchema(createdRegistry);
         String alternativeValidationSchema = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
         createdRegistry = registryManager
             .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(),
                 alternativeValidationSchema);
 
+    }
+
+    private Registry updateRegistryWithValidSchema(Registry registry)
+        throws IOException, ShaclModelValidationException {
+        return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
+            sampleData.getValidValidationSchemaString());
+    }
+
+    private Registry updateRegistryWithInvalidSchema(Registry registry)
+        throws IOException, ShaclModelValidationException {
+        return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
+            sampleData.getInvalidValidationSchemaString());
     }
 
 

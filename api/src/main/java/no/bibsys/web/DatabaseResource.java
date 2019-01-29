@@ -36,6 +36,7 @@ import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationExce
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -190,7 +191,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Entity to create", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws EntryFailedShaclValidationException {
+        throws EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
@@ -219,7 +220,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Array of Entity to upload", content = @Content(array = @ArraySchema(schema =
         @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
-        throws EntryFailedShaclValidationException {
+        throws EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
         for (EntityDto entityDto : entityDtos) {
@@ -282,7 +283,8 @@ public class DatabaseResource {
         @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
             + " entity to be updated", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
         @RequestBody(description = "Entity to update", content = @Content(schema = @Schema(implementation =
-            EntityDto.class))) EntityDto entityDto) {
+            EntityDto.class))) EntityDto entityDto)
+        throws ValidationSchemaNotFoundException, EntryFailedShaclValidationException {
 
         entityService.updateEntity(registryName, entityDto);
 

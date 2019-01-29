@@ -12,6 +12,7 @@ import no.bibsys.db.RegistryManager.RegistryStatus;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
+import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.web.model.RegistryConverter;
@@ -33,7 +34,7 @@ public class RegistryService {
     }
 
     public RegistryDto createRegistry(RegistryDto registryDto)
-        throws RegistryMetadataTableBeingCreatedException, IOException, ShaclModelValidationException {
+        throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
 
         Registry registry = registryManager
             .createRegistry(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
