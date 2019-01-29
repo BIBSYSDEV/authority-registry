@@ -1,5 +1,4 @@
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
-import * as jsonld from 'jsonld';
 
 When('the anonymous user requests the entity specifying an Accept header with value:', (dataTable) => {
   cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --');
@@ -89,7 +88,7 @@ Then('anonymous user can view the data in the given serialization', () => {
                 Accept: formatType,
               },
             }).then((response) => {
-              if (formatType === "application/json") {
+              if (formatType === 'application/json') {
                 expect(response.body.body).to.deep.equal(testData);
               } else {
                 const tests = testData.split(',\r\n');
