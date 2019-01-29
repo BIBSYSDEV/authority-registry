@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -21,7 +20,7 @@ import com.github.jknack.handlebars.Template;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
-public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
+public class RegistryHtmlMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
 
     private static final String ID = "id";
     private static final String METADATA = "metadata";
@@ -36,7 +35,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
     @Override
     public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-                    throws IOException, WebApplicationException {
+                    throws IOException {
 
         Map<String, Object> registryMap = new ConcurrentHashMap<>();
 

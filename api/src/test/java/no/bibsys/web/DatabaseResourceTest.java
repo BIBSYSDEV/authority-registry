@@ -1,3 +1,4 @@
+
 package no.bibsys.web;
 
 import static org.hamcrest.core.Is.is;
@@ -6,21 +7,38 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -30,16 +48,14 @@ import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
 
+    private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/example_entity.%s";
     public static String REGISTRY_PATH = "/registry";
     private final SampleData sampleData = new SampleData();
     private String apiAdminKey;
@@ -463,15 +479,90 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
-
-        assertThat(html.toLowerCase(), containsString("html"));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"label\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"number\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"myarray\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"langstring\""));
-        assertThat(html.toLowerCase(), containsString("data-automation-id=\"mylangarray\""));
+        
+        System.out.println(html);
+        
+        assertThat(html, containsString("html"));
+        assertThat(html, containsString("data-automation-id=\"alternativeLabel\""));
+        assertThat(html, containsString("data-automation-id=\"inScheme\""));
+        assertThat(html, containsString("data-automation-id=\"narrower\""));
+        assertThat(html, containsString("data-automation-id=\"preferredLabel\""));
     }
 
+    private Model createModel(InputStream actualStream, Lang lang) {
+        Model actualModel = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(actualModel, actualStream, lang);
+        return actualModel;
+    }
+
+    @Test
+    public void getEntity_applicationRdf_entityAsRdf() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsRdf = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF);
+        String rdf = entityAsRdf.readEntity(String.class);
+
+        Lang lang = Lang.RDFJSON;
+        Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+
+    @Test
+    public void getEntity_applicationNtriples_entityAsNtriples() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsTriples = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_N_TRIPLES);
+        String triples = entityAsTriples.readEntity(String.class);
+
+        Lang lang = Lang.NTRIPLES;
+        Model actualModel = createModel(new ByteArrayInputStream(triples.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
+    @Test
+    public void getEntity_applicationRdfXml_entityAsRdfXml() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsRdfXml = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF_XML);
+        String rdfXml = entityAsRdfXml.readEntity(String.class);
+        
+        Lang lang = Lang.RDFXML;
+        Model actualModel = createModel(new ByteArrayInputStream(rdfXml.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
+    @Test
+    public void getEntity_applicationTurtle_entityAsTurtle() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsTurtle = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_TURTLE);
+        String turtle = entityAsTurtle.readEntity(String.class);
+        
+        Lang lang = Lang.TURTLE;
+        Model actualModel = createModel(new ByteArrayInputStream(turtle.getBytes(StandardCharsets.UTF_8)), lang);
+        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", "").toUpperCase());
+        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+       
+        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
+    }
+    
     @Test
     public void getEntity_applicationJson_entityAsJson() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -492,7 +583,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        Response entityAsHtml = getRegistryAsHtml(registryName);
+        Response entityAsHtml = getRegistry(registryName, MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html, containsString("html"));
@@ -501,6 +592,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
 
+   
     private List<EntityDto> createSampleEntities() throws JsonProcessingException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
         sampleEntities.add(createSampleEntity(UUID.randomUUID().toString()));
@@ -514,12 +606,6 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityDto sampleEntityDto = sampleData.sampleEntityDto();
         sampleEntityDto.setId(identifier);
         return sampleEntityDto;
-    }
-
-    private Response getEntityAsHtml(String registryName, String id) throws Exception {
-        return target(String.format("/registry/%s/entity/%s", registryName, id)).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML)
-            .get();
     }
 
     private Response getEntityAsJson(String registryName, String id) throws Exception {
@@ -558,9 +644,9 @@ public class DatabaseResourceTest extends JerseyTest {
         return response;
     }
 
-    private Response getRegistryAsHtml(String registryName) throws Exception {
+    private Response getRegistry(String registryName, String mediaType) throws Exception {
         return target(String.format("/registry/%s", registryName)).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML)
+            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(mediaType)
             .get();
     }
 

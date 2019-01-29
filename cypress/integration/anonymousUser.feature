@@ -17,16 +17,16 @@ Feature: Anonymous user features
     When the anonymous user requests the entity
     Then the response contains an ETag and a Last-Modified header
     
-#  Scenario: An anonymous user views an entity specifying an RDF serialization
-#    And that there is an entity in the registry
-#    When the anonymous user requests the entity specifying an Accept header with value:
-#      | application/ld+json     |
-#      | application/n-triples   |
-#      | application/rdf+xml     |
-#      | application/turtle      |
-#      | application/json        |
-#      | application/rdf         |
-#    Then anonymous user can view the data in the given serialization
+  Scenario: An anonymous user views an entity specifying an RDF serialization
+    And that there is an entity in the registry
+    When the anonymous user requests the entity specifying an Accept header with value:
+      | application/ld+json     |
+      | application/n-triples   |
+      | application/rdf+xml     |
+      | application/turtle      |
+      | application/json        |
+      | application/rdf         |
+    Then anonymous user can view the data in the given serialization
 
   Scenario: An anonymous user views an entity as HTML
     And that there is an entity in the registry

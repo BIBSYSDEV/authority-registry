@@ -21,8 +21,8 @@ public class EnvironmentVariables {
     public static final String APPLICATION_URL = "APPLICATION_URL";
 
 
-    /** Git branch */
-    public static final String BRANCH="BRANCH";
+    /** Git branch. */
+    public static final String BRANCH = "BRANCH";
 
     public static final String SWAGGER_API_ID = "SWAGGER_API_ID";
 

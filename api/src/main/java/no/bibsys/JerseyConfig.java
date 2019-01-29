@@ -1,6 +1,5 @@
 package no.bibsys;
 
-import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -25,12 +24,15 @@ import no.bibsys.web.exception.ExceptionLogger;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
 import no.bibsys.web.exception.IllegalArgumentExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
+import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
-import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
+import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
+import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
+import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
 @SuppressWarnings("PMD")
@@ -49,7 +51,8 @@ public class JerseyConfig extends ResourceConfig {
             new AuthenticationService(client, environmentReader);
 
         RegistryManager registryManager = new RegistryManager(client);
-        RegistryService registryService = new RegistryService(registryManager, authenticationService, environmentReader);
+        RegistryService registryService = 
+                new RegistryService(registryManager, authenticationService, environmentReader);
 
         register(new DatabaseResource(registryService, entityService));
         register(PingResource.class);
@@ -59,7 +62,6 @@ public class JerseyConfig extends ResourceConfig {
 
         register(new AuthenticationFilter(authenticationService));
 
-        registerExceptionMappers();
 
         register(ExceptionLogger.class);
 
@@ -68,8 +70,15 @@ public class JerseyConfig extends ResourceConfig {
 
         register(RegistryMessageBodyWriter.class);
         register(RegistryMessageJsonBodyWriter.class);
-        register(EntityHtmlMessageBodyWriter.class);
+        registerExceptionMappers();
+        registerMessageBodyWriters();
+    }
+
+    private void registerMessageBodyWriters() {
         register(RegistryMessageBodyWriter.class);
+        register(RegistryRdfMessageBodyWriter.class);
+        register(EntityHtmlMessageBodyWriter.class);
+        register(EntityRdfMessageBodyWriter.class);
     }
 
     private void registerExceptionMappers() {

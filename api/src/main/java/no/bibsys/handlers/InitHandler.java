@@ -1,5 +1,17 @@
 package no.bibsys.handlers;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
@@ -14,16 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.annotations.VisibleForTesting;
+
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.api.OpenApiContext;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.apigateway.ApiGatewayApiInfo;
 import no.bibsys.aws.apigateway.ServerInfo;
@@ -37,17 +44,13 @@ import no.bibsys.aws.swaggerhub.SwaggerHubInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpPost;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InitHandler extends ResourceHandler {
 
 
     public static final String URL_FIELD = "url";
     public static final String SERVERS_FIELD = "servers";
-    private final static Logger logger = LoggerFactory.getLogger(InitHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitHandler.class);
     public static final String SUCCESS_MESSAGE = "Success initializing resources.";
     public static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub "
         + "specification";
@@ -89,7 +92,7 @@ public class InitHandler extends ResourceHandler {
     private void updateSwaggerHub()
         throws IOException, URISyntaxException {
 
-        try{
+        try {
             ObjectNode swaggerRoot = (ObjectNode) jsonParser.readTree(
                 generateOpenApiSpecificationFromCode());
             Optional<ObjectNode> updatedSwaggerRootDoc =
@@ -103,12 +106,10 @@ public class InitHandler extends ResourceHandler {
                 String apiKey = swaggerHubInfo.getSwaggerAuth();
                 deletePreviousSwaggerHubSpecification(swaggerDriver, apiKey);
                 updateSwaggerHubSpecification(updatedSwaggerRootDoc.get(), swaggerHubInfo, swaggerDriver);
-            }
-            else{
+            } else {
                 logger.error(FAILURE_WITH_SWAGGERHUB);
             }
-        }
-        catch(OpenApiConfigurationException e){
+        } catch (OpenApiConfigurationException e) {
             logger.error(e.getMessage());
             throw new IOException(e);
         }
@@ -117,7 +118,7 @@ public class InitHandler extends ResourceHandler {
     private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc,
         SwaggerHubInfo swaggerHubInfo, SwaggerDriver swaggerDriver)
         throws URISyntaxException, IOException {
-        String swaggerString= Json.pretty(updatedSwaggerRootDoc);
+        String swaggerString = Json.pretty(updatedSwaggerRootDoc);
         HttpPost updateRequest = swaggerDriver
             .createUpdateRequest(swaggerString,swaggerHubInfo.getSwaggerAuth());
         swaggerDriver.executePost(updateRequest);

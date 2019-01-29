@@ -13,13 +13,13 @@ public class ExceptionLogger implements ApplicationEventListener, RequestEventLi
     private static final Logger logger = LoggerFactory.getLogger(ExceptionLogger.class);
 
     @Override
-    public void onEvent(final ApplicationEvent applicationEvent) {}
-
-    @Override
     public RequestEventListener onRequest(final RequestEvent requestEvent) {
         return this;
     }
 
+    @Override
+    public void onEvent(final ApplicationEvent applicationEvent) {}
+    
     @Override
     public void onEvent(RequestEvent paramRequestEvent) {
         if (paramRequestEvent.getType() == Type.ON_EXCEPTION) {

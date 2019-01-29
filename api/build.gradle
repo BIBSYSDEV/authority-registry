@@ -37,7 +37,11 @@ dependencies {
     // Handlebars
     implementation("com.github.jknack:handlebars:4.1.2")
 
-
+	
+	//RDF
+	implementation("org.apache.jena:jena-core:3.9.0")
+    implementation("org.apache.jena:jena-arq:3.9.0")
+	
     // for testing
     testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
 

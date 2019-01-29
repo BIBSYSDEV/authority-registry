@@ -1,22 +1,25 @@
 package no.bibsys.db;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
+
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.RegistryUnavailableException;
-import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Registry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RegistryManager {
 
@@ -118,7 +121,7 @@ public class RegistryManager {
         }
         try {
             validateRegistryExists(metadataTable);
-        } catch(RegistryUnavailableException | RegistryNotFoundException e ) {
+        } catch (RegistryUnavailableException | RegistryNotFoundException e) {
             logger.info("Registry metadata table not finished initializing");
             throw new RegistryMetadataTableBeingCreatedException();
         }
@@ -134,18 +137,18 @@ public class RegistryManager {
     }
 
     public String validateRegistryExists(String registryName) {
-    	RegistryStatus status = status(registryName);
-    	switch(status) {
-        case ACTIVE:
-            return TABLE_CREATED;
-        case CREATING:
-        case UPDATING:
-            throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
-        case DELETING:
-        case NOT_FOUND:
-        default:
-            throw new RegistryNotFoundException(registryName);
-    	}
+        RegistryStatus status = status(registryName);
+        switch (status) {
+            case ACTIVE:
+                return TABLE_CREATED;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+            default:
+                throw new RegistryNotFoundException(registryName);
+        }
     }
 
     public void emptyRegistry(String tableName) {
@@ -165,8 +168,6 @@ public class RegistryManager {
         logger.info("Deleting registry, registryId={}", registryId);
 
         validateRegistryExists(registryId);
-        // disabled until we have a way to empty registries asynchronous
-//        validateRegistryNotEmpty(registryId);
         tableDriver.deleteTable(registryId);
         Registry registry = getRegistry(registryMetadataTableName, registryId);
         

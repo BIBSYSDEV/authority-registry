@@ -1,0 +1,34 @@
+{
+	"body": {
+		"@context": {
+			"@vocab": "http://example.org/vocab#"
+		},
+		"@id": "http://example.org/fakevoc/c00000",
+		"@type": "bsa:Concept",
+		"alternativeLabel": [
+			{
+				"@language": "no",
+				"@value": "Animalia"
+			},
+			{
+				"@language": "en",
+				"@value": "Animalia"
+			}
+		],
+		"inScheme": "http://example.org/fakevoc",
+		"narrower": [
+			"http://example.org/fakevoc/c00003",
+			"http://example.org/fakevoc/c00001"
+		],
+		"preferredLabel": [
+			{
+				"@language": "no",
+				"@value": "Dyr"
+			},
+			{
+				"@language": "en",
+				"@value": "Animals"
+			}
+		]
+	}
+}

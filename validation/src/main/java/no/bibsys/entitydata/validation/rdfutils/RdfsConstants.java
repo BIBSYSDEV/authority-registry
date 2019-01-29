@@ -7,6 +7,6 @@ import org.apache.jena.vocabulary.RDFS;
 
 public class RdfsConstants {
 
-    private final static Model model = ModelFactory.createDefaultModel();
+    private static final Model model = ModelFactory.createDefaultModel();
     public static final Resource PROPERTY_CLASS = model.createResource(RDFS.uri + "Property");
 }

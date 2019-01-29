@@ -1,0 +1,10 @@
+<http://example.org/fakevoc/c00000>
+        a       <bsa:Concept> ;
+        <http://example.org/vocab#alternativeLabel>
+                "Animalia"@no ;
+        <http://example.org/vocab#inScheme>
+                "http://example.org/fakevoc" ;
+        <http://example.org/vocab#narrower>
+                "http://example.org/fakevoc/c00001" , "http://example.org/fakevoc/c00003" ;
+        <http://example.org/vocab#preferredLabel>
+                "Animals"@en , "Dyr"@no .

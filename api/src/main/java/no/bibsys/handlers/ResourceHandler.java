@@ -1,8 +1,11 @@
 package no.bibsys.handlers;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.cloudformation.helpers.ResourceType;
@@ -13,7 +16,6 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
@@ -71,7 +73,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         Stage stage,
         String gitBranch) {
 
-        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
+        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);

@@ -12,6 +12,6 @@ public class RegistryMetadataTableBeingCreatedExceptionMapper
 
     @Override
     public Response toResponse(RegistryMetadataTableBeingCreatedException exception) {
-        return Response.status(Status.SERVICE_UNAVAILABLE).header(HttpHeaders.RETRY_AFTER , "20").entity(exception.getMessage()).build();
+        return Response.status(Status.SERVICE_UNAVAILABLE).header(HttpHeaders.RETRY_AFTER, "20").entity(exception.getMessage()).build();
     }
 }

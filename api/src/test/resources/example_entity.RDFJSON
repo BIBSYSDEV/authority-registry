@@ -1,0 +1,40 @@
+{ 
+  "http://example.org/fakevoc/c00000" : { 
+    "http://example.org/vocab#alternativeLabel" : [ { 
+      "type" : "literal" ,
+      "value" : "Animalia" ,
+      "lang" : "no"
+    }
+     ] ,
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ { 
+      "type" : "uri" ,
+      "value" : "bsa:Concept"
+    }
+     ] ,
+    "http://example.org/vocab#inScheme" : [ { 
+      "type" : "literal" ,
+      "value" : "http://example.org/fakevoc"
+    }
+     ] ,
+    "http://example.org/vocab#preferredLabel" : [ { 
+      "type" : "literal" ,
+      "value" : "Dyr" ,
+      "lang" : "no"
+    }
+    , { 
+      "type" : "literal" ,
+      "value" : "Animals" ,
+      "lang" : "en"
+    }
+     ] ,
+    "http://example.org/vocab#narrower" : [ { 
+      "type" : "literal" ,
+      "value" : "http://example.org/fakevoc/c00003"
+    }
+    , { 
+      "type" : "literal" ,
+      "value" : "http://example.org/fakevoc/c00001"
+    }
+     ]
+  }
+}

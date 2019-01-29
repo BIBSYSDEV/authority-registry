@@ -1,6 +1,7 @@
 package no.bibsys.web.model;
 
 import java.util.Map;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -36,8 +37,6 @@ public class RegistryDto {
         this.path = path;
     }
 
-//    @JsonRawValue
-//    @JsonDeserialize(using = JsonAsStringDeserializer.class)
     public Map<String,Object> getMetadata() {
         return metadata;
     }

@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,14 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+
 import no.bibsys.aws.tools.JsonUtils;
 
 @Provider
@@ -29,8 +30,8 @@ import no.bibsys.aws.tools.JsonUtils;
 public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto> {
 
     private static final String NO_LABEL = "(No label)";
-    private static final String VALUE = "value";
-    private static final String LANG = "lang";
+    private static final String VALUE = "@value";
+    private static final String LANG = "@language";
     private static final String LANG_NO = "no";
     private static final String LANG_EN = "en";
     private static final String PREFERRED_LABEL = "preferredLabel";
@@ -47,20 +48,13 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
     }
 
     @Override
-    public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-                    throws IOException, WebApplicationException {
+    public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations, 
+            MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+                    throws IOException {
 
-        Map<String, Object> entityMap = new ConcurrentHashMap<>();
+        Map<String, Object> entityMap = createEntityMap(entity);
 
-        LinkedHashMap<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), LinkedHashMap.class);
-        entityMap.put(BODY, bodyMap);
-        entityMap.put(ID, entity.getId());
-        List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
-        String label = findTitle(preferredLabel);
-        entityMap.put(LABEL, label);
-
-        try(Writer writer = new PrintWriter(entityStream)){
+        try (Writer writer = new PrintWriter(entityStream)) {
 
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile(ENTITY_TEMPLATE);
@@ -70,19 +64,33 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
         }
     }
 
+    private Map<String, Object> createEntityMap(EntityDto entity) throws JsonParseException, JsonMappingException, IOException {
+        Map<String, Object> entityMap = new ConcurrentHashMap<>();
+
+        Map<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), Map.class);
+        bodyMap.remove("@context");
+        entityMap.put(BODY, bodyMap);
+        entityMap.put(ID, entity.getId());
+        List<?> preferredLabel = (List<?>)bodyMap.get(PREFERRED_LABEL);
+        String label = findTitle(preferredLabel);
+        entityMap.put(LABEL, label);
+
+        return entityMap;
+    }
+
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
-        if(Objects.nonNull(preferredLabel)) {
+        if (Objects.nonNull(preferredLabel) && !preferredLabel.isEmpty()) {
             @SuppressWarnings("unchecked")
             Map<String, String> titleMap = preferredLabel.stream().filter(labelObject -> 
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)||
-            ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
-            .collect(Collectors.toMap(
+                ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)
+                || ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
+                .collect(Collectors.toMap(
                     labelObject -> ((Map<String, String>)labelObject).get(LANG), 
                     labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
-            if(Objects.nonNull(titleMap.get(LANG_NO))) {
+            if (titleMap.containsKey(LANG_NO)) {
                 label = titleMap.get(LANG_NO);
-            } else if(Objects.nonNull(titleMap.get(LANG_EN))) {
+            } else if (titleMap.containsKey(LANG_EN)) {
                 label = titleMap.get(LANG_EN);
             }
         }
