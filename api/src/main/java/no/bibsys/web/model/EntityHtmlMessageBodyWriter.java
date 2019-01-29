@@ -88,9 +88,9 @@ public class EntityHtmlMessageBodyWriter implements MessageBodyWriter<EntityDto>
                 .collect(Collectors.toMap(
                     labelObject -> ((Map<String, String>)labelObject).get(LANG), 
                     labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
-            if (Objects.nonNull(titleMap.get(LANG_NO))) {
+            if (titleMap.containsKey(LANG_NO)) {
                 label = titleMap.get(LANG_NO);
-            } else if (Objects.nonNull(titleMap.get(LANG_EN))) {
+            } else if (titleMap.containsKey(LANG_EN)) {
                 label = titleMap.get(LANG_EN);
             }
         }

@@ -39,15 +39,9 @@ dependencies {
 
 	
 	//RDF
-	compile ("org.apache.jena:jena-core:3.9.0")
-    compile ("org.apache.jena:jena-arq:3.9.0")
+	implementation("org.apache.jena:jena-core:3.9.0")
+    implementation("org.apache.jena:jena-arq:3.9.0")
 	
-
-	// RDF
-	compile group: 'org.apache.jena', name: 'jena-core', version: '3.9.0'
-    compile group: 'org.apache.jena', name: 'jena-arq', version: '3.9.0'
-	
-
     // for testing
     testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
 

@@ -48,7 +48,7 @@ import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.MediaTypeRdfHelper;
+import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
@@ -499,7 +499,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        Response entityAsRdf = readEntity(registryName, entity.getId(), MediaTypeRdfHelper.APPLICATION_RDF);
+        Response entityAsRdf = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF);
         String rdf = entityAsRdf.readEntity(String.class);
 
         Lang lang = Lang.RDFJSON;
@@ -516,7 +516,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        Response entityAsTriples = readEntity(registryName, entity.getId(), MediaTypeRdfHelper.APPLICATION_N_TRIPLES);
+        Response entityAsTriples = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_N_TRIPLES);
         String triples = entityAsTriples.readEntity(String.class);
 
         Lang lang = Lang.NTRIPLES;
@@ -533,7 +533,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        Response entityAsRdfXml = readEntity(registryName, entity.getId(), MediaTypeRdfHelper.APPLICATION_RDF_XML);
+        Response entityAsRdfXml = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF_XML);
         String rdfXml = entityAsRdfXml.readEntity(String.class);
         
         Lang lang = Lang.RDFXML;
@@ -550,7 +550,7 @@ public class DatabaseResourceTest extends JerseyTest {
         createRegistry(registryName, apiAdminKey);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
-        Response entityAsTurtle = readEntity(registryName, entity.getId(), MediaTypeRdfHelper.APPLICATION_TURTLE);
+        Response entityAsTurtle = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_TURTLE);
         String turtle = entityAsTurtle.readEntity(String.class);
         
         Lang lang = Lang.TURTLE;

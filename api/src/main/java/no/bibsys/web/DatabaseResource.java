@@ -41,7 +41,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.MediaTypeRdfHelper;
+import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
@@ -98,7 +98,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}")
-    @Produces({MediaType.TEXT_HTML, 
+    @Produces({MediaType.TEXT_HTML,
         MediaType.APPLICATION_JSON,
         MediaTypeRdfHelper.APPLICATION_RDF,
         MediaTypeRdfHelper.APPLICATION_JSON_LD,
