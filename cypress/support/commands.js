@@ -14,6 +14,7 @@ const SEE_OTHER = 303;
 
 const RECURSION_COUNT = 5;
 const RECURSION_DELAY = 2000; // milliseconds
+const VALID_SHACL_VALIDATION_FILE = 'validShaclValidationSchema.json';
 
 Cypress.Commands.add('registryReady', (registryName) => {
   waitUntilRegistryIsReady(registryName, 0);
@@ -24,11 +25,13 @@ Cypress.Commands.add('deleteRegistry', (registryName, apiKey) => {
 });
 
 Cypress.Commands.add('createEmptyRegistry', (registryName, apiKey, metadataFile) => {
-  createRegistry(registryName, apiKey, metadataFile, false, 0);
+  createRegistry(registryName, apiKey, metadataFile,
+      VALID_SHACL_VALIDATION_FILE, false, 0);
 });
 
 Cypress.Commands.add('createNonEmptyRegistry', (registryName, apiKey, metadataFile) => {
-  createRegistry(registryName, apiKey, metadataFile, true, 0);
+  createRegistry(registryName, apiKey, metadataFile,
+      VALID_SHACL_VALIDATION_FILE, true, 0);
 });
 
 Cypress.Commands.add('createEntity', (registryName, apiKey, dataFile) => {
@@ -54,7 +57,8 @@ function waitUntilRegistryIsReady(registryName, count){
 }
 
 // create registry
-function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity, count) {
+function createRegistry(registryName, apiAdminApiKey, metadataFile,
+    validationSchemaFile, createEntity, count) {
 
   cy.log('creating registry...');
 
@@ -87,6 +91,9 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 
           cy.registryReady(registryName);
 
+          setValidationSchema(registryName, apiAdminApiKey,
+              validationSchemaFile)
+
           if (createEntity){
             cy.log('creating test entity');
             cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
@@ -98,6 +105,28 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
       });
     });
 }
+
+// add validation schema
+function setValidationSchema(registryName, apiAdminApiKey,
+    validationSchemaFile) {
+  cy.log('setting validation schema for registry..');
+  const putSchemaUrl = '/registry/' + registryName + '/schema';
+  cy.fixture(validationSchemaFile).then((validationSchema) => {
+    cy.request({
+      url: putSchemaUrl,
+      method: 'PUT',
+      body: validationSchema,
+      headers: {
+        'api-key': apiAdminApiKey,
+        accept: 'application/json',
+        'content-type': 'application/json',
+      },
+    });
+  });
+
+}
+
+
 
 // create entity in existing registry
 function createEntity(registryName, apiKey, dataFile) {
