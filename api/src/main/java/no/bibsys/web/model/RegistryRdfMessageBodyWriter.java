@@ -25,11 +25,11 @@ import no.bibsys.utils.JsonUtils;
 
 @Provider
 @Produces({
-    MediaTypeRdfHelper.APPLICATION_RDF, 
-    MediaTypeRdfHelper.APPLICATION_TURTLE, 
-    MediaTypeRdfHelper.APPLICATION_RDF_XML, 
-    MediaTypeRdfHelper.APPLICATION_N_TRIPLES, 
-    MediaTypeRdfHelper.APPLICATION_JSON_LD
+    CustomMediaType.APPLICATION_RDF, 
+    CustomMediaType.APPLICATION_TURTLE, 
+    CustomMediaType.APPLICATION_RDF_XML, 
+    CustomMediaType.APPLICATION_N_TRIPLES, 
+    CustomMediaType.APPLICATION_JSON_LD
 })
 public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
 
@@ -55,20 +55,20 @@ public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryD
         Lang outputLang;
         
         switch (mediaType.toString()) {
-            case MediaTypeRdfHelper.APPLICATION_RDF: // RDF
+            case CustomMediaType.APPLICATION_RDF: // RDF
                 outputLang = Lang.RDFJSON;
                 break;
-            case MediaTypeRdfHelper.APPLICATION_TURTLE: // Turtle
+            case CustomMediaType.APPLICATION_TURTLE: // Turtle
                 outputLang = Lang.TURTLE;
                 break;
-            case MediaTypeRdfHelper.APPLICATION_RDF_XML: // XML
+            case CustomMediaType.APPLICATION_RDF_XML: // XML
                 outputLang = Lang.RDFXML;
                 break;
-            case MediaTypeRdfHelper.APPLICATION_N_TRIPLES: // N-triples
+            case CustomMediaType.APPLICATION_N_TRIPLES: // N-triples
                 outputLang = Lang.NTRIPLES;
                 break;
             case MediaType.APPLICATION_JSON: // Json
-            case MediaTypeRdfHelper.APPLICATION_JSON_LD:
+            case CustomMediaType.APPLICATION_JSON_LD:
             default:
                 outputLang = Lang.JSONLD;
                 break;

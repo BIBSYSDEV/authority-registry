@@ -1,6 +1,6 @@
 package no.bibsys.web.model;
 
-public class MediaTypeRdfHelper {
+public class CustomMediaType {
 
     public static final String APPLICATION_RDF = "application/rdf";
     public static final String APPLICATION_TURTLE = "application/turtle";
