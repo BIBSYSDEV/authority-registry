@@ -1,5 +1,5 @@
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
-import * as jsonld from 'jsonld'
+import * as jsonld from 'jsonld';
 
 When('the anonymous user requests the entity specifying an Accept header with value:', (dataTable) => {
   cy.log('-- anonymous_user_view_entity_MARC_HTML_RDF.js --');
