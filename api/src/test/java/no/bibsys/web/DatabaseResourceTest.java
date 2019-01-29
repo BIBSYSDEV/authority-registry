@@ -632,7 +632,7 @@ public class DatabaseResourceTest extends JerseyTest {
         
         Lang lang = Lang.TURTLE;
         Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
-        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
+        String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", "").toUpperCase());
         Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
         
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
