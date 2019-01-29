@@ -89,7 +89,7 @@ Then('anonymous user can view the data in the given serialization', () => {
                 Accept: formatType,
               },
             }).then((response) => {
-              if(formatType === "application/json"){
+              if (formatType === "application/json") {
                   expect(response.body.body).to.deep.equal(testData);
               } else {
                 const tests = testData.split(',\r\n');
