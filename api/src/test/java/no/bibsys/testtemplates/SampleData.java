@@ -20,13 +20,14 @@ public class SampleData {
     public SampleData() {
     }
 
-    public EntityDto sampleEntityDto() throws IOException {
-
-        return sampleEntityDtoWithValidData();
-    }
 
     public EntityDto sampleEntityDtoWithValidData() throws IOException {
         return sampleEntityDto(VALID_GRAPH_JSON);
+    }
+
+    public EntityDto sampleEntityDto() throws IOException {
+
+        return sampleEntityDtoWithValidData();
     }
 
     private EntityDto sampleEntityDto(String bodyFilename) throws IOException {

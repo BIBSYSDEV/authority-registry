@@ -32,13 +32,11 @@ public class EntityServiceTest {
     public static final String REGISTRY_ID = "registryId";
     public static final String SCHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
     public static final String VALIDATION_FOLDER = "validation";
-    private final transient SampleData sampleData=new SampleData();
-    private transient RegistryDto registryDto;
-
-    private transient  EntityService entityService;
-    private transient RegistryService registryService;
+    private final transient SampleData sampleData = new SampleData();
     private final transient AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
-
+    private transient RegistryDto registryDto;
+    private transient EntityService entityService;
+    private transient RegistryService registryService;
 
     //necessary for running tests inside IDE
     @BeforeClass
@@ -50,13 +48,11 @@ public class EntityServiceTest {
     @Before
     public void init()
         throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
-        Environment environment=Mockito.mock(Environment.class);
+        Environment environment = Mockito.mock(Environment.class);
 
-
-        RegistryManager registyManager= new RegistryManager(client);
-        when(environment.readEnv(anyString())).thenAnswer(input->
-            input.getArgument(0));
-        AuthenticationService authenticationService=new AuthenticationService(client,environment);
+        RegistryManager registyManager = new RegistryManager(client);
+        when(environment.readEnv(anyString())).thenAnswer(input -> input.getArgument(0));
+        AuthenticationService authenticationService = new AuthenticationService(client, environment);
 
         registryService = new RegistryService(registyManager, authenticationService, environment);
 
@@ -64,8 +60,8 @@ public class EntityServiceTest {
         registryDto = new SampleData().sampleRegistryDto(REGISTRY_ID);
         registryService.createRegistry(registryDto);
 
-        EntityManager entityManager=new EntityManager(client);
-        entityService=new EntityService(entityManager,registryService);
+        EntityManager entityManager = new EntityManager(client);
+        entityService = new EntityService(entityManager, registryService);
     }
 
 
@@ -82,28 +78,26 @@ public class EntityServiceTest {
         throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException,
         ShaclModelValidationException {
         addValidationSchemaToRegistry(registryDto.getId());
-        EntityDto entityDto=sampleData.sampleEntityDtoWithInValidData();
-        entityService.addEntity(registryDto.getId(),entityDto);
+        EntityDto entityDto = sampleData.sampleEntityDtoWithInValidData();
+        entityService.addEntity(registryDto.getId(), entityDto);
     }
-
-
-    @Test
-    public void addEntity_newValidEntity_registryWithNewEntity()
-        throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException,
-        ShaclModelValidationException {
-        EntityDto expectedEntity=sampleData.sampleEntityDtoWithValidData();
-        addValidationSchemaToRegistry(registryDto.getId());
-        entityService.addEntity(registryDto.getId(),expectedEntity);
-
-        EntityDto actualEntity = entityService.getEntity(registryDto.getId(), expectedEntity.getId());
-        assertThat(actualEntity.isIsomorphic(expectedEntity),is(equalTo(true)));
-    }
-
 
     private void addValidationSchemaToRegistry(String registryId) throws IOException, ShaclModelValidationException {
         String validationsSchema = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, SCHACL_VALIDATION_SCHEMA_JSON));
         registryService.updateRegistrySchema(registryId, validationsSchema);
+    }
+
+    @Test
+    public void addEntity_newValidEntity_registryWithNewEntity()
+        throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException,
+        ShaclModelValidationException {
+        EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData();
+        addValidationSchemaToRegistry(registryDto.getId());
+        entityService.addEntity(registryDto.getId(), expectedEntity);
+
+        EntityDto actualEntity = entityService.getEntity(registryDto.getId(), expectedEntity.getId());
+        assertThat(actualEntity.isIsomorphic(expectedEntity), is(equalTo(true)));
     }
 
 }

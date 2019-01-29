@@ -6,38 +6,26 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.jsonldjava.core.JsonLdConsts;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -46,10 +34,17 @@ import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.JsonUtils;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
 import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -203,7 +198,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void insertEntity_RegistryExistRegistryAdminUser_ReturnsStatusOK()
+    public void insertEntity_RegistryExistRegistryAdminUser_ReturnsStatusOk()
         throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
@@ -217,7 +212,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
 
     @Test
-    public void deleteRegistry_RegistryExistsUserAuthorized_ReturnsStatusOK() throws Exception {
+    public void deleteRegistry_RegistryExistsUserAuthorized_ReturnsStatusOk() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
@@ -292,7 +287,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getEntity_RegistryExists_ReturnsStatusOK() throws Exception {
+    public void getEntity_RegistryExists_ReturnsStatusOk() throws Exception {
         String registryName = createRegistry();
         putSchema(registryName, validValidationSchema);
 
@@ -338,7 +333,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMETHOD_NOT_ALLOWED()
+    public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMethodNotAllowed()
         throws Exception {
         String registryName = createRegistry();
         putSchema(registryName, validValidationSchema);
@@ -469,7 +464,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void replaceApiKey_RegistryNotExisting_ReturnsStatusNOT_FOUND() throws Exception {
+    public void replaceApiKey_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
         String registryName = UUID.randomUUID().toString();
         String oldApiKey = UUID.randomUUID().toString(); // random non-existing apikey
 
@@ -479,7 +474,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBAD_REQUEST()
+    public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBadRequest()
         throws Exception {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
@@ -534,7 +529,8 @@ public class DatabaseResourceTest extends JerseyTest {
 
         assertThat(html.toLowerCase(), containsString("html"));
 
-        bodyFields.stream().forEach(field -> assertThat(html.toLowerCase(),
+        bodyFields.stream().filter(field -> !field.toLowerCase().equals(JsonLdConsts.CONTEXT))
+            .forEach(field -> assertThat(html.toLowerCase(),
             containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
 
     }

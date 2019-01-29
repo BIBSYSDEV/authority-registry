@@ -1,10 +1,8 @@
 package no.bibsys.web.model;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jsonldjava.core.JsonLdConsts;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -27,13 +25,12 @@ import no.bibsys.entitydata.validation.ontology.UnitOntology;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
-public class EntityHtmlMessageBodyWriter extends ModelParser implements
-    MessageBodyWriter<EntityDto> {
+public class EntityHtmlMessageBodyWriter extends ModelParser implements MessageBodyWriter<EntityDto> {
 
     private static final String NO_LABEL = "(No label)";
 
-    private static final String VALUE = "@value";
-    private static final String LANG = "@language";
+    private static final String VALUE = JsonLdConsts.VALUE;
+    private static final String LANG = JsonLdConsts.LANGUAGE;
     private static final String LANG_NO = "no";
     private static final String LANG_EN = "en";
     private static final String ID = "id";
@@ -41,20 +38,17 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements
     private static final String ENTITY_TEMPLATE = "entitytemplate";
     private static final String LABEL = "label";
 
-    private final transient ObjectMapper jsonParser = JsonUtils.newJsonParser();
 
     @Override
     @Produces({MediaType.TEXT_HTML})
-    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-        MediaType mediaType) {
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
         return type == EntityDto.class;
     }
 
     @Override
     public void writeTo(EntityDto entity, Class<?> type, Type genericType, Annotation[] annotations,
-            MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
-                    throws IOException {
+        MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException {
 
         Map<String, Object> entityMap = createEntityMap(entity);
 
@@ -68,14 +62,14 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements
         }
     }
 
-    private Map<String, Object> createEntityMap(EntityDto entity) throws JsonParseException, JsonMappingException, IOException {
+    private Map<String, Object> createEntityMap(EntityDto entity) throws IOException {
         Map<String, Object> entityMap = new ConcurrentHashMap<>();
 
-        Map<?,?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), Map.class);
-        bodyMap.remove("@context");
+        Map<?, ?> bodyMap = JsonUtils.newJsonParser().readValue(entity.getBody(), Map.class);
+        bodyMap.remove(JsonLdConsts.CONTEXT);
         entityMap.put(BODY, bodyMap);
         entityMap.put(ID, entity.getId());
-        List<?> preferredLabel = (List<?>)bodyMap.get(UnitOntology.PREFERRED_LABEL);
+        List<?> preferredLabel = (List<?>) bodyMap.get(UnitOntology.PREFERRED_LABEL);
         String label = findTitle(preferredLabel);
         entityMap.put(LABEL, label);
 
@@ -85,13 +79,11 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements
     private String findTitle(List<?> preferredLabel) {
         String label = NO_LABEL;
         if (Objects.nonNull(preferredLabel) && !preferredLabel.isEmpty()) {
-            @SuppressWarnings("unchecked")
-            Map<String, String> titleMap = preferredLabel.stream().filter(labelObject ->
-                ((Map<String, String>)labelObject).get(LANG).equals(LANG_EN)
-                || ((Map<String, String>)labelObject).get(LANG).equals(LANG_NO))
-                .collect(Collectors.toMap(
-                    labelObject -> ((Map<String, String>)labelObject).get(LANG),
-                    labelObject -> ((Map<String,String>)labelObject).get(VALUE)));
+            @SuppressWarnings("unchecked") Map<String, String> titleMap = preferredLabel.stream().filter(
+                labelObject -> ((Map<String, String>) labelObject).get(LANG).equals(LANG_EN)
+                    || ((Map<String, String>) labelObject).get(LANG).equals(LANG_NO)).collect(Collectors
+                .toMap(labelObject -> ((Map<String, String>) labelObject).get(LANG),
+                    labelObject -> ((Map<String, String>) labelObject).get(VALUE)));
             if (titleMap.containsKey(LANG_NO)) {
                 label = titleMap.get(LANG_NO);
             } else if (titleMap.containsKey(LANG_EN)) {

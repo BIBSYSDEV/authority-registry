@@ -31,6 +31,12 @@ public class ShaclValidatorTest extends ModelParser {
         validator = initializeOntologyValidator();
     }
 
+    private ShaclValidator initializeOntologyValidator() throws IOException {
+
+        String ontologyString = IoUtils.resourceAsString(Paths.get(RESOURCES_PATH, ENTITY_ONTOLOGY_TTL));
+
+        return new ShaclValidator(ontologyString, Lang.TURTLE);
+    }
 
     @Test
     public void loadOntology_ontologyString_OntologyModel() throws IOException {
@@ -47,6 +53,12 @@ public class ShaclValidatorTest extends ModelParser {
 
     }
 
+    private Model parseModel(String fileName) throws IOException {
+        String modelString = IoUtils.resourceAsString(Paths.get(RESOURCES_PATH, fileName));
+        return parseModel(modelString, Lang.TURTLE);
+
+    }
+
     @Test(expected = ShaclModelTargetClassesAreNotClassesOfOntologyException.class)
     public void shaclModelTargetClassesAreClassesOfOntology_invalidShackValidationSchema_notValid()
         throws IOException, ShaclModelValidationException {
@@ -55,13 +67,11 @@ public class ShaclValidatorTest extends ModelParser {
 
     }
 
-
     @Test(expected = ShaclModelPropertiesAreNotIcludedInOntologyException.class)
     public void shaclModelPathObjectsAreOntologyProperties_invalidShaclShchema_notValid()
         throws IOException, ShaclModelValidationException {
         assertFalse(validator.checkModel(parseModel(INVALID_PATH_SCHEMA)));
     }
-
 
     @Test(expected = ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException.class)
     public void shaclModelDatatypeObjectsMapExactlyPropertyRange_invalidDatatypeRangeShaclSchema_notValid()
@@ -74,21 +84,5 @@ public class ShaclValidatorTest extends ModelParser {
     public void shaclModelTargetClassesAreInDomainOfRespectiveProperties_invalidShaclSchema_valid()
         throws IOException, ShaclModelValidationException {
         assertFalse(validator.checkModel(parseModel(INVALID_DOMAIN_SCEMA)));
-    }
-
-    private ShaclValidator initializeOntologyValidator()
-        throws IOException {
-
-        String ontologyString = IoUtils.resourceAsString(
-            Paths.get(RESOURCES_PATH, ENTITY_ONTOLOGY_TTL));
-
-        return new ShaclValidator(ontologyString, Lang.TURTLE);
-    }
-
-
-    private Model parseModel(String fileName) throws IOException {
-        String modelString=IoUtils.resourceAsString(Paths.get(RESOURCES_PATH,fileName));
-        return parseModel(modelString,Lang.TURTLE);
-
     }
 }
