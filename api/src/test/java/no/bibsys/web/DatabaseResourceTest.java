@@ -38,6 +38,7 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
+import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -52,7 +53,6 @@ public class DatabaseResourceTest extends JerseyTest {
     public static final String VALIDATION_FOLDER = "validation";
     public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     public static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
-    private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/example_entity.%s";
     public static String REGISTRY_PATH = "/registry";
     private final SampleData sampleData = new SampleData();
     private String apiAdminKey;
@@ -291,7 +291,6 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = createRegistry();
         putSchema(registryName, validValidationSchema);
 
-
         Response response = createEntity(registryName);
 
         EntityDto readEntity = response.readEntity(EntityDto.class);
@@ -518,7 +517,8 @@ public class DatabaseResourceTest extends JerseyTest {
         putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
-        Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
+        Response entityAsHtml = readEntity(registryName, entity.getId(),
+            CustomMediaType.APPLICATION_RDF);
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html.toLowerCase(), containsString("html"));

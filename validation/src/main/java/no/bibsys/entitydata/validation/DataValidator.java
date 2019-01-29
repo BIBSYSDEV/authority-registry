@@ -27,18 +27,22 @@ public class DataValidator extends ModelParser {
 
 
     public boolean isValidEntry(Model dataModel) throws EntryFailedShaclValidationException {
-        if(!validationResult(dataModel)){
-            throw new EntryFailedShaclValidationException() ;
-        }
-        else{
+        if (!validationResult(dataModel)) {
+            throw new EntryFailedShaclValidationException();
+        } else {
             return true;
         }
 
     }
 
     public boolean validationResult(Model dataModel) {
-        Model report = shaclValidation(dataModel);
-        return parseReportToBoolean(report);
+        if (dataModel.isEmpty()) {
+            return false;
+        } else {
+            Model report = shaclValidation(dataModel);
+            return parseReportToBoolean(report);
+        }
+
     }
 
     private boolean parseReportToBoolean(Model report) {

@@ -88,11 +88,15 @@ Then('anonymous user can view the data in the given serialization', () => {
                 Accept: formatType,
               },
             }).then((response) => {
+              debugger;
               if (formatType === 'application/json') {
-                expect(response.body.body).to.deep.equal(testData);
+                expect(response.body.body).to.deep.equal(testData.body);
+              } else if (format.type === 'application/rdf') {
+                expect(response.body).to.deep.equal(testData);
               } else {
                 const tests = testData.split(',\r\n');
                 tests.forEach((test) => {
+
                   expect(response.body).to.contain(test);
                 });
               }

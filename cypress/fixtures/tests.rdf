@@ -1,11 +1,20 @@
-"http://example.org/vocab#definition",
-"value" : "definitionValue",
-"http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-"type" : "uri",
-"value" : "http://example.org/vocab#entity",
-"type" : "literal",
-"value" : "typeValue",
-"http://example.org/vocab#related",
-"value" : "relatedValue",
-"http://example.org/vocab#inScheme",
-"value" : "schemeValue"
+{
+  "http://authority-registry/validation/__THIS_DOCUMENT__a" : {
+    "http://unit.no/entitydata#preferredLabel" : [ {
+      "type" : "literal" ,
+      "value" : "someLabel" ,
+      "lang" : "en"
+    }
+    , {
+      "type" : "literal" ,
+      "value" : "norskLabel" ,
+      "lang" : "no"
+    }
+     ] ,
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+      "type" : "uri" ,
+      "value" : "http://unit.no/entitydata#Concept"
+    }
+     ]
+  }
+}

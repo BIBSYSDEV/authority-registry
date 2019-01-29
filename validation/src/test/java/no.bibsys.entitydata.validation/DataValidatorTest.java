@@ -48,9 +48,18 @@ public class DataValidatorTest extends ModelParser {
         assertTrue(dataValidator.validationResult(dataModel));
     }
 
+
+    @Test
+    public void validationResult_validationSchemaAndEmptyGraph_false() throws IOException {
+
+        Model dataModel = ModelFactory.createDefaultModel();
+        assertFalse(dataValidator.validationResult(dataModel));
+    }
+
+
     @Test
     public void validationResult_validationSchemaAndInvalidGraph_false() throws IOException {
-        TestData testData = new TestData(Paths.get("validation", "invalidGraph.ttl")).invoke();
+        TestData testData = new TestData(Paths.get(RESOURCES_FOLDER, INVALID_GRAPH_TTL)).invoke();
         Model dataModel = testData.getDataModel();
         assertFalse(dataValidator.validationResult(dataModel));
     }
@@ -74,7 +83,6 @@ public class DataValidatorTest extends ModelParser {
 
         Model dataModel = parseModel(IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_JSON)),
             Lang.JSONLD);
-
         Model report = dataValidator.validationReport(dataModel);
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
@@ -105,17 +113,6 @@ public class DataValidatorTest extends ModelParser {
         DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.isValidEntry(dataModel));
     }
-
-
-    @Ignore
-    @Test
-    public void test() throws IOException, EntryFailedShaclValidationException {
-        String json = IoUtils.resourceAsString(Paths.get("validation", "entityTestData.json"));
-        boolean result = dataValidator.isValidEntry(parseModel(json, Lang.JSONLD));
-        assertTrue(result);
-
-    }
-
 
     private class TestData extends ModelParser {
 

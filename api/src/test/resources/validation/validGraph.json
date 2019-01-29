@@ -1,5 +1,5 @@
 {
-  "@id" : "file:///home/orestis/workspaces/bibsys/authority-registry/validation/__THIS_DOCUMENT__a",
+  "@id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
   "@type" : "unit:Concept",
   "preferredLabel" : [ {
     "@language" : "no",
@@ -12,7 +12,7 @@
     "preferredLabel" : {
       "@id" : "http://unit.no/entitydata#preferredLabel"
     },
-    "@vocab" : "file:///home/orestis/workspaces/bibsys/authority-registry/validation/__THIS_DOCUMENT__",
+    "@vocab": "http://authority-registry/validation/__THIS_DOCUMENT__",
     "unit" : "http://unit.no/entitydata#",
     "owl" : "http://www.w3.org/2002/07/owl#",
     "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",

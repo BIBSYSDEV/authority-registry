@@ -15,6 +15,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ModelParserTest extends ModelParser {
@@ -57,5 +58,21 @@ public class ModelParserTest extends ModelParser {
             .collect(Collectors.toSet());
         int expectedNumberOfObjects = resources.size();
         assertThat(objects.size(), is(equalTo(expectedNumberOfObjects)));
+    }
+
+
+    @Ignore
+    @Test
+    public void foo() throws IOException {
+        String inputString = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, "validGraph.ttl"));
+        Model model = parseModel(inputString, Lang.TURTLE);
+        String jsonls = writeData(model, Lang.JSONLD);
+        String ttl = writeData(model, Lang.TURTLE);
+        String json = writeData(model, Lang.RDFJSON);
+        String nquads = writeData(model, Lang.NTRIPLES);
+        String rdfxml = writeData(model, Lang.RDFXML);
+        String rdf = writeData(model, Lang.RDFTHRIFT);
+        assertFalse(1 == 2);
     }
 }
