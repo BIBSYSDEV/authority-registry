@@ -81,24 +81,46 @@ Then('anonymous user can view the data in the given serialization', () => {
       cy.get('@formats').then((formats) => {
         formats.forEach(format => {
           const formatType = format[0];
-          cy.request({
-            url: getUrl,
-            headers: {
-              Accept: formatType,
-            },
-          }).then((response) => {
-            cy.log(response.body);
-            expect(response.headers['content-type']).to.be.equal(formatType);
-            const canonized = jsonld.canonize(response.body, {
-              algorithm: 'URDNA2015',
-              format: 'application/ld+json',
-            });
-            cy.log('************************************');
-            cy.log(canonized);
-            
+          const fileName = 'tests.' + formatType.replace('application/', '').replace('+', '');
+          cy.fixture(fileName).then((testData) => {
+            cy.request({
+              url: getUrl,
+              headers: {
+                Accept: formatType,
+              },
+            }).then((response) => {
+              if(formatType === "application/json"){
+                  expect(response.body.body).to.deep.equal(testData);
+              } else {
+                const tests = testData.split(',\r\n');
+                tests.forEach((test) => {
+                  expect(response.body).to.contain(test);
+                })
+              }
+            })
           });
         });
       });
     });
   });
 });
+
+function canonize(body) {
+  
+  return new Cypress.Promise((resolve, reject) => {
+    const options = {
+        algorithm: 'URDNA2015',
+        format: 'application/n-quads',
+    };
+    
+    
+    debugger;
+    jsonld.canonize(body, options, (err, canonized) => {
+      return canonized;
+    }).then((canonized) => {
+      debugger;
+      resolve(canonized)
+      });
+    debugger;
+  });
+}

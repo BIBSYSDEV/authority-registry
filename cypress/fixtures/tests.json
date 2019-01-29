@@ -1,0 +1,16 @@
+{
+"@context":{"@vocab":"http://example.org/vocab#"},
+"@id":"http://example.org/fakevoc/c00000",
+"@type":"entity",
+"name":"nameValue",
+"identifier":"identifierValue",
+"inScheme":"schemeValue",
+"type":"typeValue",
+"broader":"broaderValue",
+"preferredLabel":[{"@language":"en","@value":"preferredLabelValue"}],
+"alternativeLabel":[{"@language":"en","@value":"alternativeLabelValue"}],
+"narrower":["narrowerValue"],
+"related":["relatedValue"],
+"definition":[{"@language":"en","@value":"definitionValue"}],
+"seeAlso":["seeAlsoValue"]
+}

@@ -1,0 +1,8 @@
+<http://example.org/vocab#broader>,
+"broaderValue",
+<http://example.org/vocab#definition>,
+"definitionValue"@en,
+<http://example.org/vocab#identifier>,
+"identifierValue",
+<http://example.org/vocab#inScheme>,
+"schemeValue"

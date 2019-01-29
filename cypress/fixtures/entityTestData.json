@@ -3,6 +3,8 @@
 		"@context": {
 			"@vocab": "http://example.org/vocab#"
 		},
+		"@id": "http://example.org/fakevoc/c00000",
+		"@type": "entity",
 		"name": "nameValue",
 		"identifier": "identifierValue",
 		"inScheme": "schemeValue",
