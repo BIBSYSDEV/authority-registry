@@ -1,4 +1,4 @@
-package no.bibsys.web.exception.validationexceptions;
+package no.bibsys.web.exception.validationexceptionmappers;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

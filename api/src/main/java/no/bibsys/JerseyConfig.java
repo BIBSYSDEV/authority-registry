@@ -25,13 +25,14 @@ import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.EntryFailedShaclValidationExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper;
-import no.bibsys.web.exception.validationexceptions.ValidationSchemaSyntaxErrorExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.EntryFailedShaclValidationExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaSyntaxErrorExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
@@ -110,6 +111,7 @@ public class JerseyConfig extends ResourceConfig {
         register(ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper.class);
         register(ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper.class);
         register(ValidationSchemaSyntaxErrorExceptionMapper.class);
+        register(ValidationSchemaNotFoundExceptionMapper.class);
     }
 
 }
