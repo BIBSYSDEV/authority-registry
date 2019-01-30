@@ -12,8 +12,6 @@
 //      | Available data profiles |
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
-import {EOL} from 'os';
-
 
 When('an anonymous user dereferences the base URI for the registry specifying mediatypes:', (dataTable) => {
   cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
