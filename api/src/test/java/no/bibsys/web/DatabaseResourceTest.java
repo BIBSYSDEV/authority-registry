@@ -595,10 +595,10 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF);
-        String rdf = entityAsRdf.readEntity(String.class);
+        Response registryAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF);
+        String rdf = registryAsRdf.readEntity(String.class);
         
-        Lang lang = Lang.RDFJSON;
+        Lang lang = Lang.RDFXML;
         Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(REGISTRY_METADATA_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
         Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
@@ -611,8 +611,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF_XML);
-        String rdf = entityAsRdf.readEntity(String.class);
+        Response registryAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_RDF_XML);
+        String rdf = registryAsRdf.readEntity(String.class);
         
         Lang lang = Lang.RDFXML;
         Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
@@ -627,8 +627,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_TURTLE);
-        String rdf = entityAsRdf.readEntity(String.class);
+        Response registryAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_TURTLE);
+        String rdf = registryAsRdf.readEntity(String.class);
         
         Lang lang = Lang.TURTLE;
         Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
@@ -643,8 +643,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         
-        Response entityAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_N_TRIPLES);
-        String rdf = entityAsRdf.readEntity(String.class);
+        Response registryAsRdf = getRegistry(registryName, CustomMediaType.APPLICATION_N_TRIPLES);
+        String rdf = registryAsRdf.readEntity(String.class);
         
         Lang lang = Lang.NTRIPLES;
         Model actualModel = createModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
