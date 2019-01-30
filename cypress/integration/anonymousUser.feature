@@ -62,7 +62,7 @@ Feature: Anonymous user features
       | Description of available formats |
 
   Scenario: An anonymous user views the metadata for a registry as RDF
-    Given that there is an existing, populated entity registry with a schema
+    And that there is an entity in the registry
     When an anonymous user dereferences the base URI for the registry specifying mediatypes:
       | application/ld+json     |
       | application/n-triples   |
