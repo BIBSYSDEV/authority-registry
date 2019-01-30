@@ -8,7 +8,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -49,9 +48,6 @@ public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryD
         Model model = ModelFactory.createDefaultModel();
 
         Map<String, Object> metadata = registry.getMetadata();
-        Map<String, String> contextMap = new ConcurrentHashMap<>();
-        contextMap.put("@vocab", "http://example.org/vocab#");
-        metadata.put("@context", contextMap);
         String body = JsonUtils.newJsonParser().writeValueAsString(metadata);
 
         InputStream stream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
