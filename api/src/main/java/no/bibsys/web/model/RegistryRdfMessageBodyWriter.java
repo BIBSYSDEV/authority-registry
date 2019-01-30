@@ -47,19 +47,17 @@ public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryD
         Lang outputLang;
 
         switch (mediaType.toString()) {
-            case CustomMediaType.APPLICATION_RDF: // RDF
-                outputLang = Lang.RDFJSON;
-                break;
-            case CustomMediaType.APPLICATION_TURTLE: // Turtle
+            case CustomMediaType.APPLICATION_TURTLE:
                 outputLang = Lang.TURTLE;
                 break;
-            case CustomMediaType.APPLICATION_RDF_XML: // XML
+            case CustomMediaType.APPLICATION_RDF:
+            case CustomMediaType.APPLICATION_RDF_XML:
                 outputLang = Lang.RDFXML;
                 break;
-            case CustomMediaType.APPLICATION_N_TRIPLES: // N-triples
+            case CustomMediaType.APPLICATION_N_TRIPLES:
                 outputLang = Lang.NTRIPLES;
                 break;
-            case MediaType.APPLICATION_JSON: // Json
+            case MediaType.APPLICATION_JSON:
             case CustomMediaType.APPLICATION_JSON_LD:
             default:
                 outputLang = Lang.JSONLD;
