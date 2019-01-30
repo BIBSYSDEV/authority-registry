@@ -30,7 +30,8 @@ import no.bibsys.utils.JsonUtils;
     CustomMediaType.APPLICATION_TURTLE, 
     CustomMediaType.APPLICATION_RDF_XML, 
     CustomMediaType.APPLICATION_N_TRIPLES, 
-    CustomMediaType.APPLICATION_JSON_LD
+    CustomMediaType.APPLICATION_JSON_LD,
+    MediaType.APPLICATION_XML
 })
 public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryDto> {
 
@@ -59,12 +60,10 @@ public class RegistryRdfMessageBodyWriter implements MessageBodyWriter<RegistryD
         Lang outputLang;
         
         switch (mediaType.toString()) {
-            case CustomMediaType.APPLICATION_RDF: // RDF
-                outputLang = Lang.RDFJSON;
-                break;
             case CustomMediaType.APPLICATION_TURTLE: // Turtle
                 outputLang = Lang.TURTLE;
                 break;
+            case CustomMediaType.APPLICATION_RDF: // RDF
             case CustomMediaType.APPLICATION_RDF_XML: // XML
                 outputLang = Lang.RDFXML;
                 break;
