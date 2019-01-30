@@ -96,11 +96,10 @@ function testRdf(registryName, registryEndpoint) {
 
 function testHtml(registryName, registryEndpoint) {
   cy.log('testing html');
-  
+
   cy.visit(registryEndpoint);
-  
   cy.contains(registryName);
-  
+
   cy.get('li[data-automation-id=name]').contains('nameValue');
   cy.get('li[data-automation-id=registryName]').contains('registryNameValue');
   cy.get('li[data-automation-id=description]').contains('descriptionValue');
