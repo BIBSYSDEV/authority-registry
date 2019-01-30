@@ -38,7 +38,6 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
-import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
@@ -517,8 +516,7 @@ public class DatabaseResourceTest extends JerseyTest {
         putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
-        Response entityAsHtml = readEntity(registryName, entity.getId(),
-            CustomMediaType.APPLICATION_RDF);
+        Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html.toLowerCase(), containsString("html"));
