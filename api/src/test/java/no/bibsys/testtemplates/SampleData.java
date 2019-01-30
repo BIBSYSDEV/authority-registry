@@ -64,7 +64,7 @@ public class SampleData {
         Map<String, String> vocabMap = new ConcurrentHashMap<String, String>();
         vocabMap.put("@vocab", "http://example.org/vocab#");
         metadata.put("@context", vocabMap);
-        
+
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");

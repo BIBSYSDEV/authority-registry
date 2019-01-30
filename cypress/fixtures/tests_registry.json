@@ -1,1 +1,12 @@
-{"name":"nameValue","registryName":"registryNameValue","description":"descriptionValue"}
+{
+	"id": "test_9d1d20b6-365b-412d-a425-f3277ee6732e",
+	"apiKey": null,
+	"path": null,
+	"schema": null,
+	"metadata": {
+		"@context": {"@vocab":"http://example.org/vocab#"},
+		"name":"nameValue",
+		"registryName": "registryNameValue",
+		"description": "descriptionValue"
+	}
+}

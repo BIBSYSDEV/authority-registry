@@ -695,6 +695,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
     private Response createRegistry(String registryName, String apiKey) throws Exception {
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        
         return createRegistry(registryDto, apiKey);
     }
 

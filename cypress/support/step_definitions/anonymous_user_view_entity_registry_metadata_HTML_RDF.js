@@ -12,6 +12,8 @@
 //      | Available data profiles |
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
+import {EOL} from 'os';
+
 
 When('an anonymous user dereferences the base URI for the registry specifying mediatypes:', (dataTable) => {
   cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
@@ -64,6 +66,7 @@ Then('they see metadata related to the entity registry regarding:', () => {
 });
 
 function testRdf(registryName, registryEndpoint) {
+  cy.log('testing rdf');
   cy.get('@formats').then((formats) => {
     formats.forEach(format => {
       const formatType = format[0];
@@ -76,10 +79,11 @@ function testRdf(registryName, registryEndpoint) {
             Accept: formatType,
           },
         }).then((response) => {
-          if (formatType === "application/json" || formatType === 'application/ld+json') {
-            expect(response.body.metadata).to.deep.equal(testData);
+          if (formatType === "application/json") {
+            testData.id = response.body.id;
+            expect(response.body).to.deep.equal(testData);
           } else {
-            const tests = testData.split(',\r\n');
+            const tests = testData.split(',');
             tests.forEach((test) => {
               expect(response.body).to.contain(test);
             });
@@ -91,6 +95,7 @@ function testRdf(registryName, registryEndpoint) {
 }
 
 function testHtml(registryName, registryEndpoint) {
+  cy.log('testing html');
   
   cy.visit(registryEndpoint);
   

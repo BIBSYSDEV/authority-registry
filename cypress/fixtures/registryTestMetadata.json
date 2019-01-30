@@ -1,9 +1,12 @@
 {
 	"id": "test",
-	"schema": "testSchema",
 	"metadata": {
+		"@context": {
+			"@vocab": "http://example.org/vocab#"
+		},
 		"name": "nameValue",
 		"registryName": "registryNameValue",
 		"description": "descriptionValue"
 	}
 }
+
