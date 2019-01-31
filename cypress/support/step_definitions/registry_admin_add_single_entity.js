@@ -13,22 +13,22 @@ When(
     cy.get('@registryName').then((registryName) => {
       let createEntityUrl = '/registry/' + registryName + '/entity';
       cy.fixture('entityTestData.json')
-      .then(function (testData) {
-        cy.get('@registryAdminApiKey').then(function (apiKey) {
-          cy.request({
-            url: createEntityUrl,
-            method: 'POST',
-            headers: {
-              'api-key': apiKey,
-              'content-type': 'application/json',
-            },
-            body: testData,
-          }).then((response) => {
-            // test return from create
-            cy.wrap(response.body.id).as('entityId');
+        .then(function (testData) {
+          cy.get('@registryAdminApiKey').then(function (apiKey) {
+            cy.request({
+              url: createEntityUrl,
+              method: 'POST',
+              headers: {
+                'api-key': apiKey,
+                'content-type': 'application/json',
+              },
+              body: testData,
+            }).then((response) => {
+              // test return from create
+              cy.wrap(response.body.id).as('entityId');
+            });
           });
         });
-      });
     });
   });
 

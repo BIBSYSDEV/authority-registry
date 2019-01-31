@@ -17,15 +17,15 @@ When('they submit the authentication token', () => {
   cy.get('@authenticationToken').then((authToken) => {
 
     cy.request({
-      url: url,
-      headers: {
-        Authorization: 'Token ' + authToken,
-      },
-    })
-    .then((response) => {
-      authorised = 'authorised';
-      cy.wrap(authorised).as('authorised');
-    });
+        url: url,
+        headers: {
+          Authorization: 'Token ' + authToken,
+        },
+      })
+      .then((response) => {
+        authorised = 'authorised';
+        cy.wrap(authorised).as('authorised');
+      });
   });
 });
 

@@ -57,11 +57,11 @@ Then('the entity registry is updated', () => {
         },
       }).then((response) => {
         cy.fixture("alternativeValidShaclValidationSchema.json")
-        .then(
-          altSchemaObj => {
-            const responseSchemaObj = JSON.parse(response.body.schema);
-            expect(responseSchemaObj).to.deep.equal(altSchemaObj);
-          });
+          .then(
+            altSchemaObj => {
+              const responseSchemaObj = JSON.parse(response.body.schema);
+              expect(responseSchemaObj).to.deep.equal(altSchemaObj);
+            });
 
       });
     });

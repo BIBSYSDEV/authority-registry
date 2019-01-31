@@ -56,11 +56,11 @@ Then(
     cy.get('@entityGetUrl').then((entityGetUrl) => {
       cy.get('@entityId').then((entityId) => {
         cy.request(entityGetUrl)
-        .then((response) => {
-          cy.get('@profile').then((profile) => {
-            expect('native-uri').to.contains(profile);
+          .then((response) => {
+            cy.get('@profile').then((profile) => {
+              expect('native-uri').to.contains(profile);
+            });
           });
-        });
       });
     });
   });
