@@ -79,9 +79,8 @@ public class ShaclParserTest extends ModelParser {
     private void checkThatPropertyUrisAreSubjectsInGeneratedModel(Model domainStatements) {
         Set<Resource> propertyUris = domainStatements.listSubjects().toSet();
         Set<Resource> expectedPropertyUris = shaclParser.getModel()
-            .listObjectsOfProperty(ShaclConstants.PATH)
-            .toSet().stream().map(node -> (Resource) node)
-            .filter(RdfConstants::isNotRDFType)
+            .listObjectsOfProperty(ShaclConstants.PATH).toSet().stream().map(node -> (Resource) node)
+            .filter(RdfConstants::isNotRdfType)
             .collect(Collectors.toSet());
 
         assertThat(propertyUris, is(equalTo(expectedPropertyUris)));

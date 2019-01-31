@@ -25,7 +25,7 @@ public class ModelParser {
             InputStream stream = new ByteArrayInputStream(dataString.getBytes(StandardCharsets.UTF_8));
             RDFDataMgr.read(model, stream, lang);
             return model;
-        } catch(RiotException e){
+        } catch (RiotException e) {
             throw new ValidationSchemaSyntaxErrorException(e);
         }
     }
@@ -36,13 +36,11 @@ public class ModelParser {
             .collect(Collectors.toSet());
     }
 
-
     @JsonIgnore
-    public String writeData(Model model, Lang lang){
-        StringWriter writer=new StringWriter();
+    public String writeData(Model model, Lang lang) {
+        StringWriter writer = new StringWriter();
         RDFDataMgr.write(writer, model, lang);
         return writer.toString();
     }
-
 
 }

@@ -19,7 +19,6 @@ import org.apache.jena.vocabulary.RDFS;
 public class ShaclValidator extends ModelParser {
 
     private final transient OntologyParser ontologyParser;
-//    private final transient ShaclParser shaclParser;
 
     public ShaclValidator(String ontologyString, Lang ontolgyLang) {
         super();
@@ -32,12 +31,10 @@ public class ShaclValidator extends ModelParser {
         return ontologyParser.getOntology();
     }
 
-    public boolean checkModel(Model shaclModel)
-        throws IOException, ShaclModelValidationException {
+    public boolean checkModel(Model shaclModel) throws IOException, ShaclModelValidationException {
         ShaclParser shaclParser = new ShaclParser(shaclModel);
-        return shaclModelPropertiesAreIncludedInOntology(shaclParser)
-            && shaclModelTargetClassesAreClassesOfOntology(shaclParser)
-            && shaclModelPathObjectsAreOntologyProperties(shaclParser)
+        return shaclModelPropertiesAreIncludedInOntology(shaclParser) && shaclModelTargetClassesAreClassesOfOntology(
+            shaclParser) && shaclModelPathObjectsAreOntologyProperties(shaclParser)
             && shaclModelDatatypeObjectsMapExactlyPropertyRange(shaclParser)
             && shaclModelTargetClassesAreInDomainOfRespectiveProperties(shaclParser);
     }
@@ -52,8 +49,7 @@ public class ShaclValidator extends ModelParser {
         if (actualPropeties.isEmpty()) {
             return true;
         } else {
-            throw ShaclModelPropertiesAreNotIcludedInOntologyException
-                .newException(actualPropeties);
+            throw ShaclModelPropertiesAreNotIcludedInOntologyException.newException(actualPropeties);
         }
     }
 
@@ -61,14 +57,12 @@ public class ShaclValidator extends ModelParser {
     private boolean shaclModelTargetClassesAreClassesOfOntology(ShaclParser shaclParser)
         throws ShaclModelTargetClassesAreNotClassesOfOntologyException {
         Set<Resource> subjects = ontologyParser.listSubjects(RDF.type, RDFS.Class);
-        Set<Resource> objects = shaclParser
-            .resourceObjectNodes(ShaclConstants.TARGETCLASS_PROPERTY);
+        Set<Resource> objects = shaclParser.resourceObjectNodes(ShaclConstants.TARGETCLASS_PROPERTY);
         if (subjects.containsAll(objects)) {
             return true;
         } else {
             throw new ShaclModelTargetClassesAreNotClassesOfOntologyException();
         }
-
 
     }
 
@@ -97,11 +91,10 @@ public class ShaclValidator extends ModelParser {
     }
 
 
-    private boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties(
-        ShaclParser shaclParser)
+    private boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties(ShaclParser shaclParser)
         throws IOException, ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException {
-        Model ontologyDomains = ontologyParser.getOntology()
-            .listStatements(null, RDFS.domain, (RDFNode) null).toModel();
+        Model ontologyDomains = ontologyParser.getOntology().listStatements(null, RDFS.domain, (RDFNode) null)
+            .toModel();
         Model shaclDomains = shaclParser.generateDomainModel();
         if (ontologyDomains.containsAll(shaclDomains)) {
             return true;
