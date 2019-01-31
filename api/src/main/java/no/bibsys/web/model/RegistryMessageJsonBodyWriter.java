@@ -28,16 +28,14 @@ public class RegistryMessageJsonBodyWriter implements MessageBodyWriter<Registry
 
 
     @Override
-    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations,
-        MediaType mediaType) {
+    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 
         return type == RegistryDto.class;
     }
 
     @Override
-    public void writeTo(RegistryDto registry, Class<?> type, Type genericType,
-        Annotation[] annotations, MediaType mediaType,
-        MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+    public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations,
+        MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
         throws IOException, WebApplicationException {
 
         ObjectNode registryDtoNode = mapper.convertValue(registry, ObjectNode.class);
