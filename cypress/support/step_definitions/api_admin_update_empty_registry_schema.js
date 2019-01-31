@@ -5,7 +5,6 @@
 //    Then the entity registry is updated
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
-import {isomorphic} from "rdf-isomorphic";
 
 When(
     'the API admin user uses the API key and submits a request to update the validation schema of the entity registry',
@@ -33,7 +32,7 @@ When(
           let registryUpdateUrl = '/registry/' + registryName + '/schema';
           cy.fixture("alternativeValidShaclValidationSchema.json").then(
               altSchemaObj => {
-                const schemaString = JSON.stringify(altSchemaObj)
+                const schemaString = JSON.stringify(altSchemaObj);
                 updateSchema(registryUpdateUrl, apiKey, schemaString);
 
               });
@@ -60,26 +59,8 @@ Then('the entity registry is updated', () => {
         cy.fixture("alternativeValidShaclValidationSchema.json")
         .then(
             altSchemaObj => {
-              const ParserJsonld = require('@rdfjs/parser-jsonld');
-              const Readable = require('stream').Readable
-              const parser = new ParserJsonld();
-
-              const altSchemaStr = JSON.stringify(altSchemaObj);
-              const input = new Readable(
-                  {read: () => input.push(response.body.schema)});
-              const expected = new Readable(
-                  {read: () => expected.push(altSchemaStr)});
-
-              const result = isomorphic(parser.import(expected).on(
-                  'data', quad => {
-                    return quad
-                  }), parser.import(input).on(
-                  'data', quad => {
-                    return quad
-                  }));
-              debugger;
-              expect(result).to.equal(true);
-              // expect(responseSchemaObj).to.deep.equal(altSchemaObj);
+              const responseSchemaObj = JSON.parse(response.body.schema);
+              expect(responseSchemaObj).to.deep.equal(altSchemaObj);
             });
 
       });
