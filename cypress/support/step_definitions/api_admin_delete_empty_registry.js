@@ -6,23 +6,25 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-When('the API admin user uses the API key and requests deletion of an entity registry', () => {
-  cy.log('-- api_admin_delete_empty_registry.js --');
-  // delete empty registry
-  cy.get('@registryName').then((registryName) => {
-    cy.get('@registryAdminApiKey').then((apiKey) => {
-      let url = '/registry/' + registryName;
-      cy.request({
-        url: url,
-        method: 'DELETE',
-        headers: {
-          'api-key': apiKey,
-        },
-      }).then(function(response) {
+When(
+  'the API admin user uses the API key and requests deletion of an entity registry',
+  () => {
+    cy.log('-- api_admin_delete_empty_registry.js --');
+    // delete empty registry
+    cy.get('@registryName').then((registryName) => {
+      cy.get('@registryAdminApiKey').then((apiKey) => {
+        let url = '/registry/' + registryName;
+        cy.request({
+          url: url,
+          method: 'DELETE',
+          headers: {
+            'api-key': apiKey,
+          },
+        }).then(function (response) {
+        });
       });
     });
   });
-});
 
 Then('the empty entity registry is deleted', () => {
   // call registry

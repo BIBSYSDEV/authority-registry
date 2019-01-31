@@ -20,13 +20,15 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-When(/an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/, (dataTable) => {
-  cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --');
+When(
+  /an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/,
+  (dataTable) => {
+    cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --');
 
-  cy.get('@registryName').then((registryName) => {
-    cy.visit('/registry/' + registryName);
+    cy.get('@registryName').then((registryName) => {
+      cy.visit('/registry/' + registryName);
+    });
   });
-});
 
 Then('they see metadata related to the entity registry regarding:', () => {
   cy.get('@registryName').then((registryName) => {

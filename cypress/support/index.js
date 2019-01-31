@@ -19,10 +19,10 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-beforeEach(function(){
+beforeEach(function () {
   let uuid = require('uuid');
   let whoami = Cypress.env('whoami');
-  if (whoami === undefined){
+  if (whoami === undefined) {
     whoami = 'test_';
   }
 
@@ -30,7 +30,7 @@ beforeEach(function(){
   cy.wrap(randomRegistryName).as('registryName');
 
   let apiKey = Cypress.env('apiKey');
-  if (apiKey === undefined){
+  if (apiKey === undefined) {
     apiKey = 'testApiAdminApiKey';
   }
 
@@ -38,15 +38,15 @@ beforeEach(function(){
   cy.wrap(apiKey).as('apiAdminApiKey');
 });
 
-afterEach(function(){
+afterEach(function () {
   cy.get('@cleanUp').then((doCleanUp) => {
-    if (doCleanUp){
-      cy.get('@registryName').then(function(registryName) {
+    if (doCleanUp) {
+      cy.get('@registryName').then(function (registryName) {
         cy.log('removing DynamoDB table ' + registryName);
 
         cy.registryReady(registryName);
 
-        cy.get('@registryAdminApiKey').then(function(apiKey) {
+        cy.get('@registryAdminApiKey').then(function (apiKey) {
 
           cy.deleteRegistry(registryName, apiKey);
         });

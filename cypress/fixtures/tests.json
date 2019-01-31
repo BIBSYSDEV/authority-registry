@@ -1,35 +1,35 @@
 {
-  "id": "sampleId",
-  "created": "2019-01-29T22:24:27.868Z",
+  "id"      : "sampleId",
+  "created" : "2019-01-29T22:24:27.868Z",
   "modified": "2019-01-29T22:24:27.868Z",
-  "path": null,
-  "body": {
-    "@id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
-    "@type": "unit:Concept",
+  "path"    : null,
+  "body"    : {
+    "@id"           : "http://authority-registry/validation/__THIS_DOCUMENT__a",
+    "@type"         : "unit:Concept",
     "preferredLabel": [
       {
         "@language": "no",
-        "@value": "norskLabel"
+        "@value"   : "norskLabel"
       },
       {
         "@language": "en",
-        "@value": "someLabel"
+        "@value"   : "someLabel"
       }
     ],
-    "@context": {
+    "@context"      : {
       "preferredLabel": {
         "@id": "http://unit.no/entitydata#preferredLabel"
       },
-      "@vocab": "http://authority-registry/validation/__THIS_DOCUMENT__",
-      "unit": "http://unit.no/entitydata#",
-      "owl": "http://www.w3.org/2002/07/owl#",
-      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-      "sh": "http://www.w3.org/ns/shacl#",
-      "xsd": "http://www.w3.org/2001/XMLSchema#",
-      "dcterms": "http://purl.org/dc/terms/",
-      "skos": "http://www.w3.org/2004/02/skos/core#",
-      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-      "vann": "http://purl.org/vocab/vann/"
+      "@vocab"        : "http://authority-registry/validation/__THIS_DOCUMENT__",
+      "unit"          : "http://unit.no/entitydata#",
+      "owl"           : "http://www.w3.org/2002/07/owl#",
+      "rdf"           : "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "sh"            : "http://www.w3.org/ns/shacl#",
+      "xsd"           : "http://www.w3.org/2001/XMLSchema#",
+      "dcterms"       : "http://purl.org/dc/terms/",
+      "skos"          : "http://www.w3.org/2004/02/skos/core#",
+      "rdfs"          : "http://www.w3.org/2000/01/rdf-schema#",
+      "vann"          : "http://purl.org/vocab/vann/"
     }
   }
 }

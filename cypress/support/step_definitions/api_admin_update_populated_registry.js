@@ -6,10 +6,12 @@
 
 import {Then} from 'cypress-cucumber-preprocessor/steps';
 
-Then('the API admin user receives information that they cannot update the entity registry validation schema until the populated data is deleted', () => {
-  cy.log('-- api_admin_update_populated_registry.js --');
-  cy.get('@updateSchemaResponse').then((response) => {
-    expect(response.status).to.equal(405);
-  });
+Then(
+  'the API admin user receives information that they cannot update the entity registry validation schema until the populated data is deleted',
+  () => {
+    cy.log('-- api_admin_update_populated_registry.js --');
+    cy.get('@updateSchemaResponse').then((response) => {
+      expect(response.status).to.equal(405);
+    });
 
-});
+  });

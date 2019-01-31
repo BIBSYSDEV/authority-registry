@@ -22,10 +22,10 @@ When('they submit the authentication token', () => {
         Authorization: 'Token ' + authToken,
       },
     })
-      .then((response) => {
-        authorised = 'authorised';
-        cy.wrap(authorised).as('authorised');
-      });
+    .then((response) => {
+      authorised = 'authorised';
+      cy.wrap(authorised).as('authorised');
+    });
   });
 });
 

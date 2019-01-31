@@ -11,22 +11,22 @@ When('they submit the API key', () => {
     cy.get('@registryName').then((registryName) => {
       // create new test registry metadata
       cy.fixture('registryTestMetadata.json')
-        .then((testSchema) => {
-          testSchema.id = registryName;
-          let createUrl = '/registry';
-          cy.request({
-            url: createUrl,
-            method: 'POST',
-            body: testSchema,
-            headers: {
-              'api-key': apiAdminApiKey,
-              'content-type': 'application/json',
-            },
-          }).then((response) => {
-            cy.wrap(response.status).as('responseStatus');
-            cy.wrap(response.body.apiKey).as('registryAdminApiKey');
-          });
+      .then((testSchema) => {
+        testSchema.id = registryName;
+        let createUrl = '/registry';
+        cy.request({
+          url: createUrl,
+          method: 'POST',
+          body: testSchema,
+          headers: {
+            'api-key': apiAdminApiKey,
+            'content-type': 'application/json',
+          },
+        }).then((response) => {
+          cy.wrap(response.status).as('responseStatus');
+          cy.wrap(response.body.apiKey).as('registryAdminApiKey');
         });
+      });
     });
   });
 });

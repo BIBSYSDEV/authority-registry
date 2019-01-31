@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import {Given, When, Then} from 'cypress-cucumber-preprocessor/steps';
 
 //  Scenario: An API admin user authenticates themselves
 //    Given that there is an API admin user with valid credentials
@@ -15,10 +15,10 @@ Given('that there is an API admin user with valid credentials', () => {
 
 When('they provide these credentials', () => {
   cy.request(authenticationUrl, credentials)
-    .then(() => { // check if authenticated
-      authenticated = 'authenticated';
-      cy.wrap(authenticated).as('authenticated');
-    });
+  .then(() => { // check if authenticated
+    authenticated = 'authenticated';
+    cy.wrap(authenticated).as('authenticated');
+  });
 });
 
 Then('they are authenticated and receive a valid authentication token', () => {
