@@ -33,8 +33,8 @@ When(
   });
 
 Then('the entity is created', () => {
-  cy.get('@registryName').then(function (registryName) {
-    cy.get('@entityId').then(function (entityId) {
+  cy.get('@registryName').then(function(registryName) {
+    cy.get('@entityId').then(function(entityId) {
       cy.get('@registryAdminApiKey').then(function(apiKey) {
         cy.request({
           url: '/registry/' + registryName + '/entity/' + entityId,

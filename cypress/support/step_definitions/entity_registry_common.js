@@ -36,10 +36,10 @@ Given(
 function createTestRegistry(createEntity) {
 
   cy.log('-- entity_registry_common.js --');
-  cy.get('@registryName').then(function (registryName) {
+  cy.get('@registryName').then(function(registryName) {
     cy.log('create Entity? ' + createEntity);
     cy.log('Creating schema with name ' + registryName);
-    cy.get('@apiAdminApiKey').then(function (apiKey) {
+    cy.get('@apiAdminApiKey').then(function(apiKey) {
       // create new test registry metadata
       let testMetadataFile = 'registryTestMetadata.json';
       if (createEntity) {

@@ -47,7 +47,7 @@ function waitUntilRegistryIsReady(registryName, count) {
   cy.request({
     url: statusUrl,
     failOnStatusCode: false,
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.status === SEE_OTHER) {
       const newCount = count + 1;
       if (newCount < RECURSION_COUNT) {
