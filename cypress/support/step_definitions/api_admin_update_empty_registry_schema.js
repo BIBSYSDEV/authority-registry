@@ -20,7 +20,7 @@ When('the API admin user uses the API key and submits a request to update the va
           'api-key': apiKey,
         },
       }).then((response) => {
-        expect(response.body.schema).to.equal('testSchema');
+        expect(response.body.schema).to.equal(null);
       });
 
       let registryUpdateUrl = '/registry/' + registryName + '/schema';
