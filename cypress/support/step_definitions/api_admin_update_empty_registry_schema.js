@@ -21,8 +21,7 @@ When(
             'api-key': apiKey,
           },
         }).then((response) => {
-          debugger;
-          cy.fixture("validShaclValidationSchema.json").then(
+          cy.fixture('validShaclValidationSchema.json').then(
             schemaObject => {
               const responseSchemaObj = JSON.parse(response.body.schema);
               expect(responseSchemaObj).to.deep.equal(schemaObject);
@@ -30,7 +29,7 @@ When(
         });
 
         let registryUpdateUrl = '/registry/' + registryName + '/schema';
-        cy.fixture("alternativeValidShaclValidationSchema.json").then(
+        cy.fixture('alternativeValidShaclValidationSchema.json').then(
           altSchemaObj => {
             const schemaString = JSON.stringify(altSchemaObj);
             updateSchema(registryUpdateUrl, apiKey, schemaString);
@@ -56,7 +55,7 @@ Then('the entity registry is updated', () => {
           'api-key': apiKey,
         },
       }).then((response) => {
-        cy.fixture("alternativeValidShaclValidationSchema.json")
+        cy.fixture('alternativeValidShaclValidationSchema.json')
           .then(
             altSchemaObj => {
               const responseSchemaObj = JSON.parse(response.body.schema);

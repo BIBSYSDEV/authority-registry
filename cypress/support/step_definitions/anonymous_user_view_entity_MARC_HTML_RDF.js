@@ -99,7 +99,7 @@ Then('anonymous user can view the data in the given serialization', () => {
                 default:
                 case 'application/json':
                 case 'application/ld+json':
-                  if (typeof testData === "object") {
+                  if (typeof testData === 'object') {
                     expect(JSON.stringify(response.body.body)).to.deep.equal(
                       JSON.stringify(testData.body));
                   } else {

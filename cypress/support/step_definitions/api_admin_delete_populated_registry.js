@@ -22,7 +22,7 @@ When(
             'api-key': apiKey,
           },
           failOnStatusCode: false,
-        }).then(function (response) {
+        }).then(function(response) {
           cy.wrap(response).as('errorResponse');
         });
       });

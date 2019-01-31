@@ -66,7 +66,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile,
 
   cy.log('Using apiKey ' + apiAdminApiKey);
   cy.fixture(metadataFile)
-    .then(function (testSchema) {
+    .then(function(testSchema) {
       testSchema.id = registryName;
       const createUrl = '/registry';
       cy.log('trying to create registry');
@@ -95,7 +95,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile,
           cy.registryReady(registryName);
 
           setValidationSchema(registryName, apiAdminApiKey,
-            validationSchemaFile)
+            validationSchemaFile);
 
           if (createEntity) {
             cy.log('creating test entity');

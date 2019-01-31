@@ -20,7 +20,7 @@ When(
           headers: {
             'api-key': apiKey,
           },
-        }).then(function (response) {
+        }).then(function(response) {
         });
       });
     });

@@ -53,8 +53,8 @@ function createTestRegistry(createEntity) {
 }
 
 function createTestEntity() {
-  cy.get('@registryName').then(function (registryName) {
-    cy.get('@apiAdminApiKey').then(function (apiKey) {
+  cy.get('@registryName').then(function(registryName) {
+    cy.get('@apiAdminApiKey').then(function(apiKey) {
       let dataFile = 'entityTestData.json';
       cy.createEntity(registryName, apiKey, dataFile);
     });

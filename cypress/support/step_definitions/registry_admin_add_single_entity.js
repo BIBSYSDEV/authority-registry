@@ -14,7 +14,7 @@ When(
       let createEntityUrl = '/registry/' + registryName + '/entity';
       cy.fixture('entityTestData.json')
         .then(function (testData) {
-          cy.get('@registryAdminApiKey').then(function (apiKey) {
+          cy.get('@registryAdminApiKey').then(function(apiKey) {
             cy.request({
               url: createEntityUrl,
               method: 'POST',
@@ -35,7 +35,7 @@ When(
 Then('the entity is created', () => {
   cy.get('@registryName').then(function (registryName) {
     cy.get('@entityId').then(function (entityId) {
-      cy.get('@registryAdminApiKey').then(function (apiKey) {
+      cy.get('@registryAdminApiKey').then(function(apiKey) {
         cy.request({
           url: '/registry/' + registryName + '/entity/' + entityId,
           headers: {
