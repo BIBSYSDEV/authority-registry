@@ -40,6 +40,7 @@ import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryCreationDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
@@ -78,7 +79,7 @@ public class DatabaseResource {
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
     public Response createRegistry(
         @RequestBody(description = "Request object to create registry", content = @Content(schema =
-        @Schema(implementation = RegistryDto.class))) RegistryDto registryDto)
+        @Schema(implementation = RegistryCreationDto.class))) RegistryDto registryDto)
         throws Exception {
 
         RegistryDto createdRegistry = registryService.createRegistry(registryDto);
