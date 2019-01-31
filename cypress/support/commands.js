@@ -59,7 +59,6 @@ function waitUntilRegistryIsReady(registryName, count){
 // create registry
 function createRegistry(registryName, apiAdminApiKey, metadataFile,
     validationSchemaFile, createEntity, count) {
-
   cy.log('creating registry...');
 
   cy.log('Using apiKey ' + apiAdminApiKey);
