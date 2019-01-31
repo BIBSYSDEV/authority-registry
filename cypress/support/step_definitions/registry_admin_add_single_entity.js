@@ -13,7 +13,7 @@ When(
     cy.get('@registryName').then((registryName) => {
       let createEntityUrl = '/registry/' + registryName + '/entity';
       cy.fixture('entityTestData.json')
-        .then(function (testData) {
+        .then(function(testData) {
           cy.get('@registryAdminApiKey').then(function(apiKey) {
             cy.request({
               url: createEntityUrl,
