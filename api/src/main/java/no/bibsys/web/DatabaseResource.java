@@ -159,7 +159,8 @@ public class DatabaseResource {
     public Response replaceApiKey(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
             + "which to update entity", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Old apikey", content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey) {
+        @RequestBody(description = "Old apikey",
+            content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey) {
 
         registryService.validateRegistryExists(registryName);
         String newApiKey = registryService.replaceApiKey(registryName, oldApiKey);
@@ -185,7 +186,8 @@ public class DatabaseResource {
     public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "update", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(type = STRING))) String schema)
+        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(type = STRING)))
+            String schema)
         throws IOException, ShaclModelValidationException {
 
         RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
@@ -217,7 +219,8 @@ public class DatabaseResource {
     @Path("/{registryName}/entity")
     public Response entitiesSummary(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
-            + "get entity summary from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            + "get entity summary from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+            String registryName) {
 
         return Response.status(Status.NOT_IMPLEMENTED).entity("Not implemented").build();
     }
