@@ -47,8 +47,6 @@ public class RegistryManagerTest extends LocalDynamoTest {
         assertTrue(existsAfterCreation);
     }
 
-
-    // TODO: check if this test is the same as the previous one
     @Test
     public void createRegistryFromTemplate_RegistryDoesNotExist_RegistryExists() throws Exception {
         String registryName = "addSchemaToRegistry";

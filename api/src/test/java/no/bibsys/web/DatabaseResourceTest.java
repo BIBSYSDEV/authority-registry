@@ -46,7 +46,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class DatabaseResourceTest extends JerseyTest {
 
     public static final String VALIDATION_FOLDER = "validation";
@@ -92,7 +91,6 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
-
     @Test
     public void createRegistry_RegistryNotExistingUserNotAuthorized_StatusForbidden() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -100,7 +98,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response response = createRegistry(registryName, "InvalidApiKey");
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
-
 
     @Test
     public void createRegistry_RegistryNotExistingWrongUser_StatusForbidden() throws Exception {
@@ -151,9 +148,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(actualEntity.getId(), is(equalTo(expectedEntity.getId())));
         assertThat(actualEntity.isIsomorphic(expectedEntity), is(equalTo(true)));
         assertThat(readEntity, is(equalTo(actualEntity)));
-
     }
-
 
     @Test
     public void insertEntity_RegistryExistUserAuthorizedNoSchema_ReturnsBadRequest() throws Exception {
@@ -166,7 +161,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
         assertThat(message, is(equalTo(ValidationSchemaNotFoundExceptionMapper.MESSAGE)));
-
     }
 
     @Test
@@ -203,7 +197,6 @@ public class DatabaseResourceTest extends JerseyTest {
         String entity = response.readEntity(String.class);
         String expected = String.format("Registry %s has been deleted", registryName);
         assertThat(entity, is(equalTo(expected)));
-
     }
 
     @Test
@@ -229,7 +222,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
         String expected = String.format("Registry with name %s does not exist", registryName);
         assertThat(entity, is(equalTo(expected)));
-
     }
 
     @Test
@@ -240,7 +232,6 @@ public class DatabaseResourceTest extends JerseyTest {
             .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
-
     }
 
     @Test
@@ -271,9 +262,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         Assert.assertNotNull(readEntityResponse.getEntityTag());
         Assert.assertNotNull(readEntityResponse.getHeaderString(Headers.LAST_MODIFIED));
-
     }
-
 
     @Test
     public void getEntity_Twice_RegistryExists_ReturnsStatusNotModified() throws Exception {
@@ -292,7 +281,6 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(readEntityResponseWithEntityTag.getStatus(), is(equalTo(Status.NOT_MODIFIED.getStatusCode())));
     }
 
-
     @Test
     public void getRegistryStatus_registryExists_returnsStatusCreated() throws Exception {
         String registryName = createRegistry();
@@ -300,7 +288,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response response = registryStatus(registryName);
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
-
 
     @Test
     public void putRegistrySchema_NonEmptyRegistry_ReturnsStatusMethodNotAllowed() throws Exception {
@@ -313,7 +300,6 @@ public class DatabaseResourceTest extends JerseyTest {
         String schemaAsJson = "Schema as Json";
         Response putRegistrySchemaResponse = putSchema(registryName, schemaAsJson);
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.METHOD_NOT_ALLOWED.getStatusCode())));
-
     }
 
     @Test
@@ -327,7 +313,6 @@ public class DatabaseResourceTest extends JerseyTest {
         RegistryDto registry = response.readEntity(RegistryDto.class);
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
     }
-
 
     @Test
     public void putRegistrySchema_RegistryExistsInvalidSchema_ReturnsStatusBadRequest() throws Exception {
@@ -366,7 +351,6 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityDto readEntity = readEntityResponse.readEntity(EntityDto.class);
         String actual = mapper.readValue(readEntity.getBody(), ObjectNode.class).get("label").asText();
         assertThat(actual, is(equalTo(newLabel)));
-
     }
 
     private EntityDto updateEntityLabel(String newLabel, ObjectMapper mapper) throws IOException {
@@ -379,7 +363,6 @@ public class DatabaseResourceTest extends JerseyTest {
         updatedEntity.setBody(mapper.writeValueAsString(body));
         return updatedEntity;
     }
-
 
     @Test
     public void uploadArrayOfThreeEntities_RegistryExists_RegistryContainsThreeEntities() throws Exception {
@@ -408,7 +391,6 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(numberOfEntities.get(), is(equalTo(3)));
     }
 
-
     @Test
     public void replaceApiKey_RegistryExists_ReturnsNewApiKey() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -422,7 +404,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
         assertThat(newApiKey, is(not(equalTo(oldApiKey))));
     }
-
 
     @Test
     public void replaceApiKey_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
@@ -471,12 +452,9 @@ public class DatabaseResourceTest extends JerseyTest {
         Iterable<String> bodyIter = body::fieldNames;
         List<String> bodyFields = StreamSupport.stream(bodyIter.spliterator(), false).collect(Collectors.toList());
 
-        assertThat(html.toLowerCase(), containsString("html"));
-
         bodyFields.stream().filter(field -> !field.toLowerCase().equals(JsonLdConsts.CONTEXT)).forEach(
             field -> assertThat(html.toLowerCase(),
                 containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
-
     }
 
     @Test
@@ -495,7 +473,6 @@ public class DatabaseResourceTest extends JerseyTest {
 
         assertThat(readEntity.getBody(), containsString(entity.getBody()));
     }
-
 
     @Test
     public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
@@ -527,7 +504,6 @@ public class DatabaseResourceTest extends JerseyTest {
             .put(javax.ws.rs.client.Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
-
     private Response createRegistry(String registryName, String apiKey) throws Exception {
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         return createRegistry(registryDto, apiKey);
@@ -551,7 +527,6 @@ public class DatabaseResourceTest extends JerseyTest {
         String path = String.format("/registry/%s/entity", registryName);
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey)
             .post(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
-
     }
 
     private Response createEntity(String registryName) throws IOException {
@@ -559,7 +534,6 @@ public class DatabaseResourceTest extends JerseyTest {
         Response writeResponse = insertEntryRequest(registryName, entity, apiAdminKey);
         return writeResponse;
     }
-
 
     private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()
@@ -576,9 +550,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String path = String.format("/registry/%s/entity/%s", registryName, entityDto.getId());
         return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
             .put(javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
-
     }
-
 
     private List<EntityDto> createSampleEntities() throws IOException {
         List<EntityDto> sampleEntities = new CopyOnWriteArrayList<EntityDto>();
