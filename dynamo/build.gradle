@@ -8,29 +8,28 @@ dependencies {
 
     compile project(":common")
     compile project(":validation")
-    implementation ("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
 
     //library for using embedded DynamoDB during local tests
-    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
+    testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
-    testImplementation ("com.almworks.sqlite4java:sqlite4java-win32-x86:1.0.392")
-    testImplementation ("com.almworks.sqlite4java:sqlite4java-win32-x64:1.0.392")
-    testImplementation ("com.almworks.sqlite4java:libsqlite4java-osx:1.0.392")
-    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-i386:1.0.392")
-    testImplementation ("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
+    testImplementation("com.almworks.sqlite4java:sqlite4java-win32-x86:1.0.392")
+    testImplementation("com.almworks.sqlite4java:sqlite4java-win32-x64:1.0.392")
+    testImplementation("com.almworks.sqlite4java:libsqlite4java-osx:1.0.392")
+    testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-i386:1.0.392")
+    testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
     //slf4j logging
-    implementation ('org.slf4j:slf4j-api:1.7.25')
-    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
-    
+    implementation('org.slf4j:slf4j-api:1.7.25')
+    testImplementation("com.amazonaws:DynamoDBLocal:1.11.+")
+
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
-    testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.+")
+    testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.+")
 
-
-    implementation group: 'org.apache.jena', name: 'jena-core', version: '3.9.0'
-    implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.9.0'
-    implementation  ('org.topbraid:shacl:1.1.0') {
+    implementation('org.apache.jena:jena-core:3.9.0')
+    implementation('org.apache.jena:jena-arq:3.9.0')
+    implementation('org.topbraid:shacl:1.1.0') {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 

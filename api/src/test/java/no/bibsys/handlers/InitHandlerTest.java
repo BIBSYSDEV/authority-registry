@@ -28,8 +28,7 @@ import org.mockito.Mockito;
 
 public class InitHandlerTest {
 
-
-    public static final String STAGE = "STAGE";
+    private static final String STAGE = "STAGE";
     private static final String STACK_NAME_VALUE = "arn:aws:cloudformation:eu-west-1:933878624978:stack/aut-reg"
         + "-jersey-2-author-service-stack-test/759d2d50-18d0-11e9-8173-061b9f50c2ce";
     private final transient InitHandler initHandler;
@@ -47,7 +46,7 @@ public class InitHandlerTest {
             } else if (input.equalsIgnoreCase(EnvironmentVariables.STACK_NAME)) {
                 return STACK_NAME_VALUE;
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_OWNER)) {
-                return "axthosarouris";
+                return "randomOwner";
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_ID)) {
                 return "aut-reg-service";
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_VERSION)) {

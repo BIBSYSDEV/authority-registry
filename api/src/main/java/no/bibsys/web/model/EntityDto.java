@@ -76,9 +76,9 @@ public class EntityDto extends ModelParser {
 
     @JsonIgnore
     public boolean isIsomorphic(EntityDto other) {
-        if (this.body == null && other.getBody() == null) {
+        if (Objects.isNull(this.body) && Objects.isNull(other.getBody())) {
             return true;
-        } else if (this.body != null && other.getBody() != null) {
+        } else if (Objects.nonNull(this.body) && Objects.nonNull(other.getBody())) {
             Model thisModel = parseModel(getBody(), Lang.JSONLD);
             Model thatModel = parseModel(other.getBody(), Lang.JSONLD);
             return thisModel.isIsomorphicWith(thatModel);

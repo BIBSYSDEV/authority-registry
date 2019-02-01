@@ -8,9 +8,10 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelPathObjectsAreNotOnt
 public class ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper implements
     ExceptionMapper<ShaclModelPathObjectsAreNotOntologyPropertiesException> {
 
+    private static final String MESSAGE = "Shacl model path objects are not ontology properties";
+
     @Override
     public Response toResponse(ShaclModelPathObjectsAreNotOntologyPropertiesException exception) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity("Shacl model path objects are not ontology properties").build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

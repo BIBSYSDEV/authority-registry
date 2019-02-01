@@ -13,7 +13,7 @@ When(
     // delete empty registry
     cy.get('@registryName').then((registryName) => {
       cy.get('@registryAdminApiKey').then((apiKey) => {
-        let url = '/registry/' + registryName;
+        const url = '/registry/' + registryName;
         cy.request({
           url: url,
           method: 'DELETE',
@@ -30,7 +30,7 @@ Then('the empty entity registry is deleted', () => {
   // call registry
   cy.get('@registryName').then((registryName) => {
     cy.get('@apiAdminApiKey').then((apiKey) => {
-      let registryHeartbeatUrl = '/registry/' + registryName;
+      const registryHeartbeatUrl = '/registry/' + registryName;
       cy.request({
         url: registryHeartbeatUrl,
         method: 'GET',

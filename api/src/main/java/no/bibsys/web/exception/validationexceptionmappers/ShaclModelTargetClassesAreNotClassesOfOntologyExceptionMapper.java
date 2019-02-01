@@ -8,9 +8,10 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotC
 public class ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper implements
     ExceptionMapper<ShaclModelTargetClassesAreNotClassesOfOntologyException> {
 
+    private static final String MESSAGE = "Shacl model target classes are not classes of ontology";
+
     @Override
     public Response toResponse(ShaclModelTargetClassesAreNotClassesOfOntologyException exception) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity("Shacl model target classes are not classes of ontology").build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

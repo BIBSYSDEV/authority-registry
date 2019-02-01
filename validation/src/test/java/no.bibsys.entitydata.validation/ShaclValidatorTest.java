@@ -40,7 +40,6 @@ public class ShaclValidatorTest extends ModelParser {
 
     @Test
     public void loadOntology_ontologyString_OntologyModel() throws IOException {
-
         Model model = validator.getOntology();
         assertFalse(model.isEmpty());
     }
