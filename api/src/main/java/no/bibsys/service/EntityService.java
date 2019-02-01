@@ -1,5 +1,6 @@
 package no.bibsys.service;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
@@ -48,7 +49,7 @@ public class EntityService extends ModelParser {
         BiFunction<String, EntityDto, EntityDto> action)
         throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
         String validationSchema = registryService.getRegistry(registryId).getSchema();
-        if (validationSchema == null) {
+        if (Objects.isNull(validationSchema)) {
             throw new ValidationSchemaNotFoundException(String.format(VALIDATION_SCHEMA_NOT_FOUND, registryId));
         }
         return validateEntity(registryId, entityDto, validationSchema, action);
