@@ -156,7 +156,8 @@ public class DatabaseResource {
     public Response replaceApiKey(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
             + "which to update entity", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Old apikey", content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey)
+        @RequestBody(description = "Old apikey",
+            content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey)
         throws UnknownStatusException {
 
         registryService.validateRegistryExists(registryName);
