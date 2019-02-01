@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.utils.IoUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -16,7 +16,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DataValidatorTest extends ModelParser {
@@ -92,19 +91,17 @@ public class DataValidatorTest extends ModelParser {
         assertTrue(expectedModel.isIsomorphicWith(report));
     }
 
-
-    @Test(expected = EntryFailedShaclValidationException.class)
+    @Test(expected = EntityFailedShaclValidationException.class)
     public void isValidEntry_validationSchemaAndInvalidGraph_f()
-        throws EntryFailedShaclValidationException, IOException {
+        throws EntityFailedShaclValidationException, IOException {
         TestData testData = new TestData(Paths.get("validation", INVALID_GRAPH_TTL)).invoke();
         Model dataModel = testData.getDataModel();
         assertFalse(dataValidator.isValidEntry(dataModel));
     }
 
-
-    @Test(expected = EntryFailedShaclValidationException.class)
+    @Test(expected = EntityFailedShaclValidationException.class)
     public void isValidEntry_validationSchemaAndInvalidGraph_exception()
-        throws EntryFailedShaclValidationException, IOException {
+        throws EntityFailedShaclValidationException, IOException {
         Model validationModel = parseModel(
             IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TURTLE);
 

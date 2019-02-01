@@ -33,7 +33,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
@@ -205,7 +205,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Entity to create", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
@@ -235,7 +235,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Array of Entity to upload", content = @Content(array = @ArraySchema(schema =
         @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
-        throws EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
         for (EntityDto entityDto : entityDtos) {
@@ -298,7 +298,7 @@ public class DatabaseResource {
             + " entity to be updated", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
         @RequestBody(description = "Entity to update", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntryFailedShaclValidationException {
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
 
         entityService.updateEntity(registryName, entityDto);
 

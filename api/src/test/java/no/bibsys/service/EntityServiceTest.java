@@ -16,7 +16,7 @@ import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
-import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.testtemplates.SampleData;
@@ -67,15 +67,14 @@ public class EntityServiceTest {
 
     @Test(expected = ValidationSchemaNotFoundException.class)
     public void addEntity_NoValidationSchema_throwsException()
-        throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
         EntityDto entityDto = sampleData.sampleEntityDtoWithValidData();
         entityService.addEntity(registryDto.getId(), entityDto);
     }
 
-
-    @Test(expected = EntryFailedShaclValidationException.class)
+    @Test(expected = EntityFailedShaclValidationException.class)
     public void addEntity_newInvalidEntity_throwsException()
-        throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException,
+        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
         ShaclModelValidationException {
         addValidationSchemaToRegistry(registryDto.getId());
         EntityDto entityDto = sampleData.sampleEntityDtoWithInValidData();
@@ -90,7 +89,7 @@ public class EntityServiceTest {
 
     @Test
     public void addEntity_newValidEntity_registryWithNewEntity()
-        throws IOException, EntryFailedShaclValidationException, ValidationSchemaNotFoundException,
+        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
         ShaclModelValidationException {
         EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData();
         addValidationSchemaToRegistry(registryDto.getId());

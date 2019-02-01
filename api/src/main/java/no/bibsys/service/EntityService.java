@@ -5,7 +5,7 @@ import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.DataValidator;
 import no.bibsys.entitydata.validation.ModelParser;
-import no.bibsys.entitydata.validation.exceptions.EntryFailedShaclValidationException;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.EntityConverter;
 import no.bibsys.web.model.EntityDto;
@@ -29,12 +29,12 @@ public class EntityService extends ModelParser {
 
 
     public EntityDto addEntity(String registryId, EntityDto entityDto)
-        throws EntryFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
         return addUpdateEntity(registryId, entityDto, this::addEntityToRegistry);
     }
 
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntryFailedShaclValidationException {
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
         return addUpdateEntity(registryId, entityDto, this::updateEntityInRegistry);
 
     }
@@ -51,7 +51,7 @@ public class EntityService extends ModelParser {
 
     private EntityDto addUpdateEntity(String registryId, EntityDto entityDto,
         BiFunction<String, EntityDto, EntityDto> action)
-        throws ValidationSchemaNotFoundException, EntryFailedShaclValidationException {
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
         String validationSchema = registryService.getRegistry(registryId).getSchema();
         if (validationSchema == null) {
             throw new ValidationSchemaNotFoundException(String.format(VALIDATION_SCHEMA_NOT_FOUND, registryId));
@@ -62,13 +62,13 @@ public class EntityService extends ModelParser {
 
 
     private EntityDto validateEntity(String registryId, EntityDto entityDto, String validationSchema,
-        BiFunction<String, EntityDto, EntityDto> action) throws EntryFailedShaclValidationException {
+        BiFunction<String, EntityDto, EntityDto> action) throws EntityFailedShaclValidationException {
         DataValidator dataValidator = new DataValidator(parseModel(validationSchema, VALIDATION_SCHEMA_LANGUAGE));
         Model dataModel = parseModel(entityDto.getBody(), VALIDATION_SCHEMA_LANGUAGE);
         if (dataValidator.isValidEntry(dataModel)) {
             return action.apply(registryId, entityDto);
         } else {
-            throw new EntryFailedShaclValidationException();
+            throw new EntityFailedShaclValidationException();
         }
     }
 
