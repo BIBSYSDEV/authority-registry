@@ -1,12 +1,5 @@
 package no.bibsys.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -24,19 +17,24 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.tools.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthenticationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
     private final transient Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
 
     public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
@@ -58,16 +56,12 @@ public class AuthenticationService {
         return apiKey;
     }
 
-    public String getApiKeyTableName() {
-        return apiKeyTableName;
-    }
-
     public String createApiKeyTable() {
-        List<AttributeDefinition> attributeDefinitions = new ArrayList<AttributeDefinition>();
+        List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
         attributeDefinitions
                 .add(new AttributeDefinition().withAttributeName("Key").withAttributeType("S"));
 
-        List<KeySchemaElement> keySchema = new ArrayList<KeySchemaElement>();
+        List<KeySchemaElement> keySchema = new ArrayList<>();
         keySchema.add(new KeySchemaElement().withAttributeName("Key").withKeyType(KeyType.HASH));
 
         CreateTableRequest request = new CreateTableRequest();
@@ -98,6 +92,11 @@ public class AuthenticationService {
         }
     }
 
+    public String saveApiKey(ApiKey apiKey) {
+        mapper.save(apiKey, config);
+        return apiKey.getKey();
+    }
+
     public String deleteApiKeyTable() {
 
         Table table = dynamoDB.getTable(apiKeyTableName);
@@ -110,17 +109,12 @@ public class AuthenticationService {
         return table.getTableName();
     }
 
-    public String saveApiKey(ApiKey apiKey) {
-        mapper.save(apiKey, config);
-        return apiKey.getKey();
-    }
 
     public void deleteApiKeyForRegistry(String registryName) {
 
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-        scanExpression.addFilterCondition("Registry",
-                new Condition().withComparisonOperator(ComparisonOperator.EQ)
-                        .withAttributeValueList(new AttributeValue().withS(registryName)));
+        scanExpression.addFilterCondition("Registry", new Condition().withComparisonOperator(ComparisonOperator.EQ)
+            .withAttributeValueList(new AttributeValue().withS(registryName)));
 
         PaginatedScanList<ApiKey> apiKeys = mapper.scan(ApiKey.class, scanExpression, config);
 

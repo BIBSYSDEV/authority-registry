@@ -1,4 +1,4 @@
-@prefix : <__THIS_DOCUMENT__> .
+@prefix : <http://authority-registry/validation/__THIS_DOCUMENT__> .
 @prefix unit: <http://unit.no/entitydata#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -11,4 +11,5 @@
 
 :a rdf:type unit:Concept .
 :a unit:preferredLabel "someLabel"@en .
+:a unit:preferredLabel "norskLabel"@no .
 

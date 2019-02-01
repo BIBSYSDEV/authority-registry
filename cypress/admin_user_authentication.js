@@ -1,4 +1,4 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import {Given, Then, When} from 'cypress-cucumber-preprocessor/steps';
 
 //  Scenario: An API admin user authenticates themselves
 //    Given that there is an API admin user with valid credentials

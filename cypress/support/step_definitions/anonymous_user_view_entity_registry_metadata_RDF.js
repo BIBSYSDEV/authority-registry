@@ -13,24 +13,27 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-When('an anonymous user dereferences the base URI for the registry specifying mediatypes:', () => {
-  cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
+When(
+  'an anonymous user dereferences the base URI for the registry specifying mediatypes:',
+  () => {
+    cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
 
-  cy.get('@registryName').then((registryName) => {
-    const createRegistryEndpoint = '/registry/' + registryName;
-    cy.request({
-      url: createRegistryEndpoint,
-      method: 'GET',
-      headers: {
-        accept: 'application/rdf',
-      },
-    }).then((response) => {
-      cy.wrap(response).as('registryMetadata');
+    cy.get('@registryName').then((registryName) => {
+      const createRegistryEndpoint = '/registry/' + registryName;
+      cy.request({
+        url: createRegistryEndpoint,
+        method: 'GET',
+        headers: {
+          accept: 'application/rdf',
+        },
+      }).then((response) => {
+        cy.wrap(response).as('registryMetadata');
+      });
     });
+
   });
 
-});
-
 Then('they see metadata related to the entity registry regarding:', () => {
-  cy.get('@registryMetadata').then((metadata) => {});
+  cy.get('@registryMetadata').then((metadata) => {
+  });
 });

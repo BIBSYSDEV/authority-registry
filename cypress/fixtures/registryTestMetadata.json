@@ -1,9 +1,8 @@
 {
-	"id": "test",
-	"schema": "testSchema",
-	"metadata": {
-		"name": "nameValue",
-		"registryName": "registryNameValue",
-		"description": "descriptionValue"
-	}
+  "id"      : "test",
+  "metadata": {
+    "name"        : "nameValue",
+    "registryName": "registryNameValue",
+    "description" : "descriptionValue"
+  }
 }

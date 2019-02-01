@@ -26,21 +26,9 @@ When('the anonymous user requests the entity', () => {
   });
 });
 
-Then("anonymous user can view the entity's data in the native database format", () => {
-  cy.get('@response').then((entityData) => {
-    expect(entityData.body.body.name).to.be.equal('nameValue');
-    expect(entityData.body.body.inScheme).to.be.equal('schemeValue');
-    expect(entityData.body.body.type).to.be.equal('typeValue');
-    expect(entityData.body.body.identifier).to.be.equal('identifierValue');
-    expect(entityData.body.body.broader).to.be.equal('broaderValue');
-    expect(entityData.body.body.narrower[0]).to.be.equal('narrowerValue');
-    expect(entityData.body.body.related[0]).to.be.equal('relatedValue');
-    expect(entityData.body.body.seeAlso[0]).to.be.equal('seeAlsoValue');
-    expect(entityData.body.body.preferredLabel[0]['@language']).to.be.equal('en');
-    expect(entityData.body.body.preferredLabel[0]['@value']).to.be.equal('preferredLabelValue');
-    expect(entityData.body.body.alternativeLabel[0]['@language']).to.be.equal('en');
-    expect(entityData.body.body.alternativeLabel[0]['@value']).to.be.equal('alternativeLabelValue');
-    expect(entityData.body.body.definition[0]['@language']).to.be.equal('en');
-    expect(entityData.body.body.definition[0]['@value']).to.be.equal('definitionValue');
+Then("anonymous user can view the entity's data in the native database format",
+  () => {
+    cy.get('@response').then((entityData) => {
+      expect(entityData.body.body['@type']).to.be.equal('unit:Concept');
+    });
   });
-});

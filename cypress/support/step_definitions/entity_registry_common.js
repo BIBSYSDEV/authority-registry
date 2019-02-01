@@ -20,17 +20,20 @@ Given('that there is an existing entity in the registry', () => {
   createTestEntity();
 });
 
-Given('that there is an existing, populated entity registry with a schema', () => {
-  cy.log('creating populated registry');
-  createTestRegistry(true);
-});
+Given('that there is an existing, populated entity registry with a schema',
+  () => {
+    cy.log('creating populated registry');
+    createTestRegistry(true);
+  });
 
-Given('that there is an existing, populated entity registry with a schema and registered registry API keys', () => {
-  cy.log('creating populated registry');
-  createTestRegistry(true);
-});
+Given(
+  'that there is an existing, populated entity registry with a schema and registered registry API keys',
+  () => {
+    cy.log('creating populated registry');
+    createTestRegistry(true);
+  });
 
-function createTestRegistry(createEntity){
+function createTestRegistry(createEntity) {
 
   cy.log('-- entity_registry_common.js --');
   cy.get('@registryName').then(function(registryName) {
@@ -38,8 +41,8 @@ function createTestRegistry(createEntity){
     cy.log('Creating schema with name ' + registryName);
     cy.get('@apiAdminApiKey').then(function(apiKey) {
       // create new test registry metadata
-      let testMetadataFile = 'registryTestMetadata.json';
-      if (createEntity){
+      const testMetadataFile = 'registryTestMetadata.json';
+      if (createEntity) {
 
         cy.createNonEmptyRegistry(registryName, apiKey, testMetadataFile);
       } else {
@@ -52,7 +55,7 @@ function createTestRegistry(createEntity){
 function createTestEntity() {
   cy.get('@registryName').then(function(registryName) {
     cy.get('@apiAdminApiKey').then(function(apiKey) {
-      let dataFile = 'entityTestData.json';
+      const dataFile = 'entityTestData.json';
       cy.createEntity(registryName, apiKey, dataFile);
     });
   });

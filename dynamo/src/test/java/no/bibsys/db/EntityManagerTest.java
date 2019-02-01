@@ -3,13 +3,14 @@ package no.bibsys.db;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
-import org.junit.Test;
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
-import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import org.junit.Test;
 
 public class EntityManagerTest extends LocalDynamoTest {
 
@@ -69,13 +70,14 @@ public class EntityManagerTest extends LocalDynamoTest {
         String tableName = "entityExists";
         Registry registry = sampleData.sampleRegistry(tableName);
         registryManager.createRegistry(registryMetadataTableName, registry);
-
+        updateRegistrySchema(registry);
         Entity entity = sampleData.sampleEntity();
 
         Entity addEntity = entityManager.addEntity(tableName, entity);
         boolean entityExists = entityManager.entityExists(tableName, addEntity.getId());
         assertThat(entityExists, equalTo(true));
     }
+
 
     @Test
     public void entityExists_EntityNotExisting_ReturnsFalse() throws Exception {
@@ -169,13 +171,17 @@ public class EntityManagerTest extends LocalDynamoTest {
     @Test(expected = RegistryNotFoundException.class)
     public void updateEntity_RegistryNotExisting_ThrowsException() throws Exception {
         String tableName = "updateEntityNoRegistry";
-
-        String entityId = "nonExistingEntityId";
-
         Entity entity = sampleData.sampleEntity();
         String updatedLabel = "An updated label";
         entity.getBody().put("label", updatedLabel);
 
         entityManager.updateEntity(tableName, entity);
     }
+
+
+    private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException {
+        registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
+            sampleData.getValidValidationSchemaString());
+    }
+
 }

@@ -1,9 +1,9 @@
 Feature: Test features
-  Background:
-    Given that there is an existing entity registry with a schema
+
 #    And no cleanup
- 
-  Scenario: An anonymous user views an entity as HTML
-    And that there is an entity in the registry
-    When the anonymous user requests the entity specifying an Accept header with value text/html
-    Then anonymous user can view the data in the given format
+
+  Scenario: An API admin user updates an existing, empty entity registry
+    Given that the API admin user has a valid API key for API administration
+    And that there is an existing, empty entity registry with a schema
+    When the API admin user uses the API key and submits a request to update the validation schema of the entity registry
+    Then the entity registry is updated

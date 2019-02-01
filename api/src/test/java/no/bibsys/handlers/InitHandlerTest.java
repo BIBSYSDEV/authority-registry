@@ -28,9 +28,9 @@ import org.mockito.Mockito;
 
 public class InitHandlerTest {
 
-
-    public static final String STAGE = "STAGE";
-    private static final String STACK_NAME_VALUE = "arn:aws:cloudformation:eu-west-1:933878624978:stack/aut-reg-jersey-2-author-service-stack-test/759d2d50-18d0-11e9-8173-061b9f50c2ce";
+    private static final String STAGE = "STAGE";
+    private static final String STACK_NAME_VALUE = "arn:aws:cloudformation:eu-west-1:933878624978:stack/aut-reg"
+        + "-jersey-2-author-service-stack-test/759d2d50-18d0-11e9-8173-061b9f50c2ce";
     private final transient InitHandler initHandler;
 
     private final ObjectMapper jsonParser = Json.mapper();
@@ -46,7 +46,7 @@ public class InitHandlerTest {
             } else if (input.equalsIgnoreCase(EnvironmentVariables.STACK_NAME)) {
                 return STACK_NAME_VALUE;
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_OWNER)) {
-                return "axthosarouris";
+                return "randomOwner";
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_ID)) {
                 return "aut-reg-service";
             } else if (input.equalsIgnoreCase(EnvironmentVariables.SWAGGER_API_VERSION)) {
@@ -59,8 +59,7 @@ public class InitHandlerTest {
 
 
     @Test
-    public void serversNode_serverInfo_ObjectNodeWithCorrectServerInformation()
-        throws IOException, URISyntaxException {
+    public void serversNode_serverInfo_ObjectNodeWithCorrectServerInformation() throws IOException, URISyntaxException {
         ArrayNode serversNode = initHandler.serversNode(serverInfo);
         ObjectNode root = jsonParser.createObjectNode();
         root.set(SERVERS_FIELD, serversNode);
@@ -79,12 +78,10 @@ public class InitHandlerTest {
     public void updateSwaggerHubDocWithServerInfo_swaggerFile_swaggerFileWithServerInfo()
         throws IOException, OpenApiConfigurationException, URISyntaxException {
 
-        OpenAPI openApi = new JaxrsOpenApiContextBuilder()
-            .buildContext(true).read();
+        OpenAPI openApi = new JaxrsOpenApiContextBuilder().buildContext(true).read();
         String openApiString = Json.pretty(openApi);
         ObjectNode openApiRoot = (ObjectNode) jsonParser.readTree(openApiString);
-        ObjectNode updatedApiRoot = initHandler
-            .updateSwaggerHubDocWithServerInfo(openApiRoot, serverInfo);
+        ObjectNode updatedApiRoot = initHandler.updateSwaggerHubDocWithServerInfo(openApiRoot, serverInfo);
         assertThat(updatedApiRoot.has(SERVERS_FIELD), is(equalTo(true)));
         assertThat(updatedApiRoot.get(SERVERS_FIELD).get(0).get(URL_FIELD).asText(),
             is(equalTo(serverInfo.getServerUrl())));

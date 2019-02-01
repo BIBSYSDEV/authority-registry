@@ -1,0 +1,12 @@
+{
+  "@id" : "http://example.org/a",
+  "@type" : "http://example.org/ClassA",
+  "name" : "http://example.org/somename",
+  "@context" : {
+    "name" : {
+      "@id" : "http://example.org/name",
+      "@type" : "@id"
+    },
+    "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  }
+}

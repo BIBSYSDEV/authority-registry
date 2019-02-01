@@ -29,7 +29,7 @@ public class OntologyParserTest extends ModelParser {
     public OntologyParserTest() throws IOException {
         String ontologyString = IoUtils.resourceAsString(
             Paths.get(RESOURCE_FOLDER, ENTITY_ONTOLOGY_TTL));
-        Model ontology = loadData(ontologyString, Lang.TURTLE);
+        Model ontology = parseModel(ontologyString, Lang.TURTLE);
         this.ontologyParser = new OntologyParser(ontology);
     }
 

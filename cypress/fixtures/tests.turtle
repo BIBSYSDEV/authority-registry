@@ -1,8 +1,13 @@
-<http://example.org/vocab#broader>,
-"broaderValue",
-<http://example.org/vocab#definition>,
-"definitionValue"@en,
-<http://example.org/vocab#identifier>,
-"identifierValue",
-<http://example.org/vocab#inScheme>,
-"schemeValue"
+@prefix unit:  <http://unit.no/entitydata#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+
+<http://authority-registry/validation/__THIS_DOCUMENT__a>
+        a                    unit:Concept ;
+        unit:preferredLabel  "someLabel"@en , "norskLabel"@no .
