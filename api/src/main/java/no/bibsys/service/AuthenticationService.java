@@ -56,10 +56,6 @@ public class AuthenticationService {
         return apiKey;
     }
 
-    public String getApiKeyTableName() {
-        return apiKeyTableName;
-    }
-
     public String createApiKeyTable() {
         List<AttributeDefinition> attributeDefinitions = new ArrayList<>();
         attributeDefinitions

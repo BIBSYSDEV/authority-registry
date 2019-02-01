@@ -12,21 +12,18 @@ import no.bibsys.web.model.EntityDto;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 
-
 public class EntityService extends ModelParser {
 
-    public static final Lang VALIDATION_SCHEMA_LANGUAGE = Lang.JSONLD;
-    public static final String VALIDATION_SCHEMA_NOT_FOUND = "Validation schema not found for registry: %s";
+    private static final Lang VALIDATION_SCHEMA_LANGUAGE = Lang.JSONLD;
+    private static final String VALIDATION_SCHEMA_NOT_FOUND = "Validation schema not found for registry: %s";
     private final transient EntityManager entityManager;
     private final transient RegistryService registryService;
-
 
     public EntityService(EntityManager entityManager, RegistryService registryService) {
         super();
         this.entityManager = entityManager;
         this.registryService = registryService;
     }
-
 
     public EntityDto addEntity(String registryId, EntityDto entityDto)
         throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
@@ -36,7 +33,6 @@ public class EntityService extends ModelParser {
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
         throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
         return addUpdateEntity(registryId, entityDto, this::updateEntityInRegistry);
-
     }
 
     public EntityDto getEntity(String registryId, String entityId) {
@@ -48,7 +44,6 @@ public class EntityService extends ModelParser {
         entityManager.deleteEntity(registryId, entityId);
     }
 
-
     private EntityDto addUpdateEntity(String registryId, EntityDto entityDto,
         BiFunction<String, EntityDto, EntityDto> action)
         throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
@@ -57,9 +52,7 @@ public class EntityService extends ModelParser {
             throw new ValidationSchemaNotFoundException(String.format(VALIDATION_SCHEMA_NOT_FOUND, registryId));
         }
         return validateEntity(registryId, entityDto, validationSchema, action);
-
     }
-
 
     private EntityDto validateEntity(String registryId, EntityDto entityDto, String validationSchema,
         BiFunction<String, EntityDto, EntityDto> action) throws EntityFailedShaclValidationException {
@@ -81,6 +74,4 @@ public class EntityService extends ModelParser {
         Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(entityDto));
         return EntityConverter.toEntityDto(entity);
     }
-
-
 }

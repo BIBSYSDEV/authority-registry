@@ -49,11 +49,11 @@ public class InitHandler extends ResourceHandler {
 
     public static final String URL_FIELD = "url";
     public static final String SERVERS_FIELD = "servers";
-    public static final String SUCCESS_MESSAGE = "Success initializing resources.";
-    public static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub " + "specification";
-    public static final String UPDATING_URL_LOGGER_DEBUG = "Could not update Static URL settings";
-    public static final String CHANGE_DEBUG_MESSAGE = "Change:{}";
-    public static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
+    private static final String SUCCESS_MESSAGE = "Success initializing resources.";
+    private static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub specification";
+    private static final String UPDATING_URL_LOGGER_DEBUG = "Could not update Static URL settings";
+    private static final String CHANGE_DEBUG_MESSAGE = "Change:{}";
+    private static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
 
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
