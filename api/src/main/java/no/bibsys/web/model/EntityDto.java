@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import javax.xml.bind.DatatypeConverter;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import no.bibsys.entitydata.validation.ModelParser;
 import org.apache.jena.rdf.model.Model;
@@ -33,7 +32,6 @@ public class EntityDto extends ModelParser {
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
-
     }
 
     @JsonRawValue
@@ -46,24 +44,20 @@ public class EntityDto extends ModelParser {
         this.body = body;
     }
 
-    public void validate() {
-        // TODO: validate body
-    }
-
     @Override
     public int hashCode() {
         int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getCreated() != null ? getCreated().hashCode() : 0);
         result = 31 * result + (getModified() != null ? getModified().hashCode() : 0);
         result = 31 * result + (getPath() != null ? getPath().hashCode() : 0);
-
         return result;
     }
 
     /**
      * Checks for equality according to the values of the fields. The checked fields are: {@code id}, {@code created},
-     * {@code modified},  and {@code body}. The {@code body} field is parsed into model and the two bodies are equal
-     * if their respective models are isomorphic.
+     * {@code modified},  and {@code body}. The {@code body} field is parsed into model and the two bodies are equal if
+     * their respective models are isomorphic.
+     *
      * @param o The object to compare with
      */
     @Override
@@ -92,7 +86,6 @@ public class EntityDto extends ModelParser {
             // one null and the other is not
             return false;
         }
-
     }
 
     @Override
@@ -134,5 +127,4 @@ public class EntityDto extends ModelParser {
     public void setPath(String path) {
         this.path = path;
     }
-
 }
