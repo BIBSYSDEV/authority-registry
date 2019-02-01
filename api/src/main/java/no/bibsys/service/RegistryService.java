@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import javax.ws.rs.core.Response.Status;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -15,15 +14,16 @@ import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
 
 public class RegistryService {
 
+    public static final String UNKNOWN_STATUS_FOR_REGISTRY = "Unknown Status for registry";
     private final transient RegistryManager registryManager;
     private final transient AuthenticationService authenticationService;
     private final transient String registryMetadataTableName;
-
 
     public RegistryService(RegistryManager registryManager, AuthenticationService authenticationService,
         Environment environmentReader) {
@@ -74,39 +74,33 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
-    public void emptyRegistry(String registryId) {
-        registryManager.emptyRegistry(registryId);
-
-    }
-
-    public Status validateRegistryExists(String registryName) {
+    public void validateRegistryExists(String registryName) throws UnknownStatusException {
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:
-                return Status.CREATED;
+                return;
             case CREATING:
             case UPDATING:
                 throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
             case DELETING:
             case NOT_FOUND:
-            default:
                 throw new RegistryNotFoundException(registryName);
+            default:
+                throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
+
         }
     }
 
     public String replaceApiKey(String registryName, String oldApiKey) {
-        
+
         ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
         if (Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {
             throw new IllegalArgumentException(String.format("Wrong apikey supplied for registry %s", registryName));
         }
-        
+
         Registry registry = registryManager.getRegistry(registryMetadataTableName, registryName);
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         authenticationService.deleteApiKeyForRegistry(registryName);
-        String savedApiKey = authenticationService.saveApiKey(apiKey);
-
-        return savedApiKey;
+        return authenticationService.saveApiKey(apiKey);
     }
-    
 }
