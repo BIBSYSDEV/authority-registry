@@ -102,7 +102,8 @@ public class DatabaseResource {
         CustomMediaType.APPLICATION_JSON_LD, CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_RDF_XML,
         CustomMediaType.APPLICATION_TURTLE})
     public Response getRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY, schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         RegistryDto registryDto = registryService.getRegistry(registryName);
         return Response.ok(registryDto).build();
@@ -115,7 +116,8 @@ public class DatabaseResource {
     public Response updateRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation = RegistryDto.class))) RegistryDto registryDto) {
+        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
+            RegistryDto.class))) RegistryDto registryDto) {
 
         RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
         return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId())).build();

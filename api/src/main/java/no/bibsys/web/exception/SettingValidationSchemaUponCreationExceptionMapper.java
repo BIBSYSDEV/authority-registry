@@ -12,6 +12,6 @@ public class SettingValidationSchemaUponCreationExceptionMapper implements
 
     @Override
     public Response toResponse(SettingValidationSchemaUponCreationException exception) {
-        return Response.status(Status.BAD_REQUEST).entity(exception.getMessage()).build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

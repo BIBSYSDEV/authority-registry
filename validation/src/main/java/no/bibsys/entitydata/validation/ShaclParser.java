@@ -46,14 +46,14 @@ public class ShaclParser {
 
     public Set<Resource> resourceObjectNodes(Property targetClassProperty) {
         List<RDFNode> objectNodes = model.listObjectsOfProperty(targetClassProperty).toList();
-        if (areRDFNodesResources(objectNodes)) {
+        if (areRdfNodesResources(objectNodes)) {
             return objectNodes.stream().map(rdfNode -> (Resource) rdfNode).collect(Collectors.toSet());
         } else {
             return Collections.emptySet();
         }
     }
 
-    private boolean areRDFNodesResources(List<RDFNode> rdfNodes) {
+    private boolean areRdfNodesResources(List<RDFNode> rdfNodes) {
         for (RDFNode node : rdfNodes) {
             if (!node.isResource()) {
                 return false;
