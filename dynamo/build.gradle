@@ -21,11 +21,11 @@ dependencies {
 
     //slf4j logging
     implementation('org.slf4j:slf4j-api:1.7.25')
-    testImplementation("com.amazonaws:DynamoDBLocal:1.11.+")
+    testImplementation("com.amazonaws:DynamoDBLocal:1.11.119")
 
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
-    testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.+")
+    testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.119")
 
     implementation('org.apache.jena:jena-core:3.9.0')
     implementation('org.apache.jena:jena-arq:3.9.0')

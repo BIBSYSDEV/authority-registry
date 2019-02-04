@@ -50,11 +50,11 @@ dependencies {
     implementation("org.apache.jena:jena-arq:3.9.0")
 	
     // for testing
-    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.+")
+    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.119")
 
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
-    testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.+")
+    testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.119")
 
     testImplementation("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
