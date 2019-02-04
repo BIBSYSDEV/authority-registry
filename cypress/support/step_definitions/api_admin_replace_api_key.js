@@ -7,26 +7,28 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-When('the API admin user requests a new API key to replace the current valid API key', () => {
-  cy.log('-- api_admin_replace_api_key.js --');
-  cy.get('@registryName').then((registryName) => {
-    cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
-      cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
-        let url = '/registry/' + registryName + '/apikey';
-        cy.request({
-          url: url,
-          method: 'PUT',
-          body: registryAdminApiKey,
-          headers: {
-            'api-key': apiAdminApiKey,
-          },
-        }).then((response) => {
-          cy.wrap(response.body).as('newApiKey');
+When(
+  'the API admin user requests a new API key to replace the current valid API key',
+  () => {
+    cy.log('-- api_admin_replace_api_key.js --');
+    cy.get('@registryName').then((registryName) => {
+      cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
+        cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
+          let url = '/registry/' + registryName + '/apikey';
+          cy.request({
+            url: url,
+            method: 'PUT',
+            body: registryAdminApiKey,
+            headers: {
+              'api-key': apiAdminApiKey,
+            },
+          }).then((response) => {
+            cy.wrap(response.body).as('newApiKey');
+          });
         });
       });
     });
   });
-});
 
 Then('the API key is updated', () => {
   cy.get('@registryName').then((registryName) => {

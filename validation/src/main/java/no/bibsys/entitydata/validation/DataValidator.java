@@ -7,6 +7,9 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.topbraid.shacl.validation.ValidationUtil;
 
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.utils.ModelParser;
+
 public class DataValidator extends ModelParser {
 
     private static final Property SH_CONFORMS = ResourceFactory
@@ -24,9 +27,23 @@ public class DataValidator extends ModelParser {
         return shaclValidation(dataModel);
     }
 
+    public boolean isValidEntry(Model dataModel) throws EntityFailedShaclValidationException {
+        if (!validationResult(dataModel)) {
+            throw new EntityFailedShaclValidationException();
+        } else {
+            return true;
+        }
+
+    }
+
     public boolean validationResult(Model dataModel) {
-        Model report = shaclValidation(dataModel);
-        return parseReportToBoolean(report);
+        if (dataModel.isEmpty()) {
+            return false;
+        } else {
+            Model report = shaclValidation(dataModel);
+            return parseReportToBoolean(report);
+        }
+
     }
 
     private boolean parseReportToBoolean(Model report) {

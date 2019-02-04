@@ -1,12 +1,9 @@
 {
-	"id": "test",
-	"metadata": {
-		"@context": {
-			"@vocab": "http://example.org/vocab#"
-		},
-		"name": "nameValue",
-		"registryName": "registryNameValue",
-		"description": "descriptionValue"
-	}
-}
 
+  "id"      : "test",
+  "metadata": {
+    "name"        : "nameValue",
+    "registryName": "registryNameValue",
+    "description" : "descriptionValue"
+  }
+}

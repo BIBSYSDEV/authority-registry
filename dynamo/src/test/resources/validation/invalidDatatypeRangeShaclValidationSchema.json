@@ -1,0 +1,36 @@
+{
+  "@graph": [
+    {
+      "@id": "_:b0",
+      "datatype": "rdf:notValid",
+      "path": "http://unit.no/entitydata#preferredLabel"
+    },
+    {
+      "@id": "http://unit.no/entitydata#nodeshape",
+      "@type": "sh:NodeShape",
+      "property": "_:b0",
+      "targetClass": "http://unit.no/entitydata#ConceptScheme"
+    }
+  ],
+  "@context": {
+    "datatype": {
+      "@id": "http://www.w3.org/ns/shacl#datatype",
+      "@type": "@id"
+    },
+    "path": {
+      "@id": "http://www.w3.org/ns/shacl#path",
+      "@type": "@id"
+    },
+    "property": {
+      "@id": "http://www.w3.org/ns/shacl#property",
+      "@type": "@id"
+    },
+    "targetClass": {
+      "@id": "http://www.w3.org/ns/shacl#targetClass",
+      "@type": "@id"
+    },
+    "@vocab": "http://unit.no/entitydata#",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  }
+}

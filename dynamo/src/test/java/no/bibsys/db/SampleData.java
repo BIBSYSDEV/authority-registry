@@ -2,27 +2,40 @@ package no.bibsys.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.nio.file.Paths;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.JsonUtils;
 
 
 public class SampleData {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    public static final String VALIDATION_FOLDER = "validation";
+    public static final String SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
+    private final transient ObjectMapper mapper = JsonUtils.newJsonParser();
+    private final transient String validValidationSchemaString;
+    private final transient String invalidValidationSchemaString;
 
-    
-    public SampleData() {}
+    public SampleData() throws IOException {
+        validValidationSchemaString = IoUtils.resourceAsString(
+            Paths.get(VALIDATION_FOLDER, SHACL_VALIDATION_SCHEMA_JSON));
+
+        invalidValidationSchemaString = IoUtils
+            .resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
+
+    }
 
     public Registry sampleRegistry(String tableName) {
         Registry registry = new Registry();
         registry.setId(tableName);
-        
-        
         ObjectNode metadata = mapper.createObjectNode();
         metadata.put("label", "label");
 
         registry.setMetadata(metadata);
-        registry.setSchema("Schema");
+
 
         return registry;
     }
@@ -35,6 +48,14 @@ public class SampleData {
         entity.setBody(body);
         
         return entity;
+    }
+
+    public String getValidValidationSchemaString() {
+        return validValidationSchemaString;
+    }
+
+    public String getInvalidValidationSchemaString() {
+        return invalidValidationSchemaString;
     }
 
 }

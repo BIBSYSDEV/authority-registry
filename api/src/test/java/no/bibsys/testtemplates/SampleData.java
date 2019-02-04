@@ -1,75 +1,71 @@
 package no.bibsys.testtemplates;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.jena.riot.Lang;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import no.bibsys.aws.tools.JsonUtils;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 
 
 public class SampleData {
 
-    public SampleData() {}
+    public static final String VALIDATION_FOLDER = "validation";
+    public static final String VALID_GRAPH_JSON = "validGraph.json";
+    public static final String INVALID_GRAPH_JSON = "invalidGraph.json";
 
-    public EntityDto sampleEntityDto() throws JsonProcessingException {
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        ObjectNode body = mapper.createObjectNode();
-
-        ObjectNode context = body.putObject("@context");
-        context.put("@vocab", "http://example.org/vocab#");
-        
-        body.put("@id","http://example.org/fakevoc/c00000");
-        body.put("@type", "bsa:Concept");
-        
-        ObjectNode alternativeLabel = body.putObject("alternativeLabel");
-        alternativeLabel.put("@language", "no");
-        alternativeLabel.put("@value", "Animalia");
-        body.put("inScheme", "http://example.org/fakevoc");
-        ArrayNode narrowerArray = body.putArray("narrower");
-        narrowerArray.add("http://example.org/fakevoc/c00003");
-        narrowerArray.add("http://example.org/fakevoc/c00001");
-        ArrayNode prefLabel = body.putArray("preferredLabel");
-        ObjectNode pref1 = prefLabel.addObject();
-        pref1.put("@language", "no");
-        pref1.put("@value", "Dyr");
-        ObjectNode pref2 = prefLabel.addObject();
-        pref2.put("@language", "en");
-        pref2.put("@value", "Animals");
-        
-        EntityDto entityDto = new EntityDto();
-
-        String id = "sampleId";
-        entityDto.setId(id);
-        entityDto.setBody(mapper.writeValueAsString(body));
-        
-        return entityDto;
+    public SampleData() {
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) throws JsonProcessingException {
-        
+
+    public EntityDto sampleEntityDtoWithValidData() throws IOException {
+        return sampleEntityDto(VALID_GRAPH_JSON);
+    }
+
+    public EntityDto sampleEntityDto() throws IOException {
+
+        return sampleEntityDtoWithValidData();
+    }
+
+    private EntityDto sampleEntityDto(String bodyFilename) throws IOException {
+        String id = "sampleId";
+        EntityDto entityDto = new EntityDto();
+        entityDto.setId(id);
+        String body = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
+        new ModelParser().parseModel(body, Lang.JSONLD);
+
+        entityDto.setBody(body);
+        return entityDto;
+
+    }
+
+    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
+        return sampleEntityDto(INVALID_GRAPH_JSON);
+    }
+
+
+    public RegistryDto sampleRegistryDto(String registryName) throws IOException {
+
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
 
-        ObjectMapper mapper = JsonUtils.newJsonParser();
-        Map<String,Object> metadata = (Map<String, Object>)mapper.convertValue(
-            mapper.createObjectNode(), Map.class);
-        Map<String, String> vocabMap = new ConcurrentHashMap<String, String>();
-        vocabMap.put("@vocab", "http://example.org/vocab#");
-        metadata.put("@context", vocabMap);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> metadata = (Map<String, Object>) mapper
+            .convertValue(mapper.createObjectNode(), Map.class);
 
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
         metadata.put("Publisher", "Publisher value");
-        
+
         registryDto.setMetadata(metadata);
+
 
         return registryDto;
     }

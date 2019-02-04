@@ -1,0 +1,24 @@
+@prefix unit: <http://unit.no/entitydata#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+unit:nodeshape a sh:NodeShape ;
+ sh:targetClass unit:Concept ;
+ sh:property [
+    sh:path unit:preferredLabel ;
+    sh:datatype rdf:langString
+  ] .
+
+
+unit:validShape a sh:NodeShape ;
+  sh:targetSubjectsOf rdf:type ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:in (unit:Concept unit:ConceptScheme) ;
+    sh:minCount 1
+  ].
+
+
+
+
+

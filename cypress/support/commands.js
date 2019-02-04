@@ -14,6 +14,7 @@ const SEE_OTHER = 303;
 
 const RECURSION_COUNT = 5;
 const RECURSION_DELAY = 2000; // milliseconds
+const VALID_SHACL_VALIDATION_FILE = 'validShaclValidationSchema.json';
 
 Cypress.Commands.add('registryReady', (registryName) => {
   waitUntilRegistryIsReady(registryName, 0);
@@ -23,19 +24,23 @@ Cypress.Commands.add('deleteRegistry', (registryName, apiKey) => {
   deleteRegistry(registryName, apiKey);
 });
 
-Cypress.Commands.add('createEmptyRegistry', (registryName, apiKey, metadataFile) => {
-  createRegistry(registryName, apiKey, metadataFile, false, 0);
-});
+Cypress.Commands.add('createEmptyRegistry',
+  (registryName, apiKey, metadataFile) => {
+    createRegistry(registryName, apiKey, metadataFile,
+      VALID_SHACL_VALIDATION_FILE, false, 0);
+  });
 
-Cypress.Commands.add('createNonEmptyRegistry', (registryName, apiKey, metadataFile) => {
-  createRegistry(registryName, apiKey, metadataFile, true, 0);
-});
+Cypress.Commands.add('createNonEmptyRegistry',
+  (registryName, apiKey, metadataFile) => {
+    createRegistry(registryName, apiKey, metadataFile,
+      VALID_SHACL_VALIDATION_FILE, true, 0);
+  });
 
 Cypress.Commands.add('createEntity', (registryName, apiKey, dataFile) => {
   createEntity(registryName, apiKey, dataFile);
 });
 
-function waitUntilRegistryIsReady(registryName, count){
+function waitUntilRegistryIsReady(registryName, count) {
 
   const statusUrl = '/registry/' + registryName + '/status';
   cy.log('waiting for registry to be ready...');
@@ -43,9 +48,9 @@ function waitUntilRegistryIsReady(registryName, count){
     url: statusUrl,
     failOnStatusCode: false,
   }).then(function(response) {
-    if (response.status === SEE_OTHER){
+    if (response.status === SEE_OTHER) {
       const newCount = count + 1;
-      if (newCount < RECURSION_COUNT){
+      if (newCount < RECURSION_COUNT) {
         cy.wait(RECURSION_DELAY);
         waitUntilRegistryIsReady(registryName, newCount);
       }
@@ -54,7 +59,8 @@ function waitUntilRegistryIsReady(registryName, count){
 }
 
 // create registry
-function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity, count) {
+function createRegistry(registryName, apiAdminApiKey, metadataFile,
+  validationSchemaFile, createEntity, count) {
 
   cy.log('creating registry...');
 
@@ -77,9 +83,10 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
       }).then((response) => {
         if (response.status === SERVICE_UNAVAILABLE) {
           const newCount = count + 1;
-          if (newCount < RECURSION_COUNT){
+          if (newCount < RECURSION_COUNT) {
             cy.wait(RECURSION_DELAY);
-            createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity, newCount);
+            createRegistry(registryName, apiAdminApiKey, metadataFile,
+              createEntity, newCount);
           }
         } else {
           cy.log('api-key: ' + response.body.apiKey);
@@ -87,7 +94,10 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
 
           cy.registryReady(registryName);
 
-          if (createEntity){
+          setValidationSchema(registryName, apiAdminApiKey,
+            validationSchemaFile);
+
+          if (createEntity) {
             cy.log('creating test entity');
             cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
               const testDataFile = 'entityTestData.json';
@@ -97,6 +107,26 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile, createEntity
         }
       });
     });
+}
+
+// add validation schema
+function setValidationSchema(registryName, apiAdminApiKey,
+  validationSchemaFile) {
+  cy.log('setting validation schema for registry..');
+  const putSchemaUrl = '/registry/' + registryName + '/schema';
+  cy.fixture(validationSchemaFile).then((validationSchema) => {
+    cy.request({
+      url: putSchemaUrl,
+      method: 'PUT',
+      body: validationSchema,
+      headers: {
+        'api-key': apiAdminApiKey,
+        accept: 'application/json',
+        'content-type': 'application/json',
+      },
+    });
+  });
+
 }
 
 // create entity in existing registry
@@ -120,7 +150,7 @@ function createEntity(registryName, apiKey, dataFile) {
   });
 }
 
-function deleteRegistry(registryName, apiKey){
+function deleteRegistry(registryName, apiKey) {
   cy.log('deleting registry...');
 
   cy.log('api-key = ' + apiKey);

@@ -1,11 +1,5 @@
 package no.bibsys.db;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -21,9 +15,12 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-
+import java.util.ArrayList;
+import java.util.List;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class TableDriver {
 
@@ -78,8 +75,8 @@ public final class TableDriver {
 
     /**
      * Return number of items in table.
-     * 
-     * @param tableName
+     *
+     * @param tableName The name of the table
      * @return number of items
      */
 

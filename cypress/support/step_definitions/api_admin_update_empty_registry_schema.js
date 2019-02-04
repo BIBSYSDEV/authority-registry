@@ -6,40 +6,39 @@
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
 
-When('the API admin user uses the API key and submits a request to update the validation schema of the entity registry', () => {
-  cy.log('-- api_admin_update_empty_registry_schema.js --');
-  cy.get('@registryName').then((registryName) => {
-    cy.get('@apiAdminApiKey').then((apiKey) => {
+When(
+  'the API admin user uses the API key and submits a request to update the validation schema of the entity registry',
+  () => {
+    cy.log('-- api_admin_update_empty_registry_schema.js --');
+    cy.get('@registryName').then((registryName) => {
+      cy.get('@apiAdminApiKey').then((apiKey) => {
+        let registryGetUrl = '/registry/' + registryName + '/schema';
+        cy.registryReady(registryName);
+        cy.request({
+          url: registryGetUrl,
+          method: 'GET',
+          headers: {
+            'api-key': apiKey,
+          },
+        }).then((response) => {
+          cy.fixture('validShaclValidationSchema.json').then(
+            schemaObject => {
+              const responseSchemaObj = JSON.parse(response.body.schema);
+              expect(responseSchemaObj).to.deep.equal(schemaObject);
+            });
+        });
 
-      let registryGetUrl = '/registry/' + registryName + '/schema';
-      cy.registryReady(registryName);
-      cy.request({
-        url: registryGetUrl,
-        method: 'GET',
-        headers: {
-          'api-key': apiKey,
-        },
-      }).then((response) => {
-        expect(response.body.schema).to.equal(null);
-      });
+        let registryUpdateUrl = '/registry/' + registryName + '/schema';
+        cy.fixture('alternativeValidShaclValidationSchema.json').then(
+          altSchemaObj => {
+            const schemaString = JSON.stringify(altSchemaObj);
+            updateSchema(registryUpdateUrl, apiKey, schemaString);
 
-      let registryUpdateUrl = '/registry/' + registryName + '/schema';
-      let updatedSchema = 'updatedTestSchema';
-      cy.request({
-        url: registryUpdateUrl,
-        method: 'PUT',
-        headers: {
-          'api-key': apiKey,
-          'content-type': 'application/json',
-        },
-        body: updatedSchema,
-        failOnStatusCode: false,
-      }).then((response) => {
-        cy.wrap(response).as('updateSchemaResponse');
+         });
+
       });
     });
   });
-});
 
 Then('the entity registry is updated', () => {
   cy.get('@updateSchemaResponse').then((response) => {
@@ -56,8 +55,31 @@ Then('the entity registry is updated', () => {
           'api-key': apiKey,
         },
       }).then((response) => {
-        expect(response.body.schema).to.equal('updatedTestSchema');
+        cy.fixture('alternativeValidShaclValidationSchema.json')
+          .then(
+            altSchemaObj => {
+              const responseSchemaObj = JSON.parse(response.body.schema);
+              expect(responseSchemaObj).to.deep.equal(altSchemaObj);
+            });
+
       });
     });
   });
 });
+
+function updateSchema(registryUpdateUrl, apiKey, schemaString) {
+
+  cy.request({
+    url: registryUpdateUrl,
+    method: 'PUT',
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json',
+    },
+    body: schemaString,
+    failOnStatusCode: false,
+  }).then((response) => {
+    cy.wrap(response).as('updateSchemaResponse');
+  });
+
+}

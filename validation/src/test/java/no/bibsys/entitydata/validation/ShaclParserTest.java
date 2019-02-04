@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
-import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
-import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -23,6 +21,11 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
+
 public class ShaclParserTest extends ModelParser {
 
     private static final String TEST_RESOURCES_FOLDER = "testQueries";
@@ -34,7 +37,7 @@ public class ShaclParserTest extends ModelParser {
     public ShaclParserTest() throws IOException {
         String shaclModelString = IoUtils
             .resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_SHACL_SCHEMA_TTL));
-        Model model = loadData(shaclModelString, Lang.TURTLE);
+        Model model = parseModel(shaclModelString, Lang.TURTLE);
         this.shaclParser = new ShaclParser(model);
     }
 
@@ -79,9 +82,8 @@ public class ShaclParserTest extends ModelParser {
     private void checkThatPropertyUrisAreSubjectsInGeneratedModel(Model domainStatements) {
         Set<Resource> propertyUris = domainStatements.listSubjects().toSet();
         Set<Resource> expectedPropertyUris = shaclParser.getModel()
-            .listObjectsOfProperty(ShaclConstants.PATH)
-            .toSet().stream().map(node -> (Resource) node)
-            .filter(RdfConstants::isNotRDFType)
+            .listObjectsOfProperty(ShaclConstants.PATH).toSet().stream().map(node -> (Resource) node)
+            .filter(RdfConstants::isNotRdfType)
             .collect(Collectors.toSet());
 
         assertThat(propertyUris, is(equalTo(expectedPropertyUris)));

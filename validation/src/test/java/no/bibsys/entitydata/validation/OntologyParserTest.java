@@ -8,8 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
-import no.bibsys.entitydata.validation.rdfutils.RdfsConstants;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -20,6 +19,10 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
+import no.bibsys.entitydata.validation.rdfutils.RdfsConstants;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
+
 public class OntologyParserTest extends ModelParser {
 
     private static final String RESOURCE_FOLDER = "validation";
@@ -29,7 +32,7 @@ public class OntologyParserTest extends ModelParser {
     public OntologyParserTest() throws IOException {
         String ontologyString = IoUtils.resourceAsString(
             Paths.get(RESOURCE_FOLDER, ENTITY_ONTOLOGY_TTL));
-        Model ontology = loadData(ontologyString, Lang.TURTLE);
+        Model ontology = parseModel(ontologyString, Lang.TURTLE);
         this.ontologyParser = new OntologyParser(ontology);
     }
 

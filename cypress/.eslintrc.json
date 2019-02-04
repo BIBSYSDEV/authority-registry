@@ -1,16 +1,16 @@
 {
-  "extends": "strongloop",
+  "extends"      : "strongloop",
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module"
+    "sourceType" : "module"
   },
-  "plugins": [
+  "plugins"      : [
     "cypress"
   ],
-  "env": {
+  "env"          : {
     "cypress/globals": true
   },
-  "rules": {
+  "rules"        : {
     "max-len": ["error", 180]
   }
 }

@@ -1,11 +1,15 @@
-"http://example.org/vocab#definition",
-"value" : "definitionValue",
-"http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-"type" : "uri",
-"value" : "http://example.org/vocab#entity",
-"type" : "literal",
-"value" : "typeValue",
-"http://example.org/vocab#related",
-"value" : "relatedValue",
-"http://example.org/vocab#inScheme",
-"value" : "schemeValue"
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:unit="http://unit.no/entitydata#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:sh="http://www.w3.org/ns/shacl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:vann="http://purl.org/vocab/vann/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <unit:Concept rdf:about="http://authority-registry/validation/__THIS_DOCUMENT__a">
+    <unit:preferredLabel xml:lang="en">someLabel</unit:preferredLabel>
+    <unit:preferredLabel xml:lang="no">norskLabel</unit:preferredLabel>
+  </unit:Concept>
+</rdf:RDF>

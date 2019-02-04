@@ -5,7 +5,7 @@ import org.apache.jena.vocabulary.RDF;
 
 public class RdfConstants {
 
-    public static boolean isNotRDFType(Resource resource) {
+    public static boolean isNotRdfType(Resource resource) {
         return !resource.equals(RDF.type);
     }
 }
