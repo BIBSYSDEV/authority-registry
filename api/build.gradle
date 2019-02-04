@@ -39,7 +39,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1")
 
-    implementation("no.bibsys.aws:aws-build-tools:1.0.4")
+    implementation("no.bibsys.aws:aws-build-tools:1.0.5")
 
     // Handlebars
     implementation("com.github.jknack:handlebars:4.1.2")
