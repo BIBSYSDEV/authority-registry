@@ -63,7 +63,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public static final String VALIDATION_FOLDER = "validation";
     public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     public static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
-    private static final String ENTITY_EXAMPLE_FILE = "src/resources/testdata/example_entity.%s";
+    private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/testdata/example_entity.%s";
     public static String REGISTRY_PATH = "/registry";
     private static String validValidationSchema;
     private final SampleData sampleData = new SampleData();
@@ -491,6 +491,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void getEntity_applicationRdf_entityAsRdf() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
         Response entityAsRdf = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF);
@@ -509,6 +510,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void getEntity_applicationNtriples_entityAsNtriples() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
         Response entityAsTriples = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_N_TRIPLES);
@@ -524,27 +526,10 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     @Test
-    public void getEntity_applicationRdfXml_entityAsRdfXml() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        createRegistry(registryName, apiAdminKey);
-        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
-
-        Response entityAsRdfXml = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_RDF_XML);
-        String rdfXml = entityAsRdfXml.readEntity(String.class);
-
-        Lang lang = Lang.RDFXML;
-        ModelParser parser = new ModelParser();
-        Model actualModel = parser.parseModel(new ByteArrayInputStream(rdfXml.getBytes(StandardCharsets.UTF_8)), lang);
-        String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
-        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
-
-        assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
-    }
-
-    @Test
     public void getEntity_applicationTurtle_entityAsTurtle() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
         Response entityAsTurtle = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_TURTLE);
