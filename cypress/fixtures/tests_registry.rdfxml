@@ -1,1 +1,17 @@
-<j.0:registryName>registryNameValue</j.0:registryName>,<j.0:name>nameValue</j.0:name>,<j.0:description>descriptionValue</j.0:description>
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:unit="http://unit.no/entitydata#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:sh="http://www.w3.org/ns/shacl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:vann="http://purl.org/vocab/vann/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <rdf:Description rdf:about="http://authority-registry/validation/__THIS_DOCUMENT__a">
+    <unit:registryName>registryNameValue</unit:registryName>
+    <unit:name>nameValue</unit:name>
+    <unit:description>descriptionValue</unit:description>
+  </rdf:Description>
+</rdf:RDF>

@@ -31,15 +31,3 @@ When(
     });
   });
 
-Then('they see metadata related to the entity registry regarding:', () => {
-  cy.get('@registryName').then((registryName) => {
-    cy.visit('/registry/' + registryName);
-
-    cy.contains(registryName);
-
-    cy.get('li[data-automation-id=name]').contains('nameValue');
-    cy.get('li[data-automation-id=registryName]').contains('registryNameValue');
-    cy.get('li[data-automation-id=description]').contains('descriptionValue');
-
-  });
-});
