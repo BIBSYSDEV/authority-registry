@@ -1,4 +1,4 @@
-package no.bibsys.entitydata.validation.exceptions;
+package no.bibsys.utils.exception;
 
 import org.apache.jena.riot.RiotException;
 

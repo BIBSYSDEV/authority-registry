@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
-import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
-import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -22,6 +20,11 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
+
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 
 public class ShaclParserTest extends ModelParser {
 

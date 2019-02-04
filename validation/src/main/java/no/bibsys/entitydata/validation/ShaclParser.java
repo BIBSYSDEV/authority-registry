@@ -6,9 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
-import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -18,6 +16,10 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
+import no.bibsys.utils.IoUtils;
 
 public class ShaclParser {
 
