@@ -10,18 +10,17 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
-import no.bibsys.aws.swaggerhub.SwaggerDriver;
-import no.bibsys.aws.swaggerhub.SwaggerHubInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
-import org.apache.http.client.methods.HttpDelete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DestroyHandler extends ResourceHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DestroyHandler.class);
+    private static final String SUCESS_RESPONSE = "Destroying %s";
+    private static final String DELETING_STACK_ERROR_MESSAGE = "Could not delete static URL for stack {}";
 
     private final transient AuthenticationService authenticationService;
 
@@ -41,8 +40,8 @@ public class DestroyHandler extends ResourceHandler {
         throws IOException, URISyntaxException {
         String tableName = authenticationService.deleteApiKeyTable();
         deleteStaticUrl();
-        deleteSwaggerHubDoc();
-        return new SimpleResponse(String.format("Destroying %s", tableName));
+        swaggerHubUpdater.deleteSwaggerHubApi();
+        return new SimpleResponse(String.format(SUCESS_RESPONSE, tableName));
     }
 
     private void deleteStaticUrl() {
@@ -53,15 +52,9 @@ public class DestroyHandler extends ResourceHandler {
         if (result.isPresent()) {
             logger.info(result.get().toString());
         } else {
-            logger.warn("Could not delete static URL for stack {}", stackName);
+            logger.warn(DELETING_STACK_ERROR_MESSAGE, stackName);
         }
     }
 
-    private void deleteSwaggerHubDoc() throws IOException, URISyntaxException {
-        SwaggerHubInfo swaggerHubInfo = new SwaggerHubInfo(apiId, apiVersion, swaggerOrganization);
-        SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
-        String apiKey = swaggerHubInfo.getSwaggerAuth();
-        HttpDelete deleteRequest = swaggerDriver.createDeleteVersionRequest(apiKey);
-        swaggerDriver.executeDelete(deleteRequest);
-    }
+
 }

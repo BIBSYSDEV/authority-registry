@@ -15,11 +15,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import no.bibsys.EnvironmentVariables;
-import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.tools.Environment;
-import no.bibsys.handlers.utils.SwaggerHubUpdater;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
 import org.slf4j.Logger;
@@ -35,8 +33,6 @@ public class InitHandler extends ResourceHandler {
 
     private final transient AuthenticationService authenticationService;
     private final transient String certificateArn;
-    private final transient SwaggerHubUpdater swaggerHubUpdater;
-
 
     public InitHandler() {
         this(new Environment());
@@ -46,13 +42,6 @@ public class InitHandler extends ResourceHandler {
         super(environment);
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         this.certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
-        String branchName=environment.readEnv(EnvironmentVariables.BRANCH);
-        String apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
-        String apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
-        String swaggerHubOrg = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
-        String stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
-        Stage stage = Stage.fromString(environment.readEnv(EnvironmentVariables.STAGE_NAME));
-        this.swaggerHubUpdater = new SwaggerHubUpdater(apiId, apiVersion, swaggerHubOrg, stackName, stage,branchName);
 
         authenticationService = new AuthenticationService(client, environment);
     }

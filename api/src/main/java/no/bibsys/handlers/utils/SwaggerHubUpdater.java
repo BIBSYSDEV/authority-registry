@@ -6,6 +6,7 @@ import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.annotations.VisibleForTesting;
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
@@ -30,8 +31,8 @@ public class SwaggerHubUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(SwaggerHubUpdater.class);
 
-    private static final String SERVERS_FIELD = "servers";
-    private static final String URL_FIELD = "url";
+    public static final String SERVERS_FIELD = "servers";
+    public  static final String URL_FIELD = "url";
 
     private static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
     private static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub specification";
@@ -51,7 +52,7 @@ public class SwaggerHubUpdater {
         this.swaggerHubOrganization = swaggerHubOrganization;
         this.stackName = stackName;
         this.stage = stage;
-        this.branchName= branchName;
+        this.branchName = branchName;
     }
 
     public void updateSwaggerHub() throws IOException, URISyntaxException {
@@ -75,14 +76,19 @@ public class SwaggerHubUpdater {
         }
     }
 
-    private SwaggerHubInfo initializeSwaggerHubInfo() {
-        if(branchName.equals(GitConstants.MASTER_BRANCH)){
-            return new SwaggerHubInfo(apiId, apiVersion, swaggerHubOrganization);
-        }
-        else{
-            return new SwaggerHubInfo(stackName,apiVersion,swaggerHubOrganization);
-        }
+    public int deleteSwaggerHubApi() throws IOException, URISyntaxException {
+        SwaggerHubInfo swaggerHubInfo = initializeSwaggerHubInfo();
+        SwaggerDriver swaggerDriver = new SwaggerDriver(swaggerHubInfo);
+        HttpDelete deleteRequest = swaggerDriver.createDeleteApiRequest(swaggerHubInfo.getSwaggerAuth());
+        return swaggerDriver.executeDelete(deleteRequest);
+    }
 
+    private SwaggerHubInfo initializeSwaggerHubInfo() {
+        if (branchName.equals(GitConstants.MASTER_BRANCH)) {
+            return new SwaggerHubInfo(apiId, apiVersion, swaggerHubOrganization);
+        } else {
+            return new SwaggerHubInfo(stackName, apiVersion, swaggerHubOrganization);
+        }
     }
 
     private void updateSwaggerHubSpecification(ObjectNode updatedSwaggerRootDoc, SwaggerHubInfo swaggerHubInfo,
@@ -110,12 +116,14 @@ public class SwaggerHubUpdater {
         return newDoc;
     }
 
-    private ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot, ServerInfo serverInfo) {
+    @VisibleForTesting
+    public ObjectNode updateSwaggerHubDocWithServerInfo(ObjectNode openApiDocRoot, ServerInfo serverInfo) {
         ArrayNode serversNode = serversNode(serverInfo);
         return (ObjectNode) openApiDocRoot.set(SERVERS_FIELD, serversNode);
     }
 
-    private ArrayNode serversNode(ServerInfo serverInfo) {
+    @VisibleForTesting
+    public ArrayNode serversNode(ServerInfo serverInfo) {
         ArrayNode servers = jsonParser.createArrayNode();
         ObjectNode serverNode = jsonParser.createObjectNode();
         serverNode.put(URL_FIELD, serverInfo.getServerUrl());

@@ -12,28 +12,22 @@ import no.bibsys.aws.lambda.responses.SimpleResponse;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
+import no.bibsys.handlers.utils.SwaggerHubUpdater;
 import no.bibsys.staticurl.UrlUpdater;
 import org.apache.commons.codec.digest.DigestUtils;
-
 
 /**
  * Class for common methods of InitHandler and DestroyHandler.
  */
 public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
 
-
+    private static final String REST_API_NOT_FOUND_MESSAGE = "Could not find a RestApi in stack ";
+    protected final transient String stackName;
+    protected final transient SwaggerHubUpdater swaggerHubUpdater;
     private final transient Stage stage;
     private final transient String hostedZoneName;
     private final transient String applicationUrl;
-
-    protected final transient String stackName;
     private final transient String branch;
-
-    protected transient String apiId;
-    protected final transient String apiVersion;
-    protected final transient String swaggerOrganization;
-
-
 
     public ResourceHandler(Environment environment) {
         super();
@@ -42,9 +36,12 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         this.applicationUrl = environment.readEnv(EnvironmentVariables.APPLICATION_URL);
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
         this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
-        this.apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
-        this.apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
-        this.swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
+        String apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
+        String apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
+        String swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
+
+        this.swaggerHubUpdater = new SwaggerHubUpdater(apiId, apiVersion, swaggerOrganization, stackName, stage,
+            branch);
     }
 
     protected UrlUpdater createUrlUpdater() {
@@ -57,37 +54,26 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         return new UrlUpdater(route53Updater);
     }
 
-
     private String restApiId() {
         StackResources stackResources = new StackResources(stackName);
         return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
-            .orElseThrow(
-                () -> new NotFoundException("Could not find a RestApi in stack " + stackName));
+            .orElseThrow(() -> new NotFoundException(String.join(" ", REST_API_NOT_FOUND_MESSAGE, stackName)));
     }
 
-
-    protected StaticUrlInfo initStaticUrlInfo(String hostedZoneName,
-        String applicationUrl,
-        Stage stage,
+    protected StaticUrlInfo initStaticUrlInfo(String hostedZoneName, String applicationUrl, Stage stage,
         String gitBranch) {
 
-        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName,applicationUrl,stage);
+        StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
             String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
-            staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl,
-                staticUrlInfo.getStage());
+            staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl, staticUrlInfo.getStage());
         }
         if (Stage.TEST.equals(stage)) {
             String newUrl = "test." + staticUrlInfo.getRecordSetName();
-            staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(),
-                newUrl,
-                staticUrlInfo.getStage());
+            staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(), newUrl, staticUrlInfo.getStage());
         }
         return staticUrlInfo;
-
     }
-
-
 }
