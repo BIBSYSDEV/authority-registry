@@ -8,7 +8,7 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:vann="http://purl.org/vocab/vann/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
-  <rdf:Description>
+  <rdf:Description rdf:about="http://authority-registry/validation/__THIS_DOCUMENT__a">
     <unit:registryName>registryNameValue</unit:registryName>
     <unit:name>nameValue</unit:name>
     <unit:description>descriptionValue</unit:description>

@@ -22,6 +22,7 @@
       "rdfs"          : "http://www.w3.org/2000/01/rdf-schema#",
       "vann"          : "http://purl.org/vocab/vann/"
      },
+	"@id"           : "http://authority-registry/validation/__THIS_DOCUMENT__a",
     "name"        : "nameValue",
     "registryName": "registryNameValue",
     "description" : "descriptionValue"

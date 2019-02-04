@@ -1,5 +1,5 @@
 {
-  "@id" : "_:b0",
+  "@id" : "http://authority-registry/validation/__THIS_DOCUMENT__a",
   "description" : "descriptionValue",
   "name" : "nameValue",
   "registryName" : "registryNameValue",

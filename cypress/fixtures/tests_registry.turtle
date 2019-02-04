@@ -8,7 +8,7 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix vann:  <http://purl.org/vocab/vann/> .
 
-[ unit:description   "descriptionValue" ;
-  unit:name          "nameValue" ;
-  unit:registryName  "registryNameValue"
-] .
+<http://authority-registry/validation/__THIS_DOCUMENT__a>
+        unit:description   "descriptionValue" ;
+        unit:name          "nameValue" ;
+        unit:registryName  "registryNameValue" .
