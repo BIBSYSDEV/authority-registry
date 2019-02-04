@@ -8,9 +8,10 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelPropertiesAreNotIclu
 public class ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper implements
     ExceptionMapper<ShaclModelPropertiesAreNotIcludedInOntologyException> {
 
+    private static final String MESSAGE = "Shacl model properties are not included in ontology";
+
     @Override
     public Response toResponse(ShaclModelPropertiesAreNotIcludedInOntologyException exception) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity("Shacl model properties are not included in ontology").build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

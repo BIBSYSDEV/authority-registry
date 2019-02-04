@@ -33,8 +33,8 @@ import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 
 public class RegistryManager extends ModelParser {
 
-    public static final String VALIDATION_FOLDER = "validation";
-    public static final String UNIT_ONTOLOGY = "unit-entity-ontology.ttl";
+    private static final String VALIDATION_FOLDER = "validation";
+    private static final String UNIT_ONTOLOGY = "unit-entity-ontology.ttl";
     private static final String TABLE_CREATED = "CREATED";
     private static final Lang SUPPORTED_LANGUAGE = Lang.JSONLD;
     private static final Logger logger = LoggerFactory.getLogger(RegistryManager.class);

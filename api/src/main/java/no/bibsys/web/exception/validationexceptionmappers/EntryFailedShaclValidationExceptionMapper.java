@@ -8,8 +8,10 @@ import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationExc
 public class EntryFailedShaclValidationExceptionMapper implements
     ExceptionMapper<EntityFailedShaclValidationException> {
 
+    private static final String MESSAGE = "Entry failed Shacl Validations";
+
     @Override
     public Response toResponse(EntityFailedShaclValidationException exception) {
-        return Response.status(Status.BAD_REQUEST).entity("Entry failed Shacl Validations").build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import java.util.Objects;
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
@@ -69,7 +70,7 @@ public class EntityManager {
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
             .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId)).build();
 
-        Entity entity = null;
+        Entity entity;
 
         try {
             entity = mapper.load(Entity.class, entityId, config);
@@ -77,7 +78,7 @@ public class EntityManager {
             throw new EntityNotFoundException(registryId, entityId);
         }
 
-        if (entity != null) {
+        if (Objects.nonNull(entity)) {
             return entity;
         } else {
             throw new EntityNotFoundException(registryId, entityId);
@@ -111,5 +112,4 @@ public class EntityManager {
             return false;
         }
     }
-
 }

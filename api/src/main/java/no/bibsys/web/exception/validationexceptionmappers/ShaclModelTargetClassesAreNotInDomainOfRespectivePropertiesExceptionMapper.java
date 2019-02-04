@@ -8,11 +8,12 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotI
 public class ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper implements
     ExceptionMapper<ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException> {
 
+    private static final String MESSAGE = "Shacl model target classes are not in domain of respective properties";
+
     @Override
     public Response toResponse(
         ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException exception) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity("Shacl model target classes are not in domain of respective properties")
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE)
             .build();
     }
 }

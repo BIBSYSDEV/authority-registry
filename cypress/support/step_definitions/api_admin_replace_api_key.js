@@ -6,6 +6,7 @@
 //    And the user receives the updated API key
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
+import * as HttpStatus from 'http-status-codes';
 
 When(
   'the API admin user requests a new API key to replace the current valid API key',
@@ -14,7 +15,7 @@ When(
     cy.get('@registryName').then((registryName) => {
       cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
         cy.get('@apiAdminApiKey').then((apiAdminApiKey) => {
-          let url = '/registry/' + registryName + '/apikey';
+          const url = '/registry/' + registryName + '/apikey';
           cy.request({
             url: url,
             method: 'PUT',
@@ -35,7 +36,7 @@ Then('the API key is updated', () => {
     cy.fixture('entityTestData').then((testData) => {
       cy.get('@registryAdminApiKey').then((registryAdminApiKey) => {
         cy.log('api-key = ' + registryAdminApiKey);
-        let url = '/registry/' + registryName + '/entity';
+        const url = '/registry/' + registryName + '/entity';
         cy.request({
           url: url,
           method: 'POST',
@@ -46,12 +47,12 @@ Then('the API key is updated', () => {
             'content-type': 'application/json',
           },
         }).then((response) => {
-          cy.expect(response.status).to.equal(403);
+          cy.expect(response.status).to.equal(HttpStatus.FORBIDDEN);
         });
       });
       cy.get('@newApiKey').then((newRegistryAdminApiKey) => {
         cy.log('api-key = ' + newRegistryAdminApiKey);
-        let url = '/registry/' + registryName + '/entity';
+        const url = '/registry/' + registryName + '/entity';
         cy.request({
           url: url,
           method: 'POST',
@@ -62,7 +63,7 @@ Then('the API key is updated', () => {
             'content-type': 'application/json',
           },
         }).then((response) => {
-          cy.expect(response.status).to.equal(200);
+          cy.expect(response.status).to.equal(HttpStatus.OK);
         });
       });
     });

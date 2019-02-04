@@ -25,6 +25,7 @@ import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
+import no.bibsys.web.exception.SettingValidationSchemaUponCreationExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.EntryFailedShaclValidationExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper;
@@ -118,6 +119,7 @@ public class JerseyConfig extends ResourceConfig {
         register(ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper.class);
         register(ValidationSchemaSyntaxErrorExceptionMapper.class);
         register(ValidationSchemaNotFoundExceptionMapper.class);
+        register(SettingValidationSchemaUponCreationExceptionMapper.class);
     }
 
 }
