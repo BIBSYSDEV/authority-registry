@@ -1,8 +1,5 @@
 package no.bibsys.web.model;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jsonldjava.core.JsonLdConsts;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -12,19 +9,26 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import no.bibsys.aws.tools.JsonUtils;
-import no.bibsys.entitydata.validation.ModelParser;
-import no.bibsys.entitydata.validation.ontology.UnitOntology;
+
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jsonldjava.core.JsonLdConsts;
+
+import no.bibsys.aws.tools.JsonUtils;
+import no.bibsys.entitydata.validation.ontology.UnitOntology;
+import no.bibsys.utils.ModelParser;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)

@@ -63,7 +63,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public static final String VALIDATION_FOLDER = "validation";
     public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     public static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
-    private static final String ENTITY_EXAMPLE_FILE = "src/resources/entity_exampample.rdf";
+    private static final String ENTITY_EXAMPLE_FILE = "src/resources/testdata/example_entity.%s";
     public static String REGISTRY_PATH = "/registry";
     private static String validValidationSchema;
     private final SampleData sampleData = new SampleData();
@@ -515,9 +515,10 @@ public class DatabaseResourceTest extends JerseyTest {
         String triples = entityAsTriples.readEntity(String.class);
 
         Lang lang = Lang.NTRIPLES;
-        Model actualModel = createModel(new ByteArrayInputStream(triples.getBytes(StandardCharsets.UTF_8)), lang);
+        ModelParser parser = new ModelParser();
+        Model actualModel = parser.parseModel(new ByteArrayInputStream(triples.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
-        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
@@ -532,9 +533,10 @@ public class DatabaseResourceTest extends JerseyTest {
         String rdfXml = entityAsRdfXml.readEntity(String.class);
 
         Lang lang = Lang.RDFXML;
-        Model actualModel = createModel(new ByteArrayInputStream(rdfXml.getBytes(StandardCharsets.UTF_8)), lang);
+        ModelParser parser = new ModelParser();
+        Model actualModel = parser.parseModel(new ByteArrayInputStream(rdfXml.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
-        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
@@ -549,9 +551,10 @@ public class DatabaseResourceTest extends JerseyTest {
         String turtle = entityAsTurtle.readEntity(String.class);
 
         Lang lang = Lang.TURTLE;
-        Model actualModel = createModel(new ByteArrayInputStream(turtle.getBytes(StandardCharsets.UTF_8)), lang);
+        ModelParser parser = new ModelParser();
+        Model actualModel = parser.parseModel(new ByteArrayInputStream(turtle.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", "").toUpperCase());
-        Model expectedModel = createModel(new FileInputStream(new File(testFile)), lang);
+        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
