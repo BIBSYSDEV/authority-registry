@@ -17,6 +17,13 @@ dependencies {
 
     implementation project(":dynamo")
 
+
+    implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
+    implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
+    implementation  ('com.amazonaws:aws-java-sdk-api-gateway:1.11.+')
+    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.490')
+
+
     //jersey libraries
     implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
     implementation("org.glassfish.jersey.inject:jersey-hk2:2.27") {
@@ -32,7 +39,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.amazonaws.serverless:aws-serverless-java-container-jersey:1.1")
 
-    implementation("no.bibsys.aws:aws-build-tools:1.0.2")
+    implementation("no.bibsys.aws:aws-build-tools:1.0.5")
 
     // Handlebars
     implementation("com.github.jknack:handlebars:4.1.2")

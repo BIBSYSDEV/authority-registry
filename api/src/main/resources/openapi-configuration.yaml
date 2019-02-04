@@ -7,11 +7,11 @@ cacheTTL: 0
 openAPI:
   info:
     version: '1.0'
-    title: A cool entity registry
-    description: 'This is a very cool registry'
+    title: Registry creation API
+    description: 'API for creating entity registries'
     termsOfService: http://swagger.io/terms/
     contact:
-      email: coolemail@lycos.com
+      email: orestis.gkorgkas@unit.no
     license:
       name: Apache 2.0
       url: http://www.apache.org/licenses/LICENSE-2.0.html
