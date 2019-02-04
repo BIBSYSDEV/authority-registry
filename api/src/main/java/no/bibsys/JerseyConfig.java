@@ -1,9 +1,17 @@
 package no.bibsys;
 
+import java.io.IOException;
+
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
-import java.io.IOException;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.RegistryManager;
@@ -37,14 +45,8 @@ import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaSyntax
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
-import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
@@ -85,8 +87,6 @@ public class JerseyConfig extends ResourceConfig {
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
 
-        register(RegistryMessageBodyWriter.class);
-        register(RegistryMessageJsonBodyWriter.class);
         registerExceptionMappers();
         registerMessageBodyWriters();
     }
