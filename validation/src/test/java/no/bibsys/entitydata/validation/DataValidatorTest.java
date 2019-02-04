@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -17,6 +16,10 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
+
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 
 public class DataValidatorTest extends ModelParser {
 

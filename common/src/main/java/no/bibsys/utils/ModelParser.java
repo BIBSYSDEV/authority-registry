@@ -1,13 +1,12 @@
-package no.bibsys.entitydata.validation;
+package no.bibsys.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.stream.Collectors;
-import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -16,18 +15,27 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
+
 public class ModelParser {
 
     @JsonIgnore
-    public Model parseModel(String dataString, Lang lang) {
+    public Model parseModel(InputStream stream, Lang lang) {
+
         try {
             Model model = ModelFactory.createDefaultModel();
-            InputStream stream = new ByteArrayInputStream(dataString.getBytes(StandardCharsets.UTF_8));
             RDFDataMgr.read(model, stream, lang);
             return model;
         } catch (RiotException e) {
             throw new ValidationSchemaSyntaxErrorException(e);
         }
+    }
+
+    public Model parseModel(String dataString, Lang lang) {
+        InputStream stream = new ByteArrayInputStream(dataString.getBytes(StandardCharsets.UTF_8));
+        return parseModel(stream, lang);
     }
 
     @JsonIgnore

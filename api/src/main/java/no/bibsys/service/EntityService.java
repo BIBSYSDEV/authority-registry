@@ -1,16 +1,18 @@
 package no.bibsys.service;
 
 import java.util.Objects;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.DataValidator;
-import no.bibsys.entitydata.validation.ModelParser;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
+import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityConverter;
 import no.bibsys.web.model.EntityDto;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
 
 public class EntityService extends ModelParser {
 

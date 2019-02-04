@@ -1,12 +1,14 @@
 package no.bibsys.entitydata.validation;
 
-import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.topbraid.shacl.validation.ValidationUtil;
+
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.utils.ModelParser;
 
 public class DataValidator extends ModelParser {
 

@@ -1,14 +1,17 @@
 package no.bibsys.testtemplates;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
-import no.bibsys.entitydata.validation.ModelParser;
+
+import org.apache.jena.riot.Lang;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
-import org.apache.jena.riot.Lang;
 
 public class SampleData {
 

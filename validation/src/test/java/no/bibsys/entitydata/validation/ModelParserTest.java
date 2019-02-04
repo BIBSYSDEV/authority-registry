@@ -9,14 +9,17 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
-import no.bibsys.entitydata.validation.exceptions.ValidationSchemaSyntaxErrorException;
-import no.bibsys.utils.IoUtils;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
+import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 
 public class ModelParserTest extends ModelParser {
 

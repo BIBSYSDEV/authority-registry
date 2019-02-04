@@ -6,14 +6,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.junit.Test;
+
 import no.bibsys.entitydata.validation.exceptions.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelPropertiesAreNotIcludedInOntologyException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotClassesOfOntologyException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.utils.IoUtils;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.junit.Test;
+import no.bibsys.utils.ModelParser;
 
 public class ShaclValidatorTest extends ModelParser {
 
@@ -40,6 +43,7 @@ public class ShaclValidatorTest extends ModelParser {
 
     @Test
     public void loadOntology_ontologyString_OntologyModel() throws IOException {
+
         Model model = validator.getOntology();
         assertFalse(model.isEmpty());
     }
