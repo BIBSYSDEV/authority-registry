@@ -136,14 +136,14 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
-          SWAGGER_API_ID: '{{resolve:smm:SWAGGER_API_ID:1}}'
+          SWAGGER_API_ID: "{{resolve:smm:SWAGGER_API_ID:1}}"
           SWAGGER_API_VERSION: "1.0"
           SWAGGER_API_OWNER: '{{resolve:ssm:SWAGGER_API_OWNER:1}}'
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
-          HOSTED_ZONE_NAME: '{{resolve:ssm:SWAGGER_API_OWNER:1}}'
-          APPLICATION_URL: '{{resolve:ssm:APPLICATION_URL:1}}'
+          HOSTED_ZONE_NAME: "{{resolve:ssm:SWAGGER_API_OWNER:1}}"
+          APPLICATION_URL: "{{resolve:ssm:APPLICATION_URL:1}}"
           STACK_NAME: !Ref AWS::StackName
           BRANCH: !Ref Branch
   Destroy:
@@ -176,9 +176,9 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           STACK_NAME: !Ref AWS::StackName
-          HOSTED_ZONE_NAME: '{{resolve:ssm:SWAGGER_API_OWNER:1}}'
-          APPLICATION_URL: '{{resolve:ssm:APPLICATION_URL:1}}'
+          HOSTED_ZONE_NAME: "{{resolve:ssm:SWAGGER_API_OWNER:1}}"
+          APPLICATION_URL: "{{resolve:ssm:APPLICATION_URL:1}}"
           BRANCH: !Ref Branch
-          SWAGGER_API_ID: '{{resolve:smm:SWAGGER_API_ID:1}}'
+          SWAGGER_API_ID: "{{resolve:smm:SWAGGER_API_ID:1}}"
           SWAGGER_API_VERSION: "1.0"
           SWAGGER_API_OWNER: '{{resolve:ssm:SWAGGER_API_OWNER:1}}'
