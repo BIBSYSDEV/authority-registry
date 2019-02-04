@@ -20,7 +20,7 @@ When(
   () => {
     cy.get('@bulkUpload').then((bulkUpload) => {
       cy.get('@registryName').then((registryName) => {
-        let bulkUploadUrl = '/registry/' + registryName + '/upload';
+        const bulkUploadUrl = '/registry/' + registryName + '/upload';
         cy.get('@apiAdminApiKey').then((apiKey) => {
           cy.request({
             url: bulkUploadUrl,

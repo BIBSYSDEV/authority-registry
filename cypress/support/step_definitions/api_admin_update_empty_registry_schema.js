@@ -12,7 +12,7 @@ When(
     cy.log('-- api_admin_update_empty_registry_schema.js --');
     cy.get('@registryName').then((registryName) => {
       cy.get('@apiAdminApiKey').then((apiKey) => {
-        let registryGetUrl = '/registry/' + registryName + '/schema';
+        const registryGetUrl = '/registry/' + registryName + '/schema';
         cy.registryReady(registryName);
         cy.request({
           url: registryGetUrl,
@@ -28,7 +28,7 @@ When(
             });
         });
 
-        let registryUpdateUrl = '/registry/' + registryName + '/schema';
+        const registryUpdateUrl = '/registry/' + registryName + '/schema';
         cy.fixture('alternativeValidShaclValidationSchema.json').then(
           altSchemaObj => {
             const schemaString = JSON.stringify(altSchemaObj);
@@ -45,7 +45,7 @@ Then('the entity registry is updated', () => {
     expect(response.status).to.equal(200);
   });
   cy.get('@registryName').then((registryName) => {
-    let registryGetUrl = '/registry/' + registryName + '/schema';
+    const registryGetUrl = '/registry/' + registryName + '/schema';
     cy.get('@apiAdminApiKey').then((apiKey) => {
       cy.registryReady(registryName);
       cy.request({

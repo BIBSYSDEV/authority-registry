@@ -10,7 +10,7 @@ When(
   'the API admin user uses the API key and submits a request to delete the data in the entity registry',
   () => {
     cy.log('-- api_admin_delete_data_from_populated_registry.js --');
-    let deleteDataUrl = '/registry/';
+    const deleteDataUrl = '/registry/';
     cy.get('@apiAdminApiKey').then((apiKey) => {
       cy.get('@registryName').then((registryName) => {
         cy.request({
@@ -31,7 +31,7 @@ Then('the API admin user receives information that the data is deleted', () => {
     cy.get('@deleteConfirmation').then((deleteComfirmation) => {
       expect(deleteComfirmation).is.equal(
         'Registry ' + registryName + ' has been emptied');
-      let registryUrl = '/registry' + registryName;
+      const registryUrl = '/registry' + registryName;
       cy.request(registryUrl).then((response) => {
         // empty registry needs to be made async. Does not work until this is fixed
         //				expect(response.body.size).to.equal(0);

@@ -37,6 +37,7 @@ import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationExc
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
@@ -57,9 +58,9 @@ import no.bibsys.web.security.Roles;
     SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
-    public static final String NAME_OF_REGISTRY_TO = "Name of registry to ";
-    public static final String NAME_OF_REGISTRY_IN = "Name of registry in ";
-    public static final String NAME_OF_NEW_REGISTRY = "Name of new registry";
+    private static final String NAME_OF_REGISTRY_TO = "Name of registry to ";
+    private static final String NAME_OF_REGISTRY_IN = "Name of registry in ";
+    private static final String NAME_OF_NEW_REGISTRY = "Name of new registry";
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
@@ -103,7 +104,8 @@ public class DatabaseResource {
         CustomMediaType.APPLICATION_JSON_LD, CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_RDF_XML,
         CustomMediaType.APPLICATION_TURTLE})
     public Response getRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY, schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         RegistryDto registryDto = registryService.getRegistry(registryName);
         return Response.ok(registryDto).build();
@@ -116,7 +118,8 @@ public class DatabaseResource {
     public Response updateRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation = RegistryDto.class))) RegistryDto registryDto) {
+        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
+            RegistryDto.class))) RegistryDto registryDto) {
 
         RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
         return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId())).build();
@@ -140,7 +143,8 @@ public class DatabaseResource {
 
     public Response registryStatus(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
-            + "which to get status", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            + "which to get status", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+        throws UnknownStatusException {
 
         registryService.validateRegistryExists(registryName);
         return Response.ok(String.format("Registry with name %s is active", registryName)).build();
@@ -155,7 +159,8 @@ public class DatabaseResource {
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
             + "which to update entity", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Old apikey",
-            content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey) {
+            content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey)
+        throws UnknownStatusException {
 
         registryService.validateRegistryExists(registryName);
         String newApiKey = registryService.replaceApiKey(registryName, oldApiKey);

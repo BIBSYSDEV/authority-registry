@@ -32,7 +32,6 @@ Then(
           .then((response) => {
             cy.get('@profile').then((profile) => {
               expect('native-uri').to.contains(profile);
-              //					expect(response.headers['content-type']).to.contains(profile)
             });
           });
       });

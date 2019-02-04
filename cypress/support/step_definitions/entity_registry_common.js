@@ -41,7 +41,7 @@ function createTestRegistry(createEntity) {
     cy.log('Creating schema with name ' + registryName);
     cy.get('@apiAdminApiKey').then(function(apiKey) {
       // create new test registry metadata
-      let testMetadataFile = 'registryTestMetadata.json';
+      const testMetadataFile = 'registryTestMetadata.json';
       if (createEntity) {
         cy.createNonEmptyRegistry(registryName, apiKey, testMetadataFile);
       } else {
@@ -54,7 +54,7 @@ function createTestRegistry(createEntity) {
 function createTestEntity() {
   cy.get('@registryName').then(function(registryName) {
     cy.get('@apiAdminApiKey').then(function(apiKey) {
-      let dataFile = 'entityTestData.json';
+      const dataFile = 'entityTestData.json';
       cy.createEntity(registryName, apiKey, dataFile);
     });
   });

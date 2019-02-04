@@ -1,6 +1,6 @@
 package no.bibsys.service;
 
-import java.util.function.BiFunction;
+import java.util.Objects;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -18,6 +18,8 @@ public class EntityService extends ModelParser {
 
     private static final Lang VALIDATION_SCHEMA_LANGUAGE = Lang.JSONLD;
     private static final String VALIDATION_SCHEMA_NOT_FOUND = "Validation schema not found for registry: %s";
+    private static final String FAILURE_ADDING_ENTITY = "Failed to add entity to registry %s ";
+    private static final String FAILURE_UPDATING_REGISTRY = "Failed to update entity in registry: %s";
     private final transient EntityManager entityManager;
     private final transient RegistryService registryService;
 
@@ -29,12 +31,20 @@ public class EntityService extends ModelParser {
 
     public EntityDto addEntity(String registryId, EntityDto entityDto)
         throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
-        return addUpdateEntity(registryId, entityDto, this::addEntityToRegistry);
+        if (validateEntity(registryId, entityDto)) {
+            return addEntityToRegistry(registryId, entityDto);
+        } else {
+            throw new IllegalStateException(String.format(FAILURE_ADDING_ENTITY, registryId));
+        }
     }
 
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
         throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
-        return addUpdateEntity(registryId, entityDto, this::updateEntityInRegistry);
+        if (validateEntity(registryId, entityDto)) {
+            return updateEntityInRegistry(registryId, entityDto);
+        } else {
+            throw new IllegalStateException(String.format(FAILURE_UPDATING_REGISTRY, registryId));
+        }
     }
 
     public EntityDto getEntity(String registryId, String entityId) {
@@ -46,25 +56,16 @@ public class EntityService extends ModelParser {
         entityManager.deleteEntity(registryId, entityId);
     }
 
-    private EntityDto addUpdateEntity(String registryId, EntityDto entityDto,
-        BiFunction<String, EntityDto, EntityDto> action)
-        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
+    private boolean validateEntity(String registryId, EntityDto entityDto)
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
         String validationSchema = registryService.getRegistry(registryId).getSchema();
-        if (validationSchema == null) {
+        if (Objects.isNull(validationSchema)) {
             throw new ValidationSchemaNotFoundException(String.format(VALIDATION_SCHEMA_NOT_FOUND, registryId));
         }
-        return validateEntity(registryId, entityDto, validationSchema, action);
-    }
 
-    private EntityDto validateEntity(String registryId, EntityDto entityDto, String validationSchema,
-        BiFunction<String, EntityDto, EntityDto> action) throws EntityFailedShaclValidationException {
         DataValidator dataValidator = new DataValidator(parseModel(validationSchema, VALIDATION_SCHEMA_LANGUAGE));
         Model dataModel = parseModel(entityDto.getBody(), VALIDATION_SCHEMA_LANGUAGE);
-        if (dataValidator.isValidEntry(dataModel)) {
-            return action.apply(registryId, entityDto);
-        } else {
-            throw new EntityFailedShaclValidationException();
-        }
+        return dataValidator.isValidEntry(dataModel);
     }
 
     private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) {

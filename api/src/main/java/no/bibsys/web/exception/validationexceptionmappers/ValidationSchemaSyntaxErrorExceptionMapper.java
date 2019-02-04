@@ -9,9 +9,10 @@ import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 public class ValidationSchemaSyntaxErrorExceptionMapper implements
     ExceptionMapper<ValidationSchemaSyntaxErrorException> {
 
+    private static final String MESSAGE = "Syntax errors in SHACL validation schema";
+
     @Override
     public Response toResponse(ValidationSchemaSyntaxErrorException exception) {
-        return Response.status(Status.BAD_REQUEST)
-            .entity("Syntax errors in SHACL validation schema").build();
+        return Response.status(Status.BAD_REQUEST).entity(MESSAGE).build();
     }
 }

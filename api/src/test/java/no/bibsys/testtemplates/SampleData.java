@@ -13,7 +13,6 @@ import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 
-
 public class SampleData {
 
     public static final String VALIDATION_FOLDER = "validation";
@@ -22,7 +21,6 @@ public class SampleData {
 
     public SampleData() {
     }
-
 
     public EntityDto sampleEntityDtoWithValidData() throws IOException {
         return sampleEntityDto(VALID_GRAPH_JSON);
@@ -42,13 +40,7 @@ public class SampleData {
 
         entityDto.setBody(body);
         return entityDto;
-
     }
-
-    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
-        return sampleEntityDto(INVALID_GRAPH_JSON);
-    }
-
 
     public RegistryDto sampleRegistryDto(String registryName) throws IOException {
 
@@ -57,8 +49,7 @@ public class SampleData {
 
 
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> metadata = (Map<String, Object>) mapper
-            .convertValue(mapper.createObjectNode(), Map.class);
+        Map<String, Object> metadata = (Map<String, Object>) mapper.convertValue(mapper.createObjectNode(), Map.class);
 
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
@@ -66,8 +57,10 @@ public class SampleData {
 
         registryDto.setMetadata(metadata);
 
-
         return registryDto;
     }
 
+    public EntityDto sampleEntityDtoWithInValidData() throws IOException {
+        return sampleEntityDto(INVALID_GRAPH_JSON);
+    }
 }
