@@ -1,11 +1,8 @@
 package no.bibsys.handlers;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
-
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.cloudformation.helpers.ResourceType;
@@ -16,6 +13,7 @@ import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.staticurl.UrlUpdater;
+import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
@@ -31,7 +29,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     protected final transient String stackName;
     private final transient String branch;
 
-    protected final transient String apiId;
+    protected transient String apiId;
     protected final transient String apiVersion;
     protected final transient String swaggerOrganization;
 
