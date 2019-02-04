@@ -532,6 +532,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public void getEntity_applicationTurtle_entityAsTurtle() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
         Response entityAsTurtle = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_TURTLE);
