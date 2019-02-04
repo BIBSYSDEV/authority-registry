@@ -7,7 +7,7 @@ cacheTTL: 0
 openAPI:
   info:
     version: '1.0'
-    title: Entity creation registry
+    title: Registry creation API
     description: 'API for creating entity registries'
     termsOfService: http://swagger.io/terms/
     contact:
