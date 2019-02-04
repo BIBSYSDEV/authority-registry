@@ -34,12 +34,8 @@ public class ModelParser {
     }
 
     public Model parseModel(String dataString, Lang lang) {
-        try {
-            InputStream stream = new ByteArrayInputStream(dataString.getBytes(StandardCharsets.UTF_8));
-            return parseModel(stream, lang);
-        } catch (RiotException e) {
-            throw new ValidationSchemaSyntaxErrorException(e);
-        }
+        InputStream stream = new ByteArrayInputStream(dataString.getBytes(StandardCharsets.UTF_8));
+        return parseModel(stream, lang);
     }
 
     @JsonIgnore
