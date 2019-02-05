@@ -130,6 +130,7 @@ Resources:
           - route53:ListHostedZones
           - route53:ChangeResourceRecordSets
           - secretsmanager:GetSecretValue
+          - iam:CreateServiceLinkedRole
           Effect: Allow
           Resource: "*"
       MemorySize: 1500
