@@ -9,6 +9,6 @@ public class CustomMediaType {
     public static final String APPLICATION_JSON_LD = "application/ld+json";
     public static final String APPLICATION_MARC = "application/marc";
     public static final String APPLICATION_MARCXML = "application/marcxml";
-    public static final String APPLICATION_MARCXML_XML = "application/marcxml_Xml";
+    public static final String APPLICATION_MARCXML_XML = "application/marcxml+Xml";
 
 }

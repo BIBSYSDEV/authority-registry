@@ -25,7 +25,7 @@ Then('anonymous user can view the data in the format', () => {
             const formatType = format[0];
             const testMarcXml = 'marc:record';
             const testDataField = '<marc:datafield tag="100" ind1=" " ind2=" ">';
-            const testSubfield = '<marc:subfield code="a">norsklabel</marc:subfield>';
+            const testSubfield = '<marc:subfield code="a">norskLabel</marc:subfield>';
             cy.request({
               url: getUrl,
               headers: {
