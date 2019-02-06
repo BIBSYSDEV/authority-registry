@@ -46,7 +46,6 @@ import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
 import no.bibsys.web.model.EntityMarcMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
-import no.bibsys.web.model.RegistryMessageJsonBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
 
@@ -89,8 +88,6 @@ public class JerseyConfig extends ResourceConfig {
         register(OpenApiResource.class);
         register(AcceptHeaderOpenApiResource.class);
 
-        register(RegistryMessageBodyWriter.class);
-        register(RegistryMessageJsonBodyWriter.class);
         registerExceptionMappers();
         registerMessageBodyWriters();
     }

@@ -3,6 +3,8 @@ package no.bibsys.handlers;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
+import com.amazonaws.services.route53.AmazonRoute53;
+import com.amazonaws.services.route53.AmazonRoute53ClientBuilder;
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.cloudformation.helpers.ResourceType;
@@ -49,8 +51,8 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
-        Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway);
-
+        AmazonRoute53 route53Client = AmazonRoute53ClientBuilder.defaultClient();
+        Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway, route53Client);
         return new UrlUpdater(route53Updater);
     }
 
