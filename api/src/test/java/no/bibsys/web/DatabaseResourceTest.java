@@ -6,6 +6,12 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.jsonldjava.core.JsonLdConsts;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,28 +24,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.jsonldjava.core.JsonLdConsts;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -56,7 +46,14 @@ import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFou
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -64,6 +61,7 @@ public class DatabaseResourceTest extends JerseyTest {
     public static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     public static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
     private static final String ENTITY_EXAMPLE_FILE = "src/test/resources/testdata/example_entity.%s";
+    private static final String REGISTRY_METADATA_EXAMPLE_FILE = "src/test/resources/example_registry.%s";
     public static String REGISTRY_PATH = "/registry";
     private static String validValidationSchema;
     private final SampleData sampleData = new SampleData();
@@ -123,16 +121,14 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() throws Exception {
         String registryName = "TheRegistryName";
+        
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
-        Response response = target(REGISTRY_PATH).request().accept(MediaType.APPLICATION_JSON)
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-            .buildPost(javax.ws.rs.client.Entity.entity(expectedRegistry, MediaType.APPLICATION_JSON)).invoke();
+        Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        RegistryDto actualRegistry = response.readEntity(RegistryDto.class);
+        RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         assertThat(actualRegistry.getId(), is(equalTo(expectedRegistry.getId())));
-        assertThat(actualRegistry.getMetadata(), is(equalTo(expectedRegistry.getMetadata())));
     }
 
     @Test
@@ -242,7 +238,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-            .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
+            .post(javax.ws.rs.client.Entity.entity(registryDto.toString(), MediaType.APPLICATION_JSON));
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -323,7 +319,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
-        RegistryDto registry = response.readEntity(RegistryDto.class);
+        RegistryInfoNoMetadataDto registry = response.readEntity(RegistryInfoNoMetadataDto.class);
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
     }
 
@@ -409,7 +405,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
-        RegistryDto newRegistry = createRegistryResponse.readEntity(RegistryDto.class);
+        
+        RegistryInfoNoMetadataDto newRegistry = createRegistryResponse.readEntity(RegistryInfoNoMetadataDto.class);
         String oldApiKey = newRegistry.getApiKey();
 
         Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
@@ -458,6 +455,7 @@ public class DatabaseResourceTest extends JerseyTest {
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
 
         Response entityAsHtml = readEntity(registryName, entity.getId(), MediaType.TEXT_HTML);
+
         String html = entityAsHtml.readEntity(String.class);
 
         assertThat(html.toLowerCase(), containsString("html"));
@@ -580,6 +578,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private Response createRegistry(RegistryDto registryDto, String apiKey) {
+        
         Response response = target("/registry").request().accept(MediaType.APPLICATION_JSON)
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey)
             .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
@@ -604,6 +603,7 @@ public class DatabaseResourceTest extends JerseyTest {
         Response writeResponse = insertEntryRequest(registryName, entity, apiAdminKey);
         return writeResponse;
     }
+
 
     private Response readEntityWithEntityTag(String registryName, String entityId, EntityTag entityTag) {
         return target(String.format("/registry/%s/entity/%s", registryName, entityId)).request()

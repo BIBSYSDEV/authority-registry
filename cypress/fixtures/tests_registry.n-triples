@@ -1,0 +1,3 @@
+<http://authority-registry/validation/__THIS_DOCUMENT__a> <http://unit.no/entitydata#registryName> "registryNameValue" .
+<http://authority-registry/validation/__THIS_DOCUMENT__a> <http://unit.no/entitydata#name> "nameValue" .
+<http://authority-registry/validation/__THIS_DOCUMENT__a> <http://unit.no/entitydata#description> "descriptionValue" .

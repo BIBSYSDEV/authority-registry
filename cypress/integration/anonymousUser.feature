@@ -61,15 +61,15 @@ Feature: Anonymous user features
       | Location of SPARQL endpoint      |
       | Description of available formats |
 
-#  Scenario: An anonymous user views the metadata for a registry as RDF
-#    Given that there is an existing, populated entity registry with a schema
-#    When an anonymous user dereferences the base URI for the registry specifying mediatypes:
-#      | application/ld+json     |
-#      | application/n-triples   |
-#      | application/rdf+xml     |
-#      | application/turtle      |
-#      | application/json        |
-#      | application/rdf         |
-#    Then they see metadata related to the entity registry regarding:
-#      | Metatata                |
-#      | Available data profiles |
+  Scenario: An anonymous user views the metadata for a registry as RDF
+    And that there is an entity in the registry
+    When an anonymous user dereferences the base URI for the registry specifying mediatypes:
+      | application/ld+json     |
+      | application/n-triples   |
+      | application/rdf+xml     |
+      | application/turtle      |
+      | application/json        |
+      | application/rdf         |
+    Then they see metadata related to the entity registry regarding:
+      | Metadata                |
+      | Available data profiles |

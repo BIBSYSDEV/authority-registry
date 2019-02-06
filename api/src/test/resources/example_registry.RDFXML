@@ -1,0 +1,9 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://example.org/vocab#">
+  <rdf:Description>
+    <j.0:Registry_type>Registry type value</j.0:Registry_type>
+    <j.0:Registry_name>Registry name value</j.0:Registry_name>
+    <j.0:Publisher>Publisher value</j.0:Publisher>
+  </rdf:Description>
+</rdf:RDF>

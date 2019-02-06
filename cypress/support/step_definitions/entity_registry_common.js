@@ -43,7 +43,6 @@ function createTestRegistry(createEntity) {
       // create new test registry metadata
       const testMetadataFile = 'registryTestMetadata.json';
       if (createEntity) {
-
         cy.createNonEmptyRegistry(registryName, apiKey, testMetadataFile);
       } else {
         cy.createEmptyRegistry(registryName, apiKey, testMetadataFile);

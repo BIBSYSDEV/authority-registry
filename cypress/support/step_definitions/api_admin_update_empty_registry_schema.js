@@ -34,7 +34,7 @@ When(
             const schemaString = JSON.stringify(altSchemaObj);
             updateSchema(registryUpdateUrl, apiKey, schemaString);
 
-          });
+         });
 
       });
     });
