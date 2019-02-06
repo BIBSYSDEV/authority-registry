@@ -28,6 +28,10 @@ import no.bibsys.aws.tools.JsonUtils;
 @Produces({CustomMediaType.APPLICATION_MARC, CustomMediaType.APPLICATION_MARCXML, CustomMediaType.APPLICATION_MARCXML_XML})
 public class EntityMarcMessageBodyWriter extends CustomMessageBodyWriter<EntityDto> {
 
+    private static final String VALUE = "@value";
+    private static final String LANGUAGE = "@language";
+    private static final String LANG_EN = "en";
+    private static final String LANG_NO = "no";
     private static final String PREFERRED_LABEL_FIELD = "100";
 
     @Override
@@ -60,8 +64,8 @@ public class EntityMarcMessageBodyWriter extends CustomMessageBodyWriter<EntityD
         List<Map<String, String>> preferredLabelList = (List<Map<String, String>>) bodyMap.get("preferredLabel");
         String preferredLabelValue = "";
         for (Map<String, String> map : preferredLabelList) {
-            if("no".equals(map.get("@language")) || ("".equals(preferredLabelValue) && "en".equals(map.get("@language")))) {
-                preferredLabelValue = map.get("@value");
+            if(LANG_NO.equals(map.get(LANGUAGE)) || "".equals(preferredLabelValue) && LANG_EN.equals(map.get(LANGUAGE))) {
+                preferredLabelValue = map.get(VALUE);
             }
         }
         return preferredLabelValue;
