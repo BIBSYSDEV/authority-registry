@@ -1,12 +1,10 @@
 package no.bibsys.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -49,7 +47,7 @@ public class RegistryService {
         RegistryInfoDto registryInfoDto = new RegistryInfoDto(registryDto);
         registryInfoDto.setPath("/registry/" + registryInfoDto.getId());
         registryInfoDto.setApiKey(savedApiKey);
-        
+
         return registryInfoDto;
     }
 
@@ -61,11 +59,10 @@ public class RegistryService {
     public RegistryInfoDto getRegistryInfo(String registryName) throws JsonProcessingException {
 
         RegistryDto registry = getRegistry(registryName);
-        
+
         return new RegistryInfoDto(registry);
     }
 
-    
     public void deleteRegistry(String registryId) {
         registryManager.deleteRegistry(registryMetadataTableName, registryId);
         authenticationService.deleteApiKeyForRegistry(registryId);
@@ -100,7 +97,6 @@ public class RegistryService {
                 throw new RegistryNotFoundException(registryName);
             default:
                 throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
-
         }
     }
 

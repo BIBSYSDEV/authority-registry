@@ -1,5 +1,6 @@
 package no.bibsys.web.model;
 
+
 public class RegistryInfoDto {
 
     private String id;
