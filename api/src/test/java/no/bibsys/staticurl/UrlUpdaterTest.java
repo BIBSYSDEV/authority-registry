@@ -7,12 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
 import com.amazonaws.services.apigateway.model.GetBasePathMappingsResult;
@@ -23,13 +17,15 @@ import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
-
+import java.util.Optional;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 public class UrlUpdaterTest {
-
 
     private static final String DEFAULT_ZONE_NAME = "aws.unit.no";
     private static final String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
@@ -43,21 +39,13 @@ public class UrlUpdaterTest {
     private transient ResourceRecordSet recordSet;
 
     public UrlUpdaterTest() {
-        staticUrlInfo = new StaticUrlInfo(
-            DEFAULT_ZONE_NAME,
-            DEFAULT_RECORD_SET_NAME,
-            Stage.TEST);
+        staticUrlInfo = new StaticUrlInfo(DEFAULT_ZONE_NAME, DEFAULT_RECORD_SET_NAME, Stage.TEST);
         AmazonApiGateway apiGatewayClient = mockApiGatewayClient();
-        AmazonRoute53 route53Client= Mockito.mock(AmazonRoute53.class);
-        Route53Updater route53Updater = new Route53Updater(staticUrlInfo,
-            "apiID",
-            apiGatewayClient,
-            route53Client);
+        AmazonRoute53 route53Client = Mockito.mock(AmazonRoute53.class);
+        Route53Updater route53Updater = new Route53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client);
 
         route53Updater.setRoute53Client(mockRoute53Client());
         urlUpdater = new UrlUpdater(route53Updater);
-
-
     }
 
     @Before
@@ -69,34 +57,24 @@ public class UrlUpdaterTest {
         assertThat(request.getHostedZoneId(), is(equalTo(hostedZoneId)));
         assertThat(request.getChangeBatch().getChanges().size(), is(equalTo(1)));
 
-        this.recordSet = request.getChangeBatch()
-            .getChanges()
-            .get(0).getResourceRecordSet();
-
-
+        this.recordSet = request.getChangeBatch().getChanges().get(0).getResourceRecordSet();
     }
-
 
     private AmazonRoute53 mockRoute53Client() {
         AmazonRoute53 client = Mockito.mock(AmazonRoute53.class);
         ListHostedZonesResult mockResult = new ListHostedZonesResult()
-            .withHostedZones(
-                new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
+            .withHostedZones(new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
         when(client.listHostedZones()).thenReturn(mockResult);
         return client;
     }
 
-
     private AmazonApiGateway mockApiGatewayClient() {
         AmazonApiGateway client = Mockito.mock(AmazonApiGateway.class);
-        when(client.getDomainName(any()))
-            .thenReturn(new GetDomainNameResult().withRegionalDomainName(domainName));
+        when(client.getDomainName(any())).thenReturn(new GetDomainNameResult().withRegionalDomainName(domainName));
 
         // necessary when apiGateway is called to delete old mappings
-        when(client.getBasePathMappings(any())).thenReturn(
-            new GetBasePathMappingsResult()
-                .withItems(new BasePathMapping().withBasePath("BasePathValue"))
-        );
+        when(client.getBasePathMappings(any()))
+            .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
         return client;
     }
 
@@ -107,8 +85,6 @@ public class UrlUpdaterTest {
 
         String cnameRecord = recordSet.getResourceRecords().get(0).getValue();
         assertThat(cnameRecord, is(equalTo(domainName)));
-
-
     }
 
     @Test
@@ -125,6 +101,4 @@ public class UrlUpdaterTest {
         String cnameRecord = recordSet.getResourceRecords().get(0).getValue();
         assertThat(cnameRecord, is(equalTo(domainName)));
     }
-
-
 }

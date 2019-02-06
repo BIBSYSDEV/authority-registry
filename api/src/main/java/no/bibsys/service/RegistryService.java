@@ -87,7 +87,6 @@ public class RegistryService {
                 throw new RegistryNotFoundException(registryName);
             default:
                 throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
-
         }
     }
 

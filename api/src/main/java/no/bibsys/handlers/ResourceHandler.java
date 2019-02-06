@@ -51,9 +51,8 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
         String restApiId = restApiId();
         AmazonApiGateway apiGateway = AmazonApiGatewayClientBuilder.defaultClient();
-        AmazonRoute53 route53Client= AmazonRoute53ClientBuilder.defaultClient();
-        Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway,route53Client);
-
+        AmazonRoute53 route53Client = AmazonRoute53ClientBuilder.defaultClient();
+        Route53Updater route53Updater = new Route53Updater(urlInfo, restApiId, apiGateway, route53Client);
         return new UrlUpdater(route53Updater);
     }
 
