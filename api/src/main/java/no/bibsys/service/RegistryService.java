@@ -18,7 +18,7 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
-import no.bibsys.web.model.RegistryInfoDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 
 public class RegistryService {
 
@@ -35,7 +35,7 @@ public class RegistryService {
         registryMetadataTableName = environmentReader.readEnv(EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME);
     }
 
-    public RegistryInfoDto createRegistry(RegistryDto registryDto)
+    public RegistryInfoNoMetadataDto createRegistry(RegistryDto registryDto)
         throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
 
         Registry registry = registryManager
@@ -44,11 +44,11 @@ public class RegistryService {
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
 
-        RegistryInfoDto registryInfoDto = new RegistryInfoDto(registryDto);
-        registryInfoDto.setPath("/registry/" + registryInfoDto.getId());
-        registryInfoDto.setApiKey(savedApiKey);
+        RegistryInfoNoMetadataDto registryInfoNoMetadataDto = new RegistryInfoNoMetadataDto(registryDto);
+        registryInfoNoMetadataDto.setPath("/registry/" + registryInfoNoMetadataDto.getId());
+        registryInfoNoMetadataDto.setApiKey(savedApiKey);
 
-        return registryInfoDto;
+        return registryInfoNoMetadataDto;
     }
 
     public RegistryDto getRegistry(String registryId) {
@@ -56,11 +56,11 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
-    public RegistryInfoDto getRegistryInfo(String registryName) throws JsonProcessingException {
+    public RegistryInfoNoMetadataDto getRegistryInfo(String registryName) throws JsonProcessingException {
 
         RegistryDto registry = getRegistry(registryName);
 
-        return new RegistryInfoDto(registry);
+        return new RegistryInfoNoMetadataDto(registry);
     }
 
     public void deleteRegistry(String registryId) {

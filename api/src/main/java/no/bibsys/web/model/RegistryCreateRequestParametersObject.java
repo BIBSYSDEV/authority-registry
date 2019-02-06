@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * expect a validation schema. The validation schema will be set after the registry has been created.
  */
 @XmlRootElement
-public class RegistryCreationDto {
+public class RegistryCreateRequestParametersObject {
 
 
     private String id;
@@ -72,11 +72,11 @@ public class RegistryCreationDto {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RegistryCreationDto)) {
+        if (!(o instanceof RegistryCreateRequestParametersObject)) {
             return false;
         }
 
-        RegistryCreationDto that = (RegistryCreationDto) o;
+        RegistryCreateRequestParametersObject that = (RegistryCreateRequestParametersObject) o;
 
         if (!getId().equals(that.getId())) {
             return false;
