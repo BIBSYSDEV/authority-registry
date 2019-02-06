@@ -50,5 +50,3 @@
   bsa:definition "Qilins that are enbalmed"@en ;
   bsa:narrower :c00003 ;
   bsa:related :c00002 .
-  
- 

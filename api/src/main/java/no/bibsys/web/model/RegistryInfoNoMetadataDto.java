@@ -1,6 +1,8 @@
 package no.bibsys.web.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class RegistryInfoNoMetadataDto {
 
     private String id;

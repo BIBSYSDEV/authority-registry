@@ -48,7 +48,6 @@ public class SampleData {
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
 
-
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> metadata = (Map<String, Object>) mapper.convertValue(mapper.createObjectNode(), Map.class);
         Map<String, String> contextMap = new HashMap<>();
