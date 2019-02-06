@@ -50,7 +50,7 @@ dependencies {
     implementation("org.apache.jena:jena-arq:3.9.0")
 	
 	// MARC
-	implementation ("org.marc4j:marc4j:2.8.3")
+	implementation("org.marc4j:marc4j:2.8.3")
 	
     // for testing
     testImplementation ("com.amazonaws:DynamoDBLocal:1.11.119")
