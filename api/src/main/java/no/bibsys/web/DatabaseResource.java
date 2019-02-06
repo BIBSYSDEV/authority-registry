@@ -1,20 +1,10 @@
 package no.bibsys.web;
 
 
-import com.amazonaws.services.s3.Headers;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +23,20 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.EntityService;
@@ -43,6 +47,7 @@ import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryCreationDto;
 import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
@@ -77,13 +82,13 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public Response createRegistry(
         @RequestBody(description = "Request object to create registry", content = @Content(schema =
         @Schema(implementation = RegistryCreationDto.class))) RegistryDto registryDto)
         throws Exception {
 
-        RegistryDto createdRegistry = registryService.createRegistry(registryDto);
+        RegistryInfoDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
     }
 
@@ -96,7 +101,6 @@ public class DatabaseResource {
         return Response.ok(registryList).build();
     }
 
-
     @GET
     @Path("/{registryName}")
 
@@ -105,7 +109,7 @@ public class DatabaseResource {
         CustomMediaType.APPLICATION_TURTLE})
     public Response getRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
-            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws JsonProcessingException {
 
         RegistryDto registryDto = registryService.getRegistry(registryName);
         return Response.ok(registryDto).build();
@@ -119,7 +123,7 @@ public class DatabaseResource {
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
-            RegistryDto.class))) RegistryDto registryDto) {
+            RegistryDto.class))) RegistryDto registryDto) throws IOException {
 
         RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
         return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId())).build();
@@ -173,9 +177,9 @@ public class DatabaseResource {
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response getRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
-            + "get schema", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            + "get schema", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) throws JsonProcessingException {
 
-        RegistryDto registryDto = registryService.getRegistry(registryName);
+        RegistryInfoDto registryDto = registryService.getRegistryInfo(registryName);
         return Response.ok(registryDto).build();
     }
 
@@ -205,7 +209,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Entity to create", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
@@ -235,7 +239,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Array of Entity to upload", content = @Content(array = @ArraySchema(schema =
         @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
         for (EntityDto entityDto : entityDtos) {
@@ -299,7 +303,7 @@ public class DatabaseResource {
             + " entity to be updated", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
         @RequestBody(description = "Entity to update", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException, JsonProcessingException {
 
         EntityDto entity = entityService.updateEntity(registryName, entityDto);
 

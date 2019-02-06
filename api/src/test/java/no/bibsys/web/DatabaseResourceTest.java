@@ -57,6 +57,7 @@ import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFou
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
 public class DatabaseResourceTest extends JerseyTest {
@@ -125,16 +126,14 @@ public class DatabaseResourceTest extends JerseyTest {
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() throws Exception {
         String registryName = "TheRegistryName";
+        
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
-        Response response = target(REGISTRY_PATH).request().accept(MediaType.APPLICATION_JSON)
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey)
-            .buildPost(javax.ws.rs.client.Entity.entity(expectedRegistry, MediaType.APPLICATION_JSON)).invoke();
+        Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        RegistryDto actualRegistry = response.readEntity(RegistryDto.class);
+        RegistryInfoDto actualRegistry = response.readEntity(RegistryInfoDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         assertThat(actualRegistry.getId(), is(equalTo(expectedRegistry.getId())));
-        assertThat(actualRegistry.getMetadata(), is(equalTo(expectedRegistry.getMetadata())));
     }
 
     @Test
@@ -244,7 +243,7 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-            .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
+            .post(javax.ws.rs.client.Entity.entity(registryDto.toString(), MediaType.APPLICATION_JSON));
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -325,7 +324,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
 
         Response response = readSchema(registryName);
-        RegistryDto registry = response.readEntity(RegistryDto.class);
+        RegistryInfoDto registry = response.readEntity(RegistryInfoDto.class);
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
     }
 
@@ -411,7 +410,8 @@ public class DatabaseResourceTest extends JerseyTest {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
-        RegistryDto newRegistry = createRegistryResponse.readEntity(RegistryDto.class);
+        
+        RegistryInfoDto newRegistry = createRegistryResponse.readEntity(RegistryInfoDto.class);
         String oldApiKey = newRegistry.getApiKey();
 
         Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
@@ -583,6 +583,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private Response createRegistry(RegistryDto registryDto, String apiKey) {
+        
         Response response = target("/registry").request().accept(MediaType.APPLICATION_JSON)
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey)
             .post(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));

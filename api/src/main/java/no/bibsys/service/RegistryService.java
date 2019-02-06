@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -17,6 +20,7 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoDto;
 
 public class RegistryService {
 
@@ -33,7 +37,7 @@ public class RegistryService {
         registryMetadataTableName = environmentReader.readEnv(EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME);
     }
 
-    public RegistryDto createRegistry(RegistryDto registryDto)
+    public RegistryInfoDto createRegistry(RegistryDto registryDto)
         throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException {
 
         Registry registry = registryManager
@@ -42,10 +46,11 @@ public class RegistryService {
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
 
-        RegistryDto returnRegistryDto = RegistryConverter.toRegistryDto(registry);
-        returnRegistryDto.setApiKey(savedApiKey);
-
-        return returnRegistryDto;
+        RegistryInfoDto registryInfoDto = new RegistryInfoDto(registryDto);
+        registryInfoDto.setPath("/registry/" + registryInfoDto.getId());
+        registryInfoDto.setApiKey(savedApiKey);
+        
+        return registryInfoDto;
     }
 
     public RegistryDto getRegistry(String registryId) {
@@ -53,6 +58,14 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
+    public RegistryInfoDto getRegistryInfo(String registryName) throws JsonProcessingException {
+
+        RegistryDto registry = getRegistry(registryName);
+        
+        return new RegistryInfoDto(registry);
+    }
+
+    
     public void deleteRegistry(String registryId) {
         registryManager.deleteRegistry(registryMetadataTableName, registryId);
         authenticationService.deleteApiKeyForRegistry(registryId);
@@ -68,7 +81,7 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
-    public RegistryDto updateRegistryMetadata(RegistryDto registryDto) {
+    public RegistryDto updateRegistryMetadata(RegistryDto registryDto) throws IOException {
         Registry registry = registryManager
             .updateRegistryMetadata(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
         return RegistryConverter.toRegistryDto(registry);

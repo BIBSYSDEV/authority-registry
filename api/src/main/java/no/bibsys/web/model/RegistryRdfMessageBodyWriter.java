@@ -16,7 +16,7 @@ import no.bibsys.utils.JsonUtils;
 
 @Provider
 @Produces({CustomMediaType.APPLICATION_RDF, CustomMediaType.APPLICATION_TURTLE, CustomMediaType.APPLICATION_RDF_XML,
-    CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_JSON_LD, MediaType.APPLICATION_JSON})
+    CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_JSON_LD})
 public class RegistryRdfMessageBodyWriter extends CustomMessageBodyWriter<RegistryDto> {
 
     @Override
@@ -26,10 +26,11 @@ public class RegistryRdfMessageBodyWriter extends CustomMessageBodyWriter<Regist
     }
 
     @Override
-
     public void writeTo(RegistryDto registry, Class<?> type, Type genericType, Annotation[] annotations,
         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream)
         throws IOException, WebApplicationException {
+
+
 
         Map<String, Object> metadata = registry.getMetadata();
         String body = JsonUtils.newJsonParser().writeValueAsString(metadata);

@@ -71,5 +71,5 @@ Feature: Anonymous user features
       | application/json        |
       | application/rdf         |
     Then they see metadata related to the entity registry regarding:
-      | Metatata                |
+      | Metadata                |
       | Available data profiles |

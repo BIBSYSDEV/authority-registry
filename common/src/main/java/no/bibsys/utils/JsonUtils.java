@@ -1,11 +1,11 @@
 package no.bibsys.utils;
 
+import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 
 public final class JsonUtils {
 

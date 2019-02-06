@@ -2,6 +2,7 @@ package no.bibsys.testtemplates;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.jena.riot.Lang;
@@ -50,6 +51,9 @@ public class SampleData {
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> metadata = (Map<String, Object>) mapper.convertValue(mapper.createObjectNode(), Map.class);
+        Map<String, String> contextMap = new HashMap<>();
+        contextMap.put("@vocab", "http://example.org/entity#");
+        metadata.put("@context", contextMap);
 
         metadata.put("Registry_name", "Registry name value");
         metadata.put("Registry_type", "Registry type value");
