@@ -12,9 +12,10 @@
 //      | Available data profiles |
 
 import {Then, When} from 'cypress-cucumber-preprocessor/steps';
+import EOL from 'os';
 
 When('an anonymous user dereferences the base URI for the registry specifying mediatypes:', (dataTable) => {
-  cy.log('-- anonymous_user_view_entity_registry_metadata_RDF.js --');
+  cy.log('-- anonymous_user_view_entity_registry_metadata_HTML_RDF.js --');
 
   cy.wrap('rdf').as('type');
   const formats = dataTable.rawTable;
@@ -42,7 +43,7 @@ When('an anonymous user dereferences the base URI for the registry specifying me
 //      | Description of available formats |
 
 When(/an anonymous user dereferences the base URI for the registry specifying mediatype text\/html/, (dataTable) => {
-  cy.log('-- anonymous_user_view_entity_registry_metadata_HTML.js --');
+  cy.log('-- anonymous_user_view_entity_registry_metadata_HTML_RDF.js --');
 
   cy.get('@registryName').then((registryName) => {
     cy.wrap('html').as('type');
@@ -57,7 +58,7 @@ Then('they see metadata related to the entity registry regarding:', () => {
       if (type === 'rdf') {
         testRdf(registryName, registryEndpoint);
       } else {
-        testHtml(registryName, registryEndpoint);
+        checkHtml(registryName);
       }
     });
   });
@@ -67,24 +68,37 @@ function testRdf(registryName, registryEndpoint) {
   cy.log('testing rdf');
   cy.get('@formats').then((formats) => {
     formats.forEach(format => {
-      const formatType = format[0];
-      cy.log(formatType);
-      const fileName = 'tests_registry.' + formatType.replace('application/', '').replace('+', '');
+      const mediaType = format[0];
+      cy.log('mediatype = ' + mediaType);
+      const fileName = 'tests_registry.' + mediaType.replace('application/', '').replace('+', '');
       cy.fixture(fileName).then((testData) => {
         cy.request({
           url: registryEndpoint,
           headers: {
-            Accept: formatType,
+            Accept: mediaType,
           },
         }).then((response) => {
-          if (formatType === "application/json") {
-            testData.id = response.body.id;
-            expect(response.body).to.deep.equal(testData);
-          } else {
-            const tests = testData.split(',');
-            tests.forEach((test) => {
-              expect(response.body).to.contain(test);
-            });
+          switch (mediaType) {
+            default:
+            case 'application/json':
+            case 'application/ld+json':
+              if (typeof testData === 'object') {
+                expect(JSON.stringify(response.body)).to.deep.equal(
+                    JSON.stringify(testData));
+              } else {
+                expect(JSON.stringify(
+                    JSON.parse(response.body))).to.deep.equal(
+                        JSON.stringify(JSON.parse(testData)));
+              }
+              break;
+            case 'application/rdf':
+            case 'application/rdf+xml':
+            case 'application/n-triples':
+            case 'application/turtle':
+              checkAgainstTestData(testData, response);
+              break;
+            case 'text/html':
+              checkHtml(registryName);
           }
         });
       });
@@ -92,10 +106,17 @@ function testRdf(registryName, registryEndpoint) {
   });
 }
 
-function testHtml(registryName, registryEndpoint) {
-  cy.log('testing html');
+function checkAgainstTestData(testData, response) {
+  const tests = testData.split(EOL);
+  tests.forEach((test) => {
+    expect(response.body).to.contain(test);
+  });
 
-  cy.visit(registryEndpoint);
+}
+
+function checkHtml(registryName) {
+  cy.visit('/registry/' + registryName);
+
   cy.contains(registryName);
 
   cy.get('li[data-automation-id=name]').contains('nameValue');
