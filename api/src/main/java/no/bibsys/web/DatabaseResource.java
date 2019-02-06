@@ -48,11 +48,7 @@ import no.bibsys.web.security.Roles;
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
-//@OpenAPIDefinition(info = @Info(title = "Entity Registry", version = "0.0",
-//        description = "API documentation for Entity Registry",
-//        license = @License(name = "MIT", url = "https://opensource.org/licenses/MIT"),
-//        contact = @Contact(url = "<SERVER_PLACEHOLDER>", name = "Entity registry team",
-//                email = "entity@example.org")))
+
 @SecurityScheme(name = ApiKeyConstants.API_KEY_PARAM_NAME, type = SecuritySchemeType.APIKEY, in =
     SecuritySchemeIn.HEADER)
 public class DatabaseResource {
