@@ -11,10 +11,10 @@ public class RegistryInfoDto {
     }
     
     public RegistryInfoDto(RegistryDto registry) {
-        setId(registry.getId());
-        setApiKey(registry.getApiKey());
-        setPath(registry.getPath());
-        setSchema(registry.getSchema());
+        id = registry.getId();
+        apiKey = registry.getApiKey();
+        path = registry.getPath();
+        schema = registry.getSchema();
     }
 
     public String getSchema() {
