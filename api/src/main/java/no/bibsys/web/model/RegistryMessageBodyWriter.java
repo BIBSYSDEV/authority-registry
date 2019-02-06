@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,7 +41,7 @@ public class RegistryMessageBodyWriter implements MessageBodyWriter<RegistryDto>
 
         Map<String, Object> registryMap = new ConcurrentHashMap<>();
 
-        Map<?, ?> metadataMap = new HashMap<String, Object>(registry.getMetadata());
+        Map<?, ?> metadataMap = new ConcurrentHashMap<String, Object>(registry.getMetadata());
         metadataMap.remove(JsonLdConsts.CONTEXT);
         registryMap.put(METADATA, metadataMap);
         registryMap.put(ID, registry.getId());
