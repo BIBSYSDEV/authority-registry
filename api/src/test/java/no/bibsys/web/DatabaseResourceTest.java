@@ -469,6 +469,26 @@ public class DatabaseResourceTest extends JerseyTest {
             field -> assertThat(html.toLowerCase(),
                 containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
     }
+    
+    @Test
+    public void getEntity_applicationMarc_entityAsMarc() throws Exception {
+        String registryName = UUID.randomUUID().toString();
+        createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
+        EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
+        
+        Response entityAsmarc = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_MARC);
+        String marc = entityAsmarc.readEntity(String.class);
+        
+        assertThat(marc.toLowerCase(), containsString("html"));
+        JsonNode body = JsonUtils.newJsonParser().readTree(entity.getBody());
+        Iterable<String> bodyIter = body::fieldNames;
+        List<String> bodyFields = StreamSupport.stream(bodyIter.spliterator(), false).collect(Collectors.toList());
+        
+        bodyFields.stream().filter(field -> !field.toLowerCase().equals(JsonLdConsts.CONTEXT)).forEach(
+                field -> assertThat(marc.toLowerCase(),
+                        containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
+    }
 
     @Test
     public void getEntity_applicationJson_entityAsJson() throws Exception {

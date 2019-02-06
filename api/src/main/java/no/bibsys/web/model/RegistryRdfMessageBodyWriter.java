@@ -33,7 +33,7 @@ public class RegistryRdfMessageBodyWriter extends CustomMessageBodyWriter<Regist
         Map<String, Object> metadata = registry.getMetadata();
         String body = JsonUtils.newJsonParser().writeValueAsString(metadata);
 
-        String serialized = serialize(mediaType, body);
+        String serialized = serializeRdf(mediaType, body);
         writerStringToOutputStream(outputStream, serialized);
 
     }

@@ -24,7 +24,7 @@ public class EntityRdfMessageBodyWriter extends CustomMessageBodyWriter<EntityDt
         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException {
 
         String body = entity.getBody();
-        String serialized = serialize(mediaType, body);
+        String serialized = serializeRdf(mediaType, body);
         writerStringToOutputStream(entityStream, serialized);
     }
 

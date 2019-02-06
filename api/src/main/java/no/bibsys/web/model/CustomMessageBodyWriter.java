@@ -17,7 +17,7 @@ import org.apache.jena.riot.RDFDataMgr;
 public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T> {
 
 
-    protected String serialize(MediaType mediaType, String body) {
+    protected String serializeRdf(MediaType mediaType, String body) {
 
         Model model = ModelFactory.createDefaultModel();
         InputStream stream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
