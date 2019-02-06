@@ -1,6 +1,5 @@
 package no.bibsys.web.model;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -45,19 +44,14 @@ public class EntityMarcMessageBodyWriter extends CustomMessageBodyWriter<EntityD
         
         MarcFactory factory = MarcFactory.newInstance();
         Record record = factory.newRecord();
-        record.addVariableField(factory.newControlField("001", "111"));
-        DataField preferredLabelField = factory.newDataField();
-        preferredLabelField.setTag(PREFERRED_LABEL_FIELD);
-        preferredLabelField.addSubfield(factory.newSubfield('a', preferredLabelValue));
+        DataField preferredLabelField = factory.newDataField(PREFERRED_LABEL_FIELD, ' ', ' ', "a", preferredLabelValue);
         record.addVariableField(preferredLabelField);
         
-        OutputStream baos = new ByteArrayOutputStream();;
-        MarcWriter writer = new MarcXmlWriter(baos, true);
+        MarcWriter writer = new MarcXmlWriter(entityStream, true);
         writer.write(record);
         writer.close();
-        
-        System.out.println(baos.toString());
     }
+     
 
     private String extractPreferredLabel(String body) throws IOException, JsonParseException, JsonMappingException {
         ObjectMapper objectMapper = JsonUtils.newJsonParser();

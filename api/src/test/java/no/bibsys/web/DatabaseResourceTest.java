@@ -480,14 +480,9 @@ public class DatabaseResourceTest extends JerseyTest {
         Response entityAsmarc = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_MARC);
         String marc = entityAsmarc.readEntity(String.class);
         
-        assertThat(marc.toLowerCase(), containsString("html"));
-        JsonNode body = JsonUtils.newJsonParser().readTree(entity.getBody());
-        Iterable<String> bodyIter = body::fieldNames;
-        List<String> bodyFields = StreamSupport.stream(bodyIter.spliterator(), false).collect(Collectors.toList());
-        
-        bodyFields.stream().filter(field -> !field.toLowerCase().equals(JsonLdConsts.CONTEXT)).forEach(
-                field -> assertThat(marc.toLowerCase(),
-                        containsString("data-automation-id=\"" + field.toLowerCase() + "\"")));
+        assertThat(marc.toLowerCase(), containsString("marc:record"));
+        assertThat(marc.toLowerCase(), containsString("<marc:datafield tag=\"100\" ind1=\" \" ind2=\" \">"));
+        assertThat(marc.toLowerCase(), containsString("<marc:subfield code=\"a\">norsklabel</marc:subfield>"));
     }
 
     @Test
