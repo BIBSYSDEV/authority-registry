@@ -16,7 +16,7 @@ import no.bibsys.utils.JsonUtils;
 
 @Provider
 @Produces({CustomMediaType.APPLICATION_RDF, CustomMediaType.APPLICATION_TURTLE, CustomMediaType.APPLICATION_RDF_XML,
-    CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_JSON_LD})
+    CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_JSON_LD, MediaType.APPLICATION_JSON})
 public class RegistryRdfMessageBodyWriter extends CustomMessageBodyWriter<RegistryDto> {
 
     @Override
