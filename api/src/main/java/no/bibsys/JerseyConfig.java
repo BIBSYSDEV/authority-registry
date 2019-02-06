@@ -43,6 +43,7 @@ import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClasse
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaSyntaxErrorExceptionMapper;
 import no.bibsys.web.model.EntityHtmlMessageBodyWriter;
+import no.bibsys.web.model.EntityMarcMessageBodyWriter;
 import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
@@ -95,6 +96,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryMessageBodyWriter.class);
         register(RegistryRdfMessageBodyWriter.class);
         register(EntityHtmlMessageBodyWriter.class);
+        register(EntityMarcMessageBodyWriter.class);
         register(EntityRdfMessageBodyWriter.class);
     }
 
