@@ -43,7 +43,7 @@ public class SampleData {
         return entityDto;
     }
 
-    public RegistryDto sampleRegistryDto(String registryName) throws IOException {
+    public RegistryDto sampleRegistryDto(String registryName) {
 
         RegistryDto registryDto = new RegistryDto();
         registryDto.setId(registryName);
