@@ -1,25 +1,22 @@
 package no.bibsys.entitydata.validation;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
+import no.bibsys.utils.IoUtils;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 
-import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
-import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
-import no.bibsys.utils.IoUtils;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ShaclParser {
 
@@ -36,32 +33,14 @@ public class ShaclParser {
 
         Set<Model> propertiesModels = listProperties();
         return propertiesModels.stream().flatMap(m -> m.listObjectsOfProperty(ShaclConstants.PATH).toSet().stream())
-            .map(rdfNode -> (Resource) rdfNode).filter(RdfConstants::isNotRdfType).collect(Collectors.toSet());
+                .map(rdfNode -> (Resource) rdfNode).filter(RdfConstants::isNotRdfType).collect(Collectors.toSet());
     }
 
     private Set<Model> listProperties() {
         List<RDFNode> properties = model.listObjectsOfProperty(ShaclConstants.PROPERTY).toList();
         return properties.stream().map(rdfNode -> (ResourceImpl) rdfNode)
-            .map(resource -> resource.listProperties().toModel()).collect(Collectors.toSet());
+                .map(resource -> resource.listProperties().toModel()).collect(Collectors.toSet());
 
-    }
-
-    public Set<Resource> resourceObjectNodes(Property targetClassProperty) {
-        List<RDFNode> objectNodes = model.listObjectsOfProperty(targetClassProperty).toList();
-        if (areRdfNodesResources(objectNodes)) {
-            return objectNodes.stream().map(rdfNode -> (Resource) rdfNode).collect(Collectors.toSet());
-        } else {
-            return Collections.emptySet();
-        }
-    }
-
-    private boolean areRdfNodesResources(List<RDFNode> rdfNodes) {
-        for (RDFNode node : rdfNodes) {
-            if (!node.isResource()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public Model getModel() {
