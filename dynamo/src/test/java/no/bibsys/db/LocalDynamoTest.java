@@ -1,12 +1,16 @@
 package no.bibsys.db;
 
-import java.io.IOException;
-import org.junit.Before;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.bibsys.db.structures.RegistryStatus;
+import org.junit.Before;
+import org.mockito.Mockito;
 
+import java.io.IOException;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 public abstract class LocalDynamoTest extends DynamoTest {
 
@@ -32,7 +36,25 @@ public abstract class LocalDynamoTest extends DynamoTest {
     protected TableDriver newTableDriver() {
         return TableDriver.create(localClient);
     }
-    
-    
+
+    protected RegistryManager registryManagerThatFailsToCreateATable() throws IOException {
+        TableDriver mockDriver = Mockito.mock(TableDriver.class);
+        DynamoDBMapper mapper = Mockito.mock(DynamoDBMapper.class);
+        when(mockDriver.status(anyString())).thenReturn(RegistryStatus.ACTIVE.name())
+                .thenReturn(RegistryStatus.NOT_FOUND.name());
+        when(mockDriver.tableExists(anyString())).thenReturn(true);
+        return new RegistryManager(mockDriver, mapper);
+
+    }
+
+
+    protected RegistryManager registryManagerThatFailsToCreateMetadataTable() throws IOException {
+        TableDriver mockDriver = Mockito.mock(TableDriver.class);
+        DynamoDBMapper mapper = Mockito.mock(DynamoDBMapper.class);
+        when(mockDriver.status(anyString())).thenReturn(RegistryStatus.UPDATING.name());
+        when(mockDriver.tableExists(anyString())).thenReturn(true);
+        return new RegistryManager(mockDriver, mapper);
+
+    }
 
 }
