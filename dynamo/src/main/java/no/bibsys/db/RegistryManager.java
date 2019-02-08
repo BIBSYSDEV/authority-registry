@@ -126,13 +126,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public RegistryStatus status(String registryName) {
-
-        RegistryStatus registryStatus = RegistryStatus.valueOf(tableDriver.status(registryName));
-        if (registryStatus == null) {
-            registryStatus = RegistryStatus.NOT_FOUND;
-        }
-
-        return registryStatus;
+        return RegistryStatus.valueOf(tableDriver.status(registryName));
     }
 
     public void emptyRegistry(String tableName) {
@@ -141,26 +135,18 @@ public class RegistryManager extends ModelParser {
     }
 
     public void deleteRegistry(String registryMetadataTableName, String registryId) {
-
         logger.info("Deleting registry, registryId={}", registryId);
-
         validateRegistryExists(registryId);
         tableDriver.deleteTable(registryId);
         Registry registry = getRegistry(registryMetadataTableName, registryId);
 
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
+        mapper.delete(registry, config);
 
-        try {
-            mapper.delete(registry, config);
-        } catch (ResourceNotFoundException e) {
-            logger.info("Registry not found, registryId={}", registryId);
-            throw new RegistryNotFoundException(registryId);
-        }
     }
 
     public Registry getRegistry(String registryMetadataTableName, String registryId) {
-
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
 
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()

@@ -3,6 +3,7 @@ package no.bibsys.db;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
+import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -17,9 +18,13 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +35,45 @@ public class RegistryManagerTest extends LocalDynamoTest {
     private static final String VALIDATION_FOLDER = "validation";
     private static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
     private static final String ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON = "alternativeValidShaclValidationSchema.json";
+
     private ModelParser modelParser = new ModelParser();
+
+    @Test
+    public void getRegistry_regsitryExists_registy()
+            throws SettingValidationSchemaUponCreationException, RegistryCreationFailureException,
+            RegistryMetadataTableBeingCreatedException {
+        Registry expectedRegistry = sampleData.sampleRegistry("getRegistry");
+        registryManager.createRegistry(registryMetadataTableName, expectedRegistry);
+        Registry actualRegistry = registryManager.getRegistry(registryMetadataTableName, expectedRegistry.getId());
+
+        assertThat(expectedRegistry, is(equalTo(actualRegistry)));
+    }
+
+    @Test(expected = RegistryNotFoundException.class)
+    public void getRegistry_regsitryNotExists_exception()
+            throws SettingValidationSchemaUponCreationException, RegistryCreationFailureException,
+            RegistryMetadataTableBeingCreatedException {
+        Registry registryForMetadataTableCreation = sampleData.sampleRegistry("getRegistry");
+        registryManager.createRegistry(registryMetadataTableName, registryForMetadataTableCreation);
+        Registry notExistingRegistry = sampleData.sampleRegistry("anotherRegistry");
+        Registry actualRegistry = registryManager.getRegistry(registryMetadataTableName, notExistingRegistry.getId());
+
+        assertThat(actualRegistry, is(not(equalTo(actualRegistry))));
+    }
+
+    @Test
+    public void getRegistries_someRegistries_registryList()
+            throws SettingValidationSchemaUponCreationException, RegistryCreationFailureException,
+            RegistryMetadataTableBeingCreatedException {
+        Set<String> registryNames = new HashSet<>(Arrays.asList("registry1", "registry2"));
+        for (String regName : registryNames) {
+            registryManager.createRegistry(registryMetadataTableName, sampleData.sampleRegistry(regName));
+        }
+
+        Set<String> actualList = new HashSet<>(registryManager.getRegistries(registryMetadataTableName));
+        assertThat(actualList, is(equalTo(registryNames)));
+
+    }
 
     @Test
     public void createRegistry_RegistryNotExisting_RegistryExists() throws Exception {
@@ -84,16 +127,24 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
     @Test(expected = RegistryMetadataTableBeingCreatedException.class)
+    public void createRegistry_registryNotExistsMetadataTableIsBeingCreated_exception()
+            throws IOException, SettingValidationSchemaUponCreationException,
+            RegistryMetadataTableBeingCreatedException, RegistryCreationFailureException {
+        String registryName = "aRegistry";
+        Registry registry = sampleData.sampleRegistry(registryName);
+        RegistryManager registryManager = registryManagerThatIsCreatingMetadataTable();
+        registryManager.createRegistry(registryMetadataTableName, registry);
+    }
+
+    @Test(expected = RegistryMetadataTableBeingCreatedException.class)
     public void createRegistry_registryNotExistsMetadataTableNotFound_exception()
             throws IOException, SettingValidationSchemaUponCreationException,
             RegistryMetadataTableBeingCreatedException, RegistryCreationFailureException {
         String registryName = "aRegistry";
         Registry registry = sampleData.sampleRegistry(registryName);
-        RegistryManager registryManager = registryManagerThatFailsToCreateMetadataTable();
+        RegistryManager registryManager = registryManagerThatFailsCreatingMetadataTable();
         registryManager.createRegistry(registryMetadataTableName, registry);
     }
-
-
 
     @Test
     public void updateMetadata_RegistryExisting_MetadataUpdated() throws Exception {

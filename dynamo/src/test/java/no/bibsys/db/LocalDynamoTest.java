@@ -48,10 +48,19 @@ public abstract class LocalDynamoTest extends DynamoTest {
     }
 
 
-    protected RegistryManager registryManagerThatFailsToCreateMetadataTable() throws IOException {
+    protected RegistryManager registryManagerThatIsCreatingMetadataTable() throws IOException {
         TableDriver mockDriver = Mockito.mock(TableDriver.class);
         DynamoDBMapper mapper = Mockito.mock(DynamoDBMapper.class);
         when(mockDriver.status(anyString())).thenReturn(RegistryStatus.UPDATING.name());
+        when(mockDriver.tableExists(anyString())).thenReturn(true);
+        return new RegistryManager(mockDriver, mapper);
+
+    }
+
+    protected RegistryManager registryManagerThatFailsCreatingMetadataTable() throws IOException {
+        TableDriver mockDriver = Mockito.mock(TableDriver.class);
+        DynamoDBMapper mapper = Mockito.mock(DynamoDBMapper.class);
+        when(mockDriver.status(anyString())).thenReturn(RegistryStatus.NOT_FOUND.name());
         when(mockDriver.tableExists(anyString())).thenReturn(true);
         return new RegistryManager(mockDriver, mapper);
 
