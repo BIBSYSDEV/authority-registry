@@ -1,10 +1,12 @@
 package no.bibsys.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -15,6 +17,7 @@ import no.bibsys.db.exceptions.RegistryUnavailableException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
@@ -73,7 +76,7 @@ public class RegistryService {
     }
 
     public RegistryDto updateRegistrySchema(String registryId, String schema)
-        throws IOException, ShaclModelValidationException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         Registry registry = registryManager.updateRegistrySchema(registryMetadataTableName, registryId, schema);
         return RegistryConverter.toRegistryDto(registry);
     }

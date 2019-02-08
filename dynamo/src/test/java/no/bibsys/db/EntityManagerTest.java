@@ -5,12 +5,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+
+import org.junit.Test;
+
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
-import org.junit.Test;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 
 public class EntityManagerTest extends LocalDynamoTest {
 
@@ -179,7 +182,7 @@ public class EntityManagerTest extends LocalDynamoTest {
     }
 
 
-    private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException {
+    private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
             sampleData.getValidValidationSchemaString());
     }

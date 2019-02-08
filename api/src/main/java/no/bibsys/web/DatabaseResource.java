@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.UnknownStatusException;
@@ -188,7 +189,7 @@ public class DatabaseResource {
             + "update", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String schema)
-        throws IOException, ShaclModelValidationException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
 
         RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
         updateRegistry.setPath(String.format("/registry/%s/schema", registryName));

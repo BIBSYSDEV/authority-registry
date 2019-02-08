@@ -171,20 +171,24 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
         registryDto.getMetadata().put(PUBLISHER, UPDATED_PUBLISHER_VALUE);
         Response updateRegistryResponse = updateRegistry(registryDto, apiAdminKey);
-        assertThat(updateRegistryResponse.getStatusInfo(), is(Status.OK));
+        assertThat(updateRegistryResponse.getStatusInfo(), is(Status.ACCEPTED));
         
         Response getRegistryResponse = getRegistry(registryName, MediaType.APPLICATION_JSON);
-        RegistryDto updatedRegistryDto = getRegistryResponse.readEntity(RegistryDto.class);
-
+        String responseString = getRegistryResponse.readEntity(String.class);
+        assertThat(responseString, containsString(UPDATED_PUBLISHER_VALUE));
     }
     
     @Test
     public void updateRegistryMetadata_registryNotExists_returnsNotFound() {
-        
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+
+        Response updateRegistryResponse = updateRegistry(registryDto, apiAdminKey);
+        assertThat(updateRegistryResponse.getStatusInfo(), is(Status.NOT_FOUND));
     }
 
     private Response updateRegistry(RegistryDto registryDto, String apiKey) {
-        Response response = target("/registry").request().accept(MediaType.APPLICATION_JSON)
+        Response response = target("/registry/" + registryDto.getId()).request().accept(MediaType.APPLICATION_JSON)
                 .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey)
                 .put(javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
         return response;

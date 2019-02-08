@@ -20,6 +20,7 @@ import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
 
@@ -152,7 +153,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test
     public void createRegistry_RegistryNotExistsValidShema_registryWithValidSchema()
         throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
-        ShaclModelValidationException {
+        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         String validationSchemaStr = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
         Registry createdRegistry = createRegistry();
@@ -176,7 +177,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test(expected = ShaclModelValidationException.class)
     public void createRegistry_RegistryNotExistingInValidSchema_invalidSchemaException()
         throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
-        ShaclModelValidationException {
+        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
 
         Registry registry = createRegistry();
         updateRegistryWithInvalidSchema(registry);
@@ -185,7 +186,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test
     public void updateRegistry_RegistryExistsValidShema_registryWithValidSchema()
         throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
-        SettingValidationSchemaUponCreationException {
+        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
@@ -205,7 +206,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test(expected = ShaclModelValidationException.class)
     public void updateRegistry_RegistryExistsInValidShema_registryWithValidSchema()
         throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
-        SettingValidationSchemaUponCreationException {
+        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
@@ -218,13 +219,13 @@ public class RegistryManagerTest extends LocalDynamoTest {
     }
 
     private Registry updateRegistryWithValidSchema(Registry registry)
-        throws IOException, ShaclModelValidationException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
             sampleData.getValidValidationSchemaString());
     }
 
     private Registry updateRegistryWithInvalidSchema(Registry registry)
-        throws IOException, ShaclModelValidationException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
             sampleData.getInvalidValidationSchemaString());
     }

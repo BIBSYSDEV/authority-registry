@@ -27,6 +27,7 @@ import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.ShaclValidator;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
 import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
@@ -188,7 +189,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public Registry updateRegistrySchema(String registryMetadataTableName, String registryId, String schema)
-        throws IOException, ShaclModelValidationException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
         validateRegistryNotEmpty(registryId);
 
