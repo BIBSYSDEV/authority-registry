@@ -1,6 +1,15 @@
 package no.bibsys.service;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.aws.tools.IoUtils;
@@ -16,10 +25,6 @@ import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -77,15 +82,15 @@ public class EntityServiceTest {
 
     @Test(expected = EntityFailedShaclValidationException.class)
     public void addEntity_newInvalidEntity_throwsException()
-            throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
-            ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
+        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         addValidationSchemaToRegistry(registryDto.getId());
         EntityDto entityDto = sampleData.sampleEntityDtoWithInValidData();
         entityService.addEntity(registryDto.getId(), entityDto);
     }
 
-    private void addValidationSchemaToRegistry(String registryId)
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+
+    private void addValidationSchemaToRegistry(String registryId) throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         String validationsSchema = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, SCHACL_VALIDATION_SCHEMA_JSON));
         registryService.updateRegistrySchema(registryId, validationsSchema);
@@ -93,8 +98,9 @@ public class EntityServiceTest {
 
     @Test
     public void addEntity_newValidEntity_registryWithNewEntity()
-            throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
-            ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+
+        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
+        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData();
         addValidationSchemaToRegistry(registryDto.getId());
         entityService.addEntity(registryDto.getId(), expectedEntity);

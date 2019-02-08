@@ -1,5 +1,8 @@
 package no.bibsys.db;
 
+
+import org.junit.Test;
+
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
@@ -10,7 +13,7 @@ import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
-import org.junit.Test;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 
 import java.io.IOException;
 
@@ -195,8 +198,7 @@ public class EntityManagerTest extends LocalDynamoTest {
         entityManager.updateEntity(tableName, entity);
     }
 
-    private void updateRegistrySchema(Registry registry)
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+    private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
                 sampleData.getValidValidationSchemaString());
     }

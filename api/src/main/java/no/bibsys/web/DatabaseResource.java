@@ -45,9 +45,40 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+<<<<<<< Upstream, based on origin/develop
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+=======
+
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
+import no.bibsys.service.EntityService;
+import no.bibsys.service.RegistryService;
+import no.bibsys.service.exceptions.UnknownStatusException;
+import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
+import no.bibsys.web.model.CustomMediaType;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryCreateRequestParametersObject;
+import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.security.ApiKeyConstants;
+import no.bibsys.web.security.Roles;
+>>>>>>> d27a075 Update metadata test
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -184,7 +215,11 @@ public class DatabaseResource {
             + "update", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String schema)
+<<<<<<< Upstream, based on origin/develop
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+=======
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+>>>>>>> d27a075 Update metadata test
 
         RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
         updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
