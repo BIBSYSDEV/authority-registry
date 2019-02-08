@@ -1,15 +1,6 @@
 package no.bibsys;
 
-import java.io.IOException;
-
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.aws.tools.Environment;
@@ -37,7 +28,6 @@ import no.bibsys.web.exception.SettingValidationSchemaUponCreationExceptionMappe
 import no.bibsys.web.exception.validationexceptionmappers.EntryFailedShaclValidationExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper;
-import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
@@ -48,6 +38,13 @@ import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 @SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
@@ -116,7 +113,6 @@ public class JerseyConfig extends ResourceConfig {
         register(EntryFailedShaclValidationExceptionMapper.class);
         register(ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper.class);
         register(ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper.class);
-        register(ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper.class);
         register(ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper.class);
         register(ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper.class);
         register(ValidationSchemaSyntaxErrorExceptionMapper.class);

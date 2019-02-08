@@ -1,5 +1,22 @@
 package no.bibsys.web.model;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jsonldjava.core.JsonLdConsts;
+import no.bibsys.aws.tools.JsonUtils;
+import no.bibsys.entitydata.validation.ontology.UnitOntology;
+import no.bibsys.utils.ModelParser;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.RDF;
+
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -9,26 +26,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.vocabulary.RDF;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.github.jsonldjava.core.JsonLdConsts;
-
-import no.bibsys.aws.tools.JsonUtils;
-import no.bibsys.entitydata.validation.ontology.UnitOntology;
-import no.bibsys.utils.ModelParser;
 
 @Provider
 @Produces(MediaType.TEXT_HTML)
@@ -42,7 +39,7 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements MessageB
     private static final String BODY = "body";
     private static final String ENTITY_TEMPLATE = "entitytemplate";
     private static final String LABEL = "label";
-    public static final Lang SUPPORTED_LANGUAGE = Lang.JSONLD;
+    private static final Lang SUPPORTED_LANGUAGE = Lang.JSONLD;
 
 
     @Override

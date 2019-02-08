@@ -1,12 +1,8 @@
 package no.bibsys.entitydata.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -17,9 +13,12 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
-import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
-import no.bibsys.utils.IoUtils;
-import no.bibsys.utils.ModelParser;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DataValidatorTest extends ModelParser {
 
@@ -97,7 +96,7 @@ public class DataValidatorTest extends ModelParser {
     @Test(expected = EntityFailedShaclValidationException.class)
     public void isValidEntry_validationSchemaAndInvalidGraph_f()
         throws EntityFailedShaclValidationException, IOException {
-        TestData testData = new TestData(Paths.get("validation", INVALID_GRAPH_TTL)).invoke();
+        TestData testData = new TestData(Paths.get(RESOURCES_FOLDER, INVALID_GRAPH_TTL)).invoke();
         Model dataModel = testData.getDataModel();
         assertFalse(dataValidator.isValidEntry(dataModel));
     }
@@ -112,6 +111,20 @@ public class DataValidatorTest extends ModelParser {
             Lang.JSONLD);
         DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.isValidEntry(dataModel));
+    }
+
+
+    @Test
+    public void isValidEntry_validationSchemaAndValidGraph_true()
+            throws IOException, EntityFailedShaclValidationException {
+        Model validationModel = parseModel(
+                IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TURTLE);
+
+        Model dataModel = parseModel(IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_JSON)),
+                Lang.JSONLD);
+        DataValidator dataValidator = new DataValidator(validationModel);
+        assertTrue(dataValidator.isValidEntry(dataModel));
+
     }
 
     private class TestData extends ModelParser {
