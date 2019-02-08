@@ -85,7 +85,7 @@ import no.bibsys.web.security.Roles;
 @Produces({MediaType.APPLICATION_JSON})
 
 @SecurityScheme(name = ApiKeyConstants.API_KEY_PARAM_NAME, type = SecuritySchemeType.APIKEY, in =
-    SecuritySchemeIn.HEADER)
+SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String NAME_OF_REGISTRY_TO = "Name of registry to ";
@@ -109,9 +109,9 @@ public class DatabaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public Response createRegistry(
-        @RequestBody(description = "Request object to create registry", content = @Content(schema =
-        @Schema(implementation = RegistryCreateRequestParametersObject.class))) RegistryDto registryDto)
-        throws Exception {
+            @RequestBody(description = "Request object to create registry", content = @Content(schema =
+            @Schema(implementation = RegistryCreateRequestParametersObject.class))) RegistryDto registryDto)
+                    throws Exception {
 
         RegistryInfoNoMetadataDto createdRegistry = registryService.createRegistry(registryDto);
         return Response.ok(createdRegistry).build();
@@ -132,7 +132,7 @@ public class DatabaseResource {
         CustomMediaType.APPLICATION_JSON_LD, CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_RDF_XML,
         CustomMediaType.APPLICATION_TURTLE})
     public Response getRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         RegistryDto registryDto = registryService.getRegistry(registryName);
@@ -144,10 +144,11 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateRegistryMetadata(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_NEW_REGISTRY,
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
-            RegistryDto.class))) RegistryDto registryDto) {
+            @RequestBody(description = "Validation schema", content = @Content(schema = @Schema(implementation =
+            RegistryDto.class))) RegistryDto registryDto)
+                    throws IOException {
 
         RegistryDto updateRegistry = registryService.updateRegistryMetadata(registryDto);
         return Response.accepted(String.format("Registry %s has been updated", updateRegistry.getId())).build();
@@ -158,7 +159,7 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response deleteRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "delete", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
 
         registryService.deleteRegistry(registryName);
@@ -169,9 +170,9 @@ public class DatabaseResource {
     @Path("/{registryName}/status")
 
     public Response registryStatus(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
             + "which to get status", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
-        throws UnknownStatusException {
+                    throws UnknownStatusException {
 
         registryService.validateRegistryExists(registryName);
         return Response.ok(String.format("Registry with name %s is active", registryName)).build();
@@ -183,11 +184,11 @@ public class DatabaseResource {
     @RolesAllowed({Roles.API_ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response replaceApiKey(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_IN
             + "which to update entity", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Old apikey",
+            @RequestBody(description = "Old apikey",
             content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey)
-        throws UnknownStatusException {
+                    throws UnknownStatusException {
 
         registryService.validateRegistryExists(registryName);
         String newApiKey = registryService.replaceApiKey(registryName, oldApiKey);
@@ -199,8 +200,9 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response getRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
-            + "get schema", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName) {
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            + "get schema", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName)
+                    throws JsonProcessingException {
 
         RegistryInfoNoMetadataDto registryDto = registryService.getRegistryInfo(registryName);
         return Response.ok(registryDto).build();
@@ -211,15 +213,12 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "update", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Validation schema",
+            @RequestBody(description = "Validation schema",
             content = @Content(schema = @Schema(type = STRING))) String schema)
-<<<<<<< Upstream, based on origin/develop
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
-=======
-        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
->>>>>>> d27a075 Update metadata test
+
+                    throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
 
         RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
         updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
@@ -235,7 +234,7 @@ public class DatabaseResource {
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
         @RequestBody(description = "Entity to create", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+                    throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
@@ -261,11 +260,12 @@ public class DatabaseResource {
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     @Produces({MediaType.APPLICATION_JSON})
     public Response uploadEntities(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "add to", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @RequestBody(description = "Array of Entity to upload", content = @Content(array = @ArraySchema(schema =
-        @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+
+            @RequestBody(description = "Array of Entity to upload", content = @Content(array = @ArraySchema(schema =
+            @Schema(implementation = EntityDto.class)))) EntityDto... entityDtos)
+                    throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
         for (EntityDto entityDto : entityDtos) {
@@ -288,11 +288,11 @@ public class DatabaseResource {
         CustomMediaType.APPLICATION_TURTLE, CustomMediaType.APPLICATION_MARC, CustomMediaType.APPLICATION_MARCXML, 
         CustomMediaType.APPLICATION_MARCXML_XML})
     public Response getEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "get entity from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
-            + " entity to get", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
-        @Context Request request) {
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
+                    + " entity to get", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
+            @Context Request request) {
 
         EntityDto entity = entityService.getEntity(registryName, entityId);
         EntityTag etag = new EntityTag(entity.getEtagValue());
@@ -308,10 +308,10 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response deleteEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "delete entity from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
-            + " entity to delete", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
+                    + " entity to delete", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId) {
 
         entityService.deleteEntity(registryName, entityId);
 
@@ -323,13 +323,13 @@ public class DatabaseResource {
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response updateEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-        @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "which to update entity", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
-        @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
-            + " entity to be updated", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
-        @RequestBody(description = "Entity to update", content = @Content(schema = @Schema(implementation =
+            @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
+                    + " entity to be updated", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
+            @RequestBody(description = "Entity to update", content = @Content(schema = @Schema(implementation =
             EntityDto.class))) EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
+                    throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException, JsonProcessingException {
 
         EntityDto entity = entityService.updateEntity(registryName, entityDto);
 
