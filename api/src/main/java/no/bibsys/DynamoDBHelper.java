@@ -12,5 +12,4 @@ public final class DynamoDBHelper {
     public static AmazonDynamoDB getClient() {
         return AmazonDynamoDBClientBuilder.standard().build();
     }
-
 }
