@@ -1,14 +1,9 @@
 package no.bibsys.entitydata.validation;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
+import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -21,10 +16,14 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.Test;
 
-import no.bibsys.entitydata.validation.rdfutils.RdfConstants;
-import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
-import no.bibsys.utils.IoUtils;
-import no.bibsys.utils.ModelParser;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ShaclParserTest extends ModelParser {
 
@@ -40,6 +39,7 @@ public class ShaclParserTest extends ModelParser {
         Model model = parseModel(shaclModelString, Lang.TURTLE);
         this.shaclParser = new ShaclParser(model);
     }
+
 
     @Test
     public void listProperties_shaclModel_listOfBlankNodeModels() throws IOException {
@@ -68,6 +68,8 @@ public class ShaclParserTest extends ModelParser {
         checkThatTargetClassesAreObjectsInGeneratedModel(domainStatements);
     }
 
+
+
     private void checkThatTargetClassesAreObjectsInGeneratedModel(Model domainStatements) {
         Set<RDFNode> expectedDomainUris = shaclParser.getModel()
             .listObjectsOfProperty(ShaclConstants.TARGETCLASS_PROPERTY).toSet()
@@ -88,4 +90,7 @@ public class ShaclParserTest extends ModelParser {
 
         assertThat(propertyUris, is(equalTo(expectedPropertyUris)));
     }
+
+
+
 }
