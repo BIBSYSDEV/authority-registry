@@ -2,7 +2,6 @@ package no.bibsys.web;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -86,21 +85,7 @@ public class DatabaseResourceTest extends JerseyTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
-    @Test
-    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        createRegistry(registryName, apiAdminKey);
-
-        Response entityAsHtml = getRegistry(registryName, MediaType.TEXT_HTML);
-        String html = entityAsHtml.readEntity(String.class);
-
-        assertThat(html, containsString("html"));
-        assertThat(html, containsString("<title>Registry name value</title>"));
-        assertThat(html, containsString("data-automation-id=\"Registry_name\""));
-        assertThat(html, containsString("data-automation-id=\"Publisher\""));
-    }
-
-    private Response getRegistry(String registryName, String mediaType) throws Exception {
+    protected Response getRegistry(String registryName, String mediaType) throws Exception {
         return target(String.format("/registry/%s", registryName)).request()
             .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(mediaType).get();
     }
