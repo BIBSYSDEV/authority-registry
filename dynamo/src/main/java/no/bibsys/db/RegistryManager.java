@@ -17,10 +17,7 @@ import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
 import no.bibsys.entitydata.validation.ShaclValidator;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
-import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
-import no.bibsys.utils.ModelParser;
-import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -31,6 +28,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 public class RegistryManager extends ModelParser {
 
@@ -44,7 +43,7 @@ public class RegistryManager extends ModelParser {
     private final transient RegistryMetadataManager registryMetadataManager;
 
     public RegistryManager(AmazonDynamoDB client) throws IOException {
-        this(TableDriver.create(client), new DynamoDBMapper(client));
+        this(new TableDriver(client), new DynamoDBMapper(client));
     }
 
     public RegistryManager(TableDriver tableDriver, DynamoDBMapper dynamoDBMapper) throws IOException {
@@ -152,15 +151,8 @@ public class RegistryManager extends ModelParser {
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 
-        Registry registry;
-
-        try {
-            registry = mapper.load(Registry.class, registryId, config);
-        } catch (ResourceNotFoundException e) {
-            throw new RegistryNotFoundException(registryId, registryMetadataTableName);
-        }
-
-        if (registry != null) {
+        Registry registry = mapper.load(Registry.class, registryId, config);
+        if (nonNull(registry)) {
             return registry;
         } else {
             throw new RegistryNotFoundException(registryId, registryMetadataTableName);

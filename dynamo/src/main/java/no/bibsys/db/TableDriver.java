@@ -24,35 +24,27 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public  class TableDriver {
+import static java.util.Objects.isNull;
+
+public class TableDriver {
 
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
-    private transient AmazonDynamoDB client;
-    private transient DynamoDB dynamoDb;
-    private transient DynamoDBMapper mapper;
+    private final transient AmazonDynamoDB client;
+    private final transient DynamoDB dynamoDb;
+    private final transient DynamoDBMapper mapper;
 
-    private TableDriver(final AmazonDynamoDB client) {
+    public TableDriver(final AmazonDynamoDB client) {
+        if (isNull(client)) {
+            throw new IllegalStateException("Cannot set null client ");
+        }
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
     }
 
-    /**
-     * Create custom connection with DynamoDB.
-     *
-     * @return customized TableDriver
-     */
-    public static TableDriver create(final AmazonDynamoDB client) {
-        if (client == null) {
-            throw new IllegalStateException("Cannot set null client ");
-        }
-        return new TableDriver(client);
-    }
-
     private Table getTable(final String tableName) {
         return dynamoDb.getTable(tableName);
     }
-
 
     /**
      * Check if table exists.
@@ -72,7 +64,6 @@ public  class TableDriver {
         return exists;
     }
 
-
     public boolean isTableEmpty(final String tableName) {
         ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
         ScanResult result = client.scan(scanRequest);
@@ -80,13 +71,12 @@ public  class TableDriver {
 
         return items == 0;
 
-
     }
 
     public void emptyEntityRegistryTable(final String tableName) {
         emptyTable(tableName);
     }
-    
+
     private void emptyTable(final String tableName) {
 
         if (!tableExists(tableName)) {
@@ -109,7 +99,7 @@ public  class TableDriver {
 
     private boolean deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
-                
+
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
             logger.debug("Table deleted successfully, tableId={}", tableName);
@@ -123,18 +113,17 @@ public  class TableDriver {
     public boolean createEntityRegistryTable(final String tableName) {
         return createTable(tableName, Entity.class);
     }
-    
+
     public void createRegistryMetadataTable(final String tableName) {
         createTable(tableName, Registry.class);
     }
-    
+
     private boolean createTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
             DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
-                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
-                    .build();
-            
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName)).build();
+
             CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));

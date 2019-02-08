@@ -34,7 +34,7 @@ public abstract class LocalDynamoTest extends DynamoTest {
     }
 
     protected TableDriver newTableDriver() {
-        return TableDriver.create(localClient);
+        return new TableDriver(localClient);
     }
 
     protected RegistryManager registryManagerThatFailsToCreateATable() throws IOException {
@@ -46,7 +46,6 @@ public abstract class LocalDynamoTest extends DynamoTest {
         return new RegistryManager(mockDriver, mapper);
 
     }
-
 
     protected RegistryManager registryManagerThatIsCreatingMetadataTable() throws IOException {
         TableDriver mockDriver = Mockito.mock(TableDriver.class);
