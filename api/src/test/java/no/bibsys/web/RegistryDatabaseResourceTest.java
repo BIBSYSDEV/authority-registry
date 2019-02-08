@@ -7,6 +7,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -185,6 +186,24 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
         Response updateRegistryResponse = updateRegistry(registryDto, apiAdminKey);
         assertThat(updateRegistryResponse.getStatusInfo(), is(Status.NOT_FOUND));
+    }
+    
+    @Test
+    public void listRegistries_registryExists_returnsRegistryList() throws Exception {
+        String registryName1 = UUID.randomUUID().toString();
+        RegistryDto registryDto1 = sampleData.sampleRegistryDto(registryName1);
+        createRegistry(registryDto1, apiAdminKey);
+    
+        String registryName2 = UUID.randomUUID().toString();
+        RegistryDto registryDto2 = sampleData.sampleRegistryDto(registryName2);
+        createRegistry(registryDto2, apiAdminKey);
+        
+        Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
+        @SuppressWarnings("unchecked")
+        List<String> registryList = response.readEntity(List.class);
+        assertThat(registryList.size(), is(2));
+        assertThat(registryList.get(0), is(registryName1));
+        assertThat(registryList.get(1), is(registryName2));
     }
 
     private Response updateRegistry(RegistryDto registryDto, String apiKey) {
