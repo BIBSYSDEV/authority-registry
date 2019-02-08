@@ -91,7 +91,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/")
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON,})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_HTML})
     public Response getRegistryList(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey) {
 
         List<String> registryList = registryService.getRegistries();

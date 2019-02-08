@@ -202,8 +202,8 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         @SuppressWarnings("unchecked")
         List<String> registryList = response.readEntity(List.class);
         assertThat(registryList.size(), is(2));
-        assertThat(registryList.get(0), is(registryName1));
-        assertThat(registryList.get(1), is(registryName2));
+        assertThat(registryList.contains(registryName1), is(true));
+        assertThat(registryList.contains(registryName2), is(true));
     }
 
     private Response updateRegistry(RegistryDto registryDto, String apiKey) {
