@@ -73,33 +73,15 @@ public class TableDriver {
 
     }
 
-    public void emptyEntityRegistryTable(final String tableName) {
-        emptyTable(tableName);
-    }
-
-    private void emptyTable(final String tableName) {
-
-        if (!tableExists(tableName)) {
-            return;
-        }
-        boolean emptyResult = deleteNoCheckTable(tableName);
-        if (emptyResult) {
-            createTable(tableName, Entity.class);
-        }
-    }
-
     public boolean deleteTable(final String tableName) {
-
         if (!tableExists(tableName)) {
             return false;
         }
-
         return deleteNoCheckTable(tableName);
     }
 
     private boolean deleteNoCheckTable(final String tableName) {
         if (tableExists(tableName)) {
-
             DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
             TableUtils.deleteTableIfExists(client, deleteRequest);
             logger.debug("Table deleted successfully, tableId={}", tableName);

@@ -185,22 +185,6 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     }
 
-    @Test
-    public void emptyRegistry_RegistryExists_RegistryIsEmpty() throws Exception {
-
-        String registryName = "emptyRegistry";
-        Registry registry = sampleData.sampleRegistry(registryName);
-        registryManager.createRegistry(registryMetadataTableName, registry);
-        Entity entity = sampleData.sampleEntity();
-        Entity addEntity = entityManager.addEntity(registryName, entity);
-        boolean entityExists = entityManager.entityExists(registryName, addEntity.getId());
-        assertThat(entityExists, equalTo(true));
-
-        registryManager.emptyRegistry(registryName);
-        boolean entityExistAfterEmpty = entityManager.entityExists(registryName, addEntity.getId());
-        assertThat(entityExistAfterEmpty, equalTo(false));
-    }
-
     @Test(expected = SettingValidationSchemaUponCreationException.class)
     public void createRegistry_RegistryNotExistsInValidJsonDocument_cannotSetSchemaUponCreationException()
             throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,

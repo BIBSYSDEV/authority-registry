@@ -17,7 +17,10 @@ import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
 import no.bibsys.entitydata.validation.ShaclValidator;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
+import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -128,10 +131,6 @@ public class RegistryManager extends ModelParser {
         return RegistryStatus.valueOf(tableDriver.status(registryName));
     }
 
-    public void emptyRegistry(String tableName) {
-        tableDriver.emptyEntityRegistryTable(tableName);
-        tableDriver.createEntityRegistryTable(tableName);
-    }
 
     public void deleteRegistry(String registryMetadataTableName, String registryId) {
         logger.info("Deleting registry, registryId={}", registryId);
