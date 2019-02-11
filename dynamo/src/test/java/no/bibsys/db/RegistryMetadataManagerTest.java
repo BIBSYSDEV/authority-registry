@@ -11,10 +11,8 @@ public class RegistryMetadataManagerTest extends LocalDynamoTest {
     public void addRegistryToRegistryMetadataTable() {
         RegistryMetadataManager manager =
                 new RegistryMetadataManager(newTableDriver(), new DynamoDBMapper(localClient));
-
-        Registry aRegistry = sampleData.sampleRegistry("aRegistry");
-        manager.addRegistryToRegistryMetadataTable(registryMetadataTableName, aRegistry);
-
+        Registry randomRegistry = sampleData.sampleRegistry("aRegistry");
+        manager.addRegistryToRegistryMetadataTable(registryMetadataTableName, randomRegistry);
     }
 
 }
