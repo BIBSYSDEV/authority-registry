@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import no.bibsys.db.exceptions.EntityNotFoundException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -36,6 +37,16 @@ public class EntityManagerTest extends LocalDynamoTest {
         entityManager.addEntity(tableName, entity);
     }
 
+    @Test(expected = RegistryMetadataTableBeingCreatedException.class)
+    public void addEntity_RegistryBeingCreated_ThrowsException() throws Exception {
+        Registry registry = sampleData.sampleRegistry(tableName);
+        registryManager.createRegistry(registryMetadataTableName, registry);
+
+        String tableName = "addEntityRegistryBeingCreated";
+        Entity entity = sampleData.sampleEntity();
+        entityManager.addEntity(tableName, entity);
+    }
+    
     @Test
     public void deleteEntity_EntityExists_ReturnsTrue() throws Exception {
         String tableName = "deleteEntity";
