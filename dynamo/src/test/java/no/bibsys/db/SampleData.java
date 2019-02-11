@@ -2,13 +2,13 @@ package no.bibsys.db;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.IOException;
-import java.nio.file.Paths;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class SampleData {
 
@@ -39,11 +39,13 @@ public class SampleData {
 
         return registry;
     }
-    
-    public Entity sampleEntity() {
+
+    public Entity sampleEntity() throws IOException {
         Entity entity = new Entity();
-        
-        ObjectNode body = mapper.createObjectNode();
+
+        String bodyString = IoUtils.resourceAsString(Paths.get("json", "sample.json"));
+
+        ObjectNode body = (ObjectNode) JsonUtils.newJsonParser().readTree(bodyString);
 
         entity.setBody(body);
         

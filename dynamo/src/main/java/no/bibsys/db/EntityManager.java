@@ -25,10 +25,11 @@ public class EntityManager {
     }
 
     public Entity addEntity(String registryId, Entity entity) {
-
         validateRegistry(registryId);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
+
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId)).build();
+
         mapper.save(entity, config);
         logger.info("Entity created successfully, registryId={}, entityId={}", registryId, entity.getId());
         return entity;
