@@ -3,6 +3,7 @@ package no.bibsys.db;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
+import no.bibsys.db.exceptions.RegistryNotEmptyException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Entity;
@@ -264,6 +265,25 @@ public class RegistryManagerTest extends LocalDynamoTest {
                 .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(), alternativeValidationSchema);
 
     }
+
+    @Test(expected = RegistryNotEmptyException.class)
+    public void updateRegistry_RegistryNotEmptyInValidShema_exception()
+            throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
+            SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException,
+            RegistryCreationFailureException {
+
+        Registry createdRegistry = createRegistry();
+        createdRegistry = updateRegistryWithValidSchema(createdRegistry);
+
+        entityManager.addEntity(createdRegistry.getId(), sampleData.sampleEntity());
+        String alternativeValidationSchema =
+                IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
+        registryManager
+                .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(), alternativeValidationSchema);
+
+    }
+
+
 
     @Test
     public void deleteRegistry_RegistryExists_registryDeleted()

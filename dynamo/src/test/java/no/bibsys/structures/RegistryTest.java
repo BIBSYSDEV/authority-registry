@@ -1,7 +1,9 @@
 package no.bibsys.structures;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.db.SampleData;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.utils.JsonUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,10 +18,13 @@ public class RegistryTest {
 
     private static final String REGISTRY_NAME = "someRegistry";
     private static final Integer RANDOM_OBJECT = 2;
+    private static final String RANDOM_FIELD = "aField";
+    private static final String RANDOM_VALUE = "aValue";
     private final Registry registry;
+    private final SampleData sampleData;
 
     public RegistryTest() throws IOException {
-        SampleData sampleData = new SampleData();
+        sampleData = new SampleData();
         registry = sampleData.sampleRegistry(REGISTRY_NAME);
     }
 
@@ -42,6 +47,21 @@ public class RegistryTest {
     @Test
     public void equals_sameObject_true() {
         assertThat(registry, is((equalTo(registry))));
+    }
+
+    @Test
+    public void equals_equalObject_true() {
+        assertThat(registry, is((equalTo(sampleData.sampleRegistry(REGISTRY_NAME)))));
+    }
+
+    @Test
+    public void equals_notEqualObject_false() {
+        Registry anotherRegistry = sampleData.sampleRegistry(REGISTRY_NAME);
+        ObjectNode node = JsonUtils.newJsonParser().createObjectNode();
+        node.put(RANDOM_FIELD, RANDOM_VALUE);
+        anotherRegistry.setMetadata(node);
+
+        assertThat(registry, is(not(equalTo(anotherRegistry))));
     }
 
 }

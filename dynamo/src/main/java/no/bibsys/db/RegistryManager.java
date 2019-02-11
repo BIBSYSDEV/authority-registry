@@ -5,7 +5,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
@@ -131,7 +130,6 @@ public class RegistryManager extends ModelParser {
         return RegistryStatus.valueOf(tableDriver.status(registryName));
     }
 
-
     public void deleteRegistry(String registryMetadataTableName, String registryId) {
         logger.info("Deleting registry, registryId={}", registryId);
         validateRegistryExists(registryId);
@@ -171,6 +169,8 @@ public class RegistryManager extends ModelParser {
     public Registry updateRegistrySchema(String registryMetadataTableName, String registryId, String schema)
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
+
+        validateRegistryExists(registryId);
         validateRegistryNotEmpty(registryId);
 
         Model model = parseValidationSchema(schema);
@@ -179,18 +179,15 @@ public class RegistryManager extends ModelParser {
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.UPDATE)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 
-        try {
-            // We only want to modify the schema
-            Registry registry = getRegistry(registryMetadataTableName, registryId);
-            registry.setSchema(schema);
-            mapper.save(registry, config);
+        // We only want to modify the schema
+        Registry registry = getRegistry(registryMetadataTableName, registryId);
+        registry.setSchema(schema);
+        mapper.save(registry, config);
 
-            logger.info("Registry schema updated successfully, registryMetadataTableNameId={}, registryId={}",
-                    registryMetadataTableName, registry.getId());
-            return registry;
-        } catch (ResourceNotFoundException e) {
-            throw new RegistryNotFoundException(registryId, registryMetadataTableName);
-        }
+        logger.info("Registry schema updated successfully, registryMetadataTableNameId={}, registryId={}",
+                registryMetadataTableName, registry.getId());
+        return registry;
+
     }
 
     private Model parseValidationSchema(String schema) throws ValidationSchemaSyntaxErrorException {
@@ -210,19 +207,14 @@ public class RegistryManager extends ModelParser {
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.UPDATE)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 
-        try {
+        // We don't want to update schema
+        Registry existingRegistry = getRegistry(registryMetadataTableName, registry.getId());
+        registry.setSchema(existingRegistry.getSchema());
 
-            // We don't want to update schema
-            Registry existingRegistry = getRegistry(registryMetadataTableName, registry.getId());
-            registry.setSchema(existingRegistry.getSchema());
-
-            mapper.save(registry, config);
-            logger.info("Registry metadata updated successfully, registryMetadataTableNameId={}, registryId={}",
-                    registryMetadataTableName, registry.getId());
-            return registry;
-        } catch (ResourceNotFoundException e) {
-            throw new RegistryNotFoundException(registry.getId(), registryMetadataTableName);
-        }
+        mapper.save(registry, config);
+        logger.info("Registry metadata updated successfully, registryMetadataTableNameId={}, registryId={}",
+                registryMetadataTableName, registry.getId());
+        return registry;
     }
 
 }

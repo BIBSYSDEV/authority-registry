@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import no.bibsys.db.exceptions.EntityNotFoundException;
+import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Entity;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.util.Objects;
 public class EntityManager {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityManager.class);
+    private static final String ENTITY_EXISTS_MESSAGE = "Entity with id %s already exists";
     private final transient DynamoDBMapper mapper;
     private final transient TableDriver tableDriver;
 
@@ -25,9 +27,12 @@ public class EntityManager {
     }
 
     public Entity addEntity(String registryId, Entity entity) {
-        validateRegistry(registryId);
-        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
+        checkRegistryExists(registryId);
+        if (entityExists(registryId, entity.getId())) {
+            throw new ItemExistsException(String.format(ENTITY_EXISTS_MESSAGE, entity.getId()));
+        }
 
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId)).build();
 
         mapper.save(entity, config);
@@ -36,17 +41,14 @@ public class EntityManager {
 
     }
 
-    /**
-     * Method to validate a registry and if it exists as a DynamoDB table on AWS.
-     */
-    private void validateRegistry(String registryId) {
+    private void checkRegistryExists(String registryId) {
         if (!tableDriver.tableExists(registryId)) {
             throw new RegistryNotFoundException(registryId);
         }
     }
 
     public boolean deleteEntity(String registryId, String entityId) {
-        validateRegistry(registryId);
+        checkRegistryExists(registryId);
         Entity entity = getEntity(registryId, entityId);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId)).build();
@@ -56,7 +58,7 @@ public class EntityManager {
     }
 
     public Entity getEntity(String registryId, String entityId) {
-        validateRegistry(registryId);
+        checkRegistryExists(registryId);
 
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryId)).build();
@@ -69,7 +71,7 @@ public class EntityManager {
     }
 
     public Entity updateEntity(String registryId, Entity entity) {
-        validateRegistry(registryId);
+        checkRegistryExists(registryId);
         if (!entityExists(registryId, entity.getId())) {
             throw new EntityNotFoundException(registryId, entity.getId());
         }

@@ -75,21 +75,12 @@ public class TableDriver {
 
     public boolean deleteTable(final String tableName) {
         if (!tableExists(tableName)) {
+            logger.error("Can not delete non-existing table, tableId={}", tableName);
             return false;
         }
-        return deleteNoCheckTable(tableName);
-    }
-
-    private boolean deleteNoCheckTable(final String tableName) {
-        if (tableExists(tableName)) {
-            DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
-            TableUtils.deleteTableIfExists(client, deleteRequest);
-            logger.debug("Table deleted successfully, tableId={}", tableName);
-            return true;
-        }
-        logger.error("Can not delete non-existing table, tableId={}", tableName);
-        return false;
-
+        DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
+        TableUtils.deleteTableIfExists(client, deleteRequest);
+        return true;
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
