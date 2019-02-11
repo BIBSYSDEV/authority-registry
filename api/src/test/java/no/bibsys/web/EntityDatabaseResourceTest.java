@@ -78,70 +78,6 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void deleteRegistry_RegistryExistsUserAuthorized_ReturnsStatusOk() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        createRegistry(registryName, apiAdminKey);
-        putSchema(registryName, validValidationSchema);
-
-        Response response = target("/registry/" + registryName).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
-
-        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-        String entity = response.readEntity(String.class);
-        String expected = String.format("Registry %s has been deleted", registryName);
-        assertThat(entity, is(equalTo(expected)));
-    }
-
-    @Test
-    public void deleteRegistry_RegistryExistsUserNotAuthorized_ReturnsStatusForbidden() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        createRegistry(registryName, apiAdminKey);
-
-        Response response = target("/registry/" + registryName).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, "invalidAPIKEY").delete();
-
-        assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
-    }
-
-    @Test
-    public void deleteRegistry_RegistryNotExisting_ReturnsStatusNotFound() throws Exception {
-
-        String registryName = UUID.randomUUID().toString();
-        Response response = target("/registry/" + registryName).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).delete();
-
-        String entity = response.readEntity(String.class);
-        assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
-
-        String expected = String.format("Registry with name %s does not exist", registryName);
-        assertThat(entity, is(equalTo(expected)));
-    }
-
-    @Test
-    public void callEndpoint_WrongRole_ReturnsStatusForbidden() throws Exception {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
-            .post(javax.ws.rs.client.Entity.entity(registryDto.toString(), MediaType.APPLICATION_JSON));
-
-        assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
-    }
-
-    @Test
-    public void getRegistryMetadata_RegistryExists_ReturnsStatusOk() throws Exception {
-
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-
-        createRegistry(registryDto, apiAdminKey);
-
-        Response response = target(String.format("/registry/%s", registryName)).request()
-            .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).accept(MediaType.TEXT_HTML).get();
-
-        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
-    }
-
-    @Test
     public void insertEntity_RegistryExistUserAuthorized_ReturnsStatusOK() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
@@ -160,7 +96,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(actualEntity.isIsomorphic(expectedEntity), is(equalTo(true)));
         assertThat(readEntity, is(equalTo(actualEntity)));
     }
-
+    
     @Test
     public void insertEntity_RegistryExistUserAuthorizedNoSchema_ReturnsBadRequest() throws Exception {
         String registryName = UUID.randomUUID().toString();

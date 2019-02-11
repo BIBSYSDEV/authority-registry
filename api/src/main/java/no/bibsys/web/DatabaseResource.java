@@ -292,7 +292,7 @@ public class DatabaseResource {
             + "get entity from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
             @Parameter(in = ParameterIn.PATH, name = ENTITY_ID, required = true, description = "Id of"
                     + " entity to get", schema = @Schema(type = STRING)) @PathParam(ENTITY_ID) String entityId,
-            @Context Request request) {
+            @Context Request request) throws JsonProcessingException {
 
         EntityDto entity = entityService.getEntity(registryName, entityId);
         EntityTag etag = new EntityTag(entity.getEtagValue());

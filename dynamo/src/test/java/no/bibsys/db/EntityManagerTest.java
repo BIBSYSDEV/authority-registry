@@ -1,11 +1,13 @@
 package no.bibsys.db;
 
 
+
 import org.junit.Test;
 
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 
 public class EntityManagerTest extends LocalDynamoTest {
 
@@ -42,19 +45,17 @@ public class EntityManagerTest extends LocalDynamoTest {
         entityManager.addEntity(tableName, entity);
     }
 
-    @Test(expected = ItemExistsException.class)
-    public void addEntity_entityExists_ItemExistsException()
-            throws IOException, SettingValidationSchemaUponCreationException, RegistryCreationFailureException,
-            RegistryMetadataTableBeingCreatedException {
-        String tableName = "aRegistry";
+
+    @Test(expected = RegistryMetadataTableBeingCreatedException.class)
+    public void addEntity_RegistryBeingCreated_ThrowsException() throws Exception {
         Registry registry = sampleData.sampleRegistry(tableName);
-        Entity entity = sampleData.sampleEntity();
         registryManager.createRegistry(registryMetadataTableName, registry);
-        entityManager.addEntity(tableName, entity);
-        entityManager.addEntity(tableName, entity);
 
+        String tableName = "addEntityRegistryBeingCreated";
+        Entity entity = sampleData.sampleEntity();
+        entityManager.addEntity(tableName, entity);
     }
-
+    
     @Test
     public void deleteEntity_EntityExists_ReturnsTrue() throws Exception {
         String tableName = "deleteEntity";
@@ -197,6 +198,7 @@ public class EntityManagerTest extends LocalDynamoTest {
 
         entityManager.updateEntity(tableName, entity);
     }
+
 
     private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),

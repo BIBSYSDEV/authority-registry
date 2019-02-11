@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.DataValidator;
@@ -30,7 +32,7 @@ public class EntityService extends ModelParser {
     }
 
     public EntityDto addEntity(String registryId, EntityDto entityDto)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
         if (validateEntity(registryId, entityDto)) {
             return addEntityToRegistry(registryId, entityDto);
         } else {
@@ -39,7 +41,7 @@ public class EntityService extends ModelParser {
     }
 
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException, JsonProcessingException {
         if (validateEntity(registryId, entityDto)) {
             return updateEntityInRegistry(registryId, entityDto);
         } else {
@@ -47,7 +49,7 @@ public class EntityService extends ModelParser {
         }
     }
 
-    public EntityDto getEntity(String registryId, String entityId) {
+    public EntityDto getEntity(String registryId, String entityId) throws JsonProcessingException {
         Entity entity = entityManager.getEntity(registryId, entityId);
         return EntityConverter.toEntityDto(entity);
     }
@@ -68,12 +70,12 @@ public class EntityService extends ModelParser {
         return dataValidator.isValidEntry(dataModel);
     }
 
-    private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) {
+    private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
         Entity entity = entityManager.updateEntity(registryId, EntityConverter.toEntity(entityDto));
         return EntityConverter.toEntityDto(entity);
     }
 
-    private EntityDto addEntityToRegistry(String registryId, EntityDto entityDto) {
+    private EntityDto addEntityToRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
         Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(entityDto));
         return EntityConverter.toEntityDto(entity);
     }

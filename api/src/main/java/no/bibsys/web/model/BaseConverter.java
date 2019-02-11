@@ -19,14 +19,8 @@ public class BaseConverter {
         return map;
     }
 
-    protected static String toJson(ObjectNode objectNode) {
-        try {
+    protected static String toJson(ObjectNode objectNode) throws JsonProcessingException {
             return mapper.writeValueAsString(objectNode);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error parsing ObjectNode into Json");
-
-        }
-
     }
 
     protected static ObjectNode toObjectNode(Map<String, Object> map) {
