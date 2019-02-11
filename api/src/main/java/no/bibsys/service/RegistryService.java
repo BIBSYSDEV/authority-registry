@@ -95,11 +95,11 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
-    public void validateRegistryExists(String registryName) throws UnknownStatusException {
+    public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:
-                return;
+                return status;
             case CREATING:
             case UPDATING:
                 throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));
