@@ -20,7 +20,7 @@ public class BaseConverter {
     }
 
     protected static String toJson(ObjectNode objectNode) throws JsonProcessingException {
-            return mapper.writeValueAsString(objectNode);
+        return mapper.writeValueAsString(objectNode);
     }
 
     protected static ObjectNode toObjectNode(Map<String, Object> map) {
