@@ -19,11 +19,11 @@ public class UnknownStatusExceptionTest extends MapperTest<UnknownStatusExceptio
 
     @Test 
     public void createRegistry_registryInUnknownStatus_ReturnsStatusInternalServerError() throws Exception {
-        
+
         when(mockRegistryService.createRegistry(any())).thenAnswer(invocation -> { 
             throw new UnknownStatusException("This is a test");
         });
-        
+
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(registryDto, apiAdminKey);
