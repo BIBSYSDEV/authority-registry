@@ -55,8 +55,7 @@ import no.bibsys.web.security.Roles;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 
-@SecurityScheme(name = ApiKeyConstants.API_KEY_PARAM_NAME, type = SecuritySchemeType.APIKEY, in =
-SecuritySchemeIn.HEADER)
+@SecurityScheme(name = ApiKeyConstants.API_KEY_PARAM_NAME, type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
     private static final String NAME_OF_REGISTRY_TO = "Name of registry to ";

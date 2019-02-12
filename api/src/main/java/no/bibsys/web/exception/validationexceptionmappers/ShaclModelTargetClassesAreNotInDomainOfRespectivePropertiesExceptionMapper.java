@@ -6,8 +6,8 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException;
 
-public class ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper implements
-ExceptionMapper<ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException> {
+public class ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper implements 
+    ExceptionMapper<ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesException> {
 
     private static final String MESSAGE = "Shacl model target classes are not in domain of respective properties";
 
