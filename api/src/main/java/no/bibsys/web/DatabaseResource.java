@@ -271,7 +271,7 @@ public class DatabaseResource {
     @DELETE
     @Path("/{registryName}/entity/{entityId}")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN})
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response deleteEntity(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true, description = NAME_OF_REGISTRY_TO
             + "delete entity from", schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME) String registryName,
