@@ -203,8 +203,8 @@ public class RegistryManagerTest extends LocalDynamoTest {
             throws IOException, RegistryMetadataTableBeingCreatedException,
             SettingValidationSchemaUponCreationException, ShaclModelValidationException,
             TargetClassPropertyObjectIsNotAResourceException, RegistryCreationFailureException {
-        String validationSchemaStr =
-                IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
+        String validationSchemaStr = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, VALID_VALIDATION_SCHEMA_JSON));
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
 
@@ -236,17 +236,16 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
     @Test
     public void updateRegistry_RegistryExistsValidShema_registryWithValidSchema()
-
             throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
             SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException,
             RegistryCreationFailureException {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
-        String alternativeValidationSchema =
-                IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON));
-        createdRegistry = registryManager
-                .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(), alternativeValidationSchema);
+        String alternativeValidationSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, ALT_VALID_SHACL_VALIDATION_SCHEMA_JSON));
+        createdRegistry = registryManager.updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(),
+                                                               alternativeValidationSchema);
 
         Model actualValidationSchema = modelParser.parseModel(createdRegistry.getSchema(), Lang.JSONLD);
         Model expectedValidationSchema = modelParser.parseModel(alternativeValidationSchema, Lang.JSONLD);
@@ -261,10 +260,10 @@ public class RegistryManagerTest extends LocalDynamoTest {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
-        String alternativeValidationSchema =
-                IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
-        registryManager
-                .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(), alternativeValidationSchema);
+        String alternativeValidationSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
+        registryManager.updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(),
+                                             alternativeValidationSchema);
 
     }
 
@@ -278,10 +277,10 @@ public class RegistryManagerTest extends LocalDynamoTest {
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
 
         entityManager.addEntity(createdRegistry.getId(), sampleData.sampleEntity());
-        String alternativeValidationSchema =
-                IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
-        registryManager
-                .updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(), alternativeValidationSchema);
+        String alternativeValidationSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, INVALID_SHACL_VALIDATION_SCHEMA_JSON));
+        registryManager.updateRegistrySchema(registryMetadataTableName, createdRegistry.getId(),
+                                             alternativeValidationSchema);
 
     }
 
@@ -299,7 +298,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     private Registry updateRegistryWithValidSchema(Registry registry)
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
-                sampleData.getValidValidationSchemaString());
+                                                    sampleData.getValidValidationSchemaString());
     }
 
     private Registry updateRegistryWithInvalidSchema(Registry registry)
