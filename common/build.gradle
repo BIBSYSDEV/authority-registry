@@ -1,5 +1,5 @@
 dependencies {
-    implementation ("com.fasterxml.jackson.core:jackson-databind:2.6.0")
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.9.8")
     //this should be the same version as the one used by amazon
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.6.0")
 
