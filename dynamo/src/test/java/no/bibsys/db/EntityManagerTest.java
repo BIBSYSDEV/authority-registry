@@ -1,16 +1,22 @@
 package no.bibsys.db;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
 import no.bibsys.db.exceptions.EntityNotFoundException;
+import no.bibsys.db.exceptions.ItemExistsException;
+import no.bibsys.db.exceptions.RegistryCreationFailureException;
+import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
+import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
+import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class EntityManagerTest extends LocalDynamoTest {
 
@@ -31,6 +37,19 @@ public class EntityManagerTest extends LocalDynamoTest {
         String tableName = "addEntityNoRegistry";
         Entity entity = sampleData.sampleEntity();
         entityManager.addEntity(tableName, entity);
+    }
+
+    @Test(expected = ItemExistsException.class)
+    public void addEntity_entityExists_ItemExistsException()
+            throws IOException, SettingValidationSchemaUponCreationException, RegistryCreationFailureException,
+            RegistryMetadataTableBeingCreatedException {
+        String tableName = "aRegistry";
+        Registry registry = sampleData.sampleRegistry(tableName);
+        Entity entity = sampleData.sampleEntity();
+        registryManager.createRegistry(registryMetadataTableName, registry);
+        entityManager.addEntity(tableName, entity);
+        entityManager.addEntity(tableName, entity);
+
     }
 
     @Test
@@ -77,7 +96,6 @@ public class EntityManagerTest extends LocalDynamoTest {
         boolean entityExists = entityManager.entityExists(tableName, addEntity.getId());
         assertThat(entityExists, equalTo(true));
     }
-
 
     @Test
     public void entityExists_EntityNotExisting_ReturnsFalse() throws Exception {
@@ -143,8 +161,7 @@ public class EntityManagerTest extends LocalDynamoTest {
         String updatedLabel = "An updated label";
         addEntity.getBody().put("label", updatedLabel);
 
-        Entity updateEntity =
-                entityManager.updateEntity(tableName, addEntity);
+        Entity updateEntity = entityManager.updateEntity(tableName, addEntity);
         assertEquals(addEntity, updateEntity);
 
         Entity readEntity = entityManager.getEntity(tableName, updateEntity.getId());
@@ -178,10 +195,10 @@ public class EntityManagerTest extends LocalDynamoTest {
         entityManager.updateEntity(tableName, entity);
     }
 
-
-    private void updateRegistrySchema(Registry registry) throws IOException, ShaclModelValidationException {
+    private void updateRegistrySchema(Registry registry)
+            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
-            sampleData.getValidValidationSchemaString());
+                sampleData.getValidValidationSchemaString());
     }
 
 }

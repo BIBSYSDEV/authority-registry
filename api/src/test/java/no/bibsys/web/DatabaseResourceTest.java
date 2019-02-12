@@ -1,45 +1,11 @@
 package no.bibsys.web;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.jsonldjava.core.JsonLdConsts;
-
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -58,6 +24,37 @@ import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -87,7 +84,7 @@ public class DatabaseResourceTest extends JerseyTest {
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
 
-        TableDriver tableDriver = TableDriver.create(client);
+        TableDriver tableDriver = new TableDriver(client);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);

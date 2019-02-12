@@ -1,5 +1,6 @@
 package no.bibsys.web.model;
 
+
 public class CustomMediaType {
 
     public static final String APPLICATION_RDF = "application/rdf";
