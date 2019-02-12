@@ -1,22 +1,6 @@
 package no.bibsys.web.exception;
 
-import static org.mockito.Mockito.mock;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
@@ -31,13 +15,27 @@ import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.BeforeClass;
+
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTest {
 
-    protected static String validValidationSchema;
     protected static final String VALIDATION_FOLDER = "validation";
-    protected static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON = "invalidDatatypeRangeShaclValidationSchema.json";
+    protected static final String INVALID_SHACL_VALIDATION_SCHEMA_JSON =
+            "invalidDatatypeRangeShaclValidationSchema.json";
     protected static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    protected static String validValidationSchema;
     protected final SampleData sampleData = new SampleData();
 
     protected String apiAdminKey;
@@ -48,8 +46,8 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
     @BeforeClass
     public static void init() throws IOException {
         System.setProperty("sqlite4java.library.path", "build/libs");
-        validValidationSchema = IoUtils
-                .resourceAsString(Paths.get(VALIDATION_FOLDER, VALID_SHACL_VALIDATION_SCHEMA_JSON));
+        validValidationSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, VALID_SHACL_VALIDATION_SCHEMA_JSON));
     }
 
     @Override
