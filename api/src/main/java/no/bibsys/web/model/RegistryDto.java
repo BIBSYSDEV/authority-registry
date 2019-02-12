@@ -59,43 +59,4 @@ public class RegistryDto {
             + metadata
             + ", schema=" + schema + "]";
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof RegistryDto)) {
-            return false;
-        }
-
-        RegistryDto that = (RegistryDto) o;
-
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
-            return false;
-        }
-        if (getApiKey() != null ? !getApiKey().equals(that.getApiKey())
-            : that.getApiKey() != null) {
-            return false;
-        }
-        if (getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null) {
-            return false;
-        }
-        if (getMetadata() != null ? !getMetadata().equals(that.getMetadata())
-            : that.getMetadata() != null) {
-            return false;
-        }
-        return getSchema() != null ? getSchema().equals(that.getSchema())
-            : that.getSchema() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getApiKey() != null ? getApiKey().hashCode() : 0);
-        result = 31 * result + (getPath() != null ? getPath().hashCode() : 0);
-        result = 31 * result + (getMetadata() != null ? getMetadata().hashCode() : 0);
-        result = 31 * result + (getSchema() != null ? getSchema().hashCode() : 0);
-        return result;
-    }
 }

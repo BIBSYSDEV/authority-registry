@@ -1,5 +1,11 @@
 package no.bibsys.service;
 
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.RegistryManager;
@@ -16,11 +22,6 @@ import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 public class RegistryService {
 
@@ -76,7 +77,7 @@ public class RegistryService {
     }
 
     public RegistryDto updateRegistrySchema(String registryId, String schema)
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         Registry registry = registryManager.updateRegistrySchema(registryMetadataTableName, registryId, schema);
         return RegistryConverter.toRegistryDto(registry);
     }
@@ -87,11 +88,11 @@ public class RegistryService {
         return RegistryConverter.toRegistryDto(registry);
     }
 
-    public void validateRegistryExists(String registryName) throws UnknownStatusException {
+    public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:
-                return;
+                return status;
             case CREATING:
             case UPDATING:
                 throw new RegistryUnavailableException(registryName, status.name().toLowerCase(Locale.ENGLISH));

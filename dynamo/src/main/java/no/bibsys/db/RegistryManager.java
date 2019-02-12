@@ -167,7 +167,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public Registry updateRegistrySchema(String registryMetadataTableName, String registryId, String schema)
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
 
         validateRegistryExists(registryId);

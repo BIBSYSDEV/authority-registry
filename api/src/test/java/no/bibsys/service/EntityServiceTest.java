@@ -47,7 +47,6 @@ public class EntityServiceTest {
         System.setProperty("sqlite4java.library.path", "build/libs");
     }
 
-
     @Before
     public void init() throws IOException, RegistryMetadataTableBeingCreatedException,
             SettingValidationSchemaUponCreationException, RegistryCreationFailureException {
@@ -67,10 +66,9 @@ public class EntityServiceTest {
         entityService = new EntityService(entityManager, registryService);
     }
 
-
     @Test(expected = ValidationSchemaNotFoundException.class)
     public void addEntity_NoValidationSchema_throwsException()
-        throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
+            throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
         EntityDto entityDto = sampleData.sampleEntityDtoWithValidData();
         entityService.addEntity(registryDto.getId(), entityDto);
     }
@@ -86,13 +84,14 @@ public class EntityServiceTest {
 
     private void addValidationSchemaToRegistry(String registryId)
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
-        String validationsSchema = IoUtils
-            .resourceAsString(Paths.get(VALIDATION_FOLDER, SCHACL_VALIDATION_SCHEMA_JSON));
+        String validationsSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, SCHACL_VALIDATION_SCHEMA_JSON));
         registryService.updateRegistrySchema(registryId, validationsSchema);
     }
 
     @Test
     public void addEntity_newValidEntity_registryWithNewEntity()
+
             throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
             ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData();
