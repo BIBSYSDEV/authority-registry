@@ -32,7 +32,7 @@ import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
 
-public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTest{
+public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTest {
 
     protected static String validValidationSchema;
     protected static final String VALIDATION_FOLDER = "validation";
@@ -54,7 +54,7 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
 
     @Override
     protected Application configure() {
-        
+
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
 
@@ -74,7 +74,7 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
         mockRegistryService = mock(RegistryService.class);
         mockEntityService = mock(EntityService.class);
         jerseyConfig.register(new DatabaseResource(mockRegistryService, mockEntityService));
-        
+
         jerseyConfig.register(createMapper().getClass());
 
         return jerseyConfig;

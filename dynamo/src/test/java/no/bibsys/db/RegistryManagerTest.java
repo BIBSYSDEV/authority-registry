@@ -301,10 +301,10 @@ public class RegistryManagerTest extends LocalDynamoTest {
         return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
                 sampleData.getValidValidationSchemaString());
     }
+    
     private Registry updateRegistryWithInvalidSchema(Registry registry)
         throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         return registryManager.updateRegistrySchema(registryMetadataTableName, registry.getId(),
             sampleData.getInvalidValidationSchemaString());
     }
-
 }

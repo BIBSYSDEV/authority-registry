@@ -16,8 +16,8 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelTargetClassesAreNotI
 import no.bibsys.web.exception.MapperTest;
 import no.bibsys.web.model.RegistryDto;
 
-public class ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapperTest
-extends MapperTest<ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper> {
+public class ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapperTest extends 
+    MapperTest<ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper> {
 
     @Test 
     public void updateSchema_invalidSchemaNotInDomain_ReturnsStatusBadRequest() throws Exception {
