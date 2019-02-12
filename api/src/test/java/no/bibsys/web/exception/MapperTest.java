@@ -58,7 +58,7 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
 
-        TableDriver tableDriver = TableDriver.create(client);
+        TableDriver tableDriver = new TableDriver(client);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);

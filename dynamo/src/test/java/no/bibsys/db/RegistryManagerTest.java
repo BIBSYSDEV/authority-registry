@@ -1,5 +1,22 @@
 package no.bibsys.db;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.junit.Test;
+
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
@@ -13,22 +30,6 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class RegistryManagerTest extends LocalDynamoTest {
 
@@ -227,7 +228,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     public void createRegistry_RegistryNotExistingInValidSchema_invalidSchemaException()
 
         throws IOException, RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
-        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException, RegistryCreationFailureException {
 
         Registry registry = createRegistry();
         updateRegistryWithInvalidSchema(registry);
@@ -237,7 +238,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     public void updateRegistry_RegistryExistsValidShema_registryWithValidSchema()
 
         throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
-        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException {
+        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException, RegistryCreationFailureException {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
@@ -254,7 +255,7 @@ public class RegistryManagerTest extends LocalDynamoTest {
     @Test(expected = ShaclModelValidationException.class)
     public void updateRegistry_RegistryExistsInValidShema_registryWithValidSchema()
         throws IOException, RegistryMetadataTableBeingCreatedException, ShaclModelValidationException,
-        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException {
+        SettingValidationSchemaUponCreationException, TargetClassPropertyObjectIsNotAResourceException, RegistryCreationFailureException {
 
         Registry createdRegistry = createRegistry();
         createdRegistry = updateRegistryWithValidSchema(createdRegistry);
