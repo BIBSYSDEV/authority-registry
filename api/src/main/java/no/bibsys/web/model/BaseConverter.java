@@ -1,12 +1,13 @@
 package no.bibsys.web.model;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import no.bibsys.utils.JsonUtils;
 
 public class BaseConverter {
@@ -18,22 +19,8 @@ public class BaseConverter {
         return map;
     }
 
-    protected static JsonNode toJsonNode(ObjectNode objectNode) {
-        try {
-            return mapper.readTree(mapper.writeValueAsString(objectNode));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Error parsing ObjectNode into JsonNode");
-        }
-    }
-
-    protected static String toJson(ObjectNode objectNode) {
-        try {
-            return mapper.writeValueAsString(objectNode);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error parsing ObjectNode into Json");
-
-        }
-
+    protected static String toJson(ObjectNode objectNode) throws JsonProcessingException {
+        return mapper.writeValueAsString(objectNode);
     }
 
     protected static ObjectNode toObjectNode(Map<String, Object> map) {
@@ -49,12 +36,5 @@ public class BaseConverter {
         } catch (IOException e) {
             throw new IllegalArgumentException("Error parsing Json into ObjectNode");
         }
-    }
-
-    protected static ObjectNode toObjectNode(JsonNode jsonNode) {
-        if (jsonNode == null) {
-            return null;
-        }
-        return mapper.convertValue(jsonNode, ObjectNode.class);
     }
 }

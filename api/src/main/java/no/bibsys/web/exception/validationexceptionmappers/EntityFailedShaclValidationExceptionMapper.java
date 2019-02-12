@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 
-public class EntryFailedShaclValidationExceptionMapper implements
+public class EntityFailedShaclValidationExceptionMapper implements
     ExceptionMapper<EntityFailedShaclValidationException> {
 
     private static final String MESSAGE = "Entry failed Shacl Validations";
