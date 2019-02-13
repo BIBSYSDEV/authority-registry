@@ -3,9 +3,20 @@ package no.bibsys.staticurl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
@@ -14,17 +25,16 @@ import com.amazonaws.services.apigateway.model.GetDomainNameResult;
 import com.amazonaws.services.certificatemanager.model.RecordType;
 import com.amazonaws.services.route53.AmazonRoute53;
 import com.amazonaws.services.route53.model.ChangeResourceRecordSetsRequest;
+import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
-import java.util.Optional;
+
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UrlUpdaterTest {
 
     private static final String DEFAULT_ZONE_NAME = "aws.unit.no";
@@ -37,12 +47,15 @@ public class UrlUpdaterTest {
     private transient UrlUpdater urlUpdater;
 
     private transient ResourceRecordSet recordSet;
+    private Route53Updater route53Updater;
+    @Mock
+    AmazonRoute53 route53Client;
+    private AmazonApiGateway apiGatewayClient;
 
     public UrlUpdaterTest() {
         staticUrlInfo = new StaticUrlInfo(DEFAULT_ZONE_NAME, DEFAULT_RECORD_SET_NAME, Stage.TEST);
-        AmazonApiGateway apiGatewayClient = mockApiGatewayClient();
-        AmazonRoute53 route53Client = Mockito.mock(AmazonRoute53.class);
-        Route53Updater route53Updater = new Route53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client);
+        apiGatewayClient = mockApiGatewayClient();
+        route53Updater = new Route53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client);
 
         route53Updater.setRoute53Client(mockRoute53Client());
         urlUpdater = new UrlUpdater(route53Updater);
@@ -63,7 +76,7 @@ public class UrlUpdaterTest {
     private AmazonRoute53 mockRoute53Client() {
         AmazonRoute53 client = Mockito.mock(AmazonRoute53.class);
         ListHostedZonesResult mockResult = new ListHostedZonesResult()
-            .withHostedZones(new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
+                .withHostedZones(new HostedZone().withId(hostedZoneId).withName(DEFAULT_ZONE_NAME));
         when(client.listHostedZones()).thenReturn(mockResult);
         return client;
     }
@@ -74,7 +87,7 @@ public class UrlUpdaterTest {
 
         // necessary when apiGateway is called to delete old mappings
         when(client.getBasePathMappings(any()))
-            .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
+        .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
         return client;
     }
 
@@ -100,5 +113,50 @@ public class UrlUpdaterTest {
 
         String cnameRecord = recordSet.getResourceRecords().get(0).getValue();
         assertThat(cnameRecord, is(equalTo(domainName)));
+    }
+
+    @Test
+    public void createDeleteRequest_stage_notNull() {
+        Optional<ChangeResourceRecordSetsRequest> deleteRequest = urlUpdater.createDeleteRequest();
+        assertThat(deleteRequest.get(), is(not(nullValue())));
+    }
+
+    @Test
+    public void executeUpdateRequest_stage_notNull() {
+        Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createUpdateRequest(certificateArn);
+        ChangeResourceRecordSetsRequest recordSetsRequest = request.get();
+
+        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client));
+
+        ChangeResourceRecordSetsResult testResult = urlUpdater.executeUpdate(recordSetsRequest);
+        assertThat(testResult, is(not(nullValue())));
+    }
+
+    @Test
+    public void executeDeleteRequest_stage_notNull() {
+        Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createDeleteRequest();
+        ChangeResourceRecordSetsRequest recordSetsRequest = request.get();
+        
+        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client));
+        
+        ChangeResourceRecordSetsResult result = urlUpdater.executeDelete(recordSetsRequest);
+        assertThat(result, is(not(nullValue())));
+    }
+    
+    static class MockRoute53Updater extends Route53Updater {
+
+        public MockRoute53Updater(StaticUrlInfo staticUrlInfo, String apiGatewayRestApiId, AmazonApiGateway apiGatewayClient, AmazonRoute53 route53Client) {
+            super(staticUrlInfo, apiGatewayRestApiId, apiGatewayClient, route53Client);
+        }
+        
+        @Override
+        public ChangeResourceRecordSetsResult executeDeleteRequest(ChangeResourceRecordSetsRequest request) {
+            return new ChangeResourceRecordSetsResult();
+        }
+        
+       @Override
+       public ChangeResourceRecordSetsResult executeUpdateRequest(ChangeResourceRecordSetsRequest request) {
+           return new ChangeResourceRecordSetsResult();
+       }
     }
 }
