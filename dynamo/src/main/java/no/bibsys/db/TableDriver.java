@@ -15,45 +15,36 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-import java.util.ArrayList;
-import java.util.List;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
+import no.bibsys.db.structures.RegistryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class TableDriver {
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+
+public class TableDriver {
 
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
-    private transient AmazonDynamoDB client;
-    private transient DynamoDB dynamoDb;
-    private transient DynamoDBMapper mapper;
+    private final transient AmazonDynamoDB client;
+    private final transient DynamoDB dynamoDb;
+    private final transient DynamoDBMapper mapper;
 
-    private TableDriver() {}
-
-    private TableDriver(final AmazonDynamoDB client) {
+    public TableDriver(final AmazonDynamoDB client) {
+        if (isNull(client)) {
+            throw new IllegalStateException("Cannot set null client ");
+        }
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
     }
 
-    /**
-     * Create custom connection with DynamoDB.
-     *
-     * @return customized TableDriver
-     */
-    public static TableDriver create(final AmazonDynamoDB client) {
-        if (client == null) {
-            throw new IllegalStateException("Cannot set null client ");
-        }
-        TableDriver tableDriver = new TableDriver(client);
-        return tableDriver;
-    }
-
-    public Table getTable(final String tableName) {
+    private Table getTable(final String tableName) {
         return dynamoDb.getTable(tableName);
     }
-
 
     /**
      * Check if table exists.
@@ -73,31 +64,6 @@ public final class TableDriver {
         return exists;
     }
 
-    /**
-     * Return number of items in table.
-     *
-     * @param tableName The name of the table
-     * @return number of items
-     */
-
-    public long tableSize(final String tableName) {
-
-        ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
-        Integer itemCount = 0;
-        ScanResult result = null;
-        do {
-            if (result != null) {
-                scanRequest.setExclusiveStartKey(result.getLastEvaluatedKey());
-            }
-
-            result = client.scan(scanRequest);
-            itemCount += result.getScannedCount();
-        } while (result.getLastEvaluatedKey() != null);
-        logger.info("Table has {} items, tableId={}", itemCount, tableName);
-        return itemCount;
-    }
-
-
     public boolean isTableEmpty(final String tableName) {
         ScanRequest scanRequest = new ScanRequest(tableName).withSelect(Select.COUNT);
         ScanResult result = client.scan(scanRequest);
@@ -105,64 +71,32 @@ public final class TableDriver {
 
         return items == 0;
 
-
-    }
-
-    public boolean emptyRegistryMetadataTable(final String tableName) {
-        return emptyTable(tableName, Registry.class);
-    }
-    
-    public boolean emptyEntityRegistryTable(final String tableName) {
-        return emptyTable(tableName, Entity.class);
-    }
-    
-    private boolean emptyTable(final String tableName, Class<?> clazz) {
-
-        if (!tableExists(tableName)) {
-            return false;
-        }
-        boolean emptyResult = deleteNoCheckTable(tableName);
-        return emptyResult && createTable(tableName, clazz);
     }
 
     public boolean deleteTable(final String tableName) {
-
         if (!tableExists(tableName)) {
+            logger.error("Can not delete non-existing table, tableId={}", tableName);
             return false;
         }
-
-        return deleteNoCheckTable(tableName);
-    }
-
-    private boolean deleteNoCheckTable(final String tableName) {
-        if (tableExists(tableName)) {
-                
-            DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
-            TableUtils.deleteTableIfExists(client, deleteRequest);
-            logger.debug("Table deleted successfully, tableId={}", tableName);
-            return true;
-        }
-        logger.error("Can not delete non-existing table, tableId={}", tableName);
-        return false;
-
+        DeleteTableRequest deleteRequest = new DeleteTableRequest(tableName);
+        TableUtils.deleteTableIfExists(client, deleteRequest);
+        return true;
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
         return createTable(tableName, Entity.class);
     }
-    
-    public boolean createRegistryMetadataTable(final String tableName) {
-        return createTable(tableName, Registry.class);
+
+    public void createRegistryMetadataTable(final String tableName) {
+        createTable(tableName, Registry.class);
     }
-    
+
     private boolean createTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
-            
             DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
-                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName))
-                    .build();
-            
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName)).build();
+
             CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
@@ -188,7 +122,7 @@ public final class TableDriver {
             TableDescription describe = getTable(tableName).describe();
             return describe.getTableStatus();
         } catch (ResourceNotFoundException e) {
-            return "NOT_FOUND";
+            return RegistryStatus.NOT_FOUND.name();
         }
     }
 }

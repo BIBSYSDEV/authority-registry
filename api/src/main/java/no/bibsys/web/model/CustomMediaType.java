@@ -1,5 +1,6 @@
 package no.bibsys.web.model;
 
+
 public class CustomMediaType {
 
     public static final String APPLICATION_RDF = "application/rdf";
@@ -10,5 +11,4 @@ public class CustomMediaType {
     public static final String APPLICATION_MARC = "application/marc";
     public static final String APPLICATION_MARCXML = "application/marcxml";
     public static final String APPLICATION_MARCXML_XML = "application/marcxml+Xml";
-
 }

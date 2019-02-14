@@ -14,7 +14,4 @@ public class ItemExistsException extends ConditionalCheckFailedException {
         super(message);
     }
 
-    public ItemExistsException(String message, Throwable e) {
-        this(String.format("%s%n%s", message, e.getMessage()));
-    }
 }

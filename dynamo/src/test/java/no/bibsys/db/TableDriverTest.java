@@ -1,16 +1,23 @@
 package no.bibsys.db;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import no.bibsys.db.structures.Entity;
+import org.junit.Test;
+
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import java.util.List;
-import org.junit.Test;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import no.bibsys.db.structures.Entity;
-
 
 public class TableDriverTest extends LocalDynamoTest {
+
+    @Test(expected = IllegalStateException.class)
+    public void constructor_nullValue_exception() {
+        TableDriver tableDriver = new TableDriver(null);
+
+    }
 
     @Test
     public void createTable_TableNotExisting_AddsTable() {
@@ -36,12 +43,10 @@ public class TableDriverTest extends LocalDynamoTest {
         assertThat(tables, is(equalTo(1)));
     }
 
-
     @Test
     public void deleteTable_EmptyTable_ReturnsTrue() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
-
 
         boolean deleteTable = tableDriver.deleteTable(tableName);
         assertThat(deleteTable, equalTo(true));
@@ -54,7 +59,6 @@ public class TableDriverTest extends LocalDynamoTest {
     public void deleteTable_TableNotExisting_ReturnsFalse() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
-
 
         boolean deleteTable = tableDriver.deleteTable(tableName + "blabla");
         assertThat(deleteTable, equalTo(false));
@@ -71,11 +75,10 @@ public class TableDriverTest extends LocalDynamoTest {
 
         EntityManager entityManager = new EntityManager(localClient);
         entityManager.addEntity(tableName, new Entity());
-        
+
         boolean deleteTable = tableDriver.deleteTable(tableName);
         assertThat(deleteTable, equalTo(true));
     }
-
 
     @Test
     public void listTable_FiveExistingTables_ListsAllFiveTables() {
