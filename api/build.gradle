@@ -25,7 +25,7 @@ dependencies {
 
 
     //jersey libraries
-    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
+    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.28")
     implementation("org.glassfish.jersey.inject:jersey-hk2:2.27") {
         exclude group: 'javax.inject'
     }
