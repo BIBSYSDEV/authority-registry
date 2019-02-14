@@ -119,7 +119,7 @@ function checkHtml(registryName) {
 
   cy.contains(registryName);
 
-  cy.get('li[data-automation-id=name]').contains('nameValue');
-  cy.get('li[data-automation-id=registryName]').contains('registryNameValue');
-  cy.get('li[data-automation-id=description]').contains('descriptionValue');
+  cy.get('li[data-automation-id=name]').should('contain', 'nameValue');
+  cy.get('li[data-automation-id=registryName]').should('contain', 'registryNameValue');
+  cy.get('li[data-automation-id=description]').should('contain', 'descriptionValue');
 }

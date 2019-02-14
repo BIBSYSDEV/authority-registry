@@ -37,8 +37,7 @@ Then(
       cy.get('@entityId').then((entityId) => {
         cy.request(entityGetUrl)
           .then((response) => {
-            cy.get('@profile').then((profile) => {
-              expect('native-uri').to.contains(profile);
+            cy.get('@profile').should('contain', 'native-uri');
             });
           });
       });
