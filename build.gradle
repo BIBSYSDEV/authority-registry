@@ -76,7 +76,7 @@ subprojects {
         implementation("io.symphonia:lambda-logging:1.0.3")
 
         //useful libraries from google
-        implementation("com.google.guava:guava:26.0-jre")
+        implementation("com.google.guava:guava:27.0.1-jre")
 
         //libraries for more expressive testing
         testImplementation("org.hamcrest:hamcrest-all:1.3")

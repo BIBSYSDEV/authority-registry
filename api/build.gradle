@@ -21,18 +21,18 @@ dependencies {
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
     implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
     implementation  ('com.amazonaws:aws-java-sdk-api-gateway:1.11.+')
-    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.496')
+    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.494')
 
 
     //jersey libraries
-    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.27")
-    implementation("org.glassfish.jersey.inject:jersey-hk2:2.27") {
+    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.28")
+    implementation("org.glassfish.jersey.inject:jersey-hk2:2.28") {
         exclude group: 'javax.inject'
     }
 
     // swagger
     implementation('io.swagger.core.v3:swagger-jaxrs2:2.0.0')
-    implementation('io.swagger.core.v3:swagger-annotations:2.0.0')
+    implementation('io.swagger.core.v3:swagger-annotations:2.0.6')
     implementation('io.swagger.core.v3:swagger-models:2.0.0')
 
     //connection to amazon
@@ -53,7 +53,7 @@ dependencies {
 	implementation("org.marc4j:marc4j:2.8.3")
 	
     // for testing
-    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.119")
+    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.477")
 
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
@@ -61,7 +61,7 @@ dependencies {
 
     testImplementation("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.27")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
-    testImplementation("org.mockito:mockito-core:2.23.0")
+    testImplementation("org.mockito:mockito-core:2.24.0")
 }
 
 
