@@ -136,27 +136,28 @@ public class UrlUpdaterTest {
     public void executeDeleteRequest_stage_notNull() {
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createDeleteRequest();
         ChangeResourceRecordSetsRequest recordSetsRequest = request.get();
-        
+
         urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client));
-        
+
         ChangeResourceRecordSetsResult result = urlUpdater.executeDelete(recordSetsRequest);
         assertThat(result, is(not(nullValue())));
     }
-    
+
     static class MockRoute53Updater extends Route53Updater {
 
-        public MockRoute53Updater(StaticUrlInfo staticUrlInfo, String apiGatewayRestApiId, AmazonApiGateway apiGatewayClient, AmazonRoute53 route53Client) {
+        public MockRoute53Updater(StaticUrlInfo staticUrlInfo, String apiGatewayRestApiId, AmazonApiGateway apiGatewayClient, 
+                AmazonRoute53 route53Client) {
             super(staticUrlInfo, apiGatewayRestApiId, apiGatewayClient, route53Client);
         }
-        
+
         @Override
         public ChangeResourceRecordSetsResult executeDeleteRequest(ChangeResourceRecordSetsRequest request) {
             return new ChangeResourceRecordSetsResult();
         }
-        
-       @Override
-       public ChangeResourceRecordSetsResult executeUpdateRequest(ChangeResourceRecordSetsRequest request) {
-           return new ChangeResourceRecordSetsResult();
-       }
+
+        @Override
+        public ChangeResourceRecordSetsResult executeUpdateRequest(ChangeResourceRecordSetsRequest request) {
+            return new ChangeResourceRecordSetsResult();
+        }
     }
 }
