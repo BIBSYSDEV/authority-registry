@@ -53,7 +53,7 @@ dependencies {
 	implementation("org.marc4j:marc4j:2.8.3")
 	
     // for testing
-    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.119")
+    testImplementation ("com.amazonaws:DynamoDBLocal:1.11.477")
 
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
