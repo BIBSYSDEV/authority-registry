@@ -224,17 +224,6 @@ public class DatabaseResource {
         return Response.ok(persistedEntity).build();
     }
 
-    @GET
-    @Path("/{registryName}/entity")
-    public Response entitiesSummary(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-                                    @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                                            description = NAME_OF_REGISTRY_TO + "get entity " + "summary from",
-                                            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
-                                            String registryName) {
-
-        return Response.status(Status.NOT_IMPLEMENTED).entity("Not implemented").build();
-    }
-
     @POST
     @Path("/{registryName}/upload")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
