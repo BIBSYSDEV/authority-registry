@@ -30,18 +30,17 @@ When('specifies an Accept-schema header with a value:', (dataTable) => {
   cy.wrap(profileArray[0]).as('profile');
 });
 
-Then(
-    'anonymous user can view the data in the serialization and profile requested',
-    () => {
-      cy.get('@entityGetUrl').then((entityGetUrl) => {
-        cy.get('@entityId').then((entityId) => {
-          cy.request(entityGetUrl)
-          .then((response) => {
-            cy.get('@profile').should('contain', 'native-uri');
-          });
+Then('anonymous user can view the data in the serialization and profile requested',
+  () => {
+    cy.get('@entityGetUrl').then((entityGetUrl) => {
+      cy.get('@entityId').then((entityId) => {
+        cy.request(entityGetUrl)
+        .then((response) => {
+          cy.get('@profile').should('contain', 'native-uri');
         });
       });
     });
+  });
 
 // Scenario: An anonymous user views an entity specifying an RDF serialization
 // Given that there is an existing entity registry with a schema
