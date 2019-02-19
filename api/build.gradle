@@ -21,7 +21,7 @@ dependencies {
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
     implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
     implementation  ('com.amazonaws:aws-java-sdk-api-gateway:1.11.+')
-    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.494')
+    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.500')
 
 
     //jersey libraries
