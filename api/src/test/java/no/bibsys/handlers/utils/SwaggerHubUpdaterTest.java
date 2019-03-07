@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.amazonaws.services.cloudformation.AmazonCloudFormation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -19,7 +20,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import no.bibsys.aws.apigateway.ServerInfo;
 import no.bibsys.aws.cloudformation.Stage;
+import no.bibsys.aws.secrets.SecretsReader;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class SwaggerHubUpdaterTest {
 
@@ -29,14 +32,31 @@ public class SwaggerHubUpdaterTest {
     private static final transient String SWAGGER_ID = "aut-reg-service";
     private static final transient String API_VERSION = "1.0";
     private static final transient String SWAGGERHUB_ONWER = "randomOwner";
+    private static final String MOCK_SWAGGERHUB_API_KEY = "mockApiKey";
 
     private final ObjectMapper jsonParser = Json.mapper();
     private final ServerInfo serverInfo = new ServerInfo("http://localhost", Stage.TEST.toString());
     private final transient SwaggerHubUpdater swaggerHubUpdater;
 
     public SwaggerHubUpdaterTest() {
-        this.swaggerHubUpdater = new SwaggerHubUpdater(SWAGGER_ID, API_VERSION, SWAGGERHUB_ONWER, STACK_NAME_VALUE,
-            Stage.TEST, BRANCH);
+
+        this.swaggerHubUpdater = new SwaggerHubUpdater(SWAGGER_ID,
+            API_VERSION,
+            SWAGGERHUB_ONWER,
+            STACK_NAME_VALUE,
+            Stage.TEST,
+            BRANCH,
+            mockSecretsReader(),
+            mockCloudFormation()
+        );
+    }
+
+    private static AmazonCloudFormation mockCloudFormation() {
+        return Mockito.mock(AmazonCloudFormation.class);
+    }
+
+    private static SecretsReader mockSecretsReader() {
+        return () -> MOCK_SWAGGERHUB_API_KEY;
     }
 
     @Test

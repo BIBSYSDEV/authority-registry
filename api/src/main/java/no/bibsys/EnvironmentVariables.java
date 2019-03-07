@@ -42,6 +42,6 @@ public class EnvironmentVariables {
 
     public static final String SWAGGER_API_OWNER = "SWAGGER_API_OWNER";
 
-    public static final String SWAGGER_API_KEY = "SWAGGER_API_KEY";
-
+    public static final String SWAGGERHUB_API_KEY_SECRET_NAME = "SWAGGERHUB_API_KEY_SECRET_NAME";
+    public static final String SWAGGERHUB_API_KEY_SECRET_KEY = "SWAGGERHUB_API_KEY_SECRET_KEY";
 }

@@ -1,5 +1,9 @@
 package no.bibsys.handlers;
 
+import com.amazonaws.services.cloudformation.AmazonCloudFormation;
+import com.amazonaws.services.cloudformation.AmazonCloudFormationClientBuilder;
+import com.amazonaws.services.codepipeline.AWSCodePipeline;
+import com.amazonaws.services.codepipeline.AWSCodePipelineClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -10,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import no.bibsys.aws.lambda.events.DeployEvent;
 import no.bibsys.aws.lambda.responses.SimpleResponse;
+import no.bibsys.aws.secrets.SecretsReader;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.staticurl.UrlUpdater;
@@ -25,11 +30,22 @@ public class DestroyHandler extends ResourceHandler {
     private final transient AuthenticationService authenticationService;
 
     public DestroyHandler() {
-        this(new Environment());
+        this(
+            new Environment(),
+            AWSCodePipelineClientBuilder.defaultClient(),
+            initSwaggerHubSecretsBuilder(new Environment()),
+            AmazonCloudFormationClientBuilder.defaultClient()
+
+        );
     }
 
-    public DestroyHandler(Environment environment) {
-        super(environment);
+    public DestroyHandler(Environment environment, AWSCodePipeline codePipeline, SecretsReader swaggerHubsecretsReader,
+        AmazonCloudFormation cloudFormation) {
+        super(environment,
+            codePipeline,
+            swaggerHubsecretsReader,
+            cloudFormation
+        );
 
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         authenticationService = new AuthenticationService(client, new Environment());
@@ -55,6 +71,4 @@ public class DestroyHandler extends ResourceHandler {
             logger.warn(DELETING_STACK_ERROR_MESSAGE, stackName);
         }
     }
-
-
 }

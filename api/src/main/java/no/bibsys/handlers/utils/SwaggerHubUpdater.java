@@ -3,6 +3,7 @@ package no.bibsys.handlers.utils;
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.AmazonApiGatewayClientBuilder;
 import com.amazonaws.services.apigateway.model.NotFoundException;
+import com.amazonaws.services.cloudformation.AmazonCloudFormation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,11 +15,12 @@ import io.swagger.v3.oas.integration.api.OpenApiContext;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import no.bibsys.aws.apigateway.ApiGatewayApiInfo;
+import no.bibsys.aws.apigateway.ApiGatewayInfo;
 import no.bibsys.aws.apigateway.ServerInfo;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.cloudformation.helpers.ResourceType;
 import no.bibsys.aws.cloudformation.helpers.StackResources;
+import no.bibsys.aws.secrets.SecretsReader;
 import no.bibsys.aws.swaggerhub.SwaggerDriver;
 import no.bibsys.aws.swaggerhub.SwaggerHubInfo;
 import no.bibsys.handlers.GitConstants;
@@ -44,15 +46,20 @@ public class SwaggerHubUpdater {
     private final transient String stackName;
     private final transient Stage stage;
     private final transient String branchName;
+    private final transient SecretsReader swaggerHubSecretsReader;
+    private final transient AmazonCloudFormation cloudFormation;
 
     public SwaggerHubUpdater(String apiId, String apiVersion, String swaggerHubOrganization, String stackName,
-        Stage stage, String branchName) {
+        Stage stage, String branchName, SecretsReader swaggerHubSecretsReader, AmazonCloudFormation cloudFormation) {
         this.apiId = apiId;
         this.apiVersion = apiVersion;
         this.swaggerHubOrganization = swaggerHubOrganization;
         this.stackName = stackName;
         this.stage = stage;
         this.branchName = branchName;
+        this.swaggerHubSecretsReader = swaggerHubSecretsReader;
+        this.cloudFormation = cloudFormation;
+
     }
 
     public void updateSwaggerHub() throws IOException, URISyntaxException {
@@ -85,9 +92,9 @@ public class SwaggerHubUpdater {
 
     private SwaggerHubInfo initializeSwaggerHubInfo() {
         if (branchName.equals(GitConstants.MASTER_BRANCH)) {
-            return new SwaggerHubInfo(apiId, apiVersion, swaggerHubOrganization);
+            return new SwaggerHubInfo(apiId, apiVersion, swaggerHubOrganization, swaggerHubSecretsReader);
         } else {
-            return new SwaggerHubInfo(stackName, apiVersion, swaggerHubOrganization);
+            return new SwaggerHubInfo(stackName, apiVersion, swaggerHubOrganization, swaggerHubSecretsReader);
         }
     }
 
@@ -134,12 +141,12 @@ public class SwaggerHubUpdater {
     private Optional<ServerInfo> readServerInfo() throws IOException {
         String restApiId = restApiId(stackName);
         AmazonApiGateway apiGatewayClient = AmazonApiGatewayClientBuilder.defaultClient();
-        ApiGatewayApiInfo apiGatewayApiInfo = new ApiGatewayApiInfo(stage, apiGatewayClient, restApiId);
-        return apiGatewayApiInfo.readServerInfo();
+        ApiGatewayInfo apiGatewayApiInfo = new ApiGatewayInfo(stage, apiGatewayClient, restApiId);
+        return Optional.ofNullable(apiGatewayApiInfo.readServerInfo());
     }
 
     private String restApiId(String stackName) {
-        StackResources stackResources = new StackResources(stackName);
+        StackResources stackResources = new StackResources(stackName, cloudFormation);
         return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
             .orElseThrow(() -> new NotFoundException(STACK_NOT_FOUND_MESSAGE + stackName));
     }
