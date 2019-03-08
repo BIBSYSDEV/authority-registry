@@ -1,5 +1,10 @@
 package no.bibsys.db;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
@@ -9,17 +14,10 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 public class EntityManagerTest extends LocalDynamoTest {
 
     @Test
     public void addEntity_RegistryExist_ReturnsEntity() throws Exception {
-
         String tableName = "addEntity";
         Registry registry = sampleData.sampleRegistry(tableName);
         registryManager.createRegistry(registryMetadataTableName, registry);
