@@ -35,7 +35,6 @@ public class DestroyHandler extends ResourceHandler {
             AWSCodePipelineClientBuilder.defaultClient(),
             initSwaggerHubSecretsBuilder(new Environment()),
             AmazonCloudFormationClientBuilder.defaultClient()
-
         );
     }
 

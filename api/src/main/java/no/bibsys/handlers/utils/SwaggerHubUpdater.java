@@ -31,11 +31,9 @@ import org.slf4j.LoggerFactory;
 
 public class SwaggerHubUpdater {
 
-    private static final Logger logger = LoggerFactory.getLogger(SwaggerHubUpdater.class);
-
     public static final String SERVERS_FIELD = "servers";
-    public  static final String URL_FIELD = "url";
-
+    public static final String URL_FIELD = "url";
+    private static final Logger logger = LoggerFactory.getLogger(SwaggerHubUpdater.class);
     private static final String STACK_NOT_FOUND_MESSAGE = "RestApi not Found for stack: ";
     private static final String FAILURE_WITH_SWAGGERHUB = "Could not generate SwaggerHub specification";
 
@@ -59,7 +57,6 @@ public class SwaggerHubUpdater {
         this.branchName = branchName;
         this.swaggerHubSecretsReader = swaggerHubSecretsReader;
         this.cloudFormation = cloudFormation;
-
     }
 
     public void updateSwaggerHub() throws IOException, URISyntaxException {
