@@ -144,7 +144,7 @@ Resources:
           SWAGGERHUB_API_KEY_SECRET_KEY: 'swaggerapikey'
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
-          REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:infrastructure-entitydata-certificate-arn:1}}'
+          REGIONAL_CERTIFICATE_ARN: '{{resolve:ssm:API_ENTITYDATA_CERTIFICATE_ARN:1}}'
           HOSTED_ZONE_NAME: '{{resolve:ssm:HOSTED_ZONE_NAME:1}}'
           APPLICATION_URL: '{{resolve:ssm:APPLICATION_URL:1}}'
           STACK_NAME: !Ref AWS::StackName
