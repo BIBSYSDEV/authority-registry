@@ -24,10 +24,9 @@ Then('anonymous user can view the data in the given format', () => {
     cy.get('@entityId').then((entityId) => {
       const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
       cy.visit(getEntityUrl);
-      cy.get('li[data-automation-id="@id"]').contains(
-        'http://authority-registry/validation/__THIS_DOCUMENT__a');
-      cy.get('li[data-automation-id="@type"]').contains('unit:Concept');
-      cy.get('li[data-automation-id=preferredLabel]').contains('norskLabel');
+      cy.get('li[data-automation-id="@id"]').should('contain', 'http://authority-registry/validation/__THIS_DOCUMENT__a');
+      cy.get('li[data-automation-id="@type"]').should('contain', 'unit:Concept');
+      cy.get('li[data-automation-id=preferredLabel]').should('contain', 'norskLabel');
     });
   });
 });

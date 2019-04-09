@@ -4,7 +4,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
 import no.bibsys.db.structures.Registry;
 
@@ -19,15 +18,11 @@ public class RegistryMetadataManager {
     }
 
     public void addRegistryToRegistryMetadataTable(String registryMetadataTableName, Registry registry) {
-
         validateRegistryMetadataTable(registryMetadataTableName);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
-            .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
-        try {
-            mapper.save(registry, config);
-        } catch (ResourceNotFoundException e) {
-            throw new RegistryNotFoundException(registryMetadataTableName);
-        }
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
+        mapper.save(registry, config);
+
     }
 
     protected void validateRegistryMetadataTable(String registryMetadataTableName) {

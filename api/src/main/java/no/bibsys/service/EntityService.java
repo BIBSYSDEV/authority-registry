@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.DataValidator;
@@ -18,8 +20,6 @@ public class EntityService extends ModelParser {
 
     private static final Lang VALIDATION_SCHEMA_LANGUAGE = Lang.JSONLD;
     private static final String VALIDATION_SCHEMA_NOT_FOUND = "Validation schema not found for registry: %s";
-    private static final String FAILURE_ADDING_ENTITY = "Failed to add entity to registry %s ";
-    private static final String FAILURE_UPDATING_REGISTRY = "Failed to update entity in registry: %s";
     private final transient EntityManager entityManager;
     private final transient RegistryService registryService;
 
@@ -30,24 +30,18 @@ public class EntityService extends ModelParser {
     }
 
     public EntityDto addEntity(String registryId, EntityDto entityDto)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
-        if (validateEntity(registryId, entityDto)) {
-            return addEntityToRegistry(registryId, entityDto);
-        } else {
-            throw new IllegalStateException(String.format(FAILURE_ADDING_ENTITY, registryId));
-        }
+        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+        validateEntity(registryId, entityDto);
+        return addEntityToRegistry(registryId, entityDto);
     }
 
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
-        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException {
-        if (validateEntity(registryId, entityDto)) {
-            return updateEntityInRegistry(registryId, entityDto);
-        } else {
-            throw new IllegalStateException(String.format(FAILURE_UPDATING_REGISTRY, registryId));
-        }
+        throws ValidationSchemaNotFoundException, EntityFailedShaclValidationException, JsonProcessingException {
+        validateEntity(registryId, entityDto);
+        return updateEntityInRegistry(registryId, entityDto);
     }
 
-    public EntityDto getEntity(String registryId, String entityId) {
+    public EntityDto getEntity(String registryId, String entityId) throws JsonProcessingException {
         Entity entity = entityManager.getEntity(registryId, entityId);
         return EntityConverter.toEntityDto(entity);
     }
@@ -68,12 +62,12 @@ public class EntityService extends ModelParser {
         return dataValidator.isValidEntry(dataModel);
     }
 
-    private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) {
+    private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
         Entity entity = entityManager.updateEntity(registryId, EntityConverter.toEntity(entityDto));
         return EntityConverter.toEntityDto(entity);
     }
 
-    private EntityDto addEntityToRegistry(String registryId, EntityDto entityDto) {
+    private EntityDto addEntityToRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
         Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(entityDto));
         return EntityConverter.toEntityDto(entity);
     }
