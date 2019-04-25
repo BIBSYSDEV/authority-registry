@@ -20,7 +20,7 @@ dependencies {
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
     //slf4j logging
-    implementation('org.slf4j:slf4j-api:1.7.25')
+    implementation('org.slf4j:slf4j-api:1.7.26')
     testImplementation("com.amazonaws:DynamoDBLocal:1.11.477")
 
     //Add library files for SQLite to classpath because we need them during test initialization
