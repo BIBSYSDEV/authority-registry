@@ -18,6 +18,7 @@ import no.bibsys.db.RegistryManager;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.exceptions.UnknownStatusExceptionMapper;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -27,17 +28,15 @@ import no.bibsys.web.exception.EntityNotFoundExceptionMapper;
 import no.bibsys.web.exception.ExceptionLogger;
 import no.bibsys.web.exception.ForbiddenExceptionMapper;
 import no.bibsys.web.exception.IllegalArgumentExceptionMapper;
-import no.bibsys.web.exception.ProcessingExceptionMapper;
 import no.bibsys.web.exception.RegistryAlreadyExistsExceptionMapper;
 import no.bibsys.web.exception.RegistryMetadataTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.RegistryNotEmptyExceptionMapper;
 import no.bibsys.web.exception.RegistryNotFoundExceptionMapper;
 import no.bibsys.web.exception.RegistryUnavailableExceptionMapper;
 import no.bibsys.web.exception.SettingValidationSchemaUponCreationExceptionMapper;
-import no.bibsys.web.exception.validationexceptionmappers.EntryFailedShaclValidationExceptionMapper;
+import no.bibsys.web.exception.validationexceptionmappers.EntityFailedShaclValidationExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper;
-import no.bibsys.web.exception.validationexceptionmappers.ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper;
 import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
@@ -112,16 +111,15 @@ public class JerseyConfig extends ResourceConfig {
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
         register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
-        register(ProcessingExceptionMapper.class);
-        register(EntryFailedShaclValidationExceptionMapper.class);
+        register(EntityFailedShaclValidationExceptionMapper.class);
         register(ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper.class);
         register(ShaclModelPathObjectsAreNotOntologyPropertiesExceptionMapper.class);
-        register(ShaclModelPropertiesAreNotIcludedInOntologyExceptionMapper.class);
         register(ShaclModelTargetClassesAreNotClassesOfOntologyExceptionMapper.class);
         register(ShaclModelTargetClassesAreNotInDomainOfRespectivePropertiesExceptionMapper.class);
         register(ValidationSchemaSyntaxErrorExceptionMapper.class);
         register(ValidationSchemaNotFoundExceptionMapper.class);
         register(SettingValidationSchemaUponCreationExceptionMapper.class);
+        register(UnknownStatusExceptionMapper.class);
     }
 
 }

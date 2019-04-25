@@ -1,6 +1,8 @@
 package no.bibsys.handlers;
 
 import com.amazonaws.services.apigateway.model.NotFoundException;
+import com.amazonaws.services.cloudformation.AmazonCloudFormationClientBuilder;
+import com.amazonaws.services.codepipeline.AWSCodePipelineClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
@@ -39,7 +41,11 @@ public class InitHandler extends ResourceHandler {
     }
 
     public InitHandler(Environment environment) {
-        super(environment);
+        super(environment,
+            AWSCodePipelineClientBuilder.defaultClient(),
+            initSwaggerHubSecretsBuilder(environment),
+            AmazonCloudFormationClientBuilder.defaultClient()
+        );
         final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         this.certificateArn = environment.readEnv(EnvironmentVariables.CERTIFICATE_ARN_ENV);
 

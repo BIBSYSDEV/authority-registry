@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConvertedJson;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.Objects;
 
 public class Registry {
@@ -66,7 +67,4 @@ public class Registry {
                 && Objects.equals(schema, other.schema);
     }
 
-
-    
-    
 }

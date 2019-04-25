@@ -56,11 +56,9 @@ allprojects {
         ignoreFailures = false
     }
 
-    test{
+    test {
         failFast = true
     }
-    
-    
 }
 
 subprojects {
@@ -75,16 +73,16 @@ subprojects {
 
     dependencies {
 
-	    implementation ("io.symphonia:lambda-logging:1.0.3")
+        implementation("io.symphonia:lambda-logging:1.0.3")
 
         //useful libraries from google
-        implementation ("com.google.guava:guava:26.0-jre")
+        implementation("com.google.guava:guava:27.0.1-jre")
 
         //libraries for more expressive testing
-        testImplementation ("org.hamcrest:hamcrest-all:1.3")
+        testImplementation("org.hamcrest:hamcrest-all:1.3")
 
         //JUnit should be the same version as spring
-        testImplementation ("junit:junit:4.12")
+        testImplementation("junit:junit:4.12")
 
         shadowJar { zip64 true }
     }
@@ -101,11 +99,12 @@ subprojects {
     }
 
     jacoco {
-        toolVersion = "0.8.1"
+        toolVersion = "0.8.3"
     }
 
-//    jacocoTestCoverageVerification.dependsOn jacocoTestReport
-//    check.dependsOn jacocoTestCoverageVerification
+
+    check.dependsOn jacocoTestCoverageVerification
+    jacocoTestCoverageVerification.dependsOn(jacocoTestReport)
 
 	jacocoTestCoverageVerification {
 	    violationRules {
@@ -113,9 +112,19 @@ subprojects {
 	            limit {
 	                counter = 'METHOD'
 	                value = 'COVEREDRATIO'
-	                minimum = 0.1 //TODO: Increase this when we start writing tests
+	                minimum = 0.7
 	            }
             }
+
+            rule {
+                limit {
+                    counter = 'CLASS'
+                    value = 'COVEREDRATIO'
+
+                    minimum = 0.7
+                }
+            }
+
         }
-	}
+    }
 }
