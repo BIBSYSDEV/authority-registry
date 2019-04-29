@@ -2,7 +2,7 @@ Feature: Test features
 
   Background:
     Given that there is an existing, populated entity registry with a schema
-    And no cleanup
+#    And no cleanup
  
   Scenario: An anonymous user views the metadata for a registry as RDF
     When an anonymous user dereferences the base URI for the registry specifying mediatypes:
