@@ -13,6 +13,7 @@ phases:
       - echo $CYPRESS_baseUrl
   build:
     commands:
+      - sleep 10
       - npx cypress run
   post_build:
     commands:
