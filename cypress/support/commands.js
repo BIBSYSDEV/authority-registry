@@ -10,6 +10,7 @@
 //
 
 const SERVICE_UNAVAILABLE = 503;
+const SERVICE_ERROR = 500;
 const SEE_OTHER = 303;
 
 const RECURSION_COUNT = 5;
@@ -81,7 +82,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile,
           'content-type': 'application/json',
         },
       }).then((response) => {
-        if (response.status === SERVICE_UNAVAILABLE) {
+        if (response.status === SERVICE_UNAVAILABLE || response.status === SERVICE_ERROR) {
           const newCount = count + 1;
           if (newCount < RECURSION_COUNT) {
             cy.wait(RECURSION_DELAY);
