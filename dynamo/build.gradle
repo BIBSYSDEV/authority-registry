@@ -27,7 +27,7 @@ dependencies {
     // This is for simulating DynamoDB locally
     testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.119")
 
-    implementation('org.apache.jena:jena-core:3.10.0')
+    implementation('org.apache.jena:jena-core:3.11.0')
     implementation('org.apache.jena:jena-arq:3.10.0')
     implementation('org.topbraid:shacl:1.1.0') {
         exclude group: 'org.apache.jena', module: 'jena-arq'
