@@ -38,7 +38,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             do {
                 try {
                     count--;
-                    if(count < 0) {
+                    if (count < 0) {
                         throw new IOException("Unable to connect to resources");
                     }
                     apiKey = authenticationService.getApiKey(apiKeyInHeader.get());

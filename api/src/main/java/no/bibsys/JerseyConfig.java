@@ -21,6 +21,7 @@ import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.UnknownStatusExceptionMapper;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
+import no.bibsys.web.exception.ApiKeyTableBeingCreatedExceptionMapper;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.BaseExceptionMapper;
 import no.bibsys.web.exception.ConditionalCheckFailedExceptionMapper;
@@ -110,6 +111,7 @@ public class JerseyConfig extends ResourceConfig {
         register(RegistryUnavailableExceptionMapper.class);
         register(EntityNotFoundExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
+        register(ApiKeyTableBeingCreatedExceptionMapper.class);
         register(RegistryMetadataTableBeingCreatedExceptionMapper.class);
         register(EntityFailedShaclValidationExceptionMapper.class);
         register(ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper.class);
