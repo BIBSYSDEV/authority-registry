@@ -1,5 +1,12 @@
 package no.bibsys.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -17,29 +24,31 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.SSESpecification;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.tools.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import no.bibsys.db.TableDriver;
+import no.bibsys.web.exception.ApiKeyTableBeingCreatedException;
 
 public class AuthenticationService {
 
+    private static final String UPDATING = "UPDATING";
+    private static final String CREATING = "CREATING";
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     private final transient DynamoDBMapper mapper;
     private final transient DynamoDBMapperConfig config;
     private final transient Environment environmentReader;
     private final transient String apiKeyTableName;
     private final transient DynamoDB dynamoDB;
+    private final transient TableDriver tableDriver;
 
 
     public AuthenticationService(AmazonDynamoDB client, Environment environmentReader) {
         this.environmentReader = environmentReader;
         mapper = new DynamoDBMapper(client);
-        this.dynamoDB = new DynamoDB(client);
+        dynamoDB = new DynamoDB(client);
+        tableDriver = new TableDriver(client);
 
         apiKeyTableName = environmentReader.readEnv(EnvironmentVariables.API_KEY_TABLE_NAME);
 
@@ -48,7 +57,12 @@ public class AuthenticationService {
                 .build();
     }
 
-    public ApiKey getApiKey(String apiKeyInHeader) {
+    public ApiKey getApiKey(String apiKeyInHeader) throws ApiKeyTableBeingCreatedException {
+        String status = tableDriver.status(apiKeyTableName);
+        if(CREATING.equalsIgnoreCase(status) || UPDATING.equalsIgnoreCase(status)) {
+            throw new ApiKeyTableBeingCreatedException();
+        }
+
         ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
         if (Objects.isNull(apiKey)) {
             apiKey = new ApiKey();

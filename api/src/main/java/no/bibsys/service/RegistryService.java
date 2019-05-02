@@ -19,6 +19,7 @@ import no.bibsys.db.structures.RegistryStatus;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.service.exceptions.UnknownStatusException;
+import no.bibsys.web.exception.ApiKeyTableBeingCreatedException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
@@ -104,7 +105,7 @@ public class RegistryService {
         }
     }
 
-    public String replaceApiKey(String registryName, String oldApiKey) {
+    public String replaceApiKey(String registryName, String oldApiKey) throws ApiKeyTableBeingCreatedException {
 
         ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
         if (Objects.isNull(existingApiKey.getRegistry()) || !existingApiKey.getRegistry().equals(registryName)) {

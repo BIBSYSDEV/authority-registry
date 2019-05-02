@@ -43,6 +43,7 @@ import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
+import no.bibsys.web.exception.ApiKeyTableBeingCreatedException;
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryCreateRequestParametersObject;
@@ -164,7 +165,7 @@ public class DatabaseResource {
                                           schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
                                           String registryName, @RequestBody(description = "Old apikey",
             content = @Content(schema = @Schema(implementation = String.class))) String oldApiKey)
-            throws UnknownStatusException {
+            throws UnknownStatusException, ApiKeyTableBeingCreatedException {
 
         registryService.validateRegistryExists(registryName);
         String newApiKey = registryService.replaceApiKey(registryName, oldApiKey);
