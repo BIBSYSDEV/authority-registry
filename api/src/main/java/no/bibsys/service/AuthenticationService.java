@@ -33,6 +33,7 @@ import no.bibsys.web.exception.ApiKeyTableBeingCreatedException;
 
 public class AuthenticationService {
 
+    private static final String ACTIVE = "ACTIVE";
     private static final String UPDATING = "UPDATING";
     private static final String CREATING = "CREATING";
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
@@ -55,6 +56,14 @@ public class AuthenticationService {
         config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
+        do {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (!ACTIVE.equals(tableDriver.status(apiKeyTableName)));
+        
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) throws ApiKeyTableBeingCreatedException {
