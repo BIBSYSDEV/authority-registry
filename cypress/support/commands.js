@@ -82,6 +82,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile,
           'content-type': 'application/json',
         },
       }).then((response) => {
+        cy.log(response.status);
         if (response.status === SERVICE_UNAVAILABLE || response.status === SERVICE_ERROR) {
           const newCount = count + 1;
           if (newCount < RECURSION_COUNT) {
