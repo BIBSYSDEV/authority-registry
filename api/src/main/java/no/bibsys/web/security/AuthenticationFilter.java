@@ -19,6 +19,7 @@ import no.bibsys.web.exception.ApiKeyTableBeingCreatedException;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
+    private static final int DELAY_IN_MILLISECONDS = 5000;
     private final transient AuthenticationService authenticationService;
 
     public AuthenticationFilter(AuthenticationService authenticationService) {
@@ -32,12 +33,23 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 .ofNullable(requestContext.getHeaderString(ApiKeyConstants.API_KEY_PARAM_NAME));
 
         if (apiKeyInHeader.isPresent()) {
-            ApiKey apiKey;
-            try {
-                apiKey = authenticationService.getApiKey(apiKeyInHeader.get());
-            } catch (ApiKeyTableBeingCreatedException e) {
-                throw new RuntimeException(e.getMessage()); // TODO not good enough
-            }
+            ApiKey apiKey = null;
+            int count = 5;
+            do {
+                try {
+                    count--;
+                    if(count < 0) {
+                        throw new IOException("Unable to connect to resources");
+                    }
+                    apiKey = authenticationService.getApiKey(apiKeyInHeader.get());
+                } catch (ApiKeyTableBeingCreatedException e) {
+                    try {
+                        Thread.sleep(DELAY_IN_MILLISECONDS);
+                    } catch (InterruptedException e1) {
+                        throw new IOException("Unable to connect to resources");
+                    }
+                }
+            } while (apiKey == null);
             if (Roles.API_ADMIN.equals(apiKey.getRole())) {
                 requestContext.setSecurityContext(new AssignedSecurityContext(Roles.API_ADMIN));
             } else if (Roles.REGISTRY_ADMIN.equals(apiKey.getRole())) {
