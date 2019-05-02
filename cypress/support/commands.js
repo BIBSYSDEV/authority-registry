@@ -14,7 +14,7 @@ const SERVICE_ERROR = 500;
 const SEE_OTHER = 303;
 
 const RECURSION_COUNT = 5;
-const RECURSION_DELAY = 2000; // milliseconds
+const RECURSION_DELAY = 5000; // milliseconds
 const VALID_SHACL_VALIDATION_FILE = 'validShaclValidationSchema.json';
 
 Cypress.Commands.add('registryReady', (registryName) => {
