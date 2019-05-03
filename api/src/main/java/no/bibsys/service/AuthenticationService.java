@@ -56,11 +56,16 @@ public class AuthenticationService {
         config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
+        int count = 10;
         do {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            count--;
+            if (count == 0) {
+                break;
             }
         } while (!ACTIVE.equals(tableDriver.status(apiKeyTableName)));
         
