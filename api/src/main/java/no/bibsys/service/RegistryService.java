@@ -90,6 +90,21 @@ public class RegistryService {
     }
 
     public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
+        
+        RegistryStatus metaDataTableStatus = registryManager.status(registryMetadataTableName);
+        switch (metaDataTableStatus) {
+            case ACTIVE:
+                break;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(registryName, metaDataTableStatus.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+                throw new RegistryNotFoundException(registryName);
+            default:
+                throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
+        }
+        
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:
