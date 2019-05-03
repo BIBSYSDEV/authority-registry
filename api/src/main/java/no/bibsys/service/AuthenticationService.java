@@ -73,7 +73,7 @@ public class AuthenticationService {
 
     public ApiKey getApiKey(String apiKeyInHeader) throws ApiKeyTableBeingCreatedException {
         String status = tableDriver.status(apiKeyTableName);
-        if(CREATING.equalsIgnoreCase(status) || UPDATING.equalsIgnoreCase(status)) {
+        if (CREATING.equalsIgnoreCase(status) || UPDATING.equalsIgnoreCase(status)) {
             throw new ApiKeyTableBeingCreatedException();
         }
 
