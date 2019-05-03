@@ -56,26 +56,9 @@ public class AuthenticationService {
         config = DynamoDBMapperConfig.builder()
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(apiKeyTableName))
                 .build();
-        int count = 10;
-        do {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            count--;
-            if (count == 0) {
-                break;
-            }
-        } while (!ACTIVE.equals(tableDriver.status(apiKeyTableName)));
-        
     }
 
     public ApiKey getApiKey(String apiKeyInHeader) throws ApiKeyTableBeingCreatedException {
-        String status = tableDriver.status(apiKeyTableName);
-        if (CREATING.equalsIgnoreCase(status) || UPDATING.equalsIgnoreCase(status)) {
-            throw new ApiKeyTableBeingCreatedException();
-        }
 
         ApiKey apiKey = mapper.load(ApiKey.class, apiKeyInHeader, config);
         if (Objects.isNull(apiKey)) {
