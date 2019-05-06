@@ -57,6 +57,7 @@ Resources:
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
           - dynamodb:Scan
+          - secretsmanager:GetSecretValue
           - s3:*
           - apigateway:GET
 
