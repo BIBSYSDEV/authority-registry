@@ -49,12 +49,6 @@ public class RegistryService {
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
         
-        try {
-            validateRegistryExists(registryMetadataTableName);
-        } catch (UnknownStatusException e) {
-            throw new RegistryMetadataTableBeingCreatedException();
-        }
-
         RegistryInfoNoMetadataDto registryInfoNoMetadataDto = new RegistryInfoNoMetadataDto(registryDto);
         registryInfoNoMetadataDto.setPath("/registry/" + registryInfoNoMetadataDto.getId());
         registryInfoNoMetadataDto.setApiKey(savedApiKey);
