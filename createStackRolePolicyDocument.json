@@ -50,7 +50,10 @@
         "lambda:InvokeFunction",
         "lambda:listTags",
         "lambda:TagResource",
-        "lambda:UntagResource"
+        "lambda:UntagResource",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+        
       ],
       "Effect": "Allow",
       "Resource": "*"
