@@ -30,7 +30,8 @@
         "ssm:PutParameter",
         "ssm:DeleteParameter",
         "ssm:GetParameters",
-        "ssm:AddTagsToResource"
+        "ssm:AddTagsToResource",
+        "secretsmanager:GetSecretValue"
       ],
       "Effect": "Allow",
       "Resource": "*"
