@@ -55,8 +55,8 @@ public class InitHandler extends ResourceHandler {
     @Override
     protected SimpleResponse processInput(DeployEvent input, String apiGatewayQuery, Context context)
         throws IOException, URISyntaxException {
-//        createApiKeysTable();
-//        updateUrl();
+        createApiKeysTable();
+        updateUrl();
 //        swaggerHubUpdater.updateSwaggerHub();
         return new SimpleResponse(SUCCESS_MESSAGE);
     }
