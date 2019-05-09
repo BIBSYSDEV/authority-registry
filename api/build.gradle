@@ -17,6 +17,8 @@ dependencies {
 
     implementation project(":dynamo")
 
+    implementation("io.symphonia:lambda-logging:1.0.3")
+
 
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
     implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
