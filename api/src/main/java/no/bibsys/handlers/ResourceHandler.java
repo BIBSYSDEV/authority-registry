@@ -20,10 +20,9 @@ import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.secrets.AwsSecretsReader;
 import no.bibsys.aws.secrets.SecretsReader;
 import no.bibsys.aws.tools.Environment;
+import no.bibsys.handlers.utils.SwaggerHubUpdater;
 import no.bibsys.staticurl.UrlUpdater;
 import org.apache.commons.codec.digest.DigestUtils;
-
-import java.io.IOException;
 
 /**
  * Class for common methods of InitHandler and DestroyHandler.
@@ -61,12 +60,13 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
     protected static SecretsReader initSwaggerHubSecretsBuilder(Environment environment) {
 
-        return () -> "hello";
-//        String swaggerApiKeySecretName = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_NAME);
-//        String swaggerApiKeySecretKey = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_KEY);
-//        return new AwsSecretsReader(
-//            AWSSecretsManagerClientBuilder.defaultClient(),
-//            swaggerApiKeySecretName, swaggerApiKeySecretKey);
+
+        String swaggerApiKeySecretName = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_NAME);
+        String swaggerApiKeySecretKey = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_KEY);
+
+        return new AwsSecretsReader(
+            AWSSecretsManagerClientBuilder.defaultClient(),
+            swaggerApiKeySecretName, swaggerApiKeySecretKey);
     }
 
     protected UrlUpdater createUrlUpdater() {
