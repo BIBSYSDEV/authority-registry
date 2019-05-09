@@ -37,7 +37,7 @@ import no.bibsys.aws.route53.StaticUrlInfo;
 @RunWith(MockitoJUnitRunner.class)
 public class UrlUpdaterTest {
 
-    private static final String DEFAULT_ZONE_NAME = "aws.unit.no";
+    private static final String DEFAULT_ZONE_NAME = "aws.unit.no.";
     private static final String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
     private final transient String certificateArn = "TheCerificate";
     private final transient String hostedZoneId = "HOSTEDZONEID";

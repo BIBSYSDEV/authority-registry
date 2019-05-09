@@ -15,7 +15,7 @@ public class UrlUpdater {
     }
 
     public Optional<ChangeResourceRecordSetsRequest> createUpdateRequest(String certificateArn) {
-        return route53Updater.createUpdateRequest(certificateArn);
+        return route53Updater.createUpdateRequestForRecordSets(certificateArn);
     }
 
     public ChangeResourceRecordSetsResult executeUpdate(ChangeResourceRecordSetsRequest request) {
