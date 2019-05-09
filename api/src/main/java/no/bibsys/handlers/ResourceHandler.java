@@ -20,9 +20,10 @@ import no.bibsys.aws.route53.StaticUrlInfo;
 import no.bibsys.aws.secrets.AwsSecretsReader;
 import no.bibsys.aws.secrets.SecretsReader;
 import no.bibsys.aws.tools.Environment;
-import no.bibsys.handlers.utils.SwaggerHubUpdater;
 import no.bibsys.staticurl.UrlUpdater;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.IOException;
 
 /**
  * Class for common methods of InitHandler and DestroyHandler.
@@ -31,7 +32,7 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
     private static final String REST_API_NOT_FOUND_MESSAGE = "Could not find a RestApi in stack ";
     protected final transient String stackName;
-    protected final transient SwaggerHubUpdater swaggerHubUpdater;
+//    protected final transient SwaggerHubUpdater swaggerHubUpdater;
     private final transient Stage stage;
     private final transient String hostedZoneName;
     private final transient String applicationUrl;
@@ -50,20 +51,22 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         this.stackName = environment.readEnv(EnvironmentVariables.STACK_NAME);
         this.branch = environment.readEnv(EnvironmentVariables.BRANCH);
         this.cloudFormation = cloudFormation;
-        String apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
-        String apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
+//        String apiId = environment.readEnv(EnvironmentVariables.SWAGGER_API_ID);
+//        String apiVersion = environment.readEnv(EnvironmentVariables.SWAGGER_API_VERSION);
         String swaggerOrganization = environment.readEnv(EnvironmentVariables.SWAGGER_API_OWNER);
 
-        this.swaggerHubUpdater = new SwaggerHubUpdater(apiId, apiVersion, swaggerOrganization, stackName, stage,
-            branch, swaggerHubSecretsReader, cloudFormation);
+//        this.swaggerHubUpdater = new SwaggerHubUpdater(apiId, apiVersion, swaggerOrganization, stackName, stage,
+//            branch, swaggerHubSecretsReader, cloudFormation);
     }
 
     protected static SecretsReader initSwaggerHubSecretsBuilder(Environment environment) {
-        String swaggerApiKeySecretName = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_NAME);
-        String swaggerApiKeySecretKey = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_KEY);
-        return new AwsSecretsReader(
-            AWSSecretsManagerClientBuilder.defaultClient(),
-            swaggerApiKeySecretName, swaggerApiKeySecretKey);
+
+        return () -> "hello";
+//        String swaggerApiKeySecretName = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_NAME);
+//        String swaggerApiKeySecretKey = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_KEY);
+//        return new AwsSecretsReader(
+//            AWSSecretsManagerClientBuilder.defaultClient(),
+//            swaggerApiKeySecretName, swaggerApiKeySecretKey);
     }
 
     protected UrlUpdater createUrlUpdater() {
