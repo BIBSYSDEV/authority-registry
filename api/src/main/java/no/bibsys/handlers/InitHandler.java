@@ -57,7 +57,7 @@ public class InitHandler extends ResourceHandler {
         throws IOException, URISyntaxException {
         createApiKeysTable();
         updateUrl();
-//        swaggerHubUpdater.updateSwaggerHub();
+        swaggerHubUpdater.updateSwaggerHub();
         return new SimpleResponse(SUCCESS_MESSAGE);
     }
 
