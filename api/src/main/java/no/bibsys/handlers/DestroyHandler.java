@@ -55,7 +55,7 @@ public class DestroyHandler extends ResourceHandler {
         throws IOException, URISyntaxException {
         String tableName = authenticationService.deleteApiKeyTable();
         deleteStaticUrl();
-        swaggerHubUpdater.deleteSwaggerHubApi();
+//        swaggerHubUpdater.deleteSwaggerHubApi();
         return new SimpleResponse(String.format(SUCESS_RESPONSE, tableName));
     }
 
