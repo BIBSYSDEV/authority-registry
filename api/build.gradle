@@ -17,7 +17,9 @@ dependencies {
 
     implementation project(":dynamo")
 
-    implementation("io.symphonia:lambda-logging:1.0.3")
+    compile("io.symphonia:lambda-logging:1.0.3")
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+
 
 
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
