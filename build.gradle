@@ -82,6 +82,9 @@ subprojects {
         //JUnit should be the same version as spring
         testImplementation("junit:junit:4.12")
 
+
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+
         shadowJar { zip64 true }
     }
 
