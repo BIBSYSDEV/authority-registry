@@ -72,9 +72,7 @@ subprojects {
 
 
     dependencies {
-
-        implementation("io.symphonia:lambda-logging:1.0.3")
-
+        
         //useful libraries from google
         implementation("com.google.guava:guava:27.0.1-jre")
 
