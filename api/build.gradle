@@ -13,12 +13,16 @@ repositories {
 apply plugin: 'java'
 apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
+def awsSdkVersion = '1.11.534'
+
+
 dependencies {
 
     implementation project(":dynamo")
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-logs', version: "${awsSdkVersion}"
 
 
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
