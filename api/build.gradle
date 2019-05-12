@@ -17,7 +17,6 @@ dependencies {
 
     implementation project(":dynamo")
 
-    compile("io.symphonia:lambda-logging:1.0.3")
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
 
