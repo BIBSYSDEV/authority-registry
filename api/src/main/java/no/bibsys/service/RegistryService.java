@@ -42,10 +42,10 @@ public class RegistryService {
             throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
             RegistryCreationFailureException, UnknownStatusException {
 
+        checkMetadataTableStatus();
         Registry registry = registryManager
             .createRegistry(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
 
-        checkMetadataTableStatus();
 
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
