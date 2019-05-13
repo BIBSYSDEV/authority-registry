@@ -89,6 +89,12 @@ public class RegistryService {
     }
 
     public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
+        
+        checkMetadataTableStatus();
+        return checkRegistryStatus(registryName);
+    }
+
+    private RegistryStatus checkRegistryStatus(String registryName) throws UnknownStatusException {
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:
@@ -99,6 +105,22 @@ public class RegistryService {
             case DELETING:
             case NOT_FOUND:
                 throw new RegistryNotFoundException(registryName);
+            default:
+                throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
+        }
+    }
+
+    private void checkMetadataTableStatus() throws UnknownStatusException {
+        RegistryStatus metatdataTableStatus = registryManager.status(registryMetadataTableName);
+        switch (metatdataTableStatus) {
+            case ACTIVE:
+                break;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(registryMetadataTableName, metatdataTableStatus.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+                throw new RegistryNotFoundException(registryMetadataTableName);
             default:
                 throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
         }
