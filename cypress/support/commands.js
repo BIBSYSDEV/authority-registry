@@ -64,7 +64,7 @@ function createRegistry(registryName, apiAdminApiKey, metadataFile,
 
   cy.log('creating registry...');
 
-  cy.wait(10000);
+  cy.wait(12000);
   
   cy.log('Using apiKey ' + apiAdminApiKey);
   cy.fixture(metadataFile)
