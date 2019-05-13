@@ -40,10 +40,12 @@ public class RegistryService {
 
     public RegistryInfoNoMetadataDto createRegistry(RegistryDto registryDto)
             throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
-            RegistryCreationFailureException {
+            RegistryCreationFailureException, UnknownStatusException {
 
         Registry registry = registryManager
             .createRegistry(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
+
+        checkMetadataTableStatus();
 
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
@@ -90,7 +92,6 @@ public class RegistryService {
 
     public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
         
-        checkMetadataTableStatus();
         return checkRegistryStatus(registryName);
     }
 
@@ -110,14 +111,14 @@ public class RegistryService {
         }
     }
 
-    private void checkMetadataTableStatus() throws UnknownStatusException {
+    private void checkMetadataTableStatus() throws UnknownStatusException, RegistryMetadataTableBeingCreatedException {
         RegistryStatus metatdataTableStatus = registryManager.status(registryMetadataTableName);
         switch (metatdataTableStatus) {
             case ACTIVE:
                 break;
             case CREATING:
             case UPDATING:
-                throw new RegistryUnavailableException(registryMetadataTableName, metatdataTableStatus.name().toLowerCase(Locale.ENGLISH));
+                throw new RegistryMetadataTableBeingCreatedException();
             case DELETING:
             case NOT_FOUND:
                 throw new RegistryNotFoundException(registryMetadataTableName);
