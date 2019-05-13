@@ -4,17 +4,24 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -27,9 +34,6 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -121,8 +125,9 @@ public class DatabaseResourceTest extends JerseyTest {
 
     protected Response insertEntryRequest(String registryName, EntityDto entityDto, String apiKey) {
         String path = String.format("/registry/%s/entity", registryName);
-        return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
+        Response response = target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
             javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
+        return response;
     }
 
     protected Response createEntity(String registryName) throws IOException {
