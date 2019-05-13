@@ -110,22 +110,6 @@ public class RegistryService {
         }
     }
 
-    private void checkMetadataTableStatus() throws UnknownStatusException, RegistryMetadataTableBeingCreatedException {
-        RegistryStatus metatdataTableStatus = registryManager.status(registryMetadataTableName);
-        switch (metatdataTableStatus) {
-            case ACTIVE:
-                break;
-            case CREATING:
-            case UPDATING:
-                throw new RegistryMetadataTableBeingCreatedException();
-            case DELETING:
-            case NOT_FOUND:
-                throw new RegistryNotFoundException(registryMetadataTableName);
-            default:
-                throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
-        }
-    }
-
     public String replaceApiKey(String registryName, String oldApiKey) {
 
         ApiKey existingApiKey = authenticationService.getApiKey(oldApiKey);
