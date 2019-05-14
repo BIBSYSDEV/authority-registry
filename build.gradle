@@ -73,6 +73,8 @@ subprojects {
 
     dependencies {
 
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+        
         //useful libraries from google
         implementation("com.google.guava:guava:27.0.1-jre")
 
