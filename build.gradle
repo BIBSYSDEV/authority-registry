@@ -22,7 +22,7 @@ dependencies {
     implementation project(":api")
     implementation project(":cypress")
     implementation project(":validation")
-    
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'    
 }
 
 task fatJar {
