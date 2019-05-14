@@ -14,9 +14,9 @@ apply plugin: 'java'
 apply plugin: "io.swagger.core.v3.swagger-gradle-plugin"
 
 dependencies {
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
     implementation project(":dynamo")
-
 
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
     implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
