@@ -92,7 +92,8 @@ public class RegistryManager extends ModelParser {
 
     }
 
-    private void checkIfRegistryExistsInRegistryMetadataTable(String registryId) throws RegistryMetadataTableBeingCreatedException {
+    private void checkIfRegistryExistsInRegistryMetadataTable(String registryId) 
+            throws RegistryMetadataTableBeingCreatedException {
         RegistryStatus status = status(registryId);
         if (!status.equals(RegistryStatus.NOT_FOUND)) {
             if (status.equals(RegistryStatus.CREATING) || status.equals(RegistryStatus.UPDATING)) {

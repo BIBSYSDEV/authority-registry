@@ -96,7 +96,8 @@ public class RegistryService {
             return checkRegistryStatus(registryName);
         }
         
-        throw new RegistryUnavailableException(registryMetadataTableName, metadataTableStatus.name().toLowerCase(Locale.ENGLISH));
+        throw new RegistryUnavailableException(registryMetadataTableName, 
+                metadataTableStatus.name().toLowerCase(Locale.ENGLISH));
     }
 
     private RegistryStatus checkMetadataTableStatus() throws UnknownStatusException {
@@ -106,7 +107,8 @@ public class RegistryService {
                 return status;
             case CREATING:
             case UPDATING:
-                throw new RegistryUnavailableException(registryMetadataTableName, status.name().toLowerCase(Locale.ENGLISH));
+                throw new RegistryUnavailableException(registryMetadataTableName, 
+                        status.name().toLowerCase(Locale.ENGLISH));
             case DELETING:
             case NOT_FOUND:
                 throw new RegistryNotFoundException(registryMetadataTableName);
