@@ -121,6 +121,8 @@ Resources:
           - lambda:InvokeFunction
           - codepipeline:PutJobFailureResult
           - codepipeline:PutJobSuccessResult
+          - logs:DeleteLogGroup
+          - logs:DescribeLogGroups
           - apigateway:*
           - dynamodb:DescribeTable
           - dynamodb:CreateTable
@@ -163,6 +165,7 @@ Resources:
           - lambda:InvokeFunction
           - codepipeline:PutJobFailureResult
           - codepipeline:PutJobSuccessResult
+          - logs:DeleteLogGroup
           - apigateway:*
           - dynamodb:DescribeTable
           - dynamodb:DeleteTable
