@@ -8,7 +8,7 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 wrapper {
@@ -67,14 +67,12 @@ subprojects {
     apply plugin: "jacoco"
 
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
 
     dependencies {
-
-        implementation("io.symphonia:lambda-logging:1.0.3")
-
+        
         //useful libraries from google
         implementation("com.google.guava:guava:27.0.1-jre")
 
@@ -83,6 +81,8 @@ subprojects {
 
         //JUnit should be the same version as spring
         testImplementation("junit:junit:4.12")
+
+
 
         shadowJar { zip64 true }
     }
