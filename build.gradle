@@ -22,7 +22,7 @@ dependencies {
     implementation project(":api")
     implementation project(":cypress")
     implementation project(":validation")
-    
+    implementation 'io.github.didog:cloudwatch-logback-appender:1.0.6'   
 }
 
 task fatJar {
