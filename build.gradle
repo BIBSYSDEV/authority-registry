@@ -77,10 +77,10 @@ subprojects {
         
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
         
-        implementation("com.google.guava:guava:27.0.1-jre")
+        implementation("com.google.guava:guava:27.1-jre")
         
         //useful libraries from google
-        implementation("com.google.guava:guava:27.0.1-jre")
+        implementation("com.google.guava:guava:27.1-jre")
 
         //libraries for more expressive testing
         testImplementation("org.hamcrest:hamcrest-all:1.3")
