@@ -18,7 +18,8 @@ def awsSdkVersion = '1.11.534'
 
 dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
-
+    implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
+       
     implementation project(":dynamo")
 
     implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
