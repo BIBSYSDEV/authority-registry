@@ -13,7 +13,7 @@
 
 		<createLogGroup>true</createLogGroup>
 		<queueLength>100</queueLength>
-		<groupName>/authority-registry-api</groupName>
+		<groupName>authority-registry-api</groupName>
 		<streamName>log-stream</streamName>  
 		<dateFormat>yyyyMMdd_HHmm</dateFormat>
 
