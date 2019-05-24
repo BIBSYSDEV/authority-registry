@@ -9,6 +9,7 @@ dependencies {
     compile project(":common")
     compile project(":validation")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
 
     //library for using embedded DynamoDB during local tests
@@ -34,7 +35,7 @@ dependencies {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 
-    implementation group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.6'
+    
 }
 
 
