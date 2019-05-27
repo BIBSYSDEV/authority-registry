@@ -6,7 +6,7 @@ Feature: Anonymous user features
   Scenario: An anonymous user views an entity without specifying a format
     And that there is an entity in the registry
     When the anonymous user requests the entity
-    Then anonymous user can view the entity's data in the native database format
+    Then anonymous user can view the entitys data in the native database format
 
   Scenario: An anonymous user views API information
     When an anonymous user requests the OpenAPI documentation
