@@ -156,11 +156,11 @@ Resources:
           - config:Describe*
           Resource: "*"
       Timeout: 600
-      Events:
-        DynamoDBChange:
-          Type: DynamoDB
-          Properties:
-            Enabled: true
+#      Events:
+#        DynamoDBChange:
+#          Type: DynamoDB
+#          Properties:
+#            Enabled: true
 
   RestApiUrlParameter:
     Type: AWS::SSM::Parameter
