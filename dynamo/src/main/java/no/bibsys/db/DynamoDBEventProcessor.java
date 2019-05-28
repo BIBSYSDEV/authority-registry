@@ -16,7 +16,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
 
         System.out.println("dynamodbEvent="+dynamodbEvent);
-        logger.debug("dynamodbEvent=%s", dynamodbEvent);
+        logger.debug("dynamodbEvent={}", dynamodbEvent);
 
         
         for (DynamodbStreamRecord record : dynamodbEvent.getRecords()) {
@@ -25,7 +25,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                 continue;
             }
 
-            logger.debug("record.eventID=%s, record.eventName=%s, record.dynamodb=%s", record.getEventID(), record.getEventName(), record.getDynamodb());
+            logger.debug("record.eventID={}, record.eventName={}, record.dynamodb={}", record.getEventID(), record.getEventName(), record.getDynamodb());
         }
 
         return null;
