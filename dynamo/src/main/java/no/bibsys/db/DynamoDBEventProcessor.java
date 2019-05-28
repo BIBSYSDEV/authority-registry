@@ -15,7 +15,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     @Override
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
 
-        System.out.println(dynamodbEvent);
+        System.out.println("dynamodbEvent="+dynamodbEvent);
         logger.debug("dynamodbEvent=%s", dynamodbEvent);
 
         
