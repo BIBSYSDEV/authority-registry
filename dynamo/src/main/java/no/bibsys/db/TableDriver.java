@@ -13,6 +13,8 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
+import com.amazonaws.services.dynamodbv2.model.StreamSpecification;
+import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import no.bibsys.db.structures.Entity;
@@ -101,6 +103,9 @@ public class TableDriver {
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
+            request.setStreamSpecification(
+                    new StreamSpecification().withStreamEnabled(true)
+                        .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));    
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={}", tableName);
             return true;
