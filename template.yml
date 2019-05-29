@@ -100,6 +100,13 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+            
+  SNSDynamoDBChangeTopic:          
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: String
+      TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]            
+            
 #  DynamoDBEventProcessorLambda:
 #    Type: AWS::Serverless::Function
 #    Properties:
