@@ -108,6 +108,29 @@ Resources:
       DisplayName: String
       TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
       
+  SNSDynamoDBChangeTopicPolicy:      
+    Description: "Access to common topic for signaling changes in DynamoDB"
+    Type: AWS::SNS::TopicPolicy
+    Properties: 
+      PolicyDocument:
+       Id: SNSDynamoDBChangeTopicPolicy
+       Statement:
+         -
+           Action: "sns:Publish"
+           Condition:
+             StringEquals:
+               aws:SourceAccount: !Ref "AWS::AccountId"
+             ArnLike:
+               aws:SourceArn: !Join ['', ['arn:aws:s3:*:*:', Ref: bucketName]]
+           Effect: Allow
+           Principal:
+             AWS: "*"
+           Resource:
+             Ref: SNSDynamoDBChangeTopic      
+      
+      Topics: 
+       - !Ref SNSDynamoDBChangeTopic      
+      
                   
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
