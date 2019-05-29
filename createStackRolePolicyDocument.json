@@ -64,6 +64,21 @@
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+               "SNS:Publish",
+               "SNS:RemovePermission",
+               "SNS:SetTopicAttributes",
+               "SNS:DeleteTopic",
+               "SNS:ListSubscriptionsByTopic",
+               "SNS:GetTopicAttributes",
+               "SNS:Receive",
+               "SNS:AddPermission",
+               "SNS:Subscribe"
+             ],
+      "Effect": "Allow",
+      "Resource": "*" 
     }
   ]
 }
