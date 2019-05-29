@@ -192,9 +192,9 @@ Resources:
     Description: "Subscription to common topic for signaling changes in DynamoDB"
     Type: AWS::SNS::Subscription
     Properties: 
-      Endpoint: !Ref DynamoDBEventProcessorLambda
+      Endpoint: !GetAtt DynamoDBEventProcessorLambda.Arn
       Protocol: lambda
-      TopicArn: !Ref SNSDynamoDBChangeTopic             
+      TopicName: !Ref SNSDynamoDBChangeTopic             
 
 
   RestApiUrlParameter:
