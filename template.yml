@@ -115,15 +115,16 @@ Resources:
       PolicyDocument:
         Id: SNSDynamoDBChangeTopicPolicy
         Statement:
-        - Action: 
-          - sns:Publish
-          - sns:ListTopics
+        - Sid: SNSDynamoDBChangeTopicPolicy
           Effect: Allow
           Principal:
             AWS: "*"
+          Action: 
+          - sns:Publish
+          - sns:ListTopics
           Resource: "*"
         Topics: 
-        - !Ref SNSDynamoDBChangeTopic      
+        - Ref: SNSDynamoDBChangeTopic      
       
                   
   SNSDynamoDBChangeSubscription:          
