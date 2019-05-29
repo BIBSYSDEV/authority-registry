@@ -125,15 +125,6 @@ Resources:
       Topics: 
       - !Ref SNSDynamoDBChangeTopic      
       
-                  
-  SNSDynamoDBChangeSubscription:          
-    Description: "Subscription to common topic for signaling changes in DynamoDB"
-    Type: AWS::SNS::Subscription
-    Properties: 
-      Endpoint: !Ref DynamoDBEventProcessorLambda
-      Protocol: lambda
-      TopicArn: !Ref SNSDynamoDBChangeTopic             
-            
   DynamoDBEventProcessorLambda:
     Description: "Subscribes to common topic for signaling changes in DynamoDB"
     Type: AWS::Serverless::Function
@@ -196,6 +187,15 @@ Resources:
 #          Type: DynamoDB
 #          Properties:
 #            Enabled: true
+
+  SNSDynamoDBChangeSubscription:          
+    Description: "Subscription to common topic for signaling changes in DynamoDB"
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !Ref DynamoDBEventProcessorLambda
+      Protocol: lambda
+      TopicArn: !Ref SNSDynamoDBChangeTopic             
+
 
   RestApiUrlParameter:
     Type: AWS::SSM::Parameter
