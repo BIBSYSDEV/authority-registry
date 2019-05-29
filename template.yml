@@ -117,14 +117,14 @@ Resources:
         Statement:
         - Sid: SNSDynamoDBChangeTopicPolicy
           Effect: Allow
-          Principal:
+          Principal: 
             AWS: "*"
           Action: 
           - sns:Publish
           - sns:ListTopics
           Resource: "*"
         Topics: 
-        - Ref: SNSDynamoDBChangeTopic      
+        - !Ref SNSDynamoDBChangeTopic      
       
                   
   SNSDynamoDBChangeSubscription:          
