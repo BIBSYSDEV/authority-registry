@@ -123,8 +123,8 @@ Resources:
           - sns:Publish
           - sns:ListTopics
           Resource: "*"
-        Topics: 
-        - !Ref SNSDynamoDBChangeTopic      
+      Topics: 
+      - !Ref SNSDynamoDBChangeTopic      
       
                   
   SNSDynamoDBChangeSubscription:          
