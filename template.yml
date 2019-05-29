@@ -194,7 +194,7 @@ Resources:
     Properties: 
       Endpoint: !GetAtt DynamoDBEventProcessorLambda.Arn
       Protocol: lambda
-      TopicName: !Ref SNSDynamoDBChangeTopic             
+      TopicArn: !Ref SNSDynamoDBChangeTopic             
 
 
   RestApiUrlParameter:
