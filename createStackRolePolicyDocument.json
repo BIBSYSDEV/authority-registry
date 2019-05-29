@@ -77,7 +77,8 @@
                "SNS:AddPermission",
                "SNS:Subscribe",
                "SNS:ListTopics",
-               "SNS:CreateTopic"
+               "SNS:CreateTopic",
+               "SNS:Unsubscribe"
              ],
       "Effect": "Allow",
       "Resource": "*" 
