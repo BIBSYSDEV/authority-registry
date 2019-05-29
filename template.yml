@@ -107,6 +107,19 @@ Resources:
     Properties: 
       DisplayName: String
       TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
+      Policies:
+        Version: '2012-10-17'
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:DescribeLogGroups
+          - logs:PutLogEvents
+          - SNS:ListTopics
+
+          Resource: "*"
+          Effect: Allow
+      
                   
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
