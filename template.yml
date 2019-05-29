@@ -115,7 +115,7 @@ Resources:
           - logs:CreateLogStream
           - logs:DescribeLogGroups
           - logs:PutLogEvents
-          - SNS:ListTopics
+          - sns:ListTopics
 
           Resource: "*"
           Effect: Allow
