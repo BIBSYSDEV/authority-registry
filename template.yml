@@ -116,7 +116,9 @@ Resources:
        Id: SNSDynamoDBChangeTopicPolicy
        Statement:
          -
-           Action: "sns:Publish"
+           Action: 
+           - sns:Publish
+           - sns:ListTopics
 #           Condition:
 #             StringEquals:
 #               aws:SourceAccount: !Ref "AWS::AccountId"
