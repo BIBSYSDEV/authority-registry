@@ -113,25 +113,17 @@ Resources:
     Type: AWS::SNS::TopicPolicy
     Properties: 
       PolicyDocument:
-       Id: SNSDynamoDBChangeTopicPolicy
-       Statement:
-         -
-           Action: 
-           - sns:Publish
-           - sns:ListTopics
-#           Condition:
-#             StringEquals:
-#               aws:SourceAccount: !Ref "AWS::AccountId"
-#             ArnLike:
-#               aws:SourceArn: !Join ['', ['arn:aws:s3:*:*:', Ref: bucketName]]
-           Effect: Allow
-           Principal:
-             AWS: "*"
-           Resource:
-             Ref: SNSDynamoDBChangeTopic      
-      
-      Topics: 
-       - !Ref SNSDynamoDBChangeTopic      
+        Id: SNSDynamoDBChangeTopicPolicy
+        Statement:
+        - Action: 
+          - sns:Publish
+          - sns:ListTopics
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Resource: "*"
+        Topics: 
+        - !Ref SNSDynamoDBChangeTopic      
       
                   
   SNSDynamoDBChangeSubscription:          
