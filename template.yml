@@ -121,7 +121,6 @@ Resources:
             AWS: "*"
           Action: 
           - sns:Publish
-          - sns:ListTopics
           Resource: "*"
       Topics: 
       - !Ref SNSDynamoDBChangeTopic      
