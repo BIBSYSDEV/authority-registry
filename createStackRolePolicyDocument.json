@@ -76,7 +76,8 @@
                "SNS:Receive",
                "SNS:AddPermission",
                "SNS:Subscribe",
-               "SNS:ListTopics"
+               "SNS:ListTopics",
+               "SNS:CreateTopic"
              ],
       "Effect": "Allow",
       "Resource": "*" 
