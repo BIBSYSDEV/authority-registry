@@ -16,6 +16,7 @@ import com.amazonaws.services.dynamodbv2.model.Select;
 import com.amazonaws.services.dynamodbv2.model.StreamSpecification;
 import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
+import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -24,12 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
 public class TableDriver {
 
+    private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
@@ -105,7 +109,13 @@ public class TableDriver {
 
             request.setStreamSpecification(
                     new StreamSpecification().withStreamEnabled(true)
-                        .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));    
+                        .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));
+            
+            Collection<Tag> tags = Collections.singleton(
+                    new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
+                    );
+            request.setTags(tags);
+            
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={}", tableName);
             return true;
