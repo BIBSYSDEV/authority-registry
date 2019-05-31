@@ -57,6 +57,7 @@ Resources:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
+          - dynamodb:TagResource
           - dynamodb:Scan
           - s3:*
           - apigateway:GET
