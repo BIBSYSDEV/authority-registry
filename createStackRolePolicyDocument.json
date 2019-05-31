@@ -20,7 +20,8 @@
         "dynamodb:GetRecords",
         "dynamodb:GetShardIterator",
         "dynamodb:DescribeStream",
-        "dynamodb:ListStreams"
+        "dynamodb:ListStreams",
+        "dynamodb:TagResource"
       ],
       "Effect": "Allow",
       "Resource": "*"
