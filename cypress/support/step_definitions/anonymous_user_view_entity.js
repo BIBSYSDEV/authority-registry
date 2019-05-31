@@ -26,7 +26,7 @@ When('the anonymous user requests the entity', () => {
   });
 });
 
-Then("anonymous user can view the entity's data in the native database format",
+Then("anonymous user can view the entitys data in the native database format",
   () => {
     cy.get('@response').then((entityData) => {
       expect(entityData.body.body['@type']).to.be.equal('unit:Concept');
