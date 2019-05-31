@@ -17,6 +17,16 @@
     },
     {
       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:DescribeStream",
+        "dynamodb:ListStreams"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
         "cloudformation:CreateChangeSet"
       ],
       "Effect": "Allow",
