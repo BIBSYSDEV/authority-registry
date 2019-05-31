@@ -117,7 +117,7 @@ public class TableDriver {
             request.setTags(tags);
             
             TableUtils.createTableIfNotExists(client, request);
-            logger.debug("Table created, tableId={}", tableName);
+            logger.debug("Table created, tableId={} with tags={}", tableName, tags);
             return true;
         }
         logger.error("Tried to create table but it already exists, tableId={}", tableName);
