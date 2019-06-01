@@ -9,7 +9,7 @@ dependencies {
     compile project(":common")
     compile project(":validation")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
-    implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
+    implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
 
     //library for using embedded DynamoDB during local tests
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
