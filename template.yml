@@ -153,6 +153,10 @@ Resources:
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
           - dynamodb:Scan
+          - dynamodb:GetRecords,
+          - dynamodb:GetShardIterator,
+          - dynamodb:DescribeStream,
+          - dynamodb:ListStreams,
           - s3:*
           - apigateway:GET
 
