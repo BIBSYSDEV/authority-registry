@@ -27,6 +27,9 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
             logger.debug("record.eventID={}, record.eventName={}, record.dynamodb={}", 
                     record.getEventID(), record.getEventName(), record.getDynamodb());
+            if (record.getEventName().equals("MODIFY")) {
+                System.out.println("updating ALMA for record =" + record.getEventSource());        
+            }
         }
 
         return null;

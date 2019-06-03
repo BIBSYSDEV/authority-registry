@@ -23,7 +23,8 @@ import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import software.amazon.awssdk.services.glue.model.CreateTriggerRequest;
+import software.amazon.awssdk.services.glue.model.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -116,8 +117,15 @@ public class TableDriver {
                     );
             request.setTags(tags);
             
+            
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={} with tags={}", tableName, tags);
+            
+//            Action action = Action.builder(). build();
+//            CreateTriggerRequest createTriggerRequest = CreateTriggerRequest.builder().actions(action).build();
+//            
+//            logger.debug("createTriggerRequest={}", createTriggerRequest);
+            
             return true;
         }
         logger.error("Tried to create table but it already exists, tableId={}", tableName);
