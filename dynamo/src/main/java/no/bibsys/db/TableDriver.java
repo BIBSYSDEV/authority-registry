@@ -1,5 +1,15 @@
 package no.bibsys.db;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -18,19 +28,10 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.services.glue.model.CreateTriggerRequest;
-import software.amazon.awssdk.services.glue.model.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 public class TableDriver {
 
@@ -120,11 +121,6 @@ public class TableDriver {
             
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table created, tableId={} with tags={}", tableName, tags);
-            
-//            Action action = Action.builder(). build();
-//            CreateTriggerRequest createTriggerRequest = CreateTriggerRequest.builder().actions(action).build();
-//            
-//            logger.debug("createTriggerRequest={}", createTriggerRequest);
             
             return true;
         }
