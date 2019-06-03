@@ -12,3 +12,5 @@ bin/
 /node_modules/
 *.log
 /package-lock.json
+/cloudformatin-generated-template.yml
+/t.json

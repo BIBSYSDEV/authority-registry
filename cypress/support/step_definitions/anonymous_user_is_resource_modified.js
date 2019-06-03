@@ -13,7 +13,7 @@ Then('the response contains an ETag and a Last-Modified header', () => {
     cy.log('response = ' + response.headers)
       .then(() => {
         expect(response.headers['date']).to.not.be.undefined;
-        expect(response.headers['date']).to.not.equal('');
+        expect(response.headers['date']).to.not.equal('xx');
         // commented out waiting for service to return last-modified and etag
         // expect(response.headers['last-modified']).to.not.be.undefined;
         // expect(response.headers['last-modified']).to.not.equal('');
