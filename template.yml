@@ -187,11 +187,12 @@ Resources:
           - config:Describe*
           Resource: "*"
 #      Timeout: 600
-#      Events:
-#        DynamoDBChange:
-#          Type: DynamoDB
-#          Properties:
-#            Enabled: true
+      Events:
+        DynamoDBChange:
+          Type: DynamoDB
+          Properties:
+            Enabled: true
+            Stream: !GetAtt DynamoDBTable.StreamArn
 
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
