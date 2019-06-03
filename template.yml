@@ -193,6 +193,7 @@ Resources:
           Properties:
             Enabled: true
             Stream: !GetAtt DynamoDBTable.StreamArn
+            StartingPosition: LATEST
 
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
