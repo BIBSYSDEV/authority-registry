@@ -9,6 +9,7 @@ dependencies {
     compile project(":common")
     compile project(":validation")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
 
