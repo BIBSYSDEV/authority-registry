@@ -12,7 +12,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
     implementation("com.amazonaws:aws-lambda-java-events:2.2.6")
-    implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
+    implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
 
     //library for using embedded DynamoDB during local tests
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
@@ -31,8 +31,8 @@ dependencies {
     // This is for simulating DynamoDB locally
     testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.119")
 
-    implementation('org.apache.jena:jena-core:3.10.0')
-    implementation('org.apache.jena:jena-arq:3.10.0')
+    implementation('org.apache.jena:jena-core:3.11.0')
+    implementation('org.apache.jena:jena-arq:3.11.0')
     implementation('org.topbraid:shacl:1.1.0') {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }

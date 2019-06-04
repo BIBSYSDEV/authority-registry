@@ -22,7 +22,7 @@ dependencies {
     implementation project(":api")
     implementation project(":cypress")
     implementation project(":validation")
-    implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'   
+    implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'   
 }
 
 task fatJar {
@@ -77,10 +77,10 @@ subprojects {
         
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
         
-        implementation("com.google.guava:guava:27.0.1-jre")
+        implementation("com.google.guava:guava:27.1-jre")
         
         //useful libraries from google
-        implementation("com.google.guava:guava:27.0.1-jre")
+        implementation("com.google.guava:guava:27.1-jre")
 
         //libraries for more expressive testing
         testImplementation("org.hamcrest:hamcrest-all:1.3")

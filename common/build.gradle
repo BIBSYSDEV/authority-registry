@@ -3,8 +3,8 @@ dependencies {
     //this should be the same version as the one used by amazon
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8")
 
-    implementation group: 'org.apache.jena', name: 'jena-core', version: '3.10.0'
-    implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.10.0'
+    implementation group: 'org.apache.jena', name: 'jena-core', version: '3.11.0'
+    implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.11.0'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
     
