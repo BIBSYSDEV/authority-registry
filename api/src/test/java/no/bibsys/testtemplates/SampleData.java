@@ -36,6 +36,9 @@ public class SampleData {
         String id = "sampleId";
         EntityDto entityDto = new EntityDto();
         entityDto.setId(id);
+        entityDto.setCreated("2019-06-02");
+        entityDto.setModified("2019-06-03");
+        entityDto.setPath("http://example.org/a1234");
         String body = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
         new ModelParser().parseModel(body, Lang.JSONLD);
 
