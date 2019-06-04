@@ -88,6 +88,7 @@ subprojects {
         //JUnit should be the same version as spring
         testImplementation("junit:junit:4.12")
 
+
         shadowJar { zip64 true }
     }
 
