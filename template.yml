@@ -186,14 +186,9 @@ Resources:
           - config:List*
           - config:Describe*
           Resource: "*"
-#      Timeout: 600
-      Events:
-        DynamoDBChange:
-          Type: DynamoDB
-          Properties:
-            Enabled: true
-            Stream: !GetAtt DynamoDBTable.StreamArn
-            StartingPosition: LATEST
+      Tags:
+        FunctionName: DynamoDBEventProcessorLambda
+        Stage: !Ref Stage
 
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
