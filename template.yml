@@ -187,8 +187,9 @@ Resources:
           - config:Describe*
           Resource: "*"
       Tags:
-        FunctionName: DynamoDBEventProcessorLambda
-        Stage: !Ref Stage
+        unit.resource.type: DynamoDBTrigger
+        unit.resource.type: EventProcessor
+        unit.environment: !Ref Stage
 
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"

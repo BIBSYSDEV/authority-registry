@@ -1,4 +1,7 @@
 <configuration>
+
+  <property name="pattern" value="%-5level %logger{35}:%line - %msg%n" />
+
 	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
 
 		<awsConfig>
@@ -18,7 +21,8 @@
 		<dateFormat>yyyyMMdd_HHmm</dateFormat>
 
 		<layout>
-			<pattern>%-5level %logger{35} -	%msg %n</pattern>
+			<!-- <pattern>%-5level %logger{35} -	%msg %n</pattern> -->
+			<pattern>${pattern}</pattern>
 		</layout>
 
 	</appender>
@@ -27,14 +31,14 @@
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%-5level %logger{35} -	%msg %n</pattern>
+            <pattern>${pattern}</pattern>
         </encoder>
     </appender>
 
 
 
 	<root level="DEBUG">
-	  <appender-ref ref="CONSOLE"/>
+	  <!-- <appender-ref ref="CONSOLE"/> -->
 		<appender-ref ref="cloud-watch" />
 	</root>
 
