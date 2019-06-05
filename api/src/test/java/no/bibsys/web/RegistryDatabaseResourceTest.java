@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import no.bibsys.utils.IoUtils;
@@ -141,6 +142,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(newApiKeyResponse.getStatusInfo(), is(equalTo(Status.NOT_FOUND)));
     }
 
+    @Ignore
     @Test
     public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBadRequest() {
         String registryName = UUID.randomUUID().toString();
