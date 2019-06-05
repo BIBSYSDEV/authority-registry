@@ -29,9 +29,7 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClient;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
-import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
 
 import no.bibsys.db.structures.Entity;
@@ -128,12 +126,12 @@ public class TableDriver {
             
             try {
                 String eventSourceArn = "";
-                String functionName  = "DynamoDBEventProcessorLambda";
                 TableUtils.waitUntilExists(client, tableName);
-                logger.debug("Table({}) exists, getting info", tableName);
-
                 DescribeTableResult describeTable = client.describeTable(tableName);
                 eventSourceArn = describeTable.getTable().getLatestStreamArn();
+                logger.debug("Table({}) exists, getting info", tableName);
+
+                String functionName  = "DynamoDBEventProcessorLambda";
   
                 logger.debug("Table({}) has ARN={}, functionName={}", tableName, eventSourceArn, functionName);
                 
@@ -149,7 +147,8 @@ public class TableDriver {
 //                logger.debug("matching resources={}",resources);
                 
 //                
-//                CreateEventSourceMappingRequest createEventSourceMappingRequest = new CreateEventSourceMappingRequest()
+//                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
+//                new CreateEventSourceMappingRequest()
 //                        .withEventSourceArn(eventSourceArn)
 //                        .withFunctionName(functionName);
 //                
