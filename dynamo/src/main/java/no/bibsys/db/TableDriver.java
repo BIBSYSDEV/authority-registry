@@ -159,7 +159,7 @@ public class TableDriver {
 //                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
 //                        createEventSourceMappingResult);
             } catch (InterruptedException e) {
-                logger.error("Timeout waiting for table to be created",e);
+                logger.error("Exception in createTable!",e);
                 return false;
             }
 //            
