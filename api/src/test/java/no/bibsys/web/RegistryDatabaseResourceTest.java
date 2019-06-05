@@ -91,6 +91,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
     }
 
+    @Ignore
     @Test
     public void putRegistrySchema_RegistryExistsInvalidSchema_ReturnsStatusBadRequest() throws Exception {
         String registryName = createRegistry();
