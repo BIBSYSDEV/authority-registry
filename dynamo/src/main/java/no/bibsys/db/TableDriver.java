@@ -135,17 +135,19 @@ public class TableDriver {
                 DescribeTableResult describeTable = client.describeTable(tableName);
                 eventSourceArn = describeTable.getTable().getLatestStreamArn();
   
+                logger.debug("Table({}) has ARN={}, functionName={}", tableName, eventSourceArn, functionName);
+                
                 TagFilter tagFilters = new TagFilter()
                         .withKey("unit.resource_type")
                         .withValues("DynamoDBTrigger_EventProcessor");
                 
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
-                GetResourcesResult resources = AWSResourceGroupsTaggingAPIClient.builder()
-                        .withRegion("eu-west-1").build().getResources(getResourcesRequest); 
+                logger.debug("getResourcesRequest={}",getResourcesRequest);
+//                GetResourcesResult resources = AWSResourceGroupsTaggingAPIClient.builder()
+//                        .withRegion("eu-west-1").build().getResources(getResourcesRequest); 
 
-                logger.debug("matching resources={}",resources);
+//                logger.debug("matching resources={}",resources);
                 
-                logger.debug("Table({}) has ARN={}, functionName={}", tableName, eventSourceArn, functionName);
 //                
 //                CreateEventSourceMappingRequest createEventSourceMappingRequest = new CreateEventSourceMappingRequest()
 //                        .withEventSourceArn(eventSourceArn)
