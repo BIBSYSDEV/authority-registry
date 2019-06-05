@@ -29,7 +29,9 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClient;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
 
 import no.bibsys.db.structures.Entity;
@@ -141,10 +143,10 @@ public class TableDriver {
                 
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
                 logger.debug("getResourcesRequest={}",getResourcesRequest);
-//                GetResourcesResult resources = AWSResourceGroupsTaggingAPIClient.builder()
-//                        .withRegion("eu-west-1").build().getResources(getResourcesRequest); 
+                GetResourcesResult resources = AWSResourceGroupsTaggingAPIClient.builder()
+                        .withRegion("eu-west-1").build().getResources(getResourcesRequest); 
 
-//                logger.debug("matching resources={}",resources);
+                logger.debug("matching resources={}",resources);
                 
 //                
 //                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
