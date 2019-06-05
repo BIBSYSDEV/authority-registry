@@ -96,33 +96,27 @@ public class EntityDto extends ModelParser {
     public String toString() {
         return "EntityDto [id=" + id + ", created=" + created + ", modified=" + modified + ", body=" + body + "]";
     }
-    
-    @JsonIgnore
+
     public String getId() {
         return id;
     }
 
-    @JsonIgnore
     public void setId(String id) {
         this.id = id;
     }
 
-    @JsonIgnore
     public String getCreated() {
         return created;
     }
 
-    @JsonIgnore
     public void setCreated(String created) {
         this.created = created;
     }
 
-    @JsonIgnore
     public String getModified() {
         return modified;
     }
 
-    @JsonIgnore
     public void setModified(String modified) {
         this.modified = modified;
     }
@@ -130,12 +124,10 @@ public class EntityDto extends ModelParser {
     /**
      * Relative path to this resource, set in the API level.
      */
-    @JsonIgnore
     public String getPath() {
         return path;
     }
 
-    @JsonIgnore
     public void setPath(String path) {
         this.path = path;
     }

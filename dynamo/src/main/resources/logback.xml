@@ -25,7 +25,16 @@
 
   <logger name="org.apache.http" level="ERROR" />
 
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %logger{35} -	%msg %n</pattern>
+        </encoder>
+    </appender>
+
+
+
 	<root level="DEBUG">
+	  <appender-ref ref="CONSOLE"/>
 		<appender-ref ref="cloud-watch" />
 	</root>
 

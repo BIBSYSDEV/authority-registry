@@ -73,7 +73,7 @@ subprojects {
 
     dependencies {
     
-        implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'
+        implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
         
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
         

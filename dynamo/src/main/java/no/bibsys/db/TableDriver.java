@@ -29,9 +29,6 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
-import com.amazonaws.services.lambda.AWSLambda;
-import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
-import com.amazonaws.services.lambda.model.*;
 
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -125,31 +122,31 @@ public class TableDriver {
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
             
-            String eventSourceArn = "";
-            String functionName  = "DynamoDBEventProcessorLambda";
             try {
+                String eventSourceArn = "";
+                String functionName  = "DynamoDBEventProcessorLambda";
                 TableUtils.waitUntilExists(client, tableName);
                 logger.debug("Table({}) exists, getting info", tableName);
 
                 DescribeTableResult describeTable = client.describeTable(tableName);
                 eventSourceArn = describeTable.getTable().getLatestStreamArn();
                 
-                logger.debug("Table({}) has ARN", tableName, eventSourceArn);
-                
-                CreateEventSourceMappingRequest createEventSourceMappingRequest = new CreateEventSourceMappingRequest()
-                        .withEventSourceArn(eventSourceArn)
-                        .withFunctionName(functionName);
-                
-                AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().build();
-                CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
-                        .createEventSourceMapping(createEventSourceMappingRequest);
-                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
-                        createEventSourceMappingResult);
+                logger.debug("Table({}) has ARN={}, functionName={}", tableName, eventSourceArn, functionName);
+//                
+//                CreateEventSourceMappingRequest createEventSourceMappingRequest = new CreateEventSourceMappingRequest()
+//                        .withEventSourceArn(eventSourceArn)
+//                        .withFunctionName(functionName);
+//                
+//                AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().build();
+//                CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
+//                        .createEventSourceMapping(createEventSourceMappingRequest);
+//                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
+//                        createEventSourceMappingResult);
             } catch (InterruptedException e) {
                 logger.error("Timeout waiting for table to be created",e);
                 return false;
             }
-            
+//            
             return true;
         }
         logger.error("Tried to create table but it already exists, tableId={}", tableName);
