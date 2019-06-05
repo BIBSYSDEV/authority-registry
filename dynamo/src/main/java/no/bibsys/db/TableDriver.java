@@ -30,7 +30,6 @@ import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClient;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;

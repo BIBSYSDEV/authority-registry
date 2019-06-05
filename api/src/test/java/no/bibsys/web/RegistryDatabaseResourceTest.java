@@ -1,25 +1,27 @@
 package no.bibsys.web;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
+
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.Test;
+
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.junit.Test;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
 
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
@@ -112,17 +114,21 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     @Test
     public void replaceApiKey_registryExists_returnsNewApiKey() {
-        String registryName = UUID.randomUUID().toString();
-        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
+        try {
+            String registryName = UUID.randomUUID().toString();
+            RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+            Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
+            System.out.println("createRegistryResponse.getStatusInfo()=" + createRegistryResponse.getStatusInfo());
+            RegistryInfoNoMetadataDto newRegistry = createRegistryResponse.readEntity(RegistryInfoNoMetadataDto.class);
+            String oldApiKey = newRegistry.getApiKey();
 
-        RegistryInfoNoMetadataDto newRegistry = createRegistryResponse.readEntity(RegistryInfoNoMetadataDto.class);
-        String oldApiKey = newRegistry.getApiKey();
+            Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+            String newApiKey = newApiKeyResponse.readEntity(String.class);
 
-        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
-        String newApiKey = newApiKeyResponse.readEntity(String.class);
-
-        assertThat(newApiKey, is(not(equalTo(oldApiKey))));
+            assertThat(newApiKey, is(not(equalTo(oldApiKey))));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
