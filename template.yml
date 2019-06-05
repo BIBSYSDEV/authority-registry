@@ -190,7 +190,8 @@ Resources:
         unit.resource.type: DynamoDBTrigger
         unit.resource.type: EventProcessor
         unit.environment: !Ref Stage
-
+        - Key: "unit:key"
+          Value: "value"
   SNSDynamoDBChangeSubscription:          
     Description: "Subscription to common topic for signaling changes in DynamoDB"
     Type: AWS::SNS::Subscription
