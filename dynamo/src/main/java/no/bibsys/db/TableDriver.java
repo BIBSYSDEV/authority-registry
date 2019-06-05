@@ -29,7 +29,9 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClient;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
@@ -143,8 +145,9 @@ public class TableDriver {
                 
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
                 logger.debug("getResourcesRequest={}",getResourcesRequest);
-                GetResourcesResult resources = AWSResourceGroupsTaggingAPIClient.builder()
-                        .withRegion("eu-west-1").build().getResources(getResourcesRequest); 
+                AWSResourceGroupsTaggingAPI awsResourceGroupsTaggingAPIClient = 
+                        AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+                GetResourcesResult resources =  awsResourceGroupsTaggingAPIClient.getResources(getResourcesRequest); 
 
                 logger.debug("matching resources={}",resources);
                 
