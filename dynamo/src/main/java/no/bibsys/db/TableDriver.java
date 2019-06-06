@@ -165,14 +165,14 @@ public class TableDriver {
 //                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
 //                        createEventSourceMappingResult);
             } catch (InterruptedException e) {
-                logger.error("Exception in createTable!",e);
+                logger.error("Exception in createTable, tableName={}!",tableName, e);
                 return false;
             }
 //           
-            logger.debug("returning true after try/catch block");
+            logger.debug("returning true after try/catch block, tableName={}", tableName);
             return true;
         }
-        logger.error("Tried to create table but it already exists, tableId={}", tableName);
+        logger.error("Tried to create table but it already exists, tableName={}", tableName);
         return false;
     }
 
