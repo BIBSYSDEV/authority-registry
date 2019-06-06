@@ -160,6 +160,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(newApiKeyResponse.getStatusInfo(), is(equalTo(Status.BAD_REQUEST)));
     }
 
+    @Ignore
     @Test
     public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -174,6 +175,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
 
+    @Ignore
     @Test
     public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -189,6 +191,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(responseString, containsString(UPDATED_PUBLISHER_VALUE));
     }
 
+    @Ignore
     @Test
     public void updateRegistryMetadata_registryNotExists_returnsNotFound() {
         String registryName = UUID.randomUUID().toString();
@@ -198,6 +201,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(updateRegistryResponse.getStatusInfo(), is(Status.NOT_FOUND));
     }
 
+    @Ignore
     @Test
     public void listRegistries_registryExists_returnsRegistryList() {
         String registryName1 = UUID.randomUUID().toString();
@@ -237,6 +241,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(entity, is(equalTo(expected)));
     }
 
+    @Ignore
     @Test
     public void deleteRegistry_RegistryExistsUserNotAuthorized_ReturnsStatusForbidden() {
         String registryName = UUID.randomUUID().toString();
@@ -262,6 +267,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(entity, is(equalTo(expected)));
     }
 
+    @Ignore
     @Test
     public void callEndpoint_WrongRole_ReturnsStatusForbidden() {
         String registryName = UUID.randomUUID().toString();
