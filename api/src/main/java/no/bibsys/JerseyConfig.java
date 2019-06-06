@@ -19,6 +19,7 @@ import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
 import no.bibsys.service.exceptions.UnknownStatusExceptionMapper;
+import no.bibsys.web.CorsFilter;
 import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
@@ -81,7 +82,8 @@ public class JerseyConfig extends ResourceConfig {
         register(JacksonFeature.class);
 
         register(new AuthenticationFilter(authenticationService));
-
+        register(CorsFilter.class);
+        
         register(ExceptionLogger.class);
 
         register(OpenApiResource.class);
