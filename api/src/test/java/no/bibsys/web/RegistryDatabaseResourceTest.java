@@ -221,6 +221,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
                 javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
     }
 
+    @Ignore
     @Test
     public void deleteRegistry_RegistryExistsUserAuthorized_ReturnsStatusOk() {
         String registryName = UUID.randomUUID().toString();
