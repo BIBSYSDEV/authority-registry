@@ -45,6 +45,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
 
+    @Ignore
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() {
         String registryName = "TheRegistryName";
