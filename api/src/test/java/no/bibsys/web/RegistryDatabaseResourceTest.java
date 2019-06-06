@@ -6,6 +6,8 @@ import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -110,6 +112,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
     }
 
+    @Ignore
     @Test
     public void replaceApiKey_registryExists_returnsNewApiKey() {
         String registryName = UUID.randomUUID().toString();
