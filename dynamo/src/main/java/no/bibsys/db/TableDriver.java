@@ -164,7 +164,7 @@ public class TableDriver {
 //                        .createEventSourceMapping(createEventSourceMappingRequest);
 //                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
 //                        createEventSourceMappingResult);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 logger.error("Exception in createTable, tableName={}!",tableName, e);
                 return false;
             }
