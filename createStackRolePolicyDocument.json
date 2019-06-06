@@ -62,6 +62,7 @@
         "lambda:TagResource",
         "lambda:UntagResource",
         "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
         "logs:PutLogEvents"
         
       ],
