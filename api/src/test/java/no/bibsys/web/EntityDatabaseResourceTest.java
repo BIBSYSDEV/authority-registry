@@ -155,10 +155,8 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
     @Test
     public void getEntity_applicationMarc_entityAsMarc() throws Exception {
         String registryName = UUID.randomUUID().toString();
-        Response createRegistry = createRegistry(registryName, apiAdminKey) ;
-        System.out.println(createRegistry);
-        Response putSchema = putSchema(registryName, validValidationSchema);
-        System.out.println(putSchema);
+        createRegistry(registryName, apiAdminKey);
+        putSchema(registryName, validValidationSchema);
         EntityDto entity = createEntity(registryName).readEntity(EntityDto.class);
         
         Response entityAsmarc = readEntity(registryName, entity.getId(), CustomMediaType.APPLICATION_MARC);

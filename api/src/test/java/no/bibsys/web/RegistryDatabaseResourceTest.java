@@ -1,28 +1,25 @@
 package no.bibsys.web;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.junit.Test;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
@@ -45,7 +42,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
 
-    @Ignore
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() {
         String registryName = "TheRegistryName";
@@ -80,7 +76,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.METHOD_NOT_ALLOWED.getStatusCode())));
     }
 
-    @Ignore
     @Test
     public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() throws Exception {
         String registryName = createRegistry();
@@ -93,7 +88,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
     }
 
-    @Ignore
     @Test
     public void putRegistrySchema_RegistryExistsInvalidSchema_ReturnsStatusBadRequest() throws Exception {
         String registryName = createRegistry();
@@ -108,8 +102,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(message, is(equalTo(ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper.MESSAGE)));
     }
 
-    
-    @Ignore
     @Test
     public void getRegistryStatus_registryExists_returnsStatusCreated() throws Exception {
         String registryName = createRegistry();
@@ -120,21 +112,17 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     @Test
     public void replaceApiKey_registryExists_returnsNewApiKey() {
-        try {
-            String registryName = UUID.randomUUID().toString();
-            RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-            Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
-            System.out.println("createRegistryResponse.getStatusInfo()=" + createRegistryResponse.getStatusInfo());
-            RegistryInfoNoMetadataDto newRegistry = createRegistryResponse.readEntity(RegistryInfoNoMetadataDto.class);
-            String oldApiKey = newRegistry.getApiKey();
+        String registryName = UUID.randomUUID().toString();
+        RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
+        Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
 
-            Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
-            String newApiKey = newApiKeyResponse.readEntity(String.class);
+        RegistryInfoNoMetadataDto newRegistry = createRegistryResponse.readEntity(RegistryInfoNoMetadataDto.class);
+        String oldApiKey = newRegistry.getApiKey();
 
-            assertThat(newApiKey, is(not(equalTo(oldApiKey))));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Response newApiKeyResponse = replaceApiKey(registryName, oldApiKey);
+        String newApiKey = newApiKeyResponse.readEntity(String.class);
+
+        assertThat(newApiKey, is(not(equalTo(oldApiKey))));
     }
 
     @Test
@@ -147,7 +135,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(newApiKeyResponse.getStatusInfo(), is(equalTo(Status.NOT_FOUND)));
     }
 
-    @Ignore
     @Test
     public void replaceApiKey_RegistryExistingWrongApiKey_ReturnsStatusBadRequest() {
         String registryName = UUID.randomUUID().toString();
@@ -160,7 +147,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(newApiKeyResponse.getStatusInfo(), is(equalTo(Status.BAD_REQUEST)));
     }
 
-    @Ignore
     @Test
     public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -175,7 +161,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(html, containsString("data-automation-id=\"Publisher\""));
     }
 
-    @Ignore
     @Test
     public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() throws Exception {
         String registryName = UUID.randomUUID().toString();
@@ -191,7 +176,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(responseString, containsString(UPDATED_PUBLISHER_VALUE));
     }
 
-    @Ignore
     @Test
     public void updateRegistryMetadata_registryNotExists_returnsNotFound() {
         String registryName = UUID.randomUUID().toString();
@@ -201,7 +185,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(updateRegistryResponse.getStatusInfo(), is(Status.NOT_FOUND));
     }
 
-    @Ignore
     @Test
     public void listRegistries_registryExists_returnsRegistryList() {
         String registryName1 = UUID.randomUUID().toString();
@@ -225,7 +208,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
                 javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
     }
 
-    @Ignore
     @Test
     public void deleteRegistry_RegistryExistsUserAuthorized_ReturnsStatusOk() {
         String registryName = UUID.randomUUID().toString();
@@ -241,7 +223,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(entity, is(equalTo(expected)));
     }
 
-    @Ignore
     @Test
     public void deleteRegistry_RegistryExistsUserNotAuthorized_ReturnsStatusForbidden() {
         String registryName = UUID.randomUUID().toString();
@@ -267,7 +248,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(entity, is(equalTo(expected)));
     }
 
-    @Ignore
     @Test
     public void callEndpoint_WrongRole_ReturnsStatusForbidden() {
         String registryName = UUID.randomUUID().toString();
