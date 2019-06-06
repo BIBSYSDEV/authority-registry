@@ -28,6 +28,7 @@
 	</appender>
 
   <logger name="org.apache.http" level="ERROR" />
+  <logger name="software.amazon" level="ERROR" />
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
