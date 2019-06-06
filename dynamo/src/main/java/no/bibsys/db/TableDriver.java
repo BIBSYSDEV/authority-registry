@@ -129,10 +129,11 @@ public class TableDriver {
             
             try {
                 String eventSourceArn = "";
+                logger.debug("Waiting for table:{}  to be created", tableName);
                 TableUtils.waitUntilExists(client, tableName);
+                logger.debug("Table:{} created, getting info", tableName);
                 DescribeTableResult describeTable = client.describeTable(tableName);
                 eventSourceArn = describeTable.getTable().getLatestStreamArn();
-                logger.debug("Table({}) exists, getting info", tableName);
 
                 String functionName  = "DynamoDBEventProcessorLambda";
   
@@ -141,7 +142,9 @@ public class TableDriver {
                 TagFilter tagFilters = new TagFilter()
                         .withKey("unit.resource_type")
                         .withValues("DynamoDBTrigger_EventProcessor");
-                
+
+                logger.debug("Created tag filters");
+
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
                 logger.debug("getResourcesRequest={}",getResourcesRequest);
                 AWSResourceGroupsTaggingAPI awsResourceGroupsTaggingAPIClient = 
@@ -165,7 +168,8 @@ public class TableDriver {
                 logger.error("Exception in createTable!",e);
                 return false;
             }
-//            
+//           
+            logger.debug("returning true after try/catch block");
             return true;
         }
         logger.error("Tried to create table but it already exists, tableId={}", tableName);
