@@ -80,6 +80,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.METHOD_NOT_ALLOWED.getStatusCode())));
     }
 
+    @Ignore
     @Test
     public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() throws Exception {
         String registryName = createRegistry();
