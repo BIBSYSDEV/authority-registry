@@ -1,6 +1,6 @@
 <configuration>
 
-  <property name="pattern" value="%-5level %logger{35} [%l] - %msg%n" />
+  <property name="pattern" value="%-5level %logger{35} - %msg%n" />
 
 	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
 
