@@ -1,5 +1,6 @@
 package no.bibsys.web;
 
+import no.bibsys.LambdaLoggingTest;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
@@ -9,6 +10,8 @@ import no.bibsys.web.security.ApiKeyConstants;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,7 +30,8 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     private static final String UPDATED_PUBLISHER_VALUE = "Updated publisher value";
     private static final String PUBLISHER = "Publisher";
-
+    Logger logger = LoggerFactory.getLogger(RegistryDatabaseResourceTest.class);
+    
     @Test
     public void createRegistry_RegistryNotExistingUserNotAuthorized_StatusForbidden() {
         String registryName = UUID.randomUUID().toString();
@@ -51,7 +55,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        System.out.println("response from createRegistry:"+response);
+        logger.debug("response from createRegistry: {}",response);
         RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
