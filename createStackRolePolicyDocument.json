@@ -63,7 +63,8 @@
         "lambda:UntagResource",
         "logs:DescribeLogStreams",
         "logs:DescribeLogGroups",
-        "logs:PutLogEvents"
+        "logs:PutLogEvents",
+        "tag:GetResources"        
         
       ],
       "Effect": "Allow",

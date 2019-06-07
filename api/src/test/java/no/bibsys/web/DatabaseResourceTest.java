@@ -80,6 +80,7 @@ public class DatabaseResourceTest extends JerseyTest {
         registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
 
         JerseyConfig jerseyConfig = new JerseyConfig(client, environmentReader);
+        jerseyConfig.register(EntityExceptionMapper.class);
         // jerseyConfig.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_SERVER,"WARNING");
         return jerseyConfig;
     }
@@ -206,3 +207,4 @@ public class DatabaseResourceTest extends JerseyTest {
             javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
     }
 }
+
