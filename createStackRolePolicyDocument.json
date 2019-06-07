@@ -64,7 +64,7 @@
         "logs:DescribeLogStreams",
         "logs:DescribeLogGroups",
         "logs:PutLogEvents",
-        "tag:GetResources"        
+        "tag:*"
         
       ],
       "Effect": "Allow",
