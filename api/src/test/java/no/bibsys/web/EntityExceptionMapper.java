@@ -18,9 +18,9 @@ public class EntityExceptionMapper implements ExceptionMapper<Exception> {
     System.out.println("EntityExceptionMapper: "+ex.getMessage());
     logger.debug(ex.getMessage(),ex);
       
-    return Response.status(501).
-      entity(ex.getMessage()).
-      type("text/plain").
-      build();
+    return Response.status(501)
+      .entity(ex.getMessage())
+      .type("text/plain")
+      .build();
   }
 }

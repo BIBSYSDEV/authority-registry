@@ -46,7 +46,7 @@ public class TableDriver {
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
-    private AWSResourceGroupsTaggingAPI taggingAPIClient;
+    private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
 
 
     public TableDriver(final AmazonDynamoDB client) {
@@ -56,18 +56,18 @@ public class TableDriver {
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
-        this.taggingAPIClient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+        this.taggingAPIclient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
     }
 
     
-    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIClient) {
+    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient) {
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
-        this.taggingAPIClient = taggingAPIClient;
+        this.taggingAPIclient = taggingAPIclient;
     }
 
     private Table getTable(final String tableName) {
@@ -142,16 +142,13 @@ public class TableDriver {
             logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
             
             try {
-                String eventSourceArn = "";
                 logger.debug("Waiting for table:{}  to be created", tableName);
                 TableUtils.waitUntilExists(client, tableName);
                 logger.debug("Table:{} created, getting info", tableName);
                 DescribeTableResult describeTable = client.describeTable(tableName);
-                eventSourceArn = describeTable.getTable().getLatestStreamArn();
+                String eventSourceArn = describeTable.getTable().getLatestStreamArn();
 
-                String functionName  = "DynamoDBEventProcessorLambda";
-  
-                logger.debug("Table({}) has ARN={}, functionName={}", tableName, eventSourceArn, functionName);
+                logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
                 
                 TagFilter tagFilters = new TagFilter()
                         .withKey("unit.resource_type")
@@ -162,10 +159,11 @@ public class TableDriver {
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
                 logger.debug("getResourcesRequest={}",getResourcesRequest);
 //                taggingAPIClient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
-                GetResourcesResult resources =  taggingAPIClient.getResources(getResourcesRequest); 
+                GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
                 logger.debug("matching resources={}",resources);
                 
+//                String functionName  = "DynamoDBEventProcessorLambda";
 //                
 //                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
 //                new CreateEventSourceMappingRequest()
