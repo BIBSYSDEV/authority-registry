@@ -46,6 +46,8 @@ public class TableDriver {
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
+    private AWSResourceGroupsTaggingAPI taggingAPIClient;
+
 
     public TableDriver(final AmazonDynamoDB client) {
         if (isNull(client)) {
@@ -54,6 +56,18 @@ public class TableDriver {
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
+        this.taggingAPIClient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+    }
+
+    
+    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIClient) {
+        if (isNull(client)) {
+            throw new IllegalStateException("Cannot set null client ");
+        }
+        this.client = client;
+        this.dynamoDb = new DynamoDB(client);
+        this.mapper = new DynamoDBMapper(client);
+        this.taggingAPIClient = taggingAPIClient;
     }
 
     private Table getTable(final String tableName) {
@@ -147,9 +161,8 @@ public class TableDriver {
 
                 GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
                 logger.debug("getResourcesRequest={}",getResourcesRequest);
-                AWSResourceGroupsTaggingAPI awsResourceGroupsTaggingAPIClient = 
-                        AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
-                GetResourcesResult resources =  awsResourceGroupsTaggingAPIClient.getResources(getResourcesRequest); 
+//                taggingAPIClient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+                GetResourcesResult resources =  taggingAPIClient.getResources(getResourcesRequest); 
 
                 logger.debug("matching resources={}",resources);
                 

@@ -17,17 +17,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
+import no.bibsys.TaggingMock;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
 import no.bibsys.service.ApiKey;
@@ -66,8 +67,8 @@ public class DatabaseResourceTest extends JerseyTest {
         enable(TestProperties.DUMP_ENTITY);
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
-
-        TableDriver tableDriver = new TableDriver(client);
+        AWSResourceGroupsTaggingAPI taggingClient = new TaggingMock();
+        TableDriver tableDriver = new TableDriver(client, taggingClient);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);

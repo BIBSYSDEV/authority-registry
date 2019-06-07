@@ -64,8 +64,11 @@
         "logs:DescribeLogStreams",
         "logs:DescribeLogGroups",
         "logs:PutLogEvents",
-        "tag:*"
-        
+        "tag:GetResources",
+        "tag:GetTagKeys",
+        "tag:GetTagValues",
+        "tag:TagResources",
+        "tag:UntagGetResources"
       ],
       "Effect": "Allow",
       "Resource": "*"
