@@ -55,7 +55,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        logger.debug("response from createRegistry: {}",response);
+        System.out.println("response from createRegistry: "+response);
         RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
