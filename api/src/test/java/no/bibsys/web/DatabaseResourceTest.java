@@ -16,7 +16,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -59,6 +61,8 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
+        enable(TestProperties.LOG_TRAFFIC);
+        enable(TestProperties.DUMP_ENTITY);
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
 
@@ -74,7 +78,9 @@ public class DatabaseResourceTest extends JerseyTest {
         apiAdminKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());
         registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
 
-        return new JerseyConfig(client, environmentReader);
+        JerseyConfig jerseyConfig = new JerseyConfig(client, environmentReader);
+        // jerseyConfig.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_SERVER,"WARNING");
+        return jerseyConfig;
     }
 
     @Test
