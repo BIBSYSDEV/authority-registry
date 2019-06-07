@@ -81,6 +81,7 @@ public class DatabaseResourceTest extends JerseyTest {
 
         JerseyConfig jerseyConfig = new JerseyConfig(client, environmentReader);
         jerseyConfig.register(EntityExceptionMapper.class);
+        
         // jerseyConfig.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_SERVER,"WARNING");
         return jerseyConfig;
     }

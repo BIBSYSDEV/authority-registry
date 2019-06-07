@@ -15,6 +15,7 @@ public class EntityExceptionMapper implements ExceptionMapper<Exception> {
     
   public Response toResponse(Exception ex) {
       
+    System.out.println(ex.getMessage());
     logger.debug(ex.getMessage(),ex);
       
     return Response.status(501).
