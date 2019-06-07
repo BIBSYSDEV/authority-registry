@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
@@ -117,9 +118,14 @@ public class DatabaseResourceTest extends JerseyTest {
 
     protected Response createRegistry(RegistryDto registryDto, String apiKey) {
 
-        return target("/registry").request().accept(MediaType.APPLICATION_JSON).header(
-            ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
-            javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
+        try {
+            Entity<RegistryDto> entity = javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON);
+            return target("/registry").request().accept(MediaType.APPLICATION_JSON).header(
+                    ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected String createRegistry() {
