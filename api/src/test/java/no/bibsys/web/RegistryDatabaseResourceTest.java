@@ -51,7 +51,11 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() {
         String registryName = "TheRegistryName";
-
+        
+        System.out.println("calling ping");
+        ping_ReturnsStatusCodeOK();
+        System.out.println("called ping");
+        
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
