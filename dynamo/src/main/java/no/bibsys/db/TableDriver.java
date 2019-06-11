@@ -112,7 +112,8 @@ public class TableDriver {
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
-        return createTable(tableName, Entity.class);
+        return createEntityTableWithStreamsAndTags(tableName) &&  connectTableToTrigger(tableName);
+
     }
 
     public void createRegistryMetadataTable(final String tableName) {
@@ -122,6 +123,32 @@ public class TableDriver {
     private boolean createTable(final String tableName, Class<?> clazz) {
 
         if (!tableExists(tableName)) {
+            DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName)).build();
+
+            CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
+            request.setProvisionedThroughput(
+                    new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
+
+            
+            Collection<Tag> tags = Collections.singleton(
+                    new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
+                    );
+            request.setTags(tags);
+
+            
+            TableUtils.createTableIfNotExists(client, request);
+            logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
+            return true;
+        }
+        logger.warn("Tried to create table but it already exists, tableName={}", tableName);
+        return false;
+    }
+
+    private boolean createEntityTableWithStreamsAndTags(final String tableName) {
+
+        if (!tableExists(tableName)) {
+            Class<Entity> clazz = Entity.class;
             DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                     .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName)).build();
 
@@ -141,28 +168,39 @@ public class TableDriver {
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
             
-            try {
-                logger.debug("Waiting for table:{}  to be created", tableName);
-                TableUtils.waitUntilExists(client, tableName);
-                logger.debug("Table:{} created, getting info", tableName);
-                DescribeTableResult describeTable = client.describeTable(tableName);
-                String eventSourceArn = describeTable.getTable().getLatestStreamArn();
+           
+            logger.debug("returning true after try/catch block, tableName={}", tableName);
+            return true;
+        }
+        logger.error("Tried to create table but it already exists, tableName={}", tableName);
+        return false;
+    }
 
-                logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
-                
-                TagFilter tagFilters = new TagFilter()
-                        .withKey("unit.resource_type")
-                        .withValues("DynamoDBTrigger_EventProcessor");
+    
+    
 
-                logger.debug("Created tag filters");
+    private boolean connectTableToTrigger(final String tableName) {
+        try {
+            logger.debug("connectTableToTrigger, Waiting for table:{}  to be created", tableName);
+            TableUtils.waitUntilExists(client, tableName);
+            logger.debug("Table:{} created, getting info", tableName);
+            DescribeTableResult describeTable = client.describeTable(tableName);
+            String eventSourceArn = describeTable.getTable().getLatestStreamArn();
 
-                GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
-                logger.debug("getResourcesRequest={}",getResourcesRequest);
-//                taggingAPIClient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
-                GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
+            logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
+            
+            TagFilter tagFilters = new TagFilter()
+                    .withKey("unit.resource_type")
+                    .withValues("DynamoDBTrigger_EventProcessor");
 
-                logger.debug("matching resources={}",resources);
-                
+            logger.debug("Created tag filters");
+
+            GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
+            logger.debug("getResourcesRequest={}",getResourcesRequest);
+            GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
+
+            logger.debug("matching resources={}",resources);
+            
 //                String functionName  = "DynamoDBEventProcessorLambda";
 //                
 //                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
@@ -175,16 +213,11 @@ public class TableDriver {
 //                        .createEventSourceMapping(createEventSourceMappingRequest);
 //                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
 //                        createEventSourceMappingResult);
-            } catch (Exception e) {
-                logger.error("Exception in createTable, tableName={}!",tableName, e);
-                return false;
-            }
-//           
-            logger.debug("returning true after try/catch block, tableName={}", tableName);
             return true;
+        } catch (Exception e) {
+            logger.error("Exception in createTable, tableName={}!",tableName, e);
+            return false;
         }
-        logger.error("Tried to create table but it already exists, tableName={}", tableName);
-        return false;
     }
 
     public List<String> listTables() {
