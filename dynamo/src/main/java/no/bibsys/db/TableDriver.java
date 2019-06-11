@@ -29,6 +29,10 @@ import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingRequest;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingResult;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
@@ -196,25 +200,30 @@ public class TableDriver {
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
-            logger.debug("matching resources={}",resources);
+            if (resources.getResourceTagMappingList().size() == 1) {
+                logger.debug("matching resources={}",resources);
+                
             
-//                String functionName  = "DynamoDBEventProcessorLambda";
-//                
-//                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
-//                new CreateEventSourceMappingRequest()
-//                        .withEventSourceArn(eventSourceArn)
-//                        .withFunctionName(functionName);
-//                
-//                AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().build();
-//                CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
-//                        .createEventSourceMapping(createEventSourceMappingRequest);
-//                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
-//                        createEventSourceMappingResult);
-            return true;
+                String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
+                
+                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
+                new CreateEventSourceMappingRequest()
+                        .withEventSourceArn(eventSourceArn)
+                        .withFunctionName(functionNameARN);
+                
+                AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().build();
+                CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
+                        .createEventSourceMapping(createEventSourceMappingRequest);
+                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
+                        createEventSourceMappingResult);
+                return true;
+            }
         } catch (Exception e) {
-            logger.error("Exception in createTable, tableName={}!",tableName, e);
+            logger.error("Exception in connectTableToTrigger, tableName={}!",tableName, e);
             return false;
         }
+        logger.debug("NO matching resources, returning FALSE without creating trigger");
+        return false;
     }
 
     public List<String> listTables() {
