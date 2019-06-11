@@ -22,10 +22,11 @@ dependencies {
        
     implementation project(":dynamo")
 
-    implementation ('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
-    implementation ('com.amazonaws:aws-java-sdk-route53:1.11.+')
-    implementation  ('com.amazonaws:aws-java-sdk-api-gateway:1.11.+')
-    implementation  ('com.amazonaws:aws-java-sdk-acm:1.11.562')
+    implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
+    implementation('com.amazonaws:aws-java-sdk-dynamodb:1.11.+')
+    implementation('com.amazonaws:aws-java-sdk-route53:1.11.+')
+    implementation('com.amazonaws:aws-java-sdk-api-gateway:1.11.+')
+    implementation('com.amazonaws:aws-java-sdk-acm:1.11.562')
     implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
 
 

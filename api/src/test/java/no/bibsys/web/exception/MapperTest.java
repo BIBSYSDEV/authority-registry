@@ -1,6 +1,9 @@
 package no.bibsys.web.exception;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
@@ -18,6 +21,7 @@ import no.bibsys.web.security.ApiKeyConstants;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.BeforeClass;
+import org.mockito.Mockito;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -55,8 +59,10 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
 
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
+        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
 
-        TableDriver tableDriver = new TableDriver(client);
+        TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);

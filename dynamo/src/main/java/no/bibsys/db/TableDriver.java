@@ -30,11 +30,9 @@ import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.amazonaws.services.lambda.AWSLambda;
-import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.lambda.model.CreateEventSourceMappingRequest;
 import com.amazonaws.services.lambda.model.CreateEventSourceMappingResult;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
@@ -51,24 +49,35 @@ public class TableDriver {
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
     private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
-    private final transient AWSLambda lambdaClient; // = AWSLambdaClientBuilder.standard().build();
+    private final transient AWSLambda lambdaClient; 
 
-    public TableDriver(final AmazonDynamoDB client) {
-        if (isNull(client)) {
-            throw new IllegalStateException("Cannot set null client ");
-        }
-        this.client = client;
-        this.dynamoDb = new DynamoDB(client);
-        this.mapper = new DynamoDBMapper(client);
-        this.taggingAPIclient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
-        this.lambdaClient = AWSLambdaClientBuilder.defaultClient();
-    }
+//    private TableDriver(final AmazonDynamoDB client) {
+//        if (isNull(client)) {
+//            throw new IllegalStateException("Cannot set null client ");
+//        }
+//        this.client = client;
+//        this.dynamoDb = new DynamoDB(client);
+//        this.mapper = new DynamoDBMapper(client);
+//        this.taggingAPIclient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+//        this.lambdaClient = AWSLambdaClientBuilder.defaultClient();
+//    }
 
     
-    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) {
+    public TableDriver(final AmazonDynamoDB client, 
+            AWSResourceGroupsTaggingAPI taggingAPIclient, 
+            AWSLambda lambdaClient) {
+        
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
+        if (isNull(taggingAPIclient)) {
+            throw new IllegalStateException("Cannot set null taggingAPIclient ");
+        }
+        
+        if (isNull(lambdaClient)) {
+            throw new IllegalStateException("Cannot set null lambdaClient ");
+        }
+
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
@@ -202,7 +211,7 @@ public class TableDriver {
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
-            if (resources.getResourceTagMappingList().size() == 1) {
+            if (resources != null && resources.getResourceTagMappingList().size() == 1) {
                 logger.debug("matching resources={}",resources);
                 
             
@@ -214,8 +223,9 @@ public class TableDriver {
                         .withFunctionName(functionNameARN);
                 
                 
-                CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
-                        .createEventSourceMapping(createEventSourceMappingRequest);
+                CreateEventSourceMappingResult createEventSourceMappingResult = 
+                        lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
+                
                 logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
                         createEventSourceMappingResult);
                 return true;

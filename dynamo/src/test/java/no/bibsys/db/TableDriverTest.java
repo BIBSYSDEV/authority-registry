@@ -1,8 +1,11 @@
 package no.bibsys.db;
 
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.bibsys.db.structures.Entity;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class TableDriverTest extends LocalDynamoTest {
 
     @Test(expected = IllegalStateException.class)
     public void constructor_nullValue_exception() {
-        TableDriver tableDriver = new TableDriver(null);
+        TableDriver tableDriver = new TableDriver(null, null, null);
 
     }
 
@@ -72,8 +75,11 @@ public class TableDriverTest extends LocalDynamoTest {
     public void deleteTable_TableNotEmpty_ReturnsTrue() throws JsonProcessingException {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
+        
+        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
+        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
 
-        EntityManager entityManager = new EntityManager(localClient);
+        EntityManager entityManager = new EntityManager(localClient, mockTaggingClient, mockLambdaClient);
         entityManager.addEntity(tableName, new Entity());
 
         boolean deleteTable = tableDriver.deleteTable(tableName);

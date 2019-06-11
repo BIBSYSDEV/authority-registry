@@ -9,6 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
 
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -54,16 +58,23 @@ public class JerseyConfig extends ResourceConfig {
     private static Logger logger = LoggerFactory.getLogger(JerseyConfig.class);
 
     public JerseyConfig() {
-        this(DynamoDBHelper.getClient(), new Environment());
+        this(DynamoDBHelper.getClient(), 
+                new Environment(), 
+                AWSResourceGroupsTaggingAPIClientBuilder.defaultClient(),
+                AWSLambdaClientBuilder.defaultClient() );
     }
 
-    public JerseyConfig(AmazonDynamoDB client, Environment environmentReader) {
+    public JerseyConfig(AmazonDynamoDB client, 
+            Environment environmentReader, 
+            AWSResourceGroupsTaggingAPI taggingAPIclient, 
+            AWSLambda lambdaClient) {
+        
         super();
 
         AuthenticationService authenticationService = new AuthenticationService(client, environmentReader);
         RegistryManager registryManager = null;
         try {
-            registryManager = new RegistryManager(client);
+            registryManager = new RegistryManager(client, taggingAPIclient, lambdaClient);
         } catch (IOException e) {
             logger.error(e.getMessage());
             logger.error("Could not create RegistryManager");
@@ -71,7 +82,7 @@ public class JerseyConfig extends ResourceConfig {
         RegistryService registryService = new RegistryService(registryManager, authenticationService,
             environmentReader);
 
-        EntityManager entityManager = new EntityManager(client);
+        EntityManager entityManager = new EntityManager(client, taggingAPIclient, lambdaClient);
         EntityService entityService = new EntityService(entityManager, registryService);
 
         register(new DatabaseResource(registryService, entityService));

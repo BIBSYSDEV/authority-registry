@@ -38,6 +38,7 @@ dependencies {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 
+    testImplementation("org.mockito:mockito-core:2.28.2")
     
 }
 
