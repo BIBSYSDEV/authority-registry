@@ -51,7 +51,7 @@ public class TableDriver {
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
     private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
-
+    private final transient AWSLambda lambdaClient; // = AWSLambdaClientBuilder.standard().build();
 
     public TableDriver(final AmazonDynamoDB client) {
         if (isNull(client)) {
@@ -61,10 +61,11 @@ public class TableDriver {
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
         this.taggingAPIclient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
+        this.lambdaClient = AWSLambdaClientBuilder.defaultClient();
     }
 
     
-    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient) {
+    public TableDriver(final AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) {
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
@@ -72,6 +73,7 @@ public class TableDriver {
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
         this.taggingAPIclient = taggingAPIclient;
+        this.lambdaClient = lambdaClient;
     }
 
     private Table getTable(final String tableName) {
@@ -211,7 +213,7 @@ public class TableDriver {
                         .withEventSourceArn(eventSourceArn)
                         .withFunctionName(functionNameARN);
                 
-                AWSLambda lambdaClient = AWSLambdaClientBuilder.standard().build();
+                
                 CreateEventSourceMappingResult createEventSourceMappingResult = lambdaClient
                         .createEventSourceMapping(createEventSourceMappingRequest);
                 logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 

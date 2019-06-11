@@ -3,6 +3,7 @@ package no.bibsys.db;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
+import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 
 import no.bibsys.db.structures.RegistryStatus;
@@ -37,7 +38,8 @@ public abstract class LocalDynamoTest extends DynamoTest {
 
     protected TableDriver newTableDriver() {
         AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
-        return new TableDriver(localClient, mockTaggingClient);
+        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
+        return new TableDriver(localClient, mockTaggingClient, mockLambdaClient);
     }
 
     protected RegistryManager registryManagerThatFailsToCreateATable() throws IOException {

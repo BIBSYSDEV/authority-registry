@@ -21,8 +21,10 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 
 import no.bibsys.JerseyConfig;
@@ -67,8 +69,12 @@ public class DatabaseResourceTest extends JerseyTest {
         enable(TestProperties.DUMP_ENTITY);
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
-        AWSResourceGroupsTaggingAPI taggingClient = new TaggingMock();
-        TableDriver tableDriver = new TableDriver(client, taggingClient);
+        
+        // AWSResourceGroupsTaggingAPI taggingClient = new TaggingMock();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
+        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
+
+        TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);
