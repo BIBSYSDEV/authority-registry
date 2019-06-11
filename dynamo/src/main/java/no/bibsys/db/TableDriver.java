@@ -187,8 +187,8 @@ public class TableDriver {
             logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
             
             TagFilter tagFilters = new TagFilter()
-                    .withKey("unit.resource_type")
-                    .withValues("DynamoDBTrigger_EventProcessor");
+//                    .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor")
+                    .withKey("aws:cloudformation:logical-id").withValues("DynamoDBEventProcessorLambda");
 
             logger.debug("Created tag filters");
 
