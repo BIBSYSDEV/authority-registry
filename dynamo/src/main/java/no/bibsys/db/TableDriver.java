@@ -75,6 +75,8 @@ public class TableDriver {
     }
 
     private Table getTable(final String tableName) {
+        logger.debug("getTable tableName={}", tableName);
+
         return dynamoDb.getTable(tableName);
     }
 

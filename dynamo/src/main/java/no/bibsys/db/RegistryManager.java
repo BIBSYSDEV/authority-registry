@@ -167,7 +167,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public List<String> getRegistries(String registryMetadataTableName) {
-
+        logger.debug("getRegistries registryMetadataTableName={}", registryMetadataTableName);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 
