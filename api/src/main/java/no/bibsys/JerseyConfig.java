@@ -61,7 +61,7 @@ public class JerseyConfig extends ResourceConfig {
         this(DynamoDBHelper.getClient(), 
                 new Environment(), 
                 AWSResourceGroupsTaggingAPIClientBuilder.defaultClient(),
-                AWSLambdaClientBuilder.defaultClient() );
+                AWSLambdaClientBuilder.defaultClient());
     }
 
     public JerseyConfig(AmazonDynamoDB client, 

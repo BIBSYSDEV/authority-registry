@@ -1,5 +1,20 @@
 package no.bibsys.web.exception;
 
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.test.JerseyTest;
+import org.junit.BeforeClass;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
@@ -8,6 +23,8 @@ import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
@@ -18,20 +35,6 @@ import no.bibsys.web.DatabaseResource;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.mockito.Mockito;
-
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
 
 public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTest {
 
@@ -59,8 +62,8 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
 
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
-        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
-        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+        AWSLambda mockLambdaClient = AwsLambdaMock.build(); 
 
         TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
         List<String> listTables = tableDriver.listTables();

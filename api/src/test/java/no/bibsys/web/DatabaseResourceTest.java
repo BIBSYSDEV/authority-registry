@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,24 +20,14 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.internal.matchers.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;  
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
-import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
-import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
-import com.amazonaws.services.resourcegroupstaggingapi.model.ResourceTagMapping;
-import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
 
-
-
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -81,20 +70,9 @@ public class DatabaseResourceTest extends JerseyTest {
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
         
-        // AWSResourceGroupsTaggingAPI taggingClient = new TaggingMock();
-        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
-        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class);
-        GetResourcesResult mockResourcesResult = Mockito.mock(GetResourcesResult.class);
-        
-        @SuppressWarnings("unchecked")
-        List<ResourceTagMapping> mockGetResourceTagMappingList = mock(List.class);
-        ResourceTagMapping mockResourceTagMapping = mock(ResourceTagMapping.class);
-        when(mockGetResourceTagMappingList.get(anyInt())).thenReturn(mockResourceTagMapping);
-        when(mockResourceTagMapping.getResourceARN()).thenReturn("arn:fake");
-        when(mockGetResourceTagMappingList.size()).thenReturn(1);
-        when(mockTaggingClient.getResources(any(GetResourcesRequest.class))).thenReturn( mockResourcesResult);
-        when(mockResourcesResult.getResourceTagMappingList()).thenReturn(mockGetResourceTagMappingList);
-
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+                
         
         TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
         List<String> listTables = tableDriver.listTables();

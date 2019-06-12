@@ -1,18 +1,21 @@
 package no.bibsys.db;
 
-import com.amazonaws.services.lambda.AWSLambda;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import no.bibsys.db.structures.Entity;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
+import no.bibsys.db.structures.Entity;
 
 public class TableDriverTest extends LocalDynamoTest {
 
@@ -76,8 +79,8 @@ public class TableDriverTest extends LocalDynamoTest {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
         
-        AWSResourceGroupsTaggingAPI mockTaggingClient = Mockito.mock(AWSResourceGroupsTaggingAPI.class); 
-        AWSLambda mockLambdaClient = Mockito.mock(AWSLambda.class); 
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+        AWSLambda mockLambdaClient = AwsLambdaMock.build(); 
 
         EntityManager entityManager = new EntityManager(localClient, mockTaggingClient, mockLambdaClient);
         entityManager.addEntity(tableName, new Entity());

@@ -5,6 +5,7 @@ repositories {
 }
 
 dependencies {
+    compile project(":aws-test")
 
     compile project(":common")
     compile project(":validation")

@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.amazonaws.services.s3.Headers;

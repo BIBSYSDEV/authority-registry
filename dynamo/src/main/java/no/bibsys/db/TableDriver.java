@@ -51,17 +51,6 @@ public class TableDriver {
     private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
     private final transient AWSLambda lambdaClient; 
 
-//    private TableDriver(final AmazonDynamoDB client) {
-//        if (isNull(client)) {
-//            throw new IllegalStateException("Cannot set null client ");
-//        }
-//        this.client = client;
-//        this.dynamoDb = new DynamoDB(client);
-//        this.mapper = new DynamoDBMapper(client);
-//        this.taggingAPIclient = AWSResourceGroupsTaggingAPIClientBuilder.defaultClient();
-//        this.lambdaClient = AWSLambdaClientBuilder.defaultClient();
-//    }
-
     
     public TableDriver(final AmazonDynamoDB client, 
             AWSResourceGroupsTaggingAPI taggingAPIclient, 
@@ -201,13 +190,18 @@ public class TableDriver {
 
             logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
             
-            TagFilter tagFilters = new TagFilter()
-//                    .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor")
+            TagFilter tagFiltersAWS = new TagFilter()
                     .withKey("aws:cloudformation:logical-id").withValues("DynamoDBEventProcessorLambda");
+            TagFilter tagFiltersUNIT = new TagFilter()
+                  .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor");
 
             logger.debug("Created tag filters");
 
-            GetResourcesRequest getResourcesRequest = new GetResourcesRequest().withTagFilters(tagFilters);
+            GetResourcesRequest getResourcesRequest = 
+                    new GetResourcesRequest()
+                    .withTagFilters(tagFiltersAWS)
+                    .withTagFilters(tagFiltersUNIT);
+            
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 

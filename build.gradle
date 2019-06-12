@@ -22,8 +22,10 @@ dependencies {
     implementation project(":api")
     implementation project(":cypress")
     implementation project(":validation")
+    implementation project(":aws-test")
     implementation 'io.github.dibog:cloudwatch-logback-appender:1.0.6'   
 }
+
 
 task fatJar {
     println "Creating fat jars"
@@ -81,6 +83,9 @@ subprojects {
         
         //useful libraries from google
         implementation("com.google.guava:guava:27.1-jre")
+
+        // libraries for mocking and testing against AWS
+        // testImplementation(":aws-test")
 
         //libraries for more expressive testing
         testImplementation("org.hamcrest:hamcrest-all:1.3")
