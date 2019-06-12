@@ -16,7 +16,7 @@
 
 		<createLogGroup>true</createLogGroup>
 		<queueLength>100</queueLength>
-		<groupName>authority-registry-dynamo</groupName>
+		<groupName>authority-registry-dynamo-test</groupName>
 		<streamName>log-stream</streamName>  
 		<dateFormat>yyyyMMdd_HHmm</dateFormat>
 
