@@ -32,6 +32,7 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.model.CreateEventSourceMappingRequest;
 import com.amazonaws.services.lambda.model.CreateEventSourceMappingResult;
+import com.amazonaws.services.lambda.model.EventSourcePosition;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
@@ -216,6 +217,7 @@ public class TableDriver {
                 CreateEventSourceMappingRequest createEventSourceMappingRequest = 
                 new CreateEventSourceMappingRequest()
                         .withEventSourceArn(eventSourceArn)
+                        .withStartingPosition(EventSourcePosition.LATEST)
                         .withFunctionName(functionNameARN);
                 
                 
