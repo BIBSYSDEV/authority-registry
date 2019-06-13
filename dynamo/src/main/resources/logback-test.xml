@@ -4,7 +4,7 @@
 
 	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
 
-		<awsConfig>
+		<!-- <awsConfig>
 
 			<region>eu-west-1</region>
 
@@ -12,13 +12,13 @@
 				<proxyHost></proxyHost>
 				<proxyPort></proxyPort>
 			</clientConfig>
-		</awsConfig>
+		</awsConfig> -->
 
 		<createLogGroup>true</createLogGroup>
 		<queueLength>100</queueLength>
 		<groupName>authority-registry-dynamo-test</groupName>
-		<streamName>log-stream</streamName>  
-		<dateFormat>yyyyMMdd_HHmm</dateFormat>
+		<streamName>dynamo-log-stream</streamName>  
+		<!-- <dateFormat>yyyyMMdd_HHmm</dateFormat> -->
 
 		<layout>
 			<!-- <pattern>%-5level %logger{35} -	%msg %n</pattern> -->
