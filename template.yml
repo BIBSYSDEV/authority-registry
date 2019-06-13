@@ -96,6 +96,10 @@ Resources:
           - tag:TagResources
           - tag:UntagGetResources
           Resource: "*"
+        - Effect: Allow
+          Action:
+          - lambda:CreateEventSourceMapping
+          Resource: "*"
       Timeout: 600
       Environment:
         Variables:
