@@ -88,6 +88,14 @@ Resources:
           - config:List*
           - config:Describe*
           Resource: "*"
+        - Effect: Allow
+          Action:
+          - tag:GetResources
+          - tag:GetTagKeys
+          - tag:GetTagValues
+          - tag:TagResources
+          - tag:UntagGetResources
+          Resource: "*"
       Timeout: 600
       Environment:
         Variables:
