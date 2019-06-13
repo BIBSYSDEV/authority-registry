@@ -1,34 +1,35 @@
 <configuration>
-	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
 
-		<!-- <awsConfig>
-			<region>eu-west-1</region>
-   		<clientConfig class="com.amazonaws.ClientConfiguration">
-		  		<proxyHost></proxyHost>
-			  	<proxyPort></proxyPort>
-			</clientConfig>
-		</awsConfig> -->
+  <property name="pattern" value="%-5level %logger{35} - %msg%n" />
 
-		<createLogGroup>true</createLogGroup>
-		<queueLength>100</queueLength>
-		<groupName>authority-registry-api</groupName>
-		<streamName>log-stream</streamName>  
-		<dateFormat>yyyyMMdd_HHmm</dateFormat>
+  <appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
 
-		<layout>
-			<pattern>%-5level %logger{35} -	%msg %n</pattern>
-		</layout>
+    <createLogGroup>true</createLogGroup>
+    <queueLength>100</queueLength>
+    <groupName>authority-registry-api</groupName>
+    <streamName>api-log-stream</streamName>
 
-	</appender>
+    <layout>
+      <pattern>${pattern}</pattern>
+    </layout>
 
-  <logger name="org.apache.http" level="ERROR" />
+  </appender>
+
+  <logger name="org.apache" level="ERROR" />
   <logger name="software.amazon" level="ERROR" />
   <logger name="com.amazonaws" level="ERROR" />
   <logger name="org.gradle" level="ERROR" />
+  <logger name="io.swagger" level="ERROR" />
 
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${pattern}</pattern>
+    </encoder>
+  </appender>
 
-	<root level="DEBUG">
-		<appender-ref ref="cloud-watch" />
-	</root>
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="cloud-watch" />
+  </root>
 
 </configuration>
