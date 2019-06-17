@@ -146,7 +146,8 @@ Resources:
       Runtime: java8
       CodeUri: api/build/libs/api-fat.jar
       Environment:
-        CLOUDSEARCH_DOCUMENT_ENDPOINT: "doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com" 
+        Variables:
+          CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com 
       MemorySize: 1512
       Policies:
         Version: '2012-10-17'
