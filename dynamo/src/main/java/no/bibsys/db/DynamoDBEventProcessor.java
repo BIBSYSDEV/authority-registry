@@ -15,7 +15,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private static final String CLOUDSEARCH_DOCUMENT_ENDPOINT = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
-    CloudsearchClient cloudsearchClient;
+    private transient CloudsearchClient cloudsearchClient;
     
     
     
@@ -47,7 +47,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             logger.debug("record.eventID={}, record.eventName={}, record.dynamodb={}", 
                     record.getEventID(), record.getEventName(), record.getDynamodb());
             if (record.getEventName().equals("MODIFY")) {
-                cloudsearchClient .upsert(record.getEventSource());
+                cloudsearchClient.upsert(record.getEventSource());
             } else {
                 logger.debug("handleRequest doesn't know what to do with eventName={}", record.getEventName());
             }

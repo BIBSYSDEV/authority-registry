@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class CloudsearchClient {
 
-    private URL endpoint;
+    private final transient URL endpoint;
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
     
     public CloudsearchClient(URL cloudsearchDocumentEndpointUrl) {
