@@ -46,7 +46,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
             logger.debug("record.eventID={}, record.eventName={}, record.dynamodb={}", 
                     record.getEventID(), record.getEventName(), record.getDynamodb());
-            if (record.getEventName().equals("MODIFY")) {
+            if (record.getEventName().equals("MODIFY") || record.getEventName().equals("INSERT")) {
                 cloudsearchClient.upsert(record.getEventSource());
             } else {
                 logger.debug("handleRequest doesn't know what to do with eventName={}", record.getEventName());
