@@ -75,7 +75,7 @@ unit:related a rdfs:Property ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:Concept .
 
-unit:deinition a rdfs:Property ;
+unit:definition a rdfs:Property ;
   rdfs:subPropertyOf skos:definition ;
   rdfs:label "Definition"@en ;
   rdfs:label "Beskrivelse"@no ;
