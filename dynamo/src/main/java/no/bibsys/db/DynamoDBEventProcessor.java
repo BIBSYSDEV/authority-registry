@@ -68,6 +68,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private AmazonSdfDTO createAmazonSdfFromTriggerEvent(String dynamDBEventName, StreamRecord streamRecord) throws IOException {
         AmazonSdfDTO sdf = new AmazonSdfDTO(dynamDBEventName);
+        logger.debug("streamRecord= {}",streamRecord);
         sdf.setFieldsFromEntity(extractEntity(streamRecord.getNewImage()));
         return sdf;
     }

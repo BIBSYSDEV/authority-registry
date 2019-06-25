@@ -51,7 +51,7 @@ public class AmazonSdfDTO {
         type = eventToOperation(eventName).name();
     }
 
-    
+
     @SuppressWarnings("PMD")
     @Override
     public String toString() {
@@ -59,10 +59,10 @@ public class AmazonSdfDTO {
         str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
         fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
         str.append("}]");
-        
+
         return str.toString();
     }
-    
+
 
     private CloudsearchSdfType eventToOperation(String eventName) {
         EventName event  = EventName.valueOf(eventName); 
@@ -91,34 +91,21 @@ public class AmazonSdfDTO {
     }
 
     public void setFieldsFromEntity(Entity entity) throws IOException {
-        // Do something to map from properties in entity to indexfields in cloudsearch
-
         setId(entity.getId());
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),Lang.JSONLD);
-        
+
         String query = IoUtils.resourceAsString(Paths.get(CLOUDSEARCH_MAPPER_QUERY_SPARQL));
-        try (
-                QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
-        
-            
-                ResultSet resultSet = queryExecution.execSelect();
-                List<String> resultVars = resultSet.getResultVars();
-                resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
-                
-//                StringBuilder str = new StringBuilder("{"); 
-//                fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
-//                str.append("}");
-//                logger.debug("fields={}", str);
-                
+        try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+            ResultSet resultSet = queryExecution.execSelect();
+            List<String> resultVars = resultSet.getResultVars();
+            resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
         }
-        
         logger.debug(this.toString());
     }
 
     private void processQuerySolution(QuerySolution querySolution, String resultVar) {
-        
-            Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR)));  
+        Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR)));  
     }
 
 
