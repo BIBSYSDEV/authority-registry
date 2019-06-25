@@ -1,0 +1,51 @@
+PREFIX unit: <http://unit.no/entitydata#>
+
+SELECT ?identifier 
+       (group_concat(DISTINCT ?localIdentifierBound;separator="§§§§") as ?localidentifier) 
+       (group_concat(DISTINCT ?preferredlabelBound;separator="§§§§") as ?preferredlabel) 
+       (group_concat(DISTINCT ?alternativeLabelBound;separator="§§§§") as ?alternativelabel) 
+       ?narrower 
+       (group_concat(DISTINCT ?broaderBound;separator="§§§§") as ?broader) 
+       (group_concat(DISTINCT ?relatedBound;separator="§§§§") as ?related) 
+       ?definition 
+       ?inScheme 
+       (group_concat(DISTINCT ?seeAlsoBound;separator="§§§§") as ?seealso) 
+WHERE {
+  ?subject a unit:Concept ; 
+   unit:identifier ?identifier .
+  OPTIONAL {?subject unit:localIdentifier ?localIdentifierBound}
+  OPTIONAL {
+    ?subject unit:preferredLabel ?preferedLabelRaw
+    BIND (STR(?preferedLabelRaw) AS ?preferredlabelBound)
+  }
+  OPTIONAL {
+    ?subject unit:alternativeLabel ?alternativeLabelRaw
+    BIND (STR(?alternativeLabelRaw) AS ?alternativeLabelBound)
+  }
+  OPTIONAL {
+    ?subject unit:narrower ?narrowerRaw
+    BIND (STR(?narrowerRaw) AS ?narrower)
+  }
+  OPTIONAL {
+    ?subject unit:broader ?broaderRaw
+    BIND (STR(?broaderRaw) AS ?broaderBound)
+  }
+  OPTIONAL {
+    ?subject unit:related ?relatedRaw
+    BIND (STR(?relatedRaw) AS ?relatedBound)
+  }
+  OPTIONAL {
+    ?subject unit:definition ?definitionRaw
+    BIND (STR(?definitionRaw) AS ?definition)
+  }
+  OPTIONAL {
+    ?subject unit:inScheme ?inSchemeRaw
+    BIND (STR(?inSchemeRaw) AS ?inScheme)
+  }
+  OPTIONAL {
+    ?subject unit:seeAlso ?seeAlsoRaw
+    BIND (STR(?seeAlsoRaw) AS ?seeAlsoBound)
+  }
+}
+
+GROUP BY ?identifier ?altlLabel ?narrower ?broad ?relate ?definition ?inScheme ?see

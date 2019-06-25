@@ -1,0 +1,26 @@
+unit:identifier a rdfs:Property ;
+  rdfs:range xsd:string .
+
+unit:preferredLabel a rdfs:Property ;
+  rdfs:range rdf:langString .
+
+unit:alternativeLabel a rdfs:Property ;
+  rdfs:range unit:Concept .
+
+unit:narrower a rdfs:Property ;
+  rdfs:range unit:Concept .
+
+unit:broader a rdfs:Property ;
+  rdfs:range unit:Concept .
+
+unit:related a rdfs:Property ;
+  rdfs:range unit:Concept .
+
+unit:definition a rdfs:Property ;
+  rdfs:range rdf:langString .
+
+unit:inScheme a rdfs:Property ;
+  rdfs:range unit:ConceptScheme .
+
+unit:seeAlso a rdfs:Property ;
+  rdfs:domain unit:Concept, unit:ConceptScheme .

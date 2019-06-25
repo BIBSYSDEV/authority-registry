@@ -1,0 +1,41 @@
+{
+  "@context": {
+    "Concept": {
+      "@id": "http://unit.no/entitydata#Concept"
+    },
+    "preferredLabel": {
+      "@id": "http://unit.no/entitydata#preferredLabel"
+    },
+    "alternativeLabel": {
+      "@id": "http://unit.no/entitydata#alternativeLabel"
+    },
+    "identifier": {
+      "@id": "http://unit.no/entitydata#identifier"
+    },
+    "definition": {
+      "@id": "http://unit.no/entitydata#definition"
+    }
+  },
+  "@type": "Concept",
+  "identifier": "identifier01",
+  "preferredLabel": [{
+      "@value": "The label",
+      "@language": "en"
+    },
+    {
+      "@value": "Etiketten",
+      "@language": "nb"
+    }
+  ],
+  "alternativeLabel": {
+    "@value": "The alternate label",
+    "@language": "en"
+  },
+  "definition": [{
+    "@value": "Some definition of the concept",
+    "@language": "en"
+  }, {
+    "@value": "En utfyllende definisjon av begrepet",
+    "@language": "nb"
+  }]
+}

@@ -1,38 +1,71 @@
 package no.bibsys.db;
 
-import java.sql.Date;
-import java.util.Arrays;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import no.bibsys.utils.JsonUtils;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Charsets;
+
+import no.bibsys.db.structures.Entity;
+import no.bibsys.utils.IoUtils;
 
 public class AmazonSdfDTO {
 
-    private static final String[] knownTypes = new String[] {"ADD", "REMOVE"};
-    private static final String[] EVENT_NAMES = new String[] {"INSERT", "MODIFY","REMOVE"};
-    
-    private String type;
-    private String id;
-    private Date timestamp;
-    private String fields;
-    
-    
+    private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
+
+
+
+    private static final String SEPARATOR = "§§§§";
+
+
+
+    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
+
+    enum CloudsearchSdfType { ADD, DELETE };
+    enum EventName { INSERT, MODIFY, REMOVE };
+
+    private final String type;
+    private transient String id;
+    private final transient Map<String, String[]> fields = new ConcurrentHashMap<>();
+
+
     public AmazonSdfDTO(String eventName) {
         super();
-        if (Arrays.stream(EVENT_NAMES).anyMatch(eventName::equals)) {
-          if ("REMOVE".equalsIgnoreCase(eventName)) {
-              this.setType("REMOVE");
-          } else {
-              this.setType("ADD");
-          }
-        } else {
-            throw new IllegalArgumentException("unknown operationtype, only known operations are "+knownTypes);
-        }
-        
+        type = eventToOperation(eventName).name();
     }
-    
-    public String getFields() {
+
+    @Override
+    public String toString() {
+        return "AmazonSdfDTO [type=" + type + ", id=" + id + ", fields=" + fields + "]";
+    }
+
+    private CloudsearchSdfType eventToOperation(String eventName) {
+        EventName event  = EventName.valueOf(eventName); 
+        switch (event) {
+        case INSERT:
+        case MODIFY: return CloudsearchSdfType.ADD;
+        case REMOVE: return CloudsearchSdfType.DELETE;
+        }
+        return null;
+    }
+
+    public Map<String,?> getFields() {
         return fields;
     }
 
@@ -44,34 +77,35 @@ public class AmazonSdfDTO {
         return id;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public AmazonSdfDTO setId(String id) {
+    public void setId(String id) {
         this.id = id; 
-        return this;
-    }
-    
-
-    public AmazonSdfDTO setTimestamp(Date timestamp) {
-        this.timestamp = timestamp; 
-        return this;
     }
 
+    public void setFieldsFromEntity(Entity entity) throws IOException {
+        // Do something to map from properties in entity to indexfields in cloudsearch
 
-    public void setType(String type) {
-        if (Arrays.stream(knownTypes).anyMatch(type::equals)) {
-            this.type = type;
-        } else {
-            throw new IllegalArgumentException("unknown operationtype, only known operations are "+knownTypes);
+        setId(entity.getId());
+        Model model = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),Lang.JSONLD);
+        
+        String query = IoUtils.resourceAsString(Paths.get(CLOUDSEARCH_MAPPER_QUERY_SPARQL));
+        try (
+                QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
+        
+            
+                ResultSet resultSet = queryExecution.execSelect();
+                List<String> resultVars = resultSet.getResultVars();
+                resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
+                logger.debug("fields={}", fields);
         }
+        
+        logger.debug(this.toString());
     }
 
-    public AmazonSdfDTO setBody(String body) {
-        this.fields =  body; //JsonUtils.newJsonParser().createObjectNode().put("fields",body);
-        return this;
+    private void processQuerySolution(QuerySolution querySolution, String resultVar) {
+        
+            Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR)));  
     }
-    
-    
+
+
 }

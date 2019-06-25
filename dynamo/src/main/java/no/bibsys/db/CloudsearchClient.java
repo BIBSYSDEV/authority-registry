@@ -1,12 +1,8 @@
 package no.bibsys.db;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,43 +20,27 @@ import com.google.common.base.Charsets;
 
 import no.bibsys.utils.JsonUtils;
 
-
-
-
-
 public class CloudsearchClient {
 
-    private transient URL endpoint;
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
-    private AmazonCloudSearchDomain cloudseachDomaninClient;
+    private final transient AmazonCloudSearchDomain cloudseachDomainClient;
 
-    public CloudsearchClient(URL cloudsearchDocumentEndpointUrl) {
-        super();
-        this.endpoint = cloudsearchDocumentEndpointUrl;
-        cloudseachDomaninClient = AmazonCloudSearchDomainClientBuilder.defaultClient();
+    public CloudsearchClient() {
+        this(AmazonCloudSearchDomainClientBuilder.defaultClient());
     }
-
-    
     
     public CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {
-        // For mocking
-        super();
-        try {
-            endpoint = new URL("http://mock.host");
-        } catch (MalformedURLException dontCare) {
-        }
-        cloudseachDomaninClient = cloudSearchDomain;
-
+        cloudseachDomainClient = cloudSearchDomain;
     }
 
     
     public void upsert(List<AmazonSdfDTO> documents) {
-        logger.debug("updating CloudSearch@{}",endpoint);
+        
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
                 .withContentType(ContentType.Applicationjson)
                 .withDocuments(batchToInputStream(documents));
         
-        UploadDocumentsResult uploadDocumentsResult = cloudseachDomaninClient.uploadDocuments(uploadDocumentsRequest);
+        UploadDocumentsResult uploadDocumentsResult = cloudseachDomainClient.uploadDocuments(uploadDocumentsRequest);
         logger.debug("uploadDocumentsResult={}",uploadDocumentsResult);
 
     }

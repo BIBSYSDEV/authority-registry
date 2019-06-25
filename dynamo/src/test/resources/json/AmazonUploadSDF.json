@@ -1,0 +1,13 @@
+[
+	{
+		"type": "ADD",
+		"id": "id01",
+		"fields": {
+			"id": "id01",
+			"label": {
+				"@value": "The label",
+				"@language": "en"
+			}
+		}
+	}
+]
