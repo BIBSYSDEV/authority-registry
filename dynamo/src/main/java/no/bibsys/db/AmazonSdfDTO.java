@@ -4,6 +4,7 @@ package no.bibsys.db;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,10 +51,18 @@ public class AmazonSdfDTO {
         type = eventToOperation(eventName).name();
     }
 
+    
+    @SuppressWarnings("PMD")
     @Override
     public String toString() {
-        return "AmazonSdfDTO [type=" + type + ", id=" + id + ", fields=" + fields + "]";
+        StringBuilder str = new StringBuilder(60);
+        str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
+        fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
+        str.append("}]");
+        
+        return str.toString();
     }
+    
 
     private CloudsearchSdfType eventToOperation(String eventName) {
         EventName event  = EventName.valueOf(eventName); 
@@ -96,7 +105,12 @@ public class AmazonSdfDTO {
                 ResultSet resultSet = queryExecution.execSelect();
                 List<String> resultVars = resultSet.getResultVars();
                 resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
-                logger.debug("fields={}", fields);
+                
+//                StringBuilder str = new StringBuilder("{"); 
+//                fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
+//                str.append("}");
+//                logger.debug("fields={}", str);
+                
         }
         
         logger.debug(this.toString());

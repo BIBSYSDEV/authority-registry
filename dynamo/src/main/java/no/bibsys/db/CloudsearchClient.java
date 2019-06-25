@@ -31,6 +31,7 @@ public class CloudsearchClient {
     
     public CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {
         cloudseachDomainClient = cloudSearchDomain;
+        logger.debug("CloudsearchClient, with cloudSearchDomain=",cloudSearchDomain);
     }
 
     
