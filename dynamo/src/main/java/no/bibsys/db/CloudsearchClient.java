@@ -23,16 +23,23 @@ import no.bibsys.utils.JsonUtils;
 
 public class CloudsearchClient {
 
+
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
     private final transient AmazonCloudSearchDomain cloudseachDomainClient;
 
-    public CloudsearchClient(String region, String serviceEndpoint) {
-        this(AmazonCloudSearchDomainClientBuilder.standard().withEndpointConfiguration(new EndpointConfiguration(serviceEndpoint,region)).build());
+    
+    public CloudsearchClient() {
+        cloudseachDomainClient = null;
     }
     
-    public CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {
-        cloudseachDomainClient = cloudSearchDomain;
-        logger.debug("CloudsearchClient, with cloudSearchDomain=",cloudSearchDomain);
+    public CloudsearchClient(String region, String serviceEndpoint) {
+        this.cloudseachDomainClient = AmazonCloudSearchDomainClientBuilder.standard().withEndpointConfiguration(new EndpointConfiguration(serviceEndpoint,region)).build();
+        logger.debug("CloudsearchClient, with cloudSearchDomain=",this.cloudseachDomainClient);
+    }
+    
+    /* default */ CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {
+        this.cloudseachDomainClient = cloudSearchDomain;
+        logger.debug("CloudsearchClient, with cloudSearchDomain=",cloudseachDomainClient);
     }
 
     
