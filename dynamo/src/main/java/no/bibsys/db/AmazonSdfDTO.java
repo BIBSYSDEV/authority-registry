@@ -29,13 +29,7 @@ import no.bibsys.utils.IoUtils;
 public class AmazonSdfDTO {
 
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
-
-
-
     private static final String SEPARATOR = "§§§§";
-
-
-
     private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
 
     enum CloudsearchSdfType { ADD, DELETE };
@@ -91,7 +85,6 @@ public class AmazonSdfDTO {
     }
 
     public void setFieldsFromEntity(Entity entity) throws IOException {
-        setId(entity.getId());
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),Lang.JSONLD);
 

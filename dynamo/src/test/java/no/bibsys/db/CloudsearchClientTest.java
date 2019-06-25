@@ -1,6 +1,7 @@
 package no.bibsys.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -21,12 +22,14 @@ import no.bibsys.db.structures.Entity;
 public class CloudsearchClientTest {
 
     private static final String sampleIdentifier = "identifier01";
+    private static final String sampleDynamoDBIdentifier = "dynamooDB-identifier01";
     
     CloudsearchClient cloudsearchClient;
     AmazonCloudSearchDomain amazonCloudSearchDomainMock;
     
     private AmazonSdfDTO createSampleAmazonSDF() throws IOException {
         AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.EventName.INSERT.name());
+        amazonSdfDTO.setId(sampleDynamoDBIdentifier);
         Entity entity = new SampleData().bigsampleEntity();
         amazonSdfDTO.setFieldsFromEntity(entity);
         return amazonSdfDTO;
@@ -47,7 +50,8 @@ public class CloudsearchClientTest {
     public void testCreateAmazonSDF() throws IOException {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
         System.out.println(amazonSdfDTO.toString());
-        assertEquals(sampleIdentifier, amazonSdfDTO.getId());
+        assertEquals(sampleDynamoDBIdentifier, amazonSdfDTO.getId());
+        assertNotEquals(sampleIdentifier, amazonSdfDTO.getId());
     }
 
 

@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomain;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClientBuilder;
 import com.amazonaws.services.cloudsearchdomain.model.ContentType;
@@ -25,8 +26,8 @@ public class CloudsearchClient {
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
     private final transient AmazonCloudSearchDomain cloudseachDomainClient;
 
-    public CloudsearchClient() {
-        this(AmazonCloudSearchDomainClientBuilder.defaultClient());
+    public CloudsearchClient(String region, String serviceEndpoint) {
+        this(AmazonCloudSearchDomainClientBuilder.standard().withEndpointConfiguration(new EndpointConfiguration(serviceEndpoint,region)).build());
     }
     
     public CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {

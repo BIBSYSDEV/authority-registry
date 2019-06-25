@@ -25,10 +25,13 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
     private final transient CloudsearchClient cloudsearchClient;
-
+    private static final String CLOUDSEARCH_SERVICE_ENDPOINT_NAME = "CLOUDSEARCH_SERVICE_ENDPOINT"; 
+    private static final String REGION = "eu-west-1";
+    
     public DynamoDBEventProcessor() {
         super();
-        this.cloudsearchClient = new CloudsearchClient();
+        String cloudsearchEndpoint = System.getenv(CLOUDSEARCH_SERVICE_ENDPOINT_NAME);
+        this.cloudsearchClient = new CloudsearchClient(cloudsearchEndpoint, REGION);
     }
 
     public DynamoDBEventProcessor(CloudsearchClient cloudsearchClient ) {
@@ -66,9 +69,12 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         return null;
     }
 
-    private AmazonSdfDTO createAmazonSdfFromTriggerEvent(String dynamDBEventName, StreamRecord streamRecord) throws IOException {
-        AmazonSdfDTO sdf = new AmazonSdfDTO(dynamDBEventName);
-        logger.debug("streamRecord= {}",streamRecord);
+    private AmazonSdfDTO createAmazonSdfFromTriggerEvent(String dynamoDBEventName, StreamRecord streamRecord) throws IOException {
+        AmazonSdfDTO sdf = new AmazonSdfDTO(dynamoDBEventName);
+        logger.debug("dynamoDBEventName={}, streamRecord= {}",dynamoDBEventName, streamRecord);
+        if (streamRecord.getNewImage().containsKey("id")) {
+            sdf.setId(streamRecord.getNewImage().get("id").getS());
+        }
         sdf.setFieldsFromEntity(extractEntity(streamRecord.getNewImage()));
         return sdf;
     }
