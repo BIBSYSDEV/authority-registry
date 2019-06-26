@@ -52,12 +52,11 @@ public class CloudsearchClient {
                 .withContentType(ContentType.Applicationjson);
         
         String documentsAsString = batchToString(documents);
-        logger.debug("documentsAsString={}",documentsAsString);
         byte[] bytes = documentsAsString.getBytes(Charsets.UTF_8);
         InputStream inputStream = new ByteArrayInputStream(bytes);
+        
         uploadDocumentsRequest.setDocuments(inputStream);
         uploadDocumentsRequest.setContentLength((long) bytes.length);
-        uploadDocumentsRequest.setContentType(ContentType.Applicationjson);
         
         logger.debug("uploadDocumentsRequest={}",uploadDocumentsRequest);
         

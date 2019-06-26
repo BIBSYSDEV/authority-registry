@@ -38,15 +38,11 @@ public class CloudsearchClientTest {
     
     @Before
     public void init() throws IOException {
-        
-        
-        
         amazonCloudSearchDomainMock = Mockito.mock(AmazonCloudSearchDomain.class);
         UploadDocumentsResult uploadDockumentsResponeMock = new UploadDocumentsResult();
         uploadDockumentsResponeMock.setStatus("Okidoi, mocked");
         when(amazonCloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class))).thenReturn((uploadDockumentsResponeMock));
         cloudsearchClient = new CloudsearchClient(amazonCloudSearchDomainMock);
-
     }
     
     
@@ -59,8 +55,6 @@ public class CloudsearchClientTest {
     }
 
 
-
-    
     @Test
     public void testUpsert() throws IOException {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
@@ -69,6 +63,5 @@ public class CloudsearchClientTest {
         cloudsearchClient.upsert(documents);
         
     }
-
     
 }
