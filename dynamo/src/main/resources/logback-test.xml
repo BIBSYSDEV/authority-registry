@@ -29,7 +29,7 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
-		<!-- <appender-ref ref="cloud-watch" /> -->
+		<appender-ref ref="cloud-watch" /> 
 	</root>
 
 </configuration>

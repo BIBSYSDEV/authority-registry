@@ -1,6 +1,7 @@
 package no.bibsys.db;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
@@ -8,14 +9,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomain;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClientBuilder;
 import com.amazonaws.services.cloudsearchdomain.model.ContentType;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsRequest;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Charsets;
 
 import no.bibsys.utils.JsonUtils;
@@ -23,47 +23,62 @@ import no.bibsys.utils.JsonUtils;
 public class CloudsearchClient {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
-    private final transient AmazonCloudSearchDomain amazonCloudSearchDomainClient;
+    private static final String CLOUDSEARCH_DOCUMENT_ENDPOINT_NAME = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
+    private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
     
+    private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
+    private final transient AmazonCloudSearchDomain documentUploadClient;
     
     public CloudsearchClient() {
-        amazonCloudSearchDomainClient = AmazonCloudSearchDomainClientBuilder.defaultClient();
-        logger.debug("CloudsearchClient, with amazonCloudSearchDomainClient=", amazonCloudSearchDomainClient);
-    }
-    
-    
-    public CloudsearchClient(AmazonCloudSearchDomain amazonCloudSearchDomainMock) {
-        amazonCloudSearchDomainClient = amazonCloudSearchDomainMock;
-    }
 
+        String serviceEndpoint = System.getenv(CLOUDSEARCH_DOCUMENT_ENDPOINT_NAME).trim();
+        String signingRegion = System.getenv(AWS_REGION_PROPERTY_NAME);
+        
+        logger.debug("documentUploadClient.serviceEndpoint='{}', signingRegion='{}'", serviceEndpoint, signingRegion);
+        
+        EndpointConfiguration endpointConfiguration = new EndpointConfiguration(serviceEndpoint, signingRegion);
+        documentUploadClient = AmazonCloudSearchDomainClientBuilder.standard()
+                .withEndpointConfiguration(endpointConfiguration).build();
+    }
+    
+    public CloudsearchClient(AmazonCloudSearchDomain documentUploadClient) {
+        // For mocking
+        this.documentUploadClient = documentUploadClient;
+    }
 
     public void upsert(List<AmazonSdfDTO> documents) {
         
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
-                .withContentType(ContentType.Applicationjson)
-                .withDocuments(batchToInputStream(documents));
+                .withContentType(ContentType.Applicationjson);
         
-        UploadDocumentsResult uploadDocumentsResult = amazonCloudSearchDomainClient.uploadDocuments(uploadDocumentsRequest);
+        String documentsAsString = batchToString(documents);
+        logger.debug("documentsAsString={}",documentsAsString);
+        byte[] bytes = documentsAsString.getBytes(Charsets.UTF_8);
+        InputStream inputStream = new ByteArrayInputStream(bytes);
+        uploadDocumentsRequest.setDocuments(inputStream);
+        uploadDocumentsRequest.setContentLength((long) bytes.length);
+        uploadDocumentsRequest.setContentType(ContentType.Applicationjson);
+        
+        logger.debug("uploadDocumentsRequest={}",uploadDocumentsRequest);
+        
+        UploadDocumentsResult uploadDocumentsResult = documentUploadClient.uploadDocuments(uploadDocumentsRequest);
         logger.debug("uploadDocumentsResult={}",uploadDocumentsResult);
 
     }
 
-    private InputStream batchToInputStream(List<AmazonSdfDTO> documents) {
+    private String batchToString(List<AmazonSdfDTO> documents) {
         try {
             StringWriter batchDocuments = new StringWriter();
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
-            ArrayNode documentsArrayNode = objectMapper.createArrayNode();
-            for (AmazonSdfDTO amazonAddSdfDTO : documents) {
-                documentsArrayNode.add(objectMapper.writeValueAsString(amazonAddSdfDTO));
-            }
-            batchDocuments.write(objectMapper.writeValueAsString(documentsArrayNode));
+            objectMapper.writeValue(batchDocuments, documents);
             logger.debug("batchDocuments={}", batchDocuments);
-            return new ByteArrayInputStream(batchDocuments.toString().getBytes(Charsets.UTF_8)); 
-        } catch (JsonProcessingException e) {
+            return batchDocuments.toString();
+        } catch (IOException e) {
             logger.error("",e);
-            return null;
+            return "";
         } 
     }
-
+    
+    
+    
 }

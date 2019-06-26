@@ -23,21 +23,17 @@ import no.bibsys.utils.JsonUtils;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
+    private final transient CloudsearchClient cloudsearchClient;
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
-//    private final transient CloudsearchClient cloudsearchClient;
-//    private static final String CLOUDSEARCH_SERVICE_ENDPOINT_NAME = "CLOUDSEARCH_SERVICE_ENDPOINT"; 
-//    private static final String REGION = "eu-west-1";
     
-//    public DynamoDBEventProcessor() {
-//        super();
-//        
-//    }
+    public DynamoDBEventProcessor() {
+        cloudsearchClient = new CloudsearchClient();        
+    }
 
-//    public DynamoDBEventProcessor(CloudsearchClient cloudsearchClient ) {
-//        super();
-//        this.cloudsearchClient = cloudsearchClient;
-//    }
-
+    public DynamoDBEventProcessor(CloudsearchClient cloudsearchClient) {
+        // For mocking
+        this.cloudsearchClient = cloudsearchClient;        
+    }
 
 
     @Override
@@ -64,7 +60,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             }
         }
 
-        new CloudsearchClient().upsert(documents);
+        cloudsearchClient.upsert(documents);
         return null;
     }
 

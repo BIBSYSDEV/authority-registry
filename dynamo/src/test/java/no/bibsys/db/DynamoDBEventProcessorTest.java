@@ -24,12 +24,12 @@ public class DynamoDBEventProcessorTest {
     public void init() throws IOException {
         
         AmazonCloudSearchDomain cloudSearchDomainMock = Mockito.mock(AmazonCloudSearchDomain.class);
-        CloudsearchClient cloudsearchClient = new CloudsearchClient(cloudSearchDomainMock);  
+        CloudsearchClient cloudsearchClientMock = new CloudsearchClient(cloudSearchDomainMock);  
         UploadDocumentsResult uploadDockumentsResponeMock = new UploadDocumentsResult();
         uploadDockumentsResponeMock.setStatus("Okidoi, mocked");
         when(cloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class))).thenReturn((uploadDockumentsResponeMock));
         
-        dynamoDBEventProcessor = new DynamoDBEventProcessor();
+        dynamoDBEventProcessor = new DynamoDBEventProcessor(cloudsearchClientMock);
     }
     
     @Ignore
