@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomain;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClientBuilder;
 import com.amazonaws.services.cloudsearchdomain.model.ContentType;
@@ -25,31 +24,27 @@ public class CloudsearchClient {
 
 
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
-    private final transient AmazonCloudSearchDomain cloudseachDomainClient;
-
+    private final transient AmazonCloudSearchDomain amazonCloudSearchDomainClient;
+    
     
     public CloudsearchClient() {
-        cloudseachDomainClient = null;
+        amazonCloudSearchDomainClient = AmazonCloudSearchDomainClientBuilder.defaultClient();
+        logger.debug("CloudsearchClient, with amazonCloudSearchDomainClient=", amazonCloudSearchDomainClient);
     }
     
-    public CloudsearchClient(String region, String serviceEndpoint) {
-        this.cloudseachDomainClient = AmazonCloudSearchDomainClientBuilder.standard().withEndpointConfiguration(new EndpointConfiguration(serviceEndpoint,region)).build();
-        logger.debug("CloudsearchClient, with cloudSearchDomain=",this.cloudseachDomainClient);
-    }
     
-    /* default */ CloudsearchClient(AmazonCloudSearchDomain cloudSearchDomain) {
-        this.cloudseachDomainClient = cloudSearchDomain;
-        logger.debug("CloudsearchClient, with cloudSearchDomain=",cloudseachDomainClient);
+    public CloudsearchClient(AmazonCloudSearchDomain amazonCloudSearchDomainMock) {
+        amazonCloudSearchDomainClient = amazonCloudSearchDomainMock;
     }
 
-    
+
     public void upsert(List<AmazonSdfDTO> documents) {
         
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
                 .withContentType(ContentType.Applicationjson)
                 .withDocuments(batchToInputStream(documents));
         
-        UploadDocumentsResult uploadDocumentsResult = cloudseachDomainClient.uploadDocuments(uploadDocumentsRequest);
+        UploadDocumentsResult uploadDocumentsResult = amazonCloudSearchDomainClient.uploadDocuments(uploadDocumentsRequest);
         logger.debug("uploadDocumentsResult={}",uploadDocumentsResult);
 
     }
