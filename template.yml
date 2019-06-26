@@ -148,7 +148,6 @@ Resources:
       Environment:
         Variables:
           CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com
-          AWS_REGION: eu-west-1 
       MemorySize: 1512
       Policies:
         Version: '2012-10-17'
