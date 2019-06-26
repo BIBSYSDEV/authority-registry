@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,7 +43,7 @@ public class AmazonSdfDTO {
 
     public AmazonSdfDTO(String eventName) {
         super();
-        type = eventToOperation(eventName).name();
+        type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
     }
 
 

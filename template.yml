@@ -149,6 +149,7 @@ Resources:
         Variables:
           CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com
       MemorySize: 1512
+      Timeout: 20
       Policies:
         Version: '2012-10-17'
         Statement:
