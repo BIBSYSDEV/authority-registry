@@ -3,6 +3,7 @@ package no.bibsys.db;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -22,19 +23,24 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
 import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.JsonUtils;
 
 public class AmazonSdfDTO {
 
+    
+    public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
+    
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
     private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
 
-    enum CloudsearchSdfType { ADD, DELETE };
-    enum EventName { INSERT, MODIFY, REMOVE };
+    public enum CloudsearchSdfType { ADD, DELETE };
+    public enum EventName { INSERT, MODIFY, REMOVE };
 
     private final String type;
     private transient String id;
@@ -44,6 +50,11 @@ public class AmazonSdfDTO {
     public AmazonSdfDTO(String eventName) {
         super();
         type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
+    }
+
+    public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
+        super();
+        this.type = cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
 
 
@@ -96,7 +107,22 @@ public class AmazonSdfDTO {
             resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
         }
         logger.debug(this.toString());
+        String presentationString = createPresentation(entity);
+        logger.debug("presentationString={}", presentationString);
+        fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] {presentationString});
     }
+
+    private String createPresentation(Entity entity) {
+        StringWriter presentationWriter = new StringWriter();
+        ObjectMapper objectMapper = JsonUtils.newJsonParser();
+        try {
+            objectMapper.writeValue(presentationWriter, entity);
+        } catch (IOException e) {
+            logger.error("",e);
+        }
+        return presentationWriter.toString();
+    }
+
 
     private void processQuerySolution(QuerySolution querySolution, String resultVar) {
         Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR)));  

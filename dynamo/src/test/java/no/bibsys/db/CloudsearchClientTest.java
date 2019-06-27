@@ -2,6 +2,7 @@ package no.bibsys.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -63,5 +64,15 @@ public class CloudsearchClientTest {
         cloudsearchClient.upsert(documents);
         
     }
+
+    @Test
+    public void testCreateAmazonSDFAndCheckPresentation() throws IOException {
+        AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
+        assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD));
+        System.out.println(amazonSdfDTO.toString());
+    }
+    
+    
+    
     
 }
