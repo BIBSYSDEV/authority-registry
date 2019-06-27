@@ -10,6 +10,7 @@ import no.bibsys.utils.JsonUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 
 public class SampleData {
 
@@ -66,7 +67,9 @@ public class SampleData {
         JsonNode jsonNode = body.get("identifier");
         String id = jsonNode.get("@value").textValue();
         entity.setId(id);
-        
+        String nowString = new Date().toString();
+        entity.setCreated(nowString);
+        entity.setModified(nowString);
         return entity;
     }
     

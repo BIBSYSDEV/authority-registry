@@ -70,11 +70,11 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         if (streamRecord.getNewImage().containsKey("id")) {
             sdf.setId(streamRecord.getNewImage().get("id").getS());
         }
-        sdf.setFieldsFromEntity(extractEntity(streamRecord.getNewImage()));
+        sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
         return sdf;
     }
 
-    private Entity extractEntity(Map<String, AttributeValue> map) {
+    private Entity extractFullEntity(Map<String, AttributeValue> map) {
         Entity entity = new Entity();
         ObjectNode body;
         try {
@@ -82,12 +82,19 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             AttributeValue attributeValue = map.get("body");
             body = (ObjectNode) objectMapper.readTree(attributeValue.getS());
+           
             entity.setBody(body);
+            
+            entity.setId(map.get("id").getS());
+            entity.setCreated(map.get("created").getS());
+            entity.setModified(map.get("modified").getS());
+            
         } catch (IOException e) {
             logger.error("",e);
         }
         return entity;
     }
-
+    
+    
 }
 
