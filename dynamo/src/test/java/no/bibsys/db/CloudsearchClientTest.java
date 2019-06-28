@@ -61,7 +61,7 @@ public class CloudsearchClientTest {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
         List<AmazonSdfDTO> documents = new ArrayList<>();
         documents.add(amazonSdfDTO);
-        cloudsearchClient.upsert(documents);
+        cloudsearchClient.uploadbatch(documents);
         
     }
 

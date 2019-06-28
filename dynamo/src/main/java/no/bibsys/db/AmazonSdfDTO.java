@@ -20,9 +20,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
@@ -34,10 +34,8 @@ public class AmazonSdfDTO {
 
     
     public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
-    
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
-    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
 
     public enum CloudsearchSdfType { ADD, DELETE };
     public enum EventName { INSERT, MODIFY, REMOVE };
@@ -48,12 +46,10 @@ public class AmazonSdfDTO {
 
 
     public AmazonSdfDTO(String eventName) {
-        super();
         type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
     }
 
     public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
-        super();
         this.type = cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
 
@@ -65,7 +61,6 @@ public class AmazonSdfDTO {
         str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
         fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
         str.append("}]");
-
         return str.toString();
     }
 
@@ -106,20 +101,14 @@ public class AmazonSdfDTO {
             List<String> resultVars = resultSet.getResultVars();
             resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
         }
-        logger.debug(this.toString());
         String presentationString = createPresentation(entity);
-        logger.debug("presentationString={}", presentationString);
         fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] {presentationString});
     }
 
-    private String createPresentation(Entity entity) {
+    private String createPresentation(Entity entity) throws JsonGenerationException, JsonMappingException, IOException {
         StringWriter presentationWriter = new StringWriter();
         ObjectMapper objectMapper = JsonUtils.newJsonParser();
-        try {
-            objectMapper.writeValue(presentationWriter, entity);
-        } catch (IOException e) {
-            logger.error("",e);
-        }
+        objectMapper.writeValue(presentationWriter, entity);
         return presentationWriter.toString();
     }
 

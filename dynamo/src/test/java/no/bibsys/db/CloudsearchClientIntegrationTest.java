@@ -41,7 +41,7 @@ public class CloudsearchClientIntegrationTest {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
         List<AmazonSdfDTO> documents = new ArrayList<>();
         documents.add(amazonSdfDTO);
-        cloudsearchClient.upsert(documents);
+        cloudsearchClient.uploadbatch(documents);
     }
     
 
@@ -52,7 +52,7 @@ public class CloudsearchClientIntegrationTest {
         amazonSdfDTO.setId(sampleDynamoDBIdentifier);
         List<AmazonSdfDTO> documents = new ArrayList<>();
         documents.add(amazonSdfDTO);
-        cloudsearchClient.upsert(documents);
+        cloudsearchClient.uploadbatch(documents);
     }
 
     

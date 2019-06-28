@@ -15,6 +15,8 @@ import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClientBui
 import com.amazonaws.services.cloudsearchdomain.model.ContentType;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsRequest;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsResult;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
@@ -46,7 +48,7 @@ public class CloudsearchClient {
         this.documentUploadClient = documentUploadClient;
     }
 
-    public void upsert(List<AmazonSdfDTO> documents) {
+    public void uploadbatch(List<AmazonSdfDTO> documents) throws JsonGenerationException, JsonMappingException, IOException {
         
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
                 .withContentType(ContentType.Applicationjson);
@@ -58,26 +60,16 @@ public class CloudsearchClient {
         uploadDocumentsRequest.setDocuments(inputStream);
         uploadDocumentsRequest.setContentLength((long) bytes.length);
         
-        logger.debug("uploadDocumentsRequest={}",uploadDocumentsRequest);
-        
         UploadDocumentsResult uploadDocumentsResult = documentUploadClient.uploadDocuments(uploadDocumentsRequest);
         logger.debug("uploadDocumentsResult={}",uploadDocumentsResult);
 
     }
 
-    private String batchToString(List<AmazonSdfDTO> documents) {
-        try {
+    private String batchToString(List<AmazonSdfDTO> documents) throws JsonGenerationException, JsonMappingException, IOException {
             StringWriter batchDocuments = new StringWriter();
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
             objectMapper.writeValue(batchDocuments, documents);
             logger.debug("batchDocuments={}", batchDocuments);
             return batchDocuments.toString();
-        } catch (IOException e) {
-            logger.error("",e);
-            return "";
-        } 
     }
-    
-    
-    
 }

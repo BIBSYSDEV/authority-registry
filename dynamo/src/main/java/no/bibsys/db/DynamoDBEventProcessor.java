@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private final transient CloudsearchClient cloudsearchClient;
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
-    
+
     public DynamoDBEventProcessor() {
         cloudsearchClient = new CloudsearchClient();        
     }
@@ -41,36 +42,48 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
         logger.debug("dynamodbEvent, #records={}", dynamodbEvent.getRecords().size());
 
-        List<AmazonSdfDTO> documents = new ArrayList<>();
+        List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
+                .map(dynamodDBStreamRecord -> createAmazonSdfFromTriggerEvent(dynamodDBStreamRecord))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        for (DynamodbStreamRecord dynamodDBStreamRecord : dynamodbEvent.getRecords()) {
+        //        List<AmazonSdfDTO> documents = new ArrayList<>();
+        //
+        //        for (DynamodbStreamRecord dynamodDBStreamRecord : dynamodbEvent.getRecords()) {
+        //
+        //            if (dynamodDBStreamRecord == null) {
+        //                continue;
+        //            }
+        //                
+        //            AmazonSdfDTO amazonSdfFromTriggerEvent;
+        //            try {
+        //                amazonSdfFromTriggerEvent = createAmazonSdfFromTriggerEvent(dynamodDBStreamRecord);
+        //                documents.add(amazonSdfFromTriggerEvent);
+        //            } catch (IOException e) {
+        //                logger.error("",e);
+        //            }
+        //        }
 
-            if (dynamodDBStreamRecord == null) {
-                continue;
-            }
-                
-            String dynamDBEventName = dynamodDBStreamRecord.getEventName();
-            StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
-            AmazonSdfDTO amazonSdfFromTriggerEvent;
-            try {
-                amazonSdfFromTriggerEvent = createAmazonSdfFromTriggerEvent(dynamDBEventName, streamRecord);
-                documents.add(amazonSdfFromTriggerEvent);
-            } catch (IOException e) {
-                logger.error("",e);
-            }
+        try {
+            cloudsearchClient.uploadbatch(documents);
+        } catch (IOException e) {
+            logger.error("",e);
         }
-
-        cloudsearchClient.upsert(documents);
         return null;
     }
 
-    private AmazonSdfDTO createAmazonSdfFromTriggerEvent(String dynamoDBEventName, StreamRecord streamRecord) throws IOException {
-        AmazonSdfDTO sdf = new AmazonSdfDTO(dynamoDBEventName);
-        logger.debug("dynamoDBEventName={}, streamRecord= {}",dynamoDBEventName, streamRecord);
+
+    private AmazonSdfDTO createAmazonSdfFromTriggerEvent(DynamodbStreamRecord dynamodDBStreamRecord) {
+        StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
+
+        AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
         if (streamRecord.getNewImage().containsKey("id")) {
             sdf.setId(streamRecord.getNewImage().get("id").getS());
         }
-        sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
+        try {
+            sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
+        } catch (IOException e) {
+            logger.error("",e);
+        }
         return sdf;
     }
 
@@ -82,19 +95,18 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             AttributeValue attributeValue = map.get("body");
             body = (ObjectNode) objectMapper.readTree(attributeValue.getS());
-           
+
             entity.setBody(body);
-            
+
             entity.setId(map.get("id").getS());
             entity.setCreated(map.get("created").getS());
             entity.setModified(map.get("modified").getS());
-            
+
         } catch (IOException e) {
             logger.error("",e);
         }
         return entity;
     }
-    
-    
+
 }
 
