@@ -56,7 +56,6 @@ public class DataLoaderTest {
             StringWriter result = new StringWriter();
             RDFDataMgr.write(result, nyModel, Lang.JSONLD);
             System.out.println("##########################################");
-            HttpClient httpClient = new 
             System.out.println(result.toString());
             
         }
