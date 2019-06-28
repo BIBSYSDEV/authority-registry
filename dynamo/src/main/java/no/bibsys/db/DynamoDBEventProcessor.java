@@ -46,23 +46,6 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                 .map(dynamodDBStreamRecord -> createAmazonSdfFromTriggerEvent(dynamodDBStreamRecord))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        //        List<AmazonSdfDTO> documents = new ArrayList<>();
-        //
-        //        for (DynamodbStreamRecord dynamodDBStreamRecord : dynamodbEvent.getRecords()) {
-        //
-        //            if (dynamodDBStreamRecord == null) {
-        //                continue;
-        //            }
-        //                
-        //            AmazonSdfDTO amazonSdfFromTriggerEvent;
-        //            try {
-        //                amazonSdfFromTriggerEvent = createAmazonSdfFromTriggerEvent(dynamodDBStreamRecord);
-        //                documents.add(amazonSdfFromTriggerEvent);
-        //            } catch (IOException e) {
-        //                logger.error("",e);
-        //            }
-        //        }
-
         try {
             cloudsearchClient.uploadbatch(documents);
         } catch (IOException e) {

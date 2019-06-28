@@ -210,7 +210,6 @@ public class TableDriver {
 
             if (resources != null && resources.getResourceTagMappingList().size() == 1) {
                 logger.debug("matching resources={}",resources);
-                
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
                 
@@ -219,7 +218,6 @@ public class TableDriver {
                         .withEventSourceArn(eventSourceArn)
                         .withStartingPosition(EventSourcePosition.LATEST)
                         .withFunctionName(functionNameARN);
-                
                 
                 CreateEventSourceMappingResult createEventSourceMappingResult = 
                         lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
