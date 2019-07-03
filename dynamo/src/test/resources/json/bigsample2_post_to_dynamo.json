@@ -1,0 +1,37 @@
+{
+  "body": {
+    "@context": {
+      "@vocab": "http://unit.no/entitydata#",
+      "type": "@type",
+      "uri": "@id",
+      "language": "@language",
+      "value": "@value"
+    },
+    "@type": "Concept",
+    "identifier": {
+      "@value": "identifier01",
+      "@type": "http://www.w3.org/2001/XMLSchema#string"
+    },
+    "localIdentifier": "localidentifier01",
+    "preferredLabel": [{
+        "@value": "The label",
+        "@language": "en"
+      },
+      {
+        "@value": "Etiketten",
+        "@language": "nb"
+      }
+    ],
+    "alternativeLabel": {
+      "@value": "The alternate label",
+      "@language": "en"
+    },
+    "definition": [{
+      "@value": "Some definition of the concept",
+      "@language": "en"
+    }, {
+      "@value": "En utfyllende definisjon av begrepet",
+      "@language": "nb"
+    }]
+  }
+}

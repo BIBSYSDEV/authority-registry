@@ -1,0 +1,18 @@
+
+dependencies {
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+    
+    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-events:2.2.6")
+    implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
+    
+    implementation ("org.mockito:mockito-core:2.27.0")
+    
+}
+
+//create simple jar this is not an independent application.
+jar.enabled = true

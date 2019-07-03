@@ -40,10 +40,11 @@ public class RegistryService {
 
     public RegistryInfoNoMetadataDto createRegistry(RegistryDto registryDto)
             throws RegistryMetadataTableBeingCreatedException, SettingValidationSchemaUponCreationException,
-            RegistryCreationFailureException {
+            RegistryCreationFailureException, UnknownStatusException {
 
         Registry registry = registryManager
             .createRegistry(registryMetadataTableName, RegistryConverter.toRegistry(registryDto));
+
 
         ApiKey apiKey = ApiKey.createRegistryAdminApiKey(registry.getId());
         String savedApiKey = authenticationService.saveApiKey(apiKey);
@@ -89,6 +90,34 @@ public class RegistryService {
     }
 
     public RegistryStatus validateRegistryExists(String registryName) throws UnknownStatusException {
+        
+        RegistryStatus metadataTableStatus = checkMetadataTableStatus();
+        if (metadataTableStatus.equals(RegistryStatus.ACTIVE)) {
+            return checkRegistryStatus(registryName);
+        }
+        
+        throw new RegistryUnavailableException(registryMetadataTableName, 
+                metadataTableStatus.name().toLowerCase(Locale.ENGLISH));
+    }
+
+    private RegistryStatus checkMetadataTableStatus() throws UnknownStatusException {
+        RegistryStatus status = registryManager.status(registryMetadataTableName);
+        switch (status) {
+            case ACTIVE:
+                return status;
+            case CREATING:
+            case UPDATING:
+                throw new RegistryUnavailableException(registryMetadataTableName, 
+                        status.name().toLowerCase(Locale.ENGLISH));
+            case DELETING:
+            case NOT_FOUND:
+                throw new RegistryNotFoundException(registryMetadataTableName);
+            default:
+                throw new UnknownStatusException(UNKNOWN_STATUS_FOR_REGISTRY);
+        }
+    }
+    
+    private RegistryStatus checkRegistryStatus(String registryName) throws UnknownStatusException {
         RegistryStatus status = registryManager.status(registryName);
         switch (status) {
             case ACTIVE:

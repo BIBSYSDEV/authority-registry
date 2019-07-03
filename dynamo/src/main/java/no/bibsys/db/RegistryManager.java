@@ -1,10 +1,26 @@
 package no.bibsys.db;
 
+import static java.util.Objects.nonNull;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
@@ -20,18 +36,6 @@ import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNot
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
 import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 public class RegistryManager extends ModelParser {
 
@@ -44,8 +48,9 @@ public class RegistryManager extends ModelParser {
     private final transient DynamoDBMapper mapper;
     private final transient RegistryMetadataManager registryMetadataManager;
 
-    public RegistryManager(AmazonDynamoDB client) throws IOException {
-        this(new TableDriver(client), new DynamoDBMapper(client));
+    public RegistryManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) 
+            throws IOException {
+        this(new TableDriver(client, taggingAPIclient, lambdaClient), new DynamoDBMapper(client));
     }
 
     public RegistryManager(TableDriver tableDriver, DynamoDBMapper dynamoDBMapper) throws IOException {
@@ -90,8 +95,13 @@ public class RegistryManager extends ModelParser {
 
     }
 
-    private void checkIfRegistryExistsInRegistryMetadataTable(String registryId) {
-        if (!status(registryId).equals(RegistryStatus.NOT_FOUND)) {
+    private void checkIfRegistryExistsInRegistryMetadataTable(String registryId) 
+            throws RegistryMetadataTableBeingCreatedException {
+        RegistryStatus status = status(registryId);
+        if (!status.equals(RegistryStatus.NOT_FOUND)) {
+            if (status.equals(RegistryStatus.CREATING) || status.equals(RegistryStatus.UPDATING)) {
+                throw new RegistryMetadataTableBeingCreatedException();
+            }
             String message = String.format("Registry already exists in metadata table, registryId=%s", registryId);
             throw new RegistryAlreadyExistsException(message);
         }
@@ -157,7 +167,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public List<String> getRegistries(String registryMetadataTableName) {
-
+        logger.debug("getRegistries registryMetadataTableName={}", registryMetadataTableName);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 

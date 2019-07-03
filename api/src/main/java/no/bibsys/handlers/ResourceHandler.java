@@ -39,9 +39,9 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     private final transient AmazonCloudFormation cloudFormation;
 
     public ResourceHandler(Environment environment,
-        AWSCodePipeline codePipeline,
-        SecretsReader swaggerHubSecretsReader,
-        AmazonCloudFormation cloudFormation
+                           AWSCodePipeline codePipeline,
+                           SecretsReader swaggerHubSecretsReader,
+                           AmazonCloudFormation cloudFormation
     ) {
         super(new CodePipelineCommunicator(codePipeline));
         this.hostedZoneName = environment.readEnv(EnvironmentVariables.HOSTED_ZONE_NAME);
@@ -59,11 +59,13 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     }
 
     protected static SecretsReader initSwaggerHubSecretsBuilder(Environment environment) {
+
         String swaggerApiKeySecretName = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_NAME);
         String swaggerApiKeySecretKey = environment.readEnv(EnvironmentVariables.SWAGGERHUB_API_KEY_SECRET_KEY);
+
         return new AwsSecretsReader(
-            AWSSecretsManagerClientBuilder.defaultClient(),
-            swaggerApiKeySecretName, swaggerApiKeySecretKey);
+                AWSSecretsManagerClientBuilder.defaultClient(),
+                swaggerApiKeySecretName, swaggerApiKeySecretKey);
     }
 
     protected UrlUpdater createUrlUpdater() {
@@ -79,11 +81,11 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
     private String restApiId() {
         StackResources stackResources = new StackResources(stackName, cloudFormation);
         return stackResources.getResourceIds(ResourceType.REST_API).stream().findAny()
-            .orElseThrow(() -> new NotFoundException(String.join(" ", REST_API_NOT_FOUND_MESSAGE, stackName)));
+                .orElseThrow(() -> new NotFoundException(String.join(" ", REST_API_NOT_FOUND_MESSAGE, stackName)));
     }
 
     protected StaticUrlInfo initStaticUrlInfo(String hostedZoneName, String applicationUrl, Stage stage,
-        String gitBranch) {
+                                              String gitBranch) {
 
         StaticUrlInfo staticUrlInfo = new StaticUrlInfo(hostedZoneName, applicationUrl, stage);
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {

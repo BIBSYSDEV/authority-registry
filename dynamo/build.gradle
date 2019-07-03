@@ -5,10 +5,17 @@ repositories {
 }
 
 dependencies {
+    compile project(":aws-test")
 
     compile project(":common")
     compile project(":validation")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.amazonaws:aws-java-sdk-cloudsearch:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-events:2.2.6")
+    implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
 
     //library for using embedded DynamoDB during local tests
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
@@ -20,19 +27,21 @@ dependencies {
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")
 
     //slf4j logging
-    implementation('org.slf4j:slf4j-api:1.7.25')
+    implementation('org.slf4j:slf4j-api:1.7.26')
     testImplementation("com.amazonaws:DynamoDBLocal:1.11.477")
 
     //Add library files for SQLite to classpath because we need them during test initialization
     // This is for simulating DynamoDB locally
     testRuntimeClasspath("com.amazonaws:DynamoDBLocal:1.11.119")
 
-    implementation('org.apache.jena:jena-core:3.10.0')
-    implementation('org.apache.jena:jena-arq:3.10.0')
+    implementation('org.apache.jena:jena-core:3.11.0')
+    implementation('org.apache.jena:jena-arq:3.11.0')
     implementation('org.topbraid:shacl:1.1.0') {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 
+    testImplementation("org.mockito:mockito-core:2.28.2")
+    
 }
 
 

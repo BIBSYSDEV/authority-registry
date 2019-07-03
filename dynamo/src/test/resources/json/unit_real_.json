@@ -1,0 +1,766 @@
+{
+  "@graph" : [ {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c002523",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2019-04-22T14:28:55Z"
+    },
+    "identifier" : "REAL002523",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2019-04-22T14:28:55+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Tunneler"
+    },
+    "replacedBy" : "http://aws.unit.no/realfagstermer/c000585"
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c003136",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL003136",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Satellite geodesics"
+    }, {
+      "@language" : "nn",
+      "@value" : "Satellittgeodesi"
+    }, {
+      "@language" : "nb",
+      "@value" : "Satellittgeodesi"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c003926",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL003926",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Small mammals"
+    }, {
+      "@language" : "nn",
+      "@value" : "Små pattedyr"
+    }, {
+      "@language" : "nb",
+      "@value" : "Små pattedyr"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c004028",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2018-09-20T06:05:20Z"
+    },
+    "identifier" : "REAL004028",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2018-09-20T06:05:20+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Bygdeutvikling"
+    },
+    "replacedBy" : "http://aws.unit.no/realfagstermer/c008073"
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c005388",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2018-07-20T10:36:56Z"
+    },
+    "identifier" : "REAL005388",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2018-07-20T10:36:56+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Multiplikasjon"
+    }
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c006143",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2018-06-09T13:26:15Z"
+    },
+    "identifier" : "REAL006143",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2018-06-09T13:26:15+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Arvelære"
+    },
+    "replacedBy" : "http://aws.unit.no/realfagstermer/c013424"
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c006493",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL006493",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Organisk forureining"
+    }, {
+      "@language" : "nb",
+      "@value" : "Organisk forurensning"
+    }, {
+      "@language" : "en",
+      "@value" : "Organic pollution"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c006891",
+    "@type" : "http://unit.no/ontology#Concept",
+    "alternativeLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Verifisering"
+    }, {
+      "@language" : "nb",
+      "@value" : "Verifisering"
+    } ],
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL006891",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2018-08-23T16:12:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Verifikasjon"
+    }, {
+      "@language" : "nb",
+      "@value" : "Verifikasjon"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c007127",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL007127",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Faseregulering"
+    }, {
+      "@language" : "nb",
+      "@value" : "Faseregulering"
+    }, {
+      "@language" : "en",
+      "@value" : "Phase regulation"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c007597",
+    "@type" : "http://unit.no/ontology#Concept",
+    "alternativeLabel" : [ {
+      "@language" : "en",
+      "@value" : "Blow-flies"
+    }, {
+      "@language" : "en",
+      "@value" : "Carrion flies"
+    }, {
+      "@language" : "en",
+      "@value" : "Blow flies"
+    }, {
+      "@language" : "en",
+      "@value" : "Cluster flies"
+    }, {
+      "@language" : "en",
+      "@value" : "Greenbottles"
+    }, {
+      "@language" : "en",
+      "@value" : "Bluebottles"
+    } ],
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL007597",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Calliphoridae"
+    }, {
+      "@language" : "nb",
+      "@value" : "Spyfluer"
+    }, {
+      "@language" : "nn",
+      "@value" : "Spyfluger"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c010734",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2018-03-28T10:51:51Z"
+    },
+    "identifier" : "REAL010734",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2018-03-28T10:51:51+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Eksperimentell termodynamikk"
+    }
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c011425",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL011425",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2014-08-25T00:00:00+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Surface temperature"
+    }, {
+      "@language" : "nn",
+      "@value" : "Overflatetemperatur"
+    }, {
+      "@language" : "nb",
+      "@value" : "Overflatetemperatur"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c012141",
+    "@type" : "http://unit.no/ontology#Concept",
+    "created" : "2014-08-25T00:00:00+00:00",
+    "http://unit.no/ontology#deprecated" : true,
+    "historyNote" : {
+      "@language" : "en",
+      "@value" : "Deprecated on 2017-02-10T20:24:27Z"
+    },
+    "identifier" : "REAL012141",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2017-02-10T20:24:27+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Akademisk karriere"
+    },
+    "replacedBy" : "http://aws.unit.no/realfagstermer/c013432"
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c014035",
+    "@type" : "http://unit.no/ontology#Concept",
+    "alternativeLabel" : {
+      "@language" : "nn",
+      "@value" : "Tingternett"
+    },
+    "created" : "2014-08-25T00:00:00+00:00",
+    "identifier" : "REAL014035",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2019-04-17T14:02:16+00:00",
+    "preferredLabel" : {
+      "@language" : "nb",
+      "@value" : "Tingenes internett"
+    }
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c014680",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c008870", "http://aws.unit.no/realfagstermer/c030087" ],
+    "created" : "2015-03-10T10:07:34+00:00",
+    "identifier" : "REAL014680",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:34+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Matematisk statistikk : Historie"
+    }, {
+      "@language" : "en",
+      "@value" : "Mathematical statistics : History"
+    }, {
+      "@language" : "nb",
+      "@value" : "Matematisk statistikk : Historie"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c016697",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030239", "http://aws.unit.no/realfagstermer/c009597" ],
+    "created" : "2015-03-10T10:07:34+00:00",
+    "identifier" : "REAL016697",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:34+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Geomorfologi : Buskerud"
+    }, {
+      "@language" : "nb",
+      "@value" : "Geomorfologi : Buskerud"
+    }, {
+      "@language" : "en",
+      "@value" : "Geomorphology : Buskerud"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c017147",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c003102", "http://aws.unit.no/realfagstermer/c030093" ],
+    "created" : "2015-03-10T10:07:35+00:00",
+    "identifier" : "REAL017147",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:35+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Electrophysiology : Textbooks"
+    }, {
+      "@language" : "nn",
+      "@value" : "Elektrofysiologi : Lærebøker"
+    }, {
+      "@language" : "nb",
+      "@value" : "Elektrofysiologi : Lærebøker"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c017186",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030101", "http://aws.unit.no/realfagstermer/c012800" ],
+    "created" : "2015-03-10T10:07:35+00:00",
+    "identifier" : "REAL017186",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:35+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nb",
+      "@value" : "Genteknologi : Ordbøker"
+    }, {
+      "@language" : "nn",
+      "@value" : "Genteknologi : Ordbøker"
+    }, {
+      "@language" : "en",
+      "@value" : "Genetic engineering : Dictionaries"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c017192",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030438", "http://aws.unit.no/realfagstermer/c013826" ],
+    "created" : "2015-03-10T10:07:35+00:00",
+    "identifier" : "REAL017192",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:35+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Plants : Southern Norway"
+    }, {
+      "@language" : "nn",
+      "@value" : "Planter : Sør-Norge"
+    }, {
+      "@language" : "nb",
+      "@value" : "Planter : Sør-Norge"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c018650",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c013603", "http://aws.unit.no/realfagstermer/c030202" ],
+    "created" : "2015-03-10T10:07:35+00:00",
+    "identifier" : "REAL018650",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:35+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Nuclear power : Germany"
+    }, {
+      "@language" : "nn",
+      "@value" : "Kjernekraft : Tyskland"
+    }, {
+      "@language" : "nb",
+      "@value" : "Kjernekraft : Tyskland"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c020255",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030213", "http://aws.unit.no/realfagstermer/c006430" ],
+    "created" : "2015-03-10T10:07:35+00:00",
+    "identifier" : "REAL020255",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:35+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Petroleum reservoirs : America"
+    }, {
+      "@language" : "nn",
+      "@value" : "Petroleumsførekomstar : Amerika"
+    }, {
+      "@language" : "nb",
+      "@value" : "Petroleumsforekomster : Amerika"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c021341",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c002443", "http://aws.unit.no/realfagstermer/c030093" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL021341",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Electro-optics : Textbooks"
+    }, {
+      "@language" : "nb",
+      "@value" : "Elektrooptikk : Lærebøker"
+    }, {
+      "@language" : "nn",
+      "@value" : "Elektrooptikk : Lærebøker"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022533",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030576", "http://aws.unit.no/realfagstermer/c012661" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022533",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Natur : Polarområdene"
+    }, {
+      "@language" : "nb",
+      "@value" : "Natur : Polarområdene"
+    }, {
+      "@language" : "en",
+      "@value" : "Nature : Polar regions"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022599",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030642", "http://aws.unit.no/realfagstermer/c009848" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022599",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Drainage systems : Elverum"
+    }, {
+      "@language" : "nn",
+      "@value" : "Vassdrag : Elverum"
+    }, {
+      "@language" : "nb",
+      "@value" : "Vassdrag : Elverum"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022600",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c013545", "http://aws.unit.no/realfagstermer/c030101" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022600",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nb",
+      "@value" : "Vietnamesisk språk : Ordbøker"
+    }, {
+      "@language" : "nn",
+      "@value" : "Vietnamesisk språk : Ordbøker"
+    }, {
+      "@language" : "en",
+      "@value" : "Vietnamese language : Dictionaries"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022817",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030204", "http://aws.unit.no/realfagstermer/c003707" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022817",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Flora preservation : Africa"
+    }, {
+      "@language" : "nb",
+      "@value" : "Florabevaring : Afrika"
+    }, {
+      "@language" : "nn",
+      "@value" : "Florabevaring : Afrika"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022823",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030100", "http://aws.unit.no/realfagstermer/c013772" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022823",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Pattedyr : Oppslagsverk"
+    }, {
+      "@language" : "nb",
+      "@value" : "Pattedyr : Oppslagsverk"
+    }, {
+      "@language" : "en",
+      "@value" : "Mammals : Reference works"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c022863",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030753", "http://aws.unit.no/realfagstermer/c013440" ],
+    "created" : "2015-03-10T10:07:36+00:00",
+    "identifier" : "REAL022863",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:36+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nb",
+      "@value" : "Kultur : Norge"
+    }, {
+      "@language" : "nn",
+      "@value" : "Kultur : Norge"
+    }, {
+      "@language" : "en",
+      "@value" : "Culture : Norway"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c023474",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030073", "http://aws.unit.no/realfagstermer/c013830" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL023474",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Botanikk : Bestemmelseslitteratur"
+    }, {
+      "@language" : "nb",
+      "@value" : "Botanikk : Bestemmelseslitteratur"
+    }, {
+      "@language" : "en",
+      "@value" : "Botany : Identification literature"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c024017",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030093", "http://aws.unit.no/realfagstermer/c001005" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL024017",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Probability : Textbooks"
+    }, {
+      "@language" : "nn",
+      "@value" : "Sannsynsteori : Lærebøker"
+    }, {
+      "@language" : "nb",
+      "@value" : "Sannsynlighetsteori : Lærebøker"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c024144",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030214", "http://aws.unit.no/realfagstermer/c013817" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL024144",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Fungi : France"
+    }, {
+      "@language" : "nb",
+      "@value" : "Sopper : Frankrike"
+    }, {
+      "@language" : "nn",
+      "@value" : "Soppar : Frankrike"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c024287",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030216", "http://aws.unit.no/realfagstermer/c012685" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL024287",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nb",
+      "@value" : "Alger : Italia"
+    }, {
+      "@language" : "nn",
+      "@value" : "Algar : Italia"
+    }, {
+      "@language" : "en",
+      "@value" : "Algae : Italy"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c024817",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030101", "http://aws.unit.no/realfagstermer/c013325" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL024817",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nb",
+      "@value" : "Dekkfrøete planter : Ordbøker"
+    }, {
+      "@language" : "nn",
+      "@value" : "Dekkfrøa planter : Ordbøker"
+    }, {
+      "@language" : "en",
+      "@value" : "Flowering plants : Dictionaries"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c026267",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030101", "http://aws.unit.no/realfagstermer/c013712" ],
+    "created" : "2015-03-10T10:07:37+00:00",
+    "identifier" : "REAL026267",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:37+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Latvisk språk : Ordbøker"
+    }, {
+      "@language" : "nb",
+      "@value" : "Latvisk språk : Ordbøker"
+    }, {
+      "@language" : "en",
+      "@value" : "Latvian language : Dictionaries"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c027761",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030213", "http://aws.unit.no/realfagstermer/c005937" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL027761",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "nn",
+      "@value" : "Sporvar : Amerika"
+    }, {
+      "@language" : "en",
+      "@value" : "Sparrows : America"
+    }, {
+      "@language" : "nb",
+      "@value" : "Spurver : Amerika"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c028053",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030681", "http://aws.unit.no/realfagstermer/c013663" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL028053",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Fishing industry : USA"
+    }, {
+      "@language" : "nn",
+      "@value" : "Fiskerinæring : USA"
+    }, {
+      "@language" : "nb",
+      "@value" : "Fiskerinæring : USA"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c028239",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c009096", "http://aws.unit.no/realfagstermer/c031013" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL028239",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Meteorites : Mars"
+    }, {
+      "@language" : "nb",
+      "@value" : "Meteoritter : Mars"
+    }, {
+      "@language" : "nn",
+      "@value" : "Meteorittar : Mars"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c029460",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c006088", "http://aws.unit.no/realfagstermer/c030753" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL029460",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Biosphere : Norway"
+    }, {
+      "@language" : "nn",
+      "@value" : "Biosfæren : Norge"
+    }, {
+      "@language" : "nb",
+      "@value" : "Biosfæren : Norge"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c030038",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c030497", "http://aws.unit.no/realfagstermer/c006328" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL030038",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "Structural geology : Rana"
+    }, {
+      "@language" : "nn",
+      "@value" : "Strukturgeologi : Rana"
+    }, {
+      "@language" : "nb",
+      "@value" : "Strukturgeologi : Rana"
+    } ]
+  }, {
+    "localIdentifier" : "http://aws.unit.no/realfagstermer/c031252",
+    "@type" : "http://unit.no/ontology#Concept",
+    "broader" : [ "http://aws.unit.no/realfagstermer/c013414", "http://aws.unit.no/realfagstermer/c010666" ],
+    "created" : "2015-03-10T10:07:38+00:00",
+    "identifier" : "REAL031252",
+    "inScheme" : "http://unit.no/realfagstermer",
+    "modified" : "2015-03-10T10:07:38+00:00",
+    "preferredLabel" : [ {
+      "@language" : "en",
+      "@value" : "True finches : Evolution"
+    }, {
+      "@language" : "nb",
+      "@value" : "Finkefamilien : Evolusjon"
+    }, {
+      "@language" : "nn",
+      "@value" : "Finkefamilien : Evolusjon"
+    } ]
+  } ],
+  "@context" : {
+    "preferredLabel" : {
+      "localIdentifier" : "http://unit.no/ontology#preferredLabel"
+    },
+    "modified" : {
+      "localIdentifier" : "http://unit.no/ontology#modified",
+      "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "broader" : {
+      "localIdentifier" : "http://unit.no/ontology#broader",
+      "@type" : "localIdentifier"
+    },
+    "identifier" : {
+      "localIdentifier" : "http://unit.no/ontology#identifier"
+    },
+    "inScheme" : {
+      "localIdentifier" : "http://unit.no/ontology#inScheme",
+      "@type" : "localIdentifier"
+    },
+    "created" : {
+      "localIdentifier" : "http://unit.no/ontology#created",
+      "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "replacedBy" : {
+      "localIdentifier" : "http://unit.no/ontology#replacedBy",
+      "@type" : "localIdentifier"
+    },
+    "historyNote" : {
+      "localIdentifier" : "http://unit.no/ontology#historyNote"
+    },
+    "deprecated" : {
+      "localIdentifier" : "http://unit.no/ontology#deprecated",
+      "@type" : "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "alternativeLabel" : {
+      "localIdentifier" : "http://unit.no/ontology#alternativeLabel"
+    }
+  }
+}

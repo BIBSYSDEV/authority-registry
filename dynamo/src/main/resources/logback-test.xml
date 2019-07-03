@@ -1,0 +1,35 @@
+<configuration>
+
+	<property name="pattern" value="%-5level %logger{35} - %msg%n" />
+
+	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
+
+		<createLogGroup>true</createLogGroup>
+		<queueLength>100</queueLength>
+		<groupName>authority-registry-dynamo-test</groupName>
+		<streamName>dynamo-log-stream</streamName>
+
+		<layout>
+			<pattern>${pattern}</pattern>
+		</layout>
+
+	</appender>
+
+	<logger name="org.apache" level="ERROR" />
+	<logger name="software.amazon" level="ERROR" />
+	<logger name="com.amazonaws" level="ERROR" />
+	<logger name="org.gradle" level="ERROR" />
+	<logger name="io.swagger" level="ERROR" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${pattern}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="cloud-watch" /> 
+	</root>
+
+</configuration>

@@ -17,6 +17,17 @@
     },
     {
       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:DescribeStream",
+        "dynamodb:ListStreams",
+        "dynamodb:TagResource"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
         "cloudformation:CreateChangeSet"
       ],
       "Effect": "Allow",
@@ -30,7 +41,8 @@
         "ssm:PutParameter",
         "ssm:DeleteParameter",
         "ssm:GetParameters",
-        "ssm:AddTagsToResource"
+        "ssm:AddTagsToResource",
+        "secretsmanager:GetSecretValue"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -40,7 +52,6 @@
         "lambda:CreateFunction",
         "lambda:DeleteFunction",
         "lambda:AddPermission",
-        "lambda:UpdateFunction",
         "lambda:UpdateFunctionCode",
         "lambda:GetFunction",
         "lambda:GetFunctionConfiguration",
@@ -49,7 +60,15 @@
         "lambda:InvokeFunction",
         "lambda:listTags",
         "lambda:TagResource",
-        "lambda:UntagResource"
+        "lambda:UntagResource",
+        "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
+        "logs:PutLogEvents",
+        "tag:GetResources",
+        "tag:GetTagKeys",
+        "tag:GetTagValues",
+        "tag:TagResources",
+        "tag:UntagGetResources"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -60,6 +79,23 @@
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action": [
+               "SNS:Publish",
+               "SNS:RemovePermission",
+               "SNS:SetTopicAttributes",
+               "SNS:DeleteTopic",
+               "SNS:ListSubscriptionsByTopic",
+               "SNS:GetTopicAttributes",
+               "SNS:AddPermission",
+               "SNS:Subscribe",
+               "SNS:ListTopics",
+               "SNS:CreateTopic",
+               "SNS:Unsubscribe"
+             ],
+      "Effect": "Allow",
+      "Resource": "*" 
     }
   ]
 }

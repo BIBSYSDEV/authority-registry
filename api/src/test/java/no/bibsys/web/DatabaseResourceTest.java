@@ -4,17 +4,30 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -27,9 +40,6 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -55,10 +65,16 @@ public class DatabaseResourceTest extends JerseyTest {
 
     @Override
     protected Application configure() {
+        enable(TestProperties.LOG_TRAFFIC);
+        enable(TestProperties.DUMP_ENTITY);
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
-
-        TableDriver tableDriver = new TableDriver(client);
+        
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+                
+        
+        TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
         List<String> listTables = tableDriver.listTables();
 
         listTables.forEach(tableDriver::deleteTable);
@@ -70,7 +86,11 @@ public class DatabaseResourceTest extends JerseyTest {
         apiAdminKey = authenticationService.saveApiKey(ApiKey.createApiAdminApiKey());
         registryAdminKey = authenticationService.saveApiKey(ApiKey.createRegistryAdminApiKey(null));
 
-        return new JerseyConfig(client, environmentReader);
+        JerseyConfig jerseyConfig = new JerseyConfig(client, environmentReader, mockTaggingClient, mockLambdaClient);
+        jerseyConfig.register(EntityExceptionMapper.class);
+        
+        // jerseyConfig.property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL_SERVER,"WARNING");
+        return jerseyConfig;
     }
 
     @Test
@@ -107,9 +127,14 @@ public class DatabaseResourceTest extends JerseyTest {
 
     protected Response createRegistry(RegistryDto registryDto, String apiKey) {
 
-        return target("/registry").request().accept(MediaType.APPLICATION_JSON).header(
-            ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
-            javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON));
+        try {
+            Entity<RegistryDto> entity = javax.ws.rs.client.Entity.entity(registryDto, MediaType.APPLICATION_JSON);
+            return target("/registry").request().accept(MediaType.APPLICATION_JSON).header(
+                    ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected String createRegistry() {
@@ -121,8 +146,9 @@ public class DatabaseResourceTest extends JerseyTest {
 
     protected Response insertEntryRequest(String registryName, EntityDto entityDto, String apiKey) {
         String path = String.format("/registry/%s/entity", registryName);
-        return target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
+        Response response = target(path).request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiKey).post(
             javax.ws.rs.client.Entity.entity(entityDto, MediaType.APPLICATION_JSON));
+        return response;
     }
 
     protected Response createEntity(String registryName) throws IOException {
@@ -189,3 +215,4 @@ public class DatabaseResourceTest extends JerseyTest {
             javax.ws.rs.client.Entity.entity(oldApiKey, MediaType.APPLICATION_JSON));
     }
 }
+

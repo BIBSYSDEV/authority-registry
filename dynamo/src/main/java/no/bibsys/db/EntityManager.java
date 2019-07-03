@@ -5,6 +5,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
@@ -21,8 +24,8 @@ public class EntityManager {
     private final transient DynamoDBMapper mapper;
     private final transient TableDriver tableDriver;
 
-    public EntityManager(AmazonDynamoDB client) {
-        this.tableDriver = new TableDriver(client);
+    public EntityManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) {
+        this.tableDriver = new TableDriver(client, taggingAPIclient, lambdaClient);
         this.mapper = new DynamoDBMapper(client);
     }
 

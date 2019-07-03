@@ -1,0 +1,382 @@
+<http://aws.unit.no/realfagstermer/c024017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030093> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c001005> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#identifier> "REAL024017" .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#preferredLabel> "Sannsynlighetsteori : L\u00E6reb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#preferredLabel> "Sannsynsteori : L\u00E6reb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c024017> <http://unit.no/ontology#preferredLabel> "Probability : Textbooks"@en .
+<http://aws.unit.no/realfagstermer/c011425> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#identifier> "REAL011425" .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#preferredLabel> "Overflatetemperatur"@nb .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#preferredLabel> "Overflatetemperatur"@nn .
+<http://aws.unit.no/realfagstermer/c011425> <http://unit.no/ontology#preferredLabel> "Surface temperature"@en .
+<http://aws.unit.no/realfagstermer/c006891> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#alternativeLabel> "Verifisering"@nb .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#alternativeLabel> "Verifisering"@nn .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#identifier> "REAL006891" .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#modified> "2018-08-23T16:12:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#preferredLabel> "Verifikasjon"@nb .
+<http://aws.unit.no/realfagstermer/c006891> <http://unit.no/ontology#preferredLabel> "Verifikasjon"@nn .
+<http://aws.unit.no/realfagstermer/c014680> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030087> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c008870> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#created> "2015-03-10T10:07:34+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#identifier> "REAL014680" .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#modified> "2015-03-10T10:07:34+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#preferredLabel> "Mathematical statistics : History"@en .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#preferredLabel> "Matematisk statistikk : Historie"@nb .
+<http://aws.unit.no/realfagstermer/c014680> <http://unit.no/ontology#preferredLabel> "Matematisk statistikk : Historie"@nn .
+<http://aws.unit.no/realfagstermer/c017192> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013826> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030438> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#created> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#identifier> "REAL017192" .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#modified> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#preferredLabel> "Plants : Southern Norway"@en .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#preferredLabel> "Planter : S\u00F8r-Norge"@nn .
+<http://aws.unit.no/realfagstermer/c017192> <http://unit.no/ontology#preferredLabel> "Planter : S\u00F8r-Norge"@nb .
+<http://aws.unit.no/realfagstermer/c022599> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c009848> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030642> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#identifier> "REAL022599" .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#preferredLabel> "Vassdrag : Elverum"@nb .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#preferredLabel> "Vassdrag : Elverum"@nn .
+<http://aws.unit.no/realfagstermer/c022599> <http://unit.no/ontology#preferredLabel> "Drainage systems : Elverum"@en .
+<http://aws.unit.no/realfagstermer/c016697> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c009597> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030239> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#created> "2015-03-10T10:07:34+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#identifier> "REAL016697" .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#modified> "2015-03-10T10:07:34+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#preferredLabel> "Geomorphology : Buskerud"@en .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#preferredLabel> "Geomorfologi : Buskerud"@nn .
+<http://aws.unit.no/realfagstermer/c016697> <http://unit.no/ontology#preferredLabel> "Geomorfologi : Buskerud"@nb .
+<http://aws.unit.no/realfagstermer/c024144> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013817> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030214> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#identifier> "REAL024144" .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#preferredLabel> "Fungi : France"@en .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#preferredLabel> "Sopper : Frankrike"@nb .
+<http://aws.unit.no/realfagstermer/c024144> <http://unit.no/ontology#preferredLabel> "Soppar : Frankrike"@nn .
+<http://aws.unit.no/realfagstermer/c006143> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#historyNote> "Deprecated on 2018-06-09T13:26:15Z"@en .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#identifier> "REAL006143" .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#modified> "2018-06-09T13:26:15+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#preferredLabel> "Arvel\u00E6re"@nb .
+<http://aws.unit.no/realfagstermer/c006143> <http://unit.no/ontology#replacedBy> <http://aws.unit.no/realfagstermer/c013424> .
+<http://aws.unit.no/realfagstermer/c022823> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030100> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013772> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#identifier> "REAL022823" .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#preferredLabel> "Pattedyr : Oppslagsverk"@nn .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#preferredLabel> "Mammals : Reference works"@en .
+<http://aws.unit.no/realfagstermer/c022823> <http://unit.no/ontology#preferredLabel> "Pattedyr : Oppslagsverk"@nb .
+<http://aws.unit.no/realfagstermer/c027761> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c005937> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030213> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#identifier> "REAL027761" .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#preferredLabel> "Spurver : Amerika"@nb .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#preferredLabel> "Sporvar : Amerika"@nn .
+<http://aws.unit.no/realfagstermer/c027761> <http://unit.no/ontology#preferredLabel> "Sparrows : America"@en .
+<http://aws.unit.no/realfagstermer/c028239> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c031013> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c009096> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#identifier> "REAL028239" .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#preferredLabel> "Meteoritter : Mars"@nb .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#preferredLabel> "Meteorites : Mars"@en .
+<http://aws.unit.no/realfagstermer/c028239> <http://unit.no/ontology#preferredLabel> "Meteorittar : Mars"@nn .
+<http://aws.unit.no/realfagstermer/c007127> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#identifier> "REAL007127" .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#preferredLabel> "Phase regulation"@en .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#preferredLabel> "Faseregulering"@nb .
+<http://aws.unit.no/realfagstermer/c007127> <http://unit.no/ontology#preferredLabel> "Faseregulering"@nn .
+<http://aws.unit.no/realfagstermer/c022863> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030753> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013440> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#identifier> "REAL022863" .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#preferredLabel> "Culture : Norway"@en .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#preferredLabel> "Kultur : Norge"@nb .
+<http://aws.unit.no/realfagstermer/c022863> <http://unit.no/ontology#preferredLabel> "Kultur : Norge"@nn .
+<http://aws.unit.no/realfagstermer/c002523> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#historyNote> "Deprecated on 2019-04-22T14:28:55Z"@en .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#identifier> "REAL002523" .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#modified> "2019-04-22T14:28:55+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#preferredLabel> "Tunneler"@nb .
+<http://aws.unit.no/realfagstermer/c002523> <http://unit.no/ontology#replacedBy> <http://aws.unit.no/realfagstermer/c000585> .
+<http://aws.unit.no/realfagstermer/c031252> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c010666> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013414> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#identifier> "REAL031252" .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#preferredLabel> "Finkefamilien : Evolusjon"@nn .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#preferredLabel> "Finkefamilien : Evolusjon"@nb .
+<http://aws.unit.no/realfagstermer/c031252> <http://unit.no/ontology#preferredLabel> "True finches : Evolution"@en .
+<http://aws.unit.no/realfagstermer/c003136> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#identifier> "REAL003136" .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#preferredLabel> "Satellittgeodesi"@nb .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#preferredLabel> "Satellittgeodesi"@nn .
+<http://aws.unit.no/realfagstermer/c003136> <http://unit.no/ontology#preferredLabel> "Satellite geodesics"@en .
+<http://aws.unit.no/realfagstermer/c026267> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030101> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013712> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#identifier> "REAL026267" .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#preferredLabel> "Latvisk spr\u00E5k : Ordb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#preferredLabel> "Latvisk spr\u00E5k : Ordb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c026267> <http://unit.no/ontology#preferredLabel> "Latvian language : Dictionaries"@en .
+<http://aws.unit.no/realfagstermer/c030038> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030497> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c006328> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#identifier> "REAL030038" .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#preferredLabel> "Structural geology : Rana"@en .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#preferredLabel> "Strukturgeologi : Rana"@nn .
+<http://aws.unit.no/realfagstermer/c030038> <http://unit.no/ontology#preferredLabel> "Strukturgeologi : Rana"@nb .
+<http://aws.unit.no/realfagstermer/c017147> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030093> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c003102> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#created> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#identifier> "REAL017147" .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#modified> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#preferredLabel> "Electrophysiology : Textbooks"@en .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#preferredLabel> "Elektrofysiologi : L\u00E6reb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c017147> <http://unit.no/ontology#preferredLabel> "Elektrofysiologi : L\u00E6reb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c028053> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030681> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013663> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#identifier> "REAL028053" .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#preferredLabel> "Fiskerin\u00E6ring : USA"@nb .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#preferredLabel> "Fiskerin\u00E6ring : USA"@nn .
+<http://aws.unit.no/realfagstermer/c028053> <http://unit.no/ontology#preferredLabel> "Fishing industry : USA"@en .
+<http://aws.unit.no/realfagstermer/c004028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#historyNote> "Deprecated on 2018-09-20T06:05:20Z"@en .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#identifier> "REAL004028" .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#modified> "2018-09-20T06:05:20+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#preferredLabel> "Bygdeutvikling"@nb .
+<http://aws.unit.no/realfagstermer/c004028> <http://unit.no/ontology#replacedBy> <http://aws.unit.no/realfagstermer/c008073> .
+<http://aws.unit.no/realfagstermer/c029460> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030753> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c006088> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#created> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#identifier> "REAL029460" .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#modified> "2015-03-10T10:07:38+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#preferredLabel> "Biosphere : Norway"@en .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#preferredLabel> "Biosf\u00E6ren : Norge"@nn .
+<http://aws.unit.no/realfagstermer/c029460> <http://unit.no/ontology#preferredLabel> "Biosf\u00E6ren : Norge"@nb .
+<http://aws.unit.no/realfagstermer/c005388> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#historyNote> "Deprecated on 2018-07-20T10:36:56Z"@en .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#identifier> "REAL005388" .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#modified> "2018-07-20T10:36:56+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c005388> <http://unit.no/ontology#preferredLabel> "Multiplikasjon"@nb .
+<http://aws.unit.no/realfagstermer/c003926> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#identifier> "REAL003926" .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#preferredLabel> "Sm\u00E5 pattedyr"@nb .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#preferredLabel> "Sm\u00E5 pattedyr"@nn .
+<http://aws.unit.no/realfagstermer/c003926> <http://unit.no/ontology#preferredLabel> "Small mammals"@en .
+<http://aws.unit.no/realfagstermer/c014035> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#alternativeLabel> "Tingternett"@nn .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#identifier> "REAL014035" .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#modified> "2019-04-17T14:02:16+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c014035> <http://unit.no/ontology#preferredLabel> "Tingenes internett"@nb .
+<http://aws.unit.no/realfagstermer/c022600> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030101> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013545> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#identifier> "REAL022600" .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#preferredLabel> "Vietnamese language : Dictionaries"@en .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#preferredLabel> "Vietnamesisk spr\u00E5k : Ordb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c022600> <http://unit.no/ontology#preferredLabel> "Vietnamesisk spr\u00E5k : Ordb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c024817> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013325> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030101> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#identifier> "REAL024817" .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#preferredLabel> "Dekkfr\u00F8a planter : Ordb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#preferredLabel> "Flowering plants : Dictionaries"@en .
+<http://aws.unit.no/realfagstermer/c024817> <http://unit.no/ontology#preferredLabel> "Dekkfr\u00F8ete planter : Ordb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c010734> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#historyNote> "Deprecated on 2018-03-28T10:51:51Z"@en .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#identifier> "REAL010734" .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#modified> "2018-03-28T10:51:51+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c010734> <http://unit.no/ontology#preferredLabel> "Eksperimentell termodynamikk"@nb .
+<http://aws.unit.no/realfagstermer/c024287> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030216> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c012685> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#identifier> "REAL024287" .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#preferredLabel> "Algae : Italy"@en .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#preferredLabel> "Algar : Italia"@nn .
+<http://aws.unit.no/realfagstermer/c024287> <http://unit.no/ontology#preferredLabel> "Alger : Italia"@nb .
+<http://aws.unit.no/realfagstermer/c023474> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013830> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030073> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#created> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#identifier> "REAL023474" .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#modified> "2015-03-10T10:07:37+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#preferredLabel> "Botany : Identification literature"@en .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#preferredLabel> "Botanikk : Bestemmelseslitteratur"@nn .
+<http://aws.unit.no/realfagstermer/c023474> <http://unit.no/ontology#preferredLabel> "Botanikk : Bestemmelseslitteratur"@nb .
+<http://aws.unit.no/realfagstermer/c012141> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#historyNote> "Deprecated on 2017-02-10T20:24:27Z"@en .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#identifier> "REAL012141" .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#modified> "2017-02-10T20:24:27+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#preferredLabel> "Akademisk karriere"@nb .
+<http://aws.unit.no/realfagstermer/c012141> <http://unit.no/ontology#replacedBy> <http://aws.unit.no/realfagstermer/c013432> .
+<http://aws.unit.no/realfagstermer/c006493> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#identifier> "REAL006493" .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#preferredLabel> "Organic pollution"@en .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#preferredLabel> "Organisk forurensning"@nb .
+<http://aws.unit.no/realfagstermer/c006493> <http://unit.no/ontology#preferredLabel> "Organisk forureining"@nn .
+<http://aws.unit.no/realfagstermer/c017186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c012800> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030101> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#created> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#identifier> "REAL017186" .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#modified> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#preferredLabel> "Genteknologi : Ordb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#preferredLabel> "Genteknologi : Ordb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c017186> <http://unit.no/ontology#preferredLabel> "Genetic engineering : Dictionaries"@en .
+<http://aws.unit.no/realfagstermer/c022533> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030576> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c012661> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#identifier> "REAL022533" .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#preferredLabel> "Nature : Polar regions"@en .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#preferredLabel> "Natur : Polaromr\u00E5dene"@nn .
+<http://aws.unit.no/realfagstermer/c022533> <http://unit.no/ontology#preferredLabel> "Natur : Polaromr\u00E5dene"@nb .
+<http://aws.unit.no/realfagstermer/c020255> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030213> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c006430> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#created> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#identifier> "REAL020255" .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#modified> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#preferredLabel> "Petroleumsforekomster : Amerika"@nb .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#preferredLabel> "Petroleum reservoirs : America"@en .
+<http://aws.unit.no/realfagstermer/c020255> <http://unit.no/ontology#preferredLabel> "Petroleumsf\u00F8rekomstar : Amerika"@nn .
+<http://aws.unit.no/realfagstermer/c021341> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c002443> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030093> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#identifier> "REAL021341" .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#preferredLabel> "Elektrooptikk : L\u00E6reb\u00F8ker"@nn .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#preferredLabel> "Elektrooptikk : L\u00E6reb\u00F8ker"@nb .
+<http://aws.unit.no/realfagstermer/c021341> <http://unit.no/ontology#preferredLabel> "Electro-optics : Textbooks"@en .
+<http://aws.unit.no/realfagstermer/c022817> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030204> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c003707> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#created> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#identifier> "REAL022817" .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#modified> "2015-03-10T10:07:36+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#preferredLabel> "Florabevaring : Afrika"@nn .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#preferredLabel> "Florabevaring : Afrika"@nb .
+<http://aws.unit.no/realfagstermer/c022817> <http://unit.no/ontology#preferredLabel> "Flora preservation : Africa"@en .
+<http://aws.unit.no/realfagstermer/c018650> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c030202> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#broader> <http://aws.unit.no/realfagstermer/c013603> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#created> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#identifier> "REAL018650" .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#modified> "2015-03-10T10:07:35+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#preferredLabel> "Nuclear power : Germany"@en .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#preferredLabel> "Kjernekraft : Tyskland"@nn .
+<http://aws.unit.no/realfagstermer/c018650> <http://unit.no/ontology#preferredLabel> "Kjernekraft : Tyskland"@nb .
+<http://aws.unit.no/realfagstermer/c007597> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://unit.no/ontology#Concept> .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Blow-flies"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Greenbottles"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Cluster flies"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Blow flies"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Carrion flies"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#alternativeLabel> "Bluebottles"@en .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#created> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#identifier> "REAL007597" .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#inScheme> <http://unit.no/realfagstermer> .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#modified> "2014-08-25T00:00:00+00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#preferredLabel> "Spyfluer"@nb .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#preferredLabel> "Spyfluger"@nn .
+<http://aws.unit.no/realfagstermer/c007597> <http://unit.no/ontology#preferredLabel> "Calliphoridae"@en .

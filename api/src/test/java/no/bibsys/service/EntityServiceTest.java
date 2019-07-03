@@ -1,6 +1,23 @@
 package no.bibsys.service;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.aws.tools.IoUtils;
@@ -9,26 +26,16 @@ import no.bibsys.db.RegistryManager;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
 import no.bibsys.db.exceptions.SettingValidationSchemaUponCreationException;
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
+import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 public class EntityServiceTest {
 
@@ -49,10 +56,13 @@ public class EntityServiceTest {
 
     @Before
     public void init() throws IOException, RegistryMetadataTableBeingCreatedException,
-            SettingValidationSchemaUponCreationException, RegistryCreationFailureException {
+            SettingValidationSchemaUponCreationException, RegistryCreationFailureException, UnknownStatusException {
         Environment environment = Mockito.mock(Environment.class);
-
-        RegistryManager registyManager = new RegistryManager(client);
+        
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        
+        RegistryManager registyManager = new RegistryManager(client, mockTaggingClient, mockLambdaClient);
         when(environment.readEnv(anyString())).thenAnswer(input -> input.getArgument(0));
         AuthenticationService authenticationService = new AuthenticationService(client, environment);
 
@@ -61,8 +71,9 @@ public class EntityServiceTest {
         authenticationService.createApiKeyTable();
         registryDto = new SampleData().sampleRegistryDto(REGISTRY_ID);
         registryService.createRegistry(registryDto);
+        
 
-        EntityManager entityManager = new EntityManager(client);
+        EntityManager entityManager = new EntityManager(client, mockTaggingClient, mockLambdaClient);
         entityService = new EntityService(entityManager, registryService);
     }
 
