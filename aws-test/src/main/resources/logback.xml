@@ -1,0 +1,35 @@
+<configuration>
+	<appender name="cloud-watch" class="io.github.dibog.AwsLogAppender">
+
+		<awsConfig>
+
+			<region>eu-west-1</region>
+
+			<clientConfig class="com.amazonaws.ClientConfiguration">
+				<proxyHost></proxyHost>
+				<proxyPort></proxyPort>
+			</clientConfig>
+		</awsConfig>
+
+		<createLogGroup>true</createLogGroup>
+		<queueLength>100</queueLength>
+		<groupName>aws-test-mocking</groupName>
+		<streamName>log-stream</streamName>  
+		<dateFormat>yyyyMMdd_HHmm</dateFormat>
+
+		<layout>
+			<pattern>%-5level %logger{35} -	%msg %n</pattern>
+		</layout>
+
+	</appender>
+
+  <logger name="org.apache.http" level="ERROR" />
+  <logger name="software.amazon" level="ERROR" />
+  <logger name="com.amazonaws" level="ERROR" />
+
+
+	<root level="DEBUG">
+		<appender-ref ref="cloud-watch" />
+	</root>
+
+</configuration>

@@ -1,16 +1,22 @@
 package no.bibsys.db;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
-import no.bibsys.db.structures.RegistryStatus;
-import org.junit.Before;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.mockito.Mockito;
+
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
+import no.bibsys.db.structures.RegistryStatus;
 
 public abstract class LocalDynamoTest extends DynamoTest {
 
@@ -24,17 +30,23 @@ public abstract class LocalDynamoTest extends DynamoTest {
         System.setProperty("sqlite4java.library.path", "build/libs");
         System.setProperty("java.library.path", "native-libs");
         System.setProperty("sqlite4java.library.path", "build/libs");
-
+        
         localClient = DynamoDBEmbedded.create().amazonDynamoDB();
-        registryManager = new RegistryManager(localClient);
-        entityManager = new EntityManager(localClient);
+        
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+
+        registryManager = new RegistryManager(localClient, mockTaggingClient, mockLambdaClient);
+        entityManager = new EntityManager(localClient, mockTaggingClient, mockLambdaClient);
 
         sampleData = new SampleData();
 
     }
 
     protected TableDriver newTableDriver() {
-        return new TableDriver(localClient);
+        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+        AWSLambda mockLambdaClient = AwsLambdaMock.build(); 
+        return new TableDriver(localClient, mockTaggingClient, mockLambdaClient);
     }
 
     protected RegistryManager registryManagerThatFailsToCreateATable() throws IOException {

@@ -5,10 +5,16 @@ repositories {
 }
 
 dependencies {
+    compile project(":aws-test")
 
     compile project(":common")
     compile project(":validation")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
+    implementation("com.amazonaws:aws-java-sdk-cloudsearch:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-lambda:1.11.+")
+    implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
+    implementation("com.amazonaws:aws-lambda-java-events:2.2.6")
     implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
 
     //library for using embedded DynamoDB during local tests
@@ -34,6 +40,8 @@ dependencies {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 
+    testImplementation("org.mockito:mockito-core:2.28.2")
+    
 }
 
 

@@ -18,6 +18,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveBehavior;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
@@ -46,8 +48,9 @@ public class RegistryManager extends ModelParser {
     private final transient DynamoDBMapper mapper;
     private final transient RegistryMetadataManager registryMetadataManager;
 
-    public RegistryManager(AmazonDynamoDB client) throws IOException {
-        this(new TableDriver(client), new DynamoDBMapper(client));
+    public RegistryManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) 
+            throws IOException {
+        this(new TableDriver(client, taggingAPIclient, lambdaClient), new DynamoDBMapper(client));
     }
 
     public RegistryManager(TableDriver tableDriver, DynamoDBMapper dynamoDBMapper) throws IOException {
@@ -164,7 +167,7 @@ public class RegistryManager extends ModelParser {
     }
 
     public List<String> getRegistries(String registryMetadataTableName) {
-
+        logger.debug("getRegistries registryMetadataTableName={}", registryMetadataTableName);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.PUT)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 

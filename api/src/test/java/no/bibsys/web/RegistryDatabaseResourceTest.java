@@ -1,31 +1,36 @@
 package no.bibsys.web;
 
-import no.bibsys.utils.IoUtils;
-import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
-import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.RegistryDto;
-import no.bibsys.web.model.RegistryInfoNoMetadataDto;
-import no.bibsys.web.security.ApiKeyConstants;
-import org.junit.Test;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.bibsys.utils.IoUtils;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.security.ApiKeyConstants;
+
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     private static final String UPDATED_PUBLISHER_VALUE = "Updated publisher value";
     private static final String PUBLISHER = "Publisher";
-
+    Logger logger = LoggerFactory.getLogger(RegistryDatabaseResourceTest.class);
+    
     @Test
     public void createRegistry_RegistryNotExistingUserNotAuthorized_StatusForbidden() {
         String registryName = UUID.randomUUID().toString();
@@ -45,10 +50,15 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() {
         String registryName = "TheRegistryName";
-
+        
+        System.out.println("calling ping");
+        ping_ReturnsStatusCodeOK();
+        System.out.println("called ping");
+        
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
+        System.out.println("response from createRegistry: "+response);
         RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));

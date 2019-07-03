@@ -1,5 +1,6 @@
 package no.bibsys.db;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.bibsys.db.structures.Entity;
@@ -9,6 +10,7 @@ import no.bibsys.utils.JsonUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 
 public class SampleData {
 
@@ -52,6 +54,27 @@ public class SampleData {
         return entity;
     }
 
+    
+    public Entity bigsampleEntity() throws IOException {
+        Entity entity = new Entity();
+
+        String bodyString = IoUtils.resourceAsString(Paths.get("json", "bigsample2.json"));
+
+        ObjectNode body = (ObjectNode) JsonUtils.newJsonParser().readTree(bodyString);
+
+        entity.setBody(body);
+        
+        JsonNode jsonNode = body.get("identifier");
+        String id = jsonNode.get("@value").textValue();
+        entity.setId(id);
+        String nowString = new Date().toString();
+        entity.setCreated(nowString);
+        entity.setModified(nowString);
+        return entity;
+    }
+    
+    
+    
     public String getValidValidationSchemaString() {
         return validValidationSchemaString;
     }

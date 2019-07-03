@@ -1,0 +1,23 @@
+{
+  [
+    {
+      eventID: 3c13645ec5a69931145d65805c1e4484,
+      eventName: INSERT,
+      eventVersion: 1.1,
+      eventSource: aws:dynamodb,
+      awsRegion: eu-west-1,
+      dynamodb: {
+        ApproximateCreationDateTime: Fri Jun 14 09:47:39 UTC 2019,
+        Keys: { id={S: 3a28830d-17a0-444d-885f-9d82ca77559f,
+              }
+        },
+      NewImage: {created={S: 2019-06-14T09:47:39.405Z,}, modified={S: 2019-06-14T09:47:39.406Z,}, id={S: 3a28830d-17a0-444d-885f-9d82ca77559f,}, 
+  body={S: {"@id":"http://authority-registry/validation/__THIS_DOCUMENT__a","@type":"unit:Concept","preferredLabel":[{"@language":"no","@value":"norskLabel"},{"@language":"en","@value":"someLabel"}],"@context":{"preferredLabel":{"@id":"http://unit.no/entitydata#preferredLabel"},"@vocab":"http://authority-registry/validation/__THIS_DOCUMENT__","unit":"http://unit.no/entitydata#","owl":"http://www.w3.org/2002/07/owl#","rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#","sh":"http://www.w3.org/ns/shacl#","xsd":"http://www.w3.org/2001/XMLSchema#","dcterms":"http://purl.org/dc/terms/","skos":"http://www.w3.org/2004/02/skos/core#","rdfs":"http://www.w3.org/2000/01/rdf-schema#","vann":"http://purl.org/vocab/vann/"}},}},
+
+  SequenceNumber: 100000000012408609972,
+  SizeBytes: 850,
+  StreamViewType: NEW_AND_OLD_IMAGES},
+  eventSourceArn: arn:aws:dynamodb:eu-west-1:514691704213:table/triggertest/stream/2019-06-14T08:28:56.645
+  }
+  ]
+  }

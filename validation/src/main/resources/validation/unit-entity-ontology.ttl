@@ -34,6 +34,14 @@ unit:identifier a rdfs:Property ;
   rdfs:description "A unique identifier" ;
   rdfs:domain unit:Concept ;
   rdfs:range xsd:string .
+  
+unit:localIdentifier a rdfs:Property ;
+  rdfs:subPropertyOf dcterms:identifier ;
+  rdfs:label "Local identifier"@en ;
+  rdfs:label "Lokalidentifikator"@no ;
+  rdfs:description "A unique local identifier" ;
+  rdfs:domain unit:Concept ;
+  rdfs:range xsd:string .
 
 unit:preferredLabel a rdfs:Property ;
   rdfs:subPropertyOf skos:prefLabel ;

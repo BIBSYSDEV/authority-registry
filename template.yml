@@ -57,6 +57,7 @@ Resources:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
+          - dynamodb:TagResource
           - dynamodb:Scan
           - s3:*
           - apigateway:GET
@@ -87,6 +88,18 @@ Resources:
           - config:List*
           - config:Describe*
           Resource: "*"
+        - Effect: Allow
+          Action:
+          - tag:GetResources
+          - tag:GetTagKeys
+          - tag:GetTagValues
+          - tag:TagResources
+          - tag:UntagGetResources
+          Resource: "*"
+        - Effect: Allow
+          Action:
+          - lambda:CreateEventSourceMapping
+          Resource: "*"
       Timeout: 600
       Environment:
         Variables:
@@ -100,6 +113,108 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref RestApi
+            
+  SNSDynamoDBChangeTopic:          
+    Description: "Common topic for signaling changes in DynamoDB"
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: String
+      TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
+      
+  SNSDynamoDBChangeTopicPolicy:      
+    Description: "Access to common topic for signaling changes in DynamoDB"
+    Type: AWS::SNS::TopicPolicy
+    Properties: 
+      PolicyDocument:
+        Id: SNSDynamoDBChangeTopicPolicy
+        Statement:
+        - Sid: SNSDynamoDBChangeTopicPolicy
+          Effect: Allow
+          Principal: 
+            AWS: "*"
+          Action: 
+          - sns:Publish
+          Resource: "*"
+      Topics: 
+      - !Ref SNSDynamoDBChangeTopic      
+      
+  DynamoDBEventProcessorLambda:
+    Description: "Subscribes to common topic for signaling changes in DynamoDB"
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: no.bibsys.db.DynamoDBEventProcessor::handleRequest
+      Runtime: java8
+      CodeUri: api/build/libs/api-fat.jar
+      Environment:
+        Variables:
+          CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com
+      MemorySize: 1512
+      Timeout: 20
+      Policies:
+        Version: '2012-10-17'
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:DescribeLogGroups
+          - logs:PutLogEvents
+          - dynamodb:CreateTable
+          - dynamodb:DeleteTable
+          - dynamodb:DescribeTable
+          - dynamodb:ListTables
+          - dynamodb:BatchGetItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:Scan
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:DescribeStream
+          - dynamodb:ListStreams
+          - s3:*
+          - apigateway:GET
+          - cloudsearch:*
+          Resource: "*"
+          Effect: Allow
+        - Action:
+          - secretsmanager:GetSecretValue
+          - ssm:GetParameter
+          Resource: "*"
+          #     //The rest of the policies are for all lambda functions
+          Effect: Allow
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: "*"
+
+        - Effect: Allow
+          Action:
+          - s3:GetObject
+          Resource: arn:aws:s3:::*/AWSLogs/*/Config/*
+        - Effect: Allow
+          Action:
+          - config:Put*
+          - config:Get*
+          - config:List*
+          - config:Describe*
+          Resource: "*"
+      Tags:
+        unit.resource_type: DynamoDBTrigger_EventProcessor
+        unit.environment: !Ref Stage
+
+  SNSDynamoDBChangeSubscription:          
+    Description: "Subscription to common topic for signaling changes in DynamoDB"
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !GetAtt DynamoDBEventProcessorLambda.Arn
+      Protocol: lambda
+      TopicArn: !Ref SNSDynamoDBChangeTopic             
+
+
   RestApiUrlParameter:
     Type: AWS::SSM::Parameter
     Properties:

@@ -1,0 +1,25 @@
+[
+	{
+		"type": "add",
+		"id": "id01",
+		"fields": {
+			"preferredlabel": ["preferredlabel"],
+			"updatedate": "2019-06-20T12:22:00Z",
+			"definition": "A complete definition of what the term means and how it is to be used",
+			"broader": "broader-term",
+			"narrower": "narrower-term",
+			"inscheme": "TESTREG",
+			"presentation_json": "{ \"id\": \"id01\", \"label\": { \"@value\": \"The label\", \"@language\": \"en\" }}",
+			"related": [
+				"term1",
+				"term2",
+				"term3"
+			],
+			"seealso": [
+				"term11",
+				"term12",
+				"term13"
+			]
+		}
+	}
+]

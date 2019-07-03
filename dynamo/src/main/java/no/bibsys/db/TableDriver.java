@@ -1,5 +1,15 @@
 package no.bibsys.db;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -8,41 +18,66 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
+import com.amazonaws.services.dynamodbv2.model.StreamSpecification;
+import com.amazonaws.services.dynamodbv2.model.StreamViewType;
 import com.amazonaws.services.dynamodbv2.model.TableDescription;
+import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingRequest;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingResult;
+import com.amazonaws.services.lambda.model.EventSourcePosition;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
+import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
+
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 public class TableDriver {
 
+    private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
+    private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
+    private final transient AWSLambda lambdaClient; 
 
-    public TableDriver(final AmazonDynamoDB client) {
+    
+    public TableDriver(final AmazonDynamoDB client, 
+            AWSResourceGroupsTaggingAPI taggingAPIclient, 
+            AWSLambda lambdaClient) {
+        
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
+        if (isNull(taggingAPIclient)) {
+            throw new IllegalStateException("Cannot set null taggingAPIclient ");
+        }
+        
+        if (isNull(lambdaClient)) {
+            throw new IllegalStateException("Cannot set null lambdaClient ");
+        }
+
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
+        this.taggingAPIclient = taggingAPIclient;
+        this.lambdaClient = lambdaClient;
     }
 
     private Table getTable(final String tableName) {
+        logger.debug("getTable tableName={}", tableName);
+
         return dynamoDb.getTable(tableName);
     }
 
@@ -84,7 +119,8 @@ public class TableDriver {
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
-        return createTable(tableName, Entity.class);
+        return createEntityTableWithStreamsAndTags(tableName) &&  connectTableToTrigger(tableName);
+
     }
 
     public void createRegistryMetadataTable(final String tableName) {
@@ -101,11 +137,100 @@ public class TableDriver {
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
+            
+            Collection<Tag> tags = Collections.singleton(
+                    new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
+                    );
+            request.setTags(tags);
+
+            
             TableUtils.createTableIfNotExists(client, request);
-            logger.debug("Table created, tableId={}", tableName);
+            logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
             return true;
         }
-        logger.error("Tried to create table but it already exists, tableId={}", tableName);
+        logger.warn("Tried to create table but it already exists, tableName={}", tableName);
+        return false;
+    }
+
+    private boolean createEntityTableWithStreamsAndTags(final String tableName) {
+
+        if (!tableExists(tableName)) {
+            Class<Entity> clazz = Entity.class;
+            DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                    .withTableNameOverride(TableNameOverride.withTableNameReplacement(tableName)).build();
+
+            CreateTableRequest request = mapper.generateCreateTableRequest(clazz, config);
+            request.setProvisionedThroughput(
+                    new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
+
+            request.setStreamSpecification(
+                    new StreamSpecification().withStreamEnabled(true)
+                        .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));
+            
+            Collection<Tag> tags = Collections.singleton(
+                    new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
+                    );
+            request.setTags(tags);
+            
+            TableUtils.createTableIfNotExists(client, request);
+            logger.debug("Table create request sendt, tableId={} with tags={}, returning TRUE", tableName, tags);
+            return true;
+        }
+        logger.error("Tried to create table but it already exists, tableName={}", tableName);
+        return false;
+    }
+
+    
+    
+
+    private boolean connectTableToTrigger(final String tableName) {
+        try {
+            logger.debug("connectTableToTrigger, Waiting for table:{}  to be created", tableName);
+            TableUtils.waitUntilExists(client, tableName);
+            logger.debug("Table:{} created, getting info", tableName);
+            DescribeTableResult describeTable = client.describeTable(tableName);
+            String eventSourceArn = describeTable.getTable().getLatestStreamArn();
+
+            logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
+            
+            TagFilter tagFiltersAWS = new TagFilter()
+                    .withKey("aws:cloudformation:logical-id").withValues("DynamoDBEventProcessorLambda");
+            TagFilter tagFiltersUNIT = new TagFilter()
+                  .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor");
+
+            logger.debug("Created tag filters");
+
+            GetResourcesRequest getResourcesRequest = 
+                    new GetResourcesRequest()
+                    .withTagFilters(tagFiltersAWS)
+                    .withTagFilters(tagFiltersUNIT);
+            
+            logger.debug("getResourcesRequest={}",getResourcesRequest);
+            GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
+
+            if (resources != null && resources.getResourceTagMappingList().size() == 1) {
+                logger.debug("matching resources={}",resources);
+            
+                String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
+                
+                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
+                new CreateEventSourceMappingRequest()
+                        .withEventSourceArn(eventSourceArn)
+                        .withStartingPosition(EventSourcePosition.LATEST)
+                        .withFunctionName(functionNameARN);
+                
+                CreateEventSourceMappingResult createEventSourceMappingResult = 
+                        lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
+                
+                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
+                        createEventSourceMappingResult);
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("Exception in connectTableToTrigger, tableName={}!",tableName, e);
+            return false;
+        }
+        logger.debug("NO matching resources, returning FALSE without creating trigger");
         return false;
     }
 

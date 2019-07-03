@@ -6,7 +6,7 @@
 
 		<createLogGroup>true</createLogGroup>
 		<queueLength>100</queueLength>
-		<groupName>authority-registry-dynamo-prod</groupName>
+		<groupName>authority-registry-dynamo-test</groupName>
 		<streamName>dynamo-log-stream</streamName>
 
 		<layout>
@@ -29,7 +29,7 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
-		<appender-ref ref="cloud-watch" />
+		<appender-ref ref="cloud-watch" /> 
 	</root>
 
 </configuration>
