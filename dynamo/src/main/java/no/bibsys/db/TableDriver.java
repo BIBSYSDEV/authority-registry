@@ -45,6 +45,11 @@ public class TableDriver {
 
     private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    public static final String AWS_CLOUDFORMATION_STACK_NAME = "aws: cloudformation: stack - name";
+    public static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
+    public static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
+    public static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
+    public static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
@@ -193,17 +198,20 @@ public class TableDriver {
             logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
             
             TagFilter tagFiltersAWS = new TagFilter()
-                    .withKey("aws:cloudformation:logical-id").withValues("DynamoDBEventProcessorLambda");
+                    .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
             TagFilter tagFiltersUNIT = new TagFilter()
-                  .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor");
+                  .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
+            TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
+                    .withValues(findStackName());
 
             logger.debug("Created tag filters");
 
             GetResourcesRequest getResourcesRequest = 
                     new GetResourcesRequest()
                     .withTagFilters(tagFiltersAWS)
-                    .withTagFilters(tagFiltersUNIT);
-            
+                    .withTagFilters(tagFiltersUNIT)
+                    .withTagFilters(tagFilterStackName);
+
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
@@ -212,9 +220,7 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
-            logger.debug("The stack name is {}", findStackName());
-
-            if (resources != null && resources.getResourceTagMappingList().size() == 1) {
+            if (resources.getResourceTagMappingList().size() == 1) {
                 logger.debug("matching resources={}",resources);
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
