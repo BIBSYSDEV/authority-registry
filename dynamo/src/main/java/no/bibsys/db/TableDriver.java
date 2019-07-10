@@ -1,5 +1,6 @@
 package no.bibsys.db;
 
+import com.amazonaws.services.cloudformation.model.DescribeStackResourcesRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -212,6 +213,8 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
+            logger.debug("The stack name is {}", findStackName());
+
             if (resources != null && resources.getResourceTagMappingList().size() == 1) {
                 logger.debug("matching resources={}",resources);
             
@@ -253,5 +256,10 @@ public class TableDriver {
         } catch (ResourceNotFoundException e) {
             return RegistryStatus.NOT_FOUND.name();
         }
+    }
+
+    private String findStackName() {
+        DescribeStackResourcesRequest describeStackResourcesRequest = new DescribeStackResourcesRequest();
+        return describeStackResourcesRequest.getStackName();
     }
 }

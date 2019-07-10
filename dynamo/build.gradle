@@ -9,6 +9,7 @@ dependencies {
 
     compile project(":common")
     compile project(":validation")
+    implementation("com.amazonaws:aws-java-sdk-cloudformation:1.11.+")
     implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.+")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.0")
     implementation("com.amazonaws:aws-java-sdk-cloudsearch:1.11.+")
