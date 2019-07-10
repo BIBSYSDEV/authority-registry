@@ -212,7 +212,7 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
-            if (resources != null && resources.getResourceTagMappingList().size() == 1) {
+            if (resources != null && resources.getResourceTagMappingList().size() > 1) {
                 logger.debug("matching resources={}",resources);
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
