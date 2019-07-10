@@ -50,6 +50,7 @@ public class TableDriver {
     public static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
     public static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
     public static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
+    public static final int SINGLE_ITEM = 1;
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
@@ -220,7 +221,7 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
-            if (resources.getResourceTagMappingList().size() == 1) {
+            if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
                 logger.debug("matching resources={}",resources);
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
