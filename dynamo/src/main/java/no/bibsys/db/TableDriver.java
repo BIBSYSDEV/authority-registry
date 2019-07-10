@@ -1,6 +1,5 @@
 package no.bibsys.db;
 
-import com.amazonaws.services.cloudformation.model.DescribeStackResourcesRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -50,9 +49,9 @@ public class TableDriver {
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
     private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
-    private final transient AWSLambda lambdaClient; 
+    private final transient AWSLambda lambdaClient;
 
-    
+
     public TableDriver(final AmazonDynamoDB client, 
             AWSResourceGroupsTaggingAPI taggingAPIclient, 
             AWSLambda lambdaClient) {
@@ -259,7 +258,6 @@ public class TableDriver {
     }
 
     private String findStackName() {
-        DescribeStackResourcesRequest describeStackResourcesRequest = new DescribeStackResourcesRequest();
-        return describeStackResourcesRequest.getStackName();
+        return System.getenv("STACK_NAME");
     }
 }
