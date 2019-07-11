@@ -126,7 +126,9 @@ public class TableDriver {
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
-        return createEntityTableWithStreamsAndTags(tableName) &&  connectTableToTrigger(tableName);
+        return createEntityTableWithStreamsAndTags(tableName);
+//       temporary removed while fixing a bug with cloadsearch
+//        &&  connectTableToTrigger(tableName); 
 
     }
 
@@ -223,7 +225,6 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
-            logger.debug("ResourceTagMappingList = {}", resources.getResourceTagMappingList().toString());
             if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
                 logger.debug("matching resources={}",resources);
             
