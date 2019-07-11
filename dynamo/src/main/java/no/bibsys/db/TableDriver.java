@@ -46,12 +46,12 @@ public class TableDriver {
 
     private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
-    public static final String AWS_CLOUDFORMATION_STACK_NAME = "aws: cloudformation: stack - name";
-    public static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
-    public static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
-    public static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
-    public static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
-    public static final int SINGLE_ITEM = 1;
+    private static final String AWS_CLOUDFORMATION_STACK_NAME = "aws:cloudformation:stack-name";
+    private static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
+    private static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
+    private static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
+    private static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
+    private static final int SINGLE_ITEM = 1;
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
