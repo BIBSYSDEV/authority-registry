@@ -43,7 +43,7 @@ Then('the entity is created', () => {
             'api-key': apiKey,
           },
         }).then((response) => {
-          expect(response.status).to.be.equals(HttpStatus.CREATED);
+          expect(response.status).to.be.equals(HttpStatus.OK);
         });
       });
     });
