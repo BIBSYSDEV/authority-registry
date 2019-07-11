@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -59,17 +58,17 @@ public class TableDriver {
     private final transient AWSLambda lambdaClient;
 
 
-    public TableDriver(final AmazonDynamoDB client, 
-            AWSResourceGroupsTaggingAPI taggingAPIclient, 
-            AWSLambda lambdaClient) {
-        
+    public TableDriver(final AmazonDynamoDB client,
+                       AWSResourceGroupsTaggingAPI taggingAPIclient,
+                       AWSLambda lambdaClient) {
+
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
         if (isNull(taggingAPIclient)) {
             throw new IllegalStateException("Cannot set null taggingAPIclient ");
         }
-        
+
         if (isNull(lambdaClient)) {
             throw new IllegalStateException("Cannot set null lambdaClient ");
         }
@@ -125,7 +124,7 @@ public class TableDriver {
     }
 
     public boolean createEntityRegistryTable(final String tableName) {
-        return createEntityTableWithStreamsAndTags(tableName) &&  connectTableToTrigger(tableName);
+        return createEntityTableWithStreamsAndTags(tableName) && connectTableToTrigger(tableName);
 
     }
 
@@ -143,13 +142,13 @@ public class TableDriver {
             request.setProvisionedThroughput(
                     new ProvisionedThroughput().withReadCapacityUnits(1L).withWriteCapacityUnits(1L));
 
-            
+
             Collection<Tag> tags = Collections.singleton(
                     new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
-                    );
+            );
             request.setTags(tags);
 
-            
+
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
             return true;
@@ -171,13 +170,13 @@ public class TableDriver {
 
             request.setStreamSpecification(
                     new StreamSpecification().withStreamEnabled(true)
-                        .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));
-            
+                            .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES));
+
             Collection<Tag> tags = Collections.singleton(
                     new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
-                    );
+            );
             request.setTags(tags);
-            
+
             TableUtils.createTableIfNotExists(client, request);
             logger.debug("Table create request sendt, tableId={} with tags={}, returning TRUE", tableName, tags);
             return true;
@@ -186,8 +185,6 @@ public class TableDriver {
         return false;
     }
 
-    
-    
 
     private boolean connectTableToTrigger(final String tableName) {
         try {
@@ -198,28 +195,28 @@ public class TableDriver {
             String eventSourceArn = describeTable.getTable().getLatestStreamArn();
 
             logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
-            
+
             TagFilter tagFiltersAWS = new TagFilter()
                     .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
             TagFilter tagFiltersUNIT = new TagFilter()
-                  .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
+                    .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
             TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
                     .withValues(findStackName());
 
             logger.debug("Created tag filters {}: {}, {}: {}, {}: {}", AWS_CLOUDFORMATION_LOGICAL_ID,
                     DYNAMO_DB_EVENT_PROCESSOR_LAMBDA, UNIT_RESOURCE_TYPE, DYNAMO_DB_TRIGGER_EVENT_PROCESSOR,
                     AWS_CLOUDFORMATION_STACK_NAME, findStackName());
-            List<TagFilter> tagFilters =  Arrays.asList(tagFiltersAWS, tagFiltersUNIT, tagFilterStackName);
+
             logger.debug("The available resources are: ", new GetResourcesRequest());
 
-            GetResourcesRequest getResourcesRequest = 
+            GetResourcesRequest getResourcesRequest =
                     new GetResourcesRequest()
                             .withTagFilters(tagFiltersAWS)
                             .withTagFilters(tagFiltersUNIT)
                             .withTagFilters(tagFilterStackName);
 
-            logger.debug("getResourcesRequest={}",getResourcesRequest);
-            GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
+            logger.debug("getResourcesRequest={}", getResourcesRequest);
+            GetResourcesResult resources = taggingAPIclient.getResources(getResourcesRequest);
 
             String res = Optional.ofNullable(resources.toString()).orElse("did no exist");
 
@@ -227,24 +224,24 @@ public class TableDriver {
                     res, resources.getResourceTagMappingList().size());
 
             if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
-                logger.debug("matching resources={}",resources);
-            
-                String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
+                logger.debug("matching resources={}", resources);
+
+                String functionNameARN = resources.getResourceTagMappingList().get(0).getResourceARN();
                 logger.debug("CloudSearch trigger ARN: {}", functionNameARN);
-                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
-                new CreateEventSourceMappingRequest()
-                        .withEventSourceArn(eventSourceArn)
-                        .withStartingPosition(EventSourcePosition.LATEST)
-                        .withFunctionName(functionNameARN);
+                CreateEventSourceMappingRequest createEventSourceMappingRequest =
+                        new CreateEventSourceMappingRequest()
+                                .withEventSourceArn(eventSourceArn)
+                                .withStartingPosition(EventSourcePosition.LATEST)
+                                .withFunctionName(functionNameARN);
                 logger.debug("Event source mapping request: {}", createEventSourceMappingRequest);
-                CreateEventSourceMappingResult createEventSourceMappingResult = 
+                CreateEventSourceMappingResult createEventSourceMappingResult =
                         lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
                 logger.debug("eventSourceMapping created, createEventSourceMappingResult={}",
                         createEventSourceMappingResult);
                 return true;
             }
         } catch (Exception e) {
-            logger.error("Exception in connectTableToTrigger, tableName={}!",tableName, e);
+            logger.error("Exception in connectTableToTrigger, tableName={}!", tableName, e);
             return false;
         }
         logger.debug("NO matching resources, returning FALSE without creating trigger");
