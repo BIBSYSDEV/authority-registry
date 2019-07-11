@@ -1,15 +1,5 @@
 package no.bibsys.db;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -37,22 +27,37 @@ import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingA
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
-
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 public class TableDriver {
 
     private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    public static final String AWS_CLOUDFORMATION_STACK_NAME = "aws: cloudformation: stack - name";
+    public static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
+    public static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
+    public static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
+    public static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
+    public static final int SINGLE_ITEM = 1;
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
     private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
-    private final transient AWSLambda lambdaClient; 
+    private final transient AWSLambda lambdaClient;
 
-    
+
     public TableDriver(final AmazonDynamoDB client, 
             AWSResourceGroupsTaggingAPI taggingAPIclient, 
             AWSLambda lambdaClient) {
@@ -194,21 +199,29 @@ public class TableDriver {
             logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
             
             TagFilter tagFiltersAWS = new TagFilter()
-                    .withKey("aws:cloudformation:logical-id").withValues("DynamoDBEventProcessorLambda");
+                    .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
             TagFilter tagFiltersUNIT = new TagFilter()
-                  .withKey("unit.resource_type").withValues("DynamoDBTrigger_EventProcessor");
+                  .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
+            TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
+                    .withValues(findStackName());
 
             logger.debug("Created tag filters");
 
             GetResourcesRequest getResourcesRequest = 
                     new GetResourcesRequest()
                     .withTagFilters(tagFiltersAWS)
-                    .withTagFilters(tagFiltersUNIT);
-            
+                    .withTagFilters(tagFiltersUNIT)
+                    .withTagFilters(tagFilterStackName);
+
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
-            if (resources != null && resources.getResourceTagMappingList().size() == 1) {
+            String res = Optional.ofNullable(resources.toString()).orElse("did no exist");
+
+            logger.debug("Resources is {} and resource tag mapping size is {}",
+                    res, resources.getResourceTagMappingList().size());
+
+            if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
                 logger.debug("matching resources={}",resources);
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
@@ -249,5 +262,9 @@ public class TableDriver {
         } catch (ResourceNotFoundException e) {
             return RegistryStatus.NOT_FOUND.name();
         }
+    }
+
+    private String findStackName() {
+        return System.getenv("STACK_NAME");
     }
 }

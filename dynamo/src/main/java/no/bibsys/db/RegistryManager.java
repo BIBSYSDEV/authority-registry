@@ -1,18 +1,5 @@
 package no.bibsys.db;
 
-import static java.util.Objects.nonNull;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -20,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
@@ -36,6 +22,18 @@ import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNot
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
 import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 public class RegistryManager extends ModelParser {
 
@@ -48,7 +46,7 @@ public class RegistryManager extends ModelParser {
     private final transient DynamoDBMapper mapper;
     private final transient RegistryMetadataManager registryMetadataManager;
 
-    public RegistryManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) 
+    public RegistryManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient)
             throws IOException {
         this(new TableDriver(client, taggingAPIclient, lambdaClient), new DynamoDBMapper(client));
     }

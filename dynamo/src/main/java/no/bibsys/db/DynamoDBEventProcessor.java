@@ -1,14 +1,5 @@
 package no.bibsys.db;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.StreamRecord;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -18,9 +9,16 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStream
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
@@ -43,7 +41,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         logger.debug("dynamodbEvent, #records={}", dynamodbEvent.getRecords().size());
 
         List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
-                .map(dynamodDBStreamRecord -> createAmazonSdfFromTriggerEvent(dynamodDBStreamRecord))
+                .map(this::createAmazonSdfFromTriggerEvent)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         try {
