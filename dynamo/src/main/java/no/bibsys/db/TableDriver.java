@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -208,13 +209,12 @@ public class TableDriver {
             logger.debug("Created tag filters {}: {}, {}: {}, {}: {}", AWS_CLOUDFORMATION_LOGICAL_ID,
                     DYNAMO_DB_EVENT_PROCESSOR_LAMBDA, UNIT_RESOURCE_TYPE, DYNAMO_DB_TRIGGER_EVENT_PROCESSOR,
                     AWS_CLOUDFORMATION_STACK_NAME, findStackName());
-            logger.debug("The available resources are: ", new GetResourcesRequest());
+            List<TagFilter> tagFilters =  Arrays.asList(tagFiltersAWS, tagFiltersUNIT, tagFilterStackName);
+            logger.debug("The available resources are: ", new GetResourcesRequest().withTagFilters(tagFilters));
 
             GetResourcesRequest getResourcesRequest = 
                     new GetResourcesRequest()
-                    .withTagFilters(tagFiltersAWS)
-                    .withTagFilters(tagFiltersUNIT)
-                    .withTagFilters(tagFilterStackName);
+                    .withTagFilters(tagFilters);
 
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
