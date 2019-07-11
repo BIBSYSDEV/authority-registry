@@ -205,7 +205,10 @@ public class TableDriver {
             TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
                     .withValues(findStackName());
 
-            logger.debug("Created tag filters");
+            logger.debug("Created tag filters {}: {}, {}: {}, {}: {}", AWS_CLOUDFORMATION_LOGICAL_ID,
+                    DYNAMO_DB_EVENT_PROCESSOR_LAMBDA, UNIT_RESOURCE_TYPE, DYNAMO_DB_TRIGGER_EVENT_PROCESSOR,
+                    AWS_CLOUDFORMATION_STACK_NAME, findStackName());
+            logger.debug("The available resources are: ", new GetResourcesRequest());
 
             GetResourcesRequest getResourcesRequest = 
                     new GetResourcesRequest()
@@ -225,17 +228,16 @@ public class TableDriver {
                 logger.debug("matching resources={}",resources);
             
                 String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
-                
+                logger.debug("CloudSearch trigger ARN: {}", functionNameARN);
                 CreateEventSourceMappingRequest createEventSourceMappingRequest = 
                 new CreateEventSourceMappingRequest()
                         .withEventSourceArn(eventSourceArn)
                         .withStartingPosition(EventSourcePosition.LATEST)
                         .withFunctionName(functionNameARN);
-                
+                logger.debug("Event source mapping request: {}", createEventSourceMappingRequest);
                 CreateEventSourceMappingResult createEventSourceMappingResult = 
                         lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
-                
-                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
+                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}",
                         createEventSourceMappingResult);
                 return true;
             }
