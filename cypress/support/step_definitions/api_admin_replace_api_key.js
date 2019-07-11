@@ -63,7 +63,7 @@ Then('the API key is updated', () => {
             'content-type': 'application/json',
           },
         }).then((response) => {
-          cy.expect(response.status).to.equal(HttpStatus.OK);
+          cy.expect(response.status).to.equal(HttpStatus.CREATED);
         });
       });
     });
