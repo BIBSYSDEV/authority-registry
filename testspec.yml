@@ -13,7 +13,7 @@ phases:
       - echo $CYPRESS_baseUrl
   build:
     commands:
-      - npx cypress run
+      - npx cypress run --parallel
   post_build:
     commands:
       - echo "post_build step"
