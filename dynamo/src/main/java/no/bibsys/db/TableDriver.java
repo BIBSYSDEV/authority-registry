@@ -210,11 +210,13 @@ public class TableDriver {
                     DYNAMO_DB_EVENT_PROCESSOR_LAMBDA, UNIT_RESOURCE_TYPE, DYNAMO_DB_TRIGGER_EVENT_PROCESSOR,
                     AWS_CLOUDFORMATION_STACK_NAME, findStackName());
             List<TagFilter> tagFilters =  Arrays.asList(tagFiltersAWS, tagFiltersUNIT, tagFilterStackName);
-            logger.debug("The available resources are: ", new GetResourcesRequest().withTagFilters(tagFilters));
+            logger.debug("The available resources are: ", new GetResourcesRequest());
 
             GetResourcesRequest getResourcesRequest = 
                     new GetResourcesRequest()
-                    .withTagFilters(tagFilters);
+                            .withTagFilters(tagFiltersAWS)
+                            .withTagFilters(tagFiltersUNIT)
+                            .withTagFilters(tagFilterStackName);
 
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
