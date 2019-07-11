@@ -1,5 +1,16 @@
 package no.bibsys.db;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -27,19 +38,10 @@ import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingA
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
+
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
 import no.bibsys.db.structures.RegistryStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Objects.isNull;
 
 public class TableDriver {
 
@@ -221,6 +223,7 @@ public class TableDriver {
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
 
+            logger.debug("ResourceTagMappingList = {}", resources.getResourceTagMappingList().toString());
             if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
                 logger.debug("matching resources={}",resources);
             
