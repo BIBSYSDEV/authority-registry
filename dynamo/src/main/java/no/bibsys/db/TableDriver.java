@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.DeleteTableRequest;
+import com.amazonaws.services.dynamodbv2.model.DescribeTableResult;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
@@ -29,7 +31,13 @@ import com.amazonaws.services.dynamodbv2.model.TableDescription;
 import com.amazonaws.services.dynamodbv2.model.Tag;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingRequest;
+import com.amazonaws.services.lambda.model.CreateEventSourceMappingResult;
+import com.amazonaws.services.lambda.model.EventSourcePosition;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
+import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
 
 import no.bibsys.db.structures.Entity;
 import no.bibsys.db.structures.Registry;
@@ -181,64 +189,64 @@ public class TableDriver {
         return false;
     }
 
-//    private boolean connectTableToTrigger(final String tableName) {
-//        try {
-//            logger.debug("connectTableToTrigger, Waiting for table:{}  to be created", tableName);
-//            TableUtils.waitUntilExists(client, tableName);
-//            logger.debug("Table:{} created, getting info", tableName);
-//            DescribeTableResult describeTable = client.describeTable(tableName);
-//            String eventSourceArn = describeTable.getTable().getLatestStreamArn();
-//
-//            logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
-//            
-//            TagFilter tagFiltersAWS = new TagFilter()
-//                    .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
-//            TagFilter tagFiltersUNIT = new TagFilter()
-//                  .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
-//            TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
-//                    .withValues(findStackName());
-//
-//            logger.debug("Created tag filters");
-//
-//            GetResourcesRequest getResourcesRequest = 
-//                    new GetResourcesRequest()
-//                    .withTagFilters(tagFiltersAWS)
-//                    .withTagFilters(tagFiltersUNIT)
-//                    .withTagFilters(tagFilterStackName);
-//
-//            logger.debug("getResourcesRequest={}",getResourcesRequest);
-//            GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
-//
-//            String res = Optional.ofNullable(resources.toString()).orElse("did no exist");
-//
-//            logger.debug("Resources is {} and resource tag mapping size is {}",
-//                    res, resources.getResourceTagMappingList().size());
-//
-//            if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
-//                logger.debug("matching resources={}",resources);
-//            
-//                String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
-//                
-//                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
-//                new CreateEventSourceMappingRequest()
-//                        .withEventSourceArn(eventSourceArn)
-//                        .withStartingPosition(EventSourcePosition.LATEST)
-//                        .withFunctionName(functionNameARN);
-//                
-//                CreateEventSourceMappingResult createEventSourceMappingResult = 
-//                        lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
-//                
-//                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
-//                        createEventSourceMappingResult);
-//                return true;
-//            }
-//        } catch (Exception e) {
-//            logger.error("Exception in connectTableToTrigger, tableName={}!",tableName, e);
-//            return false;
-//        }
-//        logger.debug("NO matching resources, returning FALSE without creating trigger");
-//        return false;
-//    }
+    protected boolean connectTableToTrigger(final String tableName) {
+        try {
+            logger.debug("connectTableToTrigger, Waiting for table:{}  to be created", tableName);
+            TableUtils.waitUntilExists(client, tableName);
+            logger.debug("Table:{} created, getting info", tableName);
+            DescribeTableResult describeTable = client.describeTable(tableName);
+            String eventSourceArn = describeTable.getTable().getLatestStreamArn();
+
+            logger.debug("Table({}) has ARN={}", tableName, eventSourceArn);
+            
+            TagFilter tagFiltersAWS = new TagFilter()
+                    .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
+            TagFilter tagFiltersUNIT = new TagFilter()
+                  .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
+            TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
+                    .withValues(findStackName());
+
+            logger.debug("Created tag filters");
+
+            GetResourcesRequest getResourcesRequest = 
+                    new GetResourcesRequest()
+                    .withTagFilters(tagFiltersAWS)
+                    .withTagFilters(tagFiltersUNIT)
+                    .withTagFilters(tagFilterStackName);
+
+            logger.debug("getResourcesRequest={}",getResourcesRequest);
+            GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
+
+            String res = Optional.ofNullable(resources.toString()).orElse("did no exist");
+
+            logger.debug("Resources is {} and resource tag mapping size is {}",
+                    res, resources.getResourceTagMappingList().size());
+
+            if (resources.getResourceTagMappingList().size() == SINGLE_ITEM) {
+                logger.debug("matching resources={}",resources);
+            
+                String functionNameARN  = resources.getResourceTagMappingList().get(0).getResourceARN();
+                
+                CreateEventSourceMappingRequest createEventSourceMappingRequest = 
+                new CreateEventSourceMappingRequest()
+                        .withEventSourceArn(eventSourceArn)
+                        .withStartingPosition(EventSourcePosition.LATEST)
+                        .withFunctionName(functionNameARN);
+                
+                CreateEventSourceMappingResult createEventSourceMappingResult = 
+                        lambdaClient.createEventSourceMapping(createEventSourceMappingRequest);
+                
+                logger.debug("eventSourceMapping created, createEventSourceMappingResult={}", 
+                        createEventSourceMappingResult);
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("Exception in connectTableToTrigger, tableName={}!",tableName, e);
+            return false;
+        }
+        logger.debug("NO matching resources, returning FALSE without creating trigger");
+        return false;
+    }
 
     public List<String> listTables() {
         List<String> tableList = new ArrayList<>();
