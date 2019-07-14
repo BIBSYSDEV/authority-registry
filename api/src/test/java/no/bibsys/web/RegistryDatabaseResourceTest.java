@@ -81,7 +81,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() throws Exception {
+    public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() {
         String registryName = createRegistry();
 
         Response putRegistrySchemaResponse = putSchema(registryName, validValidationSchema);
@@ -107,7 +107,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void getRegistryStatus_registryExists_returnsStatusCreated() throws Exception {
+    public void getRegistryStatus_registryExists_returnsStatusCreated() {
         String registryName = createRegistry();
 
         Response response = registryStatus(registryName);
@@ -157,7 +157,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
+    public void getRegistryMetadata_textHtml_registryAsHtml() {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
@@ -171,7 +171,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() throws Exception {
+    public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         createRegistry(registryDto, apiAdminKey);
