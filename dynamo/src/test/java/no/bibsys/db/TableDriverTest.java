@@ -137,8 +137,8 @@ public class TableDriverTest extends LocalDynamoTest {
                 .withMatchableResourceTagMapping(stackName);
         AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
                 awsResourceGroupsTaggingApiMockBuilder.build();
-        AWSResourceGroupsTaggingAPI taggingAPI = awsResourceGroupsTaggingApiMock.initialize();
-        TableDriver tableDriver = new TableDriver(localClient, taggingAPI, mockLambdaClient, stackName);
+        AWSResourceGroupsTaggingAPI taggingApi = awsResourceGroupsTaggingApiMock.initialize();
+        TableDriver tableDriver = new TableDriver(localClient, taggingApi, mockLambdaClient, stackName);
         tableDriver.findDynamoTriggerArn();
     }
 

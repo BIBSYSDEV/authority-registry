@@ -24,8 +24,8 @@ public class EntityManager {
     private final transient DynamoDBMapper mapper;
     private final transient TableDriver tableDriver;
 
-    public EntityManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient) {
-        this.tableDriver = new TableDriver(client, taggingAPIclient, lambdaClient);
+    public EntityManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingApiClient, AWSLambda lambdaClient) {
+        this.tableDriver = new TableDriver(client, taggingApiClient, lambdaClient);
         this.mapper = new DynamoDBMapper(client);
     }
 

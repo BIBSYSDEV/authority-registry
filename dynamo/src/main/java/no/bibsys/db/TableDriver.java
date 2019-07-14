@@ -57,26 +57,26 @@ public class TableDriver {
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
-    private final transient AWSResourceGroupsTaggingAPI taggingAPIclient;
+    private final transient AWSResourceGroupsTaggingAPI taggingApiClient;
     private final transient AWSLambda lambdaClient;
     private final transient String stackName;
 
     public TableDriver(final AmazonDynamoDB client,
-                       AWSResourceGroupsTaggingAPI taggingAPIclient,
+                       AWSResourceGroupsTaggingAPI taggingApiClient,
                        AWSLambda lambdaClient) {
-        this(client, taggingAPIclient, lambdaClient, null);
+        this(client, taggingApiClient, lambdaClient, null);
 
     }
 
     public TableDriver(final AmazonDynamoDB client,
-                       AWSResourceGroupsTaggingAPI taggingAPIclient,
+                       AWSResourceGroupsTaggingAPI taggingApiClient,
                        AWSLambda lambdaClient, String stackName) {
 
         if (isNull(client)) {
             throw new IllegalStateException("Cannot set null client ");
         }
-        if (isNull(taggingAPIclient)) {
-            throw new IllegalStateException("Cannot set null taggingAPIclient ");
+        if (isNull(taggingApiClient)) {
+            throw new IllegalStateException("Cannot set null taggingApiClient ");
         }
 
         if (isNull(lambdaClient)) {
@@ -88,7 +88,7 @@ public class TableDriver {
         this.client = client;
         this.dynamoDb = new DynamoDB(client);
         this.mapper = new DynamoDBMapper(client);
-        this.taggingAPIclient = taggingAPIclient;
+        this.taggingApiClient = taggingApiClient;
         this.lambdaClient = lambdaClient;
     }
 
@@ -212,7 +212,7 @@ public class TableDriver {
                         .withTagFilters(tagFiltersAWS)
                         .withTagFilters(tagFiltersUNIT)
                         .withTagFilters(tagFilterStackName);
-        List<String> arnList = taggingAPIclient.getResources(getResourcesRequest)
+        List<String> arnList = taggingApiClient.getResources(getResourcesRequest)
                 .getResourceTagMappingList()
                 .stream()
                 .map(ResourceTagMapping::getResourceARN)
