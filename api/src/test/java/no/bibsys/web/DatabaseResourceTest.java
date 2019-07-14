@@ -1,38 +1,16 @@
 package no.bibsys.web;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-
-import no.bibsys.db.helpers.AwsLambdaMock;
-import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.TableDriver;
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
 import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.testtemplates.SampleData;
@@ -40,6 +18,27 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -63,15 +62,24 @@ public class DatabaseResourceTest extends JerseyTest {
             Paths.get(VALIDATION_FOLDER, VALID_SHACL_VALIDATION_SCHEMA_JSON));
     }
 
+    @AfterClass
+    public static void deInit() {
+        System.clearProperty("sqlite4java.library.path");
+    }
+
     @Override
     protected Application configure() {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
         AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
         Environment environmentReader = new MockEnvironment();
-        
+
+        AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
+                new AwsResourceGroupsTaggingApiMockBuilder()
+                .withMatchableResourceTagMapping(null)
+                .build();
         AWSLambda mockLambdaClient = AwsLambdaMock.build();
-        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
+        AWSResourceGroupsTaggingAPI mockTaggingClient = awsResourceGroupsTaggingApiMock.initialize();
                 
         
         TableDriver tableDriver = new TableDriver(client, mockTaggingClient, mockLambdaClient);
