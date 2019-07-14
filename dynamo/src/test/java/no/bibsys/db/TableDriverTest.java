@@ -149,25 +149,25 @@ public class TableDriverTest extends LocalDynamoTest {
                 new AwsResourceGroupsTaggingApiMockBuilder();
         String stackName = "aSingleStackName";
 
-        TagFilter tagFiltersAWS = new TagFilter()
+        TagFilter tagFiltersAws = new TagFilter()
                 .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
-        TagFilter tagFiltersUNIT = new TagFilter()
+        TagFilter tagFiltersUnit = new TagFilter()
                 .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
         TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
                 .withValues(stackName);
         GetResourcesRequest getResourcesRequest =
                 new GetResourcesRequest()
-                        .withTagFilters(tagFiltersAWS)
-                        .withTagFilters(tagFiltersUNIT)
+                        .withTagFilters(tagFiltersAws)
+                        .withTagFilters(tagFiltersUnit)
                         .withTagFilters(tagFilterStackName);
 
         awsResourceGroupsTaggingApiMockBuilder.withMatchableResourceTagMapping(stackName);
         AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
                 awsResourceGroupsTaggingApiMockBuilder.build();
         awsResourceGroupsTaggingApiMock.setGetResourcesRequest(getResourcesRequest);
-        AWSResourceGroupsTaggingAPI taggingAPI = awsResourceGroupsTaggingApiMock.initialize();
+        AWSResourceGroupsTaggingAPI taggingApi = awsResourceGroupsTaggingApiMock.initialize();
 
-        TableDriver tableDriver = new TableDriver(localClient, taggingAPI, mockLambdaClient, stackName);
+        TableDriver tableDriver = new TableDriver(localClient, taggingApi, mockLambdaClient, stackName);
         assertThat(tableDriver.findDynamoTriggerArn(), is(not(isEmptyOrNullString())));
     }
 }

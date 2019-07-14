@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AwsResourceGroupsTaggingApiMockBuilder {
-    private transient final List<ResourceTagMapping> resourceTagMappingList;
+    private final transient List<ResourceTagMapping> resourceTagMappingList;
     private static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
     private static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
     private static final String AWS_CLOUDFORMATION_STACK_NAME = "aws:cloudformation:stack-name";

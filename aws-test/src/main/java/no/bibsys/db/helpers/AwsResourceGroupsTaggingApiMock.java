@@ -14,7 +14,8 @@ import static org.mockito.Mockito.when;
 
 public class AwsResourceGroupsTaggingApiMock {
 
-    private static final String EMPTY_RESOURCE_TAG_MAPPING_LIST_ERROR = "The resource tag mapping list has not been set";
+    private static final String EMPTY_RESOURCE_TAG_MAPPING_LIST_ERROR =
+            "The resource tag mapping list has not been set";
     private transient List<ResourceTagMapping> resourceTagMappingList;
     private transient GetResourcesRequest getResourcesRequest;
 
