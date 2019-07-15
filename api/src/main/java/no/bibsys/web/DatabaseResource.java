@@ -222,11 +222,11 @@ public class DatabaseResource {
 
         UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
 
-        String enityPath = String.join("/", "registry", registryName, "entity", entityId);
+        String entityPath = String.join("/", "registry", registryName, "entity", entityId);
 
-        uriBuilder.path(enityPath);
+        uriBuilder.path(entityPath);
 
-        persistedEntity.setPath(enityPath);
+        persistedEntity.setPath(entityPath);
 
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
     }
