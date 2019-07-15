@@ -1,28 +1,41 @@
 package no.bibsys.db;
 
+import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
+import com.amazonaws.services.resourcegroupstaggingapi.model.TagFilter;
+import no.bibsys.db.exceptions.ResourceFilteringException;
+import no.bibsys.db.helpers.AwsLambdaMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
+import no.bibsys.db.structures.Entity;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
-import org.junit.Test;
-
-import com.amazonaws.services.lambda.AWSLambda;
-import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import no.bibsys.db.helpers.AwsLambdaMock;
-import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMock;
-import no.bibsys.db.structures.Entity;
-
 public class TableDriverTest extends LocalDynamoTest {
+
+    private static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
+    private static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
+    private static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
+    private static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
+    private static final String AWS_CLOUDFORMATION_STACK_NAME = "aws:cloudformation:stack-name";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test(expected = IllegalStateException.class)
     public void constructor_nullValue_exception() {
-        TableDriver tableDriver = new TableDriver(null, null, null);
-
+        new TableDriver(null, null, null);
     }
 
     @Test
@@ -75,12 +88,17 @@ public class TableDriverTest extends LocalDynamoTest {
     }
 
     @Test
-    public void deleteTable_TableNotEmpty_ReturnsTrue() throws JsonProcessingException {
+    public void deleteTable_TableNotEmpty_ReturnsTrue() {
         TableDriver tableDriver = newTableDriver();
         tableDriver.createEntityRegistryTable(tableName);
-        
-        AWSResourceGroupsTaggingAPI mockTaggingClient = AwsResourceGroupsTaggingApiMock.build(); 
-        AWSLambda mockLambdaClient = AwsLambdaMock.build(); 
+
+        AwsResourceGroupsTaggingApiMockBuilder awsResourceGroupsTaggingApiMockBuilder
+                = new AwsResourceGroupsTaggingApiMockBuilder();
+        awsResourceGroupsTaggingApiMockBuilder.withMatchableResourceTagMapping("someStackName");
+        AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
+                awsResourceGroupsTaggingApiMockBuilder.build();
+        AWSResourceGroupsTaggingAPI mockTaggingClient = awsResourceGroupsTaggingApiMock.initialize();
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
 
         EntityManager entityManager = new EntityManager(localClient, mockTaggingClient, mockLambdaClient);
         entityManager.addEntity(tableName, new Entity());
@@ -104,6 +122,52 @@ public class TableDriverTest extends LocalDynamoTest {
         assertTrue(tables.contains("test2"));
         assertTrue(tables.contains("test3"));
         assertTrue(tables.contains("test4"));
+    }
 
+    @Test
+    public void tooManyResourceTagMappingsRaisesException() {
+        expectedException.expect(ResourceFilteringException.class);
+        expectedException.expectMessage("The resource filter failed, list length should be 1, but was 2");
+
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        AwsResourceGroupsTaggingApiMockBuilder awsResourceGroupsTaggingApiMockBuilder =
+                new AwsResourceGroupsTaggingApiMockBuilder();
+        String stackName = "aStackNameRepeatedProbablyShouldNeverHappen";
+        awsResourceGroupsTaggingApiMockBuilder.withMatchableResourceTagMapping(stackName)
+                .withMatchableResourceTagMapping(stackName);
+        AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
+                awsResourceGroupsTaggingApiMockBuilder.build();
+        AWSResourceGroupsTaggingAPI taggingApi = awsResourceGroupsTaggingApiMock.initialize();
+        TableDriver tableDriver = new TableDriver(localClient, taggingApi, mockLambdaClient, stackName);
+        tableDriver.findDynamoTriggerArn();
+    }
+
+    @Test
+    public void matchesOneAndOnlyOneMatchingResourceMapping() {
+        AWSLambda mockLambdaClient = AwsLambdaMock.build();
+        AwsResourceGroupsTaggingApiMockBuilder awsResourceGroupsTaggingApiMockBuilder =
+                new AwsResourceGroupsTaggingApiMockBuilder();
+        String stackName = "aSingleStackName";
+
+        TagFilter tagFiltersAws = new TagFilter()
+                .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
+        TagFilter tagFiltersUnit = new TagFilter()
+                .withKey(UNIT_RESOURCE_TYPE).withValues(DYNAMO_DB_TRIGGER_EVENT_PROCESSOR);
+        TagFilter tagFilterStackName = new TagFilter().withKey(AWS_CLOUDFORMATION_STACK_NAME)
+                .withValues(stackName);
+        GetResourcesRequest getResourcesRequest =
+                new GetResourcesRequest()
+                        .withTagFilters(tagFiltersAws)
+                        .withTagFilters(tagFiltersUnit)
+                        .withTagFilters(tagFilterStackName);
+
+        awsResourceGroupsTaggingApiMockBuilder.withMatchableResourceTagMapping(stackName);
+        AwsResourceGroupsTaggingApiMock awsResourceGroupsTaggingApiMock =
+                awsResourceGroupsTaggingApiMockBuilder.build();
+        awsResourceGroupsTaggingApiMock.setGetResourcesRequest(getResourcesRequest);
+        AWSResourceGroupsTaggingAPI taggingApi = awsResourceGroupsTaggingApiMock.initialize();
+
+        TableDriver tableDriver = new TableDriver(localClient, taggingApi, mockLambdaClient, stackName);
+        assertThat(tableDriver.findDynamoTriggerArn(), is(not(isEmptyOrNullString())));
     }
 }

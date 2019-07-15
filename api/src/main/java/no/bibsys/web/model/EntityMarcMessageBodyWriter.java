@@ -1,7 +1,5 @@
 package no.bibsys.web.model;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.core.JsonLdConsts;
 import no.bibsys.aws.tools.JsonUtils;
@@ -54,8 +52,8 @@ public class EntityMarcMessageBodyWriter extends CustomMessageBodyWriter<EntityD
         writer.close();
     }
 
-    private String extractPreferredLabel(String body) throws IOException, JsonParseException, JsonMappingException {
-        ObjectMapper objectMapper = JsonUtils.newJsonParser();
+    private String extractPreferredLabel(String body) throws IOException {
+        ObjectMapper objectMapper = JsonUtils.jsonParser;
         Map<String, Object> bodyMap = objectMapper.readValue(body, Map.class);
 
         List<Map<String, String>> preferredLabelList = (List<Map<String, String>>) bodyMap.get("preferredLabel");

@@ -1,34 +1,49 @@
 package no.bibsys.db.helpers;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesRequest;
 import com.amazonaws.services.resourcegroupstaggingapi.model.GetResourcesResult;
 import com.amazonaws.services.resourcegroupstaggingapi.model.ResourceTagMapping;
 
-public class AwsResourceGroupsTaggingApiMock  {
+import java.util.List;
 
-    public static AWSResourceGroupsTaggingAPI build() {
-        
-        AWSResourceGroupsTaggingAPI mockTaggingClient = mock(AWSResourceGroupsTaggingAPI.class); 
+import static java.util.Objects.isNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class AwsResourceGroupsTaggingApiMock {
+
+    private static final String EMPTY_RESOURCE_TAG_MAPPING_LIST_ERROR =
+            "The resource tag mapping list has not been set";
+    private transient List<ResourceTagMapping> resourceTagMappingList;
+    private transient GetResourcesRequest getResourcesRequest;
+
+    public void setGetResourcesRequest(GetResourcesRequest getResourcesRequest) {
+        this.getResourcesRequest = getResourcesRequest;
+    }
+
+    public void setResourceTagMapping(List<ResourceTagMapping> resourceTagMappingList) {
+        this.resourceTagMappingList = resourceTagMappingList;
+    }
+
+    public AWSResourceGroupsTaggingAPI initialize() {
+
+        if (resourceTagMappingList.isEmpty()) {
+            throw new RuntimeException(EMPTY_RESOURCE_TAG_MAPPING_LIST_ERROR);
+        }
+
+        GetResourcesResult getResourcesResultMock = new GetResourcesResult();
+        getResourcesResultMock.setResourceTagMappingList(resourceTagMappingList);
+
+        AWSResourceGroupsTaggingAPI mockTaggingClient = mock(AWSResourceGroupsTaggingAPI.class);
         GetResourcesResult mockResourcesResult = mock(GetResourcesResult.class);
-        
-        @SuppressWarnings("unchecked")
-        List<ResourceTagMapping> mockGetResourceTagMappingList = mock(List.class);
-        ResourceTagMapping mockResourceTagMapping = mock(ResourceTagMapping.class);
-        when(mockGetResourceTagMappingList.get(anyInt())).thenReturn(mockResourceTagMapping);
-        when(mockResourceTagMapping.getResourceARN()).thenReturn("arn:fake");
-        when(mockGetResourceTagMappingList.size()).thenReturn(1);
-        when(mockTaggingClient.getResources(any(GetResourcesRequest.class))).thenReturn(mockResourcesResult);
-        when(mockResourcesResult.getResourceTagMappingList()).thenReturn(mockGetResourceTagMappingList);
-        
+        if (isNull(getResourcesRequest)) {
+            when(mockTaggingClient.getResources(any())).thenReturn(getResourcesResultMock);
+        } else {
+            when(mockTaggingClient.getResources(getResourcesRequest)).thenReturn(getResourcesResultMock);
+        }
+        when(mockResourcesResult.getResourceTagMappingList()).thenReturn(resourceTagMappingList);
         return mockTaggingClient;
     }
-    
 }

@@ -1,10 +1,28 @@
 package no.bibsys.web;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
+import com.amazonaws.services.s3.Headers;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.jsonldjava.core.JsonLdConsts;
+import no.bibsys.testtemplates.SampleData;
+import no.bibsys.utils.JsonUtils;
+import no.bibsys.utils.ModelParser;
+import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
+import no.bibsys.web.model.CustomMediaType;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.security.ApiKeyConstants;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.junit.Assert;
+import org.junit.Test;
 
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,31 +34,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.amazonaws.services.s3.Headers;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.jsonldjava.core.JsonLdConsts;
-
-import no.bibsys.testtemplates.SampleData;
-import no.bibsys.utils.JsonUtils;
-import no.bibsys.utils.ModelParser;
-import no.bibsys.web.exception.validationexceptionmappers.ValidationSchemaNotFoundExceptionMapper;
-import no.bibsys.web.model.CustomMediaType;
-import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.RegistryDto;
-import no.bibsys.web.model.RegistryInfoNoMetadataDto;
-import no.bibsys.web.security.ApiKeyConstants;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 
 public class EntityDatabaseResourceTest extends DatabaseResourceTest {
 
@@ -87,7 +84,8 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         Response response = insertEntryRequest(registryName, expectedEntity, apiAdminKey);
         EntityDto actualEntity = response.readEntity(EntityDto.class);
 
-        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
+        assertThat(response.getLocation().toString(), containsString("/entity/sampleId"));
 
         Response readResponse = readEntity(registryName, actualEntity.getId(), MediaType.APPLICATION_JSON);
         EntityDto readEntity = readResponse.readEntity(EntityDto.class);
@@ -128,7 +126,8 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
 
         EntityDto expectedEntity = sampleData.sampleEntityDto();
         Response response = insertEntryRequest(registryName, expectedEntity, registryAdminKey);
-        assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+        assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
+        assertThat(response.getLocation().toString(), containsString("/entity/sampleId"));
     }
 
     @Test

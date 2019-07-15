@@ -1,40 +1,35 @@
 package no.bibsys.web;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.junit.Test;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     private static final String UPDATED_PUBLISHER_VALUE = "Updated publisher value";
     private static final String PUBLISHER = "Publisher";
-    Logger logger = LoggerFactory.getLogger(RegistryDatabaseResourceTest.class);
-    
+
     @Test
     public void createRegistry_RegistryNotExistingUserNotAuthorized_StatusForbidden() {
         String registryName = UUID.randomUUID().toString();
-
         Response response = createRegistry(registryName, "InvalidApiKey");
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -49,16 +44,15 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     @Test
     public void createRegistry_RegistryNotExistingUserAuthorized_StatusOK() {
-        String registryName = "TheRegistryName";
-        
         System.out.println("calling ping");
         ping_ReturnsStatusCodeOK();
         System.out.println("called ping");
-        
+
+        String registryName = "TheRegistryName";
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        System.out.println("response from createRegistry: "+response);
+        System.out.println("response from createRegistry: " + response);
         RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
@@ -87,7 +81,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() throws Exception {
+    public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() {
         String registryName = createRegistry();
 
         Response putRegistrySchemaResponse = putSchema(registryName, validValidationSchema);
@@ -113,7 +107,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void getRegistryStatus_registryExists_returnsStatusCreated() throws Exception {
+    public void getRegistryStatus_registryExists_returnsStatusCreated() {
         String registryName = createRegistry();
 
         Response response = registryStatus(registryName);
@@ -122,6 +116,11 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
     @Test
     public void replaceApiKey_registryExists_returnsNewApiKey() {
+        AwsResourceGroupsTaggingApiMockBuilder awsResourceGroupsTaggingApiMockBuilder =
+                new AwsResourceGroupsTaggingApiMockBuilder();
+        awsResourceGroupsTaggingApiMockBuilder.withMatchableResourceTagMapping(null);
+        awsResourceGroupsTaggingApiMockBuilder.build().initialize();
+
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         Response createRegistryResponse = createRegistry(registryDto, apiAdminKey);
@@ -158,7 +157,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void getRegistryMetadata_textHtml_registryAsHtml() throws Exception {
+    public void getRegistryMetadata_textHtml_registryAsHtml() {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
@@ -172,7 +171,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() throws Exception {
+    public void updateRegistryMetadata_registryExists_returnsUpdatedRegistryMetadata() {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         createRegistry(registryDto, apiAdminKey);
@@ -205,7 +204,8 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         RegistryDto registryDto2 = sampleData.sampleRegistryDto(registryName2);
         createRegistry(registryDto2, apiAdminKey);
 
-        Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
+        Response response = target("/registry").request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
         @SuppressWarnings("unchecked") List<String> registryList = response.readEntity(List.class);
         assertThat(registryList.size(), is(2));
         assertThat(registryList.contains(registryName1), is(true));
@@ -224,8 +224,9 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
-                                                                                 apiAdminKey).delete();
+        Response response = target("/registry/" + registryName)
+                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+                apiAdminKey).delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
         String entity = response.readEntity(String.class);
@@ -238,8 +239,9 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
-                                                                                 "invalidAPIKEY").delete();
+        Response response = target("/registry/" + registryName)
+                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+                "invalidAPIKEY").delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -248,8 +250,9 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     public void deleteRegistry_RegistryNotExisting_ReturnsStatusNotFound() {
 
         String registryName = UUID.randomUUID().toString();
-        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
-                                                                                 apiAdminKey).delete();
+        Response response = target("/registry/" + registryName)
+                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+                apiAdminKey).delete();
 
         String entity = response.readEntity(String.class);
         assertThat(response.getStatus(), is(equalTo(Status.NOT_FOUND.getStatusCode())));
@@ -262,7 +265,8 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     public void callEndpoint_WrongRole_ReturnsStatusForbidden() {
         String registryName = UUID.randomUUID().toString();
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
-        Response response = target("/registry").request().header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
+        Response response = target("/registry").request()
+                .header(ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey)
                 .post(javax.ws.rs.client.Entity.entity(registryDto.toString(), MediaType.APPLICATION_JSON));
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));

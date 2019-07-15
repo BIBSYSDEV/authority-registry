@@ -1,23 +1,5 @@
 package no.bibsys.staticurl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.apigateway.model.BasePathMapping;
 import com.amazonaws.services.apigateway.model.GetBasePathMappingsResult;
@@ -29,10 +11,26 @@ import com.amazonaws.services.route53.model.ChangeResourceRecordSetsResult;
 import com.amazonaws.services.route53.model.HostedZone;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ResourceRecordSet;
-
 import no.bibsys.aws.cloudformation.Stage;
 import no.bibsys.aws.route53.Route53Updater;
 import no.bibsys.aws.route53.StaticUrlInfo;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UrlUpdaterTest {
@@ -87,7 +85,7 @@ public class UrlUpdaterTest {
 
         // necessary when apiGateway is called to delete old mappings
         when(client.getBasePathMappings(any()))
-        .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
+            .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
         return client;
     }
 
@@ -145,8 +143,8 @@ public class UrlUpdaterTest {
 
     static class MockRoute53Updater extends Route53Updater {
 
-        public MockRoute53Updater(StaticUrlInfo staticUrlInfo, String apiGatewayRestApiId, AmazonApiGateway apiGatewayClient, 
-                AmazonRoute53 route53Client) {
+        public MockRoute53Updater(StaticUrlInfo staticUrlInfo, String apiGatewayRestApiId,
+                                  AmazonApiGateway apiGatewayClient, AmazonRoute53 route53Client) {
             super(staticUrlInfo, apiGatewayRestApiId, apiGatewayClient, route53Client);
         }
 
