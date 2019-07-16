@@ -13,7 +13,7 @@
       "path"       : "rdf:type"
     }, {
       "@id"     : "_:b4",
-      "datatype": "unit:Concept",
+      "datatype": "rdf:langString",
       "path"    : "unit:alternativeLabel"
     }, {
       "@id"        : "unit:nodeshape",

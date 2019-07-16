@@ -1,22 +1,20 @@
 package no.bibsys.web.exception.validationexceptionmappers;
 
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.web.exception.MapperTest;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
+import org.junit.Test;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.util.UUID;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
-import java.util.UUID;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.junit.Test;
-
-import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
-import no.bibsys.web.exception.MapperTest;
-import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.RegistryDto;
 
 public class EntityFailedShaclValidationExceptionMapperTest
         extends MapperTest<EntityFailedShaclValidationExceptionMapper> {
@@ -25,7 +23,7 @@ public class EntityFailedShaclValidationExceptionMapperTest
     public void insertEntity_entityFailedValidation_ReturnsStatusBadRequest() throws Exception {
 
         when(mockEntityService.addEntity(anyString(), any())).thenAnswer(invocation -> { 
-            throw new EntityFailedShaclValidationException();
+            throw new EntityFailedShaclValidationException("Some TURTLE");
         });
 
         String registryName = UUID.randomUUID().toString();

@@ -57,7 +57,7 @@ unit:alternativeLabel a rdfs:Property ;
   rdfs:label "Alternativt navn"@no ;
   rdfs:description "An alternative label for a thing" ;
   rdfs:domain unit:Concept ;
-  rdfs:range unit:Concept .
+  rdfs:range rdf:langString .
 
 unit:narrower a rdfs:Property ;
   rdfs:subPropertyOf skos:narrower ;
@@ -91,7 +91,7 @@ unit:definition a rdfs:Property ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
 
-unit:ediorialNote a rdfs:Property ;
+unit:editorialNote a rdfs:Property ;
   rdfs:subPropertyOf skos:editorialNote ;
   rdfs:label "Editorial note"@en ;
   rdfs:label "Redaktørnote"@no ;
@@ -137,5 +137,3 @@ unit:created a rdfs:Property ;
   rdfs:description "The date of creation" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
-
-rdf:type a rdfs:Property .
