@@ -7,8 +7,8 @@ import org.junit.rules.ExpectedException;
 
 public class ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionTest {
 
-    private static final String EXPECTED_MESSAGE = "The ShaCL model provided attempts to match non-ontology property " +
-            "ranges: %n%n %s";
+    private static final String EXPECTED_MESSAGE = "The ShaCL model provided attempts to match non-ontology property "
+            + "ranges: %n%n %s";
     private static final String SOME_TURTLE = "Some TURTLE";
 
     @Rule

@@ -19,11 +19,13 @@ import static org.mockito.Mockito.when;
 public class EntityFailedShaclValidationExceptionMapperTest
         extends MapperTest<EntityFailedShaclValidationExceptionMapper> {
 
-    @Test 
+    private static final String SOME_TURTLE = "Some TURTLE";
+
+    @Test
     public void insertEntity_entityFailedValidation_ReturnsStatusBadRequest() throws Exception {
 
         when(mockEntityService.addEntity(anyString(), any())).thenAnswer(invocation -> { 
-            throw new EntityFailedShaclValidationException("Some TURTLE");
+            throw new EntityFailedShaclValidationException(SOME_TURTLE);
         });
 
         String registryName = UUID.randomUUID().toString();
