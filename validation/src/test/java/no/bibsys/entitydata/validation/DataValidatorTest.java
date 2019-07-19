@@ -37,7 +37,7 @@ public class DataValidatorTest extends ModelParser {
     private static final Property SH_CONFORMS = ResourceFactory
             .createProperty("http://www.w3.org/ns/shacl#conforms");
     private static final Property SH_VALIDATION_REPORT_CLASS = ResourceFactory
-        .createProperty("http://www.w3.org/ns/shacl#ValidationReport");
+            .createProperty("http://www.w3.org/ns/shacl#ValidationReport");
     private static final String INVALID_SCHEMA_AND_INVALID_GRAPH_FAILS_MESSAGE_TXT =
             "invalid_schema_and_invalid_graph_fails_message.txt";
     private static final String PATH_SEPARATOR = "/";
@@ -53,7 +53,7 @@ public class DataValidatorTest extends ModelParser {
 
     public DataValidatorTest() throws IOException {
         Model validationModel = parseModel(
-            IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TTL);
+                IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TTL);
         dataValidator = new DataValidator(validationModel);
     }
 
@@ -88,8 +88,8 @@ public class DataValidatorTest extends ModelParser {
         Resource blankNode = expectedModel.createResource();
         expectedModel.add(expectedModel.createStatement(blankNode, RDF.type, SH_VALIDATION_REPORT_CLASS));
         expectedModel.add(expectedModel
-            .createStatement(blankNode, SH_CONFORMS, expectedModel
-                    .createTypedLiteral("true", XSDDatatype.XSDboolean)));
+                .createStatement(blankNode, SH_CONFORMS, expectedModel
+                        .createTypedLiteral("true", XSDDatatype.XSDboolean)));
         assertTrue(expectedModel.isIsomorphicWith(report));
     }
 
@@ -97,20 +97,20 @@ public class DataValidatorTest extends ModelParser {
     @Test
     public void valiationReport_validSchemaAndValidGraphJsonLd_report() throws IOException {
         Model dataModel = parseModel(IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_JSON)),
-            Lang.JSONLD);
+                Lang.JSONLD);
         Model report = dataValidator.validationReport(dataModel);
         Model expectedModel = ModelFactory.createDefaultModel();
         Resource blankNode = expectedModel.createResource();
         expectedModel.add(expectedModel.createStatement(blankNode, RDF.type, SH_VALIDATION_REPORT_CLASS));
         expectedModel.add(expectedModel
-            .createStatement(blankNode, SH_CONFORMS, expectedModel
-                    .createTypedLiteral("true", XSDDatatype.XSDboolean)));
+                .createStatement(blankNode, SH_CONFORMS, expectedModel
+                        .createTypedLiteral("true", XSDDatatype.XSDboolean)));
         assertTrue(expectedModel.isIsomorphicWith(report));
     }
 
     @Test
     public void isValidEntry_validationSchemaAndInvalidGraph_f()
-        throws EntityFailedShaclValidationException, IOException {
+            throws EntityFailedShaclValidationException, IOException {
         expectedException.expect(EntityFailedShaclValidationException.class);
         testExceptionMessageContainingTurtle();
         TestData testData = new TestData(Paths.get(RESOURCES_FOLDER, INVALID_GRAPH_TTL)).invoke();
@@ -120,14 +120,14 @@ public class DataValidatorTest extends ModelParser {
 
     @Test
     public void isValidEntry_validationSchemaAndInvalidGraph_exception()
-        throws EntityFailedShaclValidationException, IOException {
+            throws EntityFailedShaclValidationException, IOException {
         expectedException.expect(EntityFailedShaclValidationException.class);
         testExceptionMessageContainingTurtle();
         Model validationModel = parseModel(
-            IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TURTLE);
+                IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, SHACL_VALIDATION_SCHEMA_TTL)), Lang.TURTLE);
 
         Model dataModel = parseModel(IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, INVALID_GRAPH_JSON)),
-            Lang.JSONLD);
+                Lang.JSONLD);
         DataValidator dataValidator = new DataValidator(validationModel);
         assertFalse(dataValidator.isValidEntry(dataModel));
     }
@@ -149,14 +149,14 @@ public class DataValidatorTest extends ModelParser {
     private void testExceptionMessageContainingTurtle() throws IOException {
         // This jiggery pokery needs to be done to avoid matching the bnode id, which is a uuid
 
-        String expectedMesage = IOUtils.resourceToString(Paths.get( PATH_SEPARATOR + RESOURCES_FOLDER,
+        String expectedMesage = IOUtils.resourceToString(Paths.get(PATH_SEPARATOR + RESOURCES_FOLDER,
                 INVALID_SCHEMA_AND_INVALID_GRAPH_FAILS_MESSAGE_TXT).toString(), StandardCharsets.UTF_8)
                 .replace(SOME_BNODE_AND_A_TURTLE_LINE_ENDING, EMPTY_STRING);
         String[] lines = expectedMesage.split(NEWLINE);
         int counter = 0;
         while (counter < lines.length - 1) {
             expectedException.expectMessage(containsString(lines[counter]));
-            counter ++;
+            counter++;
         }
 
     }
