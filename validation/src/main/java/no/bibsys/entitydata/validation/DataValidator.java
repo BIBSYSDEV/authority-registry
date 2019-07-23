@@ -25,7 +25,7 @@ public class DataValidator extends ModelParser {
     private static final String SHACL_PREFIX = "sh";
     private static final String EIGHT_SPACES = "        ";
     private final transient Model validationSchema;
-    private Model report;
+    private transient Model report;
 
     public DataValidator(Model validationSchema) {
         super();
