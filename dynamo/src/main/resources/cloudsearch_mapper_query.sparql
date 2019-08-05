@@ -1,6 +1,6 @@
 PREFIX unit: <http://unit.no/entitydata#>
 
-SELECT ?identifier 
+SELECT 
        (group_concat(DISTINCT ?localIdentifierBound;separator="§§§§") as ?localidentifier) 
        (group_concat(DISTINCT ?preferredlabelBound;separator="§§§§") as ?preferredlabel) 
        (group_concat(DISTINCT ?alternativeLabelBound;separator="§§§§") as ?alternativelabel) 
@@ -8,12 +8,15 @@ SELECT ?identifier
        (group_concat(DISTINCT ?broaderBound;separator="§§§§") as ?broader) 
        (group_concat(DISTINCT ?relatedBound;separator="§§§§") as ?related) 
        ?definition 
-       ?inScheme 
+       ?inscheme 
        (group_concat(DISTINCT ?seeAlsoBound;separator="§§§§") as ?seealso) 
 WHERE {
   ?subject a unit:Concept ; 
-   unit:identifier ?identifier .
-  OPTIONAL {?subject unit:localIdentifier ?localIdentifierBound}
+#   unit:identifier ?identifier .
+  OPTIONAL {
+    ?subject unit:localIdentifier ?localIdentifierRaw
+    BIND (STR(?localIdentifierRaw) AS ?localIdentifierBound)
+  }
   OPTIONAL {
     ?subject unit:preferredLabel ?preferedLabelRaw
     BIND (STR(?preferedLabelRaw) AS ?preferredlabelBound)
@@ -40,7 +43,7 @@ WHERE {
   }
   OPTIONAL {
     ?subject unit:inScheme ?inSchemeRaw
-    BIND (STR(?inSchemeRaw) AS ?inScheme)
+    BIND (STR(?inSchemeRaw) AS ?inscheme)
   }
   OPTIONAL {
     ?subject unit:seeAlso ?seeAlsoRaw
@@ -48,4 +51,4 @@ WHERE {
   }
 }
 
-GROUP BY ?identifier ?altlLabel ?narrower ?broad ?relate ?definition ?inScheme ?see
+GROUP BY ?altlLabel ?narrower ?broad ?relate ?definition ?inscheme ?see
