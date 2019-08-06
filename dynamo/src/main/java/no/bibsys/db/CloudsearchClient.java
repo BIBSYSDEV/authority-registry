@@ -48,7 +48,8 @@ public class CloudsearchClient {
         this.documentUploadClient = documentUploadClient;
     }
 
-    public void uploadbatch(List<AmazonSdfDTO> documents) throws JsonGenerationException, JsonMappingException, IOException {
+    public void uploadbatch(List<AmazonSdfDTO> documents)
+            throws JsonGenerationException, JsonMappingException, IOException {
         
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
                 .withContentType(ContentType.Applicationjson);
@@ -67,11 +68,12 @@ public class CloudsearchClient {
 
     }
 
-    private String batchToString(List<AmazonSdfDTO> documents) throws JsonGenerationException, JsonMappingException, IOException {
-            StringWriter batchDocuments = new StringWriter();
-            ObjectMapper objectMapper = JsonUtils.newJsonParser();
-            objectMapper.writeValue(batchDocuments, documents);
-            logger.debug("batchDocuments={}", batchDocuments);
-            return batchDocuments.toString();
+    private String batchToString(List<AmazonSdfDTO> documents)
+            throws JsonGenerationException, JsonMappingException, IOException {
+        StringWriter batchDocuments = new StringWriter();
+        ObjectMapper objectMapper = JsonUtils.newJsonParser();
+        objectMapper.writeValue(batchDocuments, documents);
+        logger.debug("batchDocuments={}", batchDocuments);
+        return batchDocuments.toString();
     }
 }

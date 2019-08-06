@@ -1,6 +1,5 @@
 package no.bibsys.db;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,18 +33,22 @@ import no.bibsys.utils.JsonUtils;
 
 public class AmazonSdfDTO {
 
-    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);    
+    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
     public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
 
-    public enum CloudsearchSdfType { ADD, DELETE };
-    public enum EventName { INSERT, MODIFY, REMOVE };
+    public enum CloudsearchSdfType {
+        ADD, DELETE
+    }
+    
+    public enum EventName {
+        INSERT, MODIFY, REMOVE
+    }
 
     private final String type;
     private transient String id;
     private final transient Map<String, String[]> fields = new ConcurrentHashMap<>();
-
 
     public AmazonSdfDTO(String eventName) {
         type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
@@ -54,7 +57,6 @@ public class AmazonSdfDTO {
     public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
         this.type = cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
-
 
     @SuppressWarnings("PMD")
     @Override
@@ -66,18 +68,20 @@ public class AmazonSdfDTO {
         return str.toString();
     }
 
-
     private CloudsearchSdfType eventToOperation(String eventName) {
-        EventName event  = EventName.valueOf(eventName); 
+        EventName event = EventName.valueOf(eventName);
         switch (event) {
-        case INSERT:
-        case MODIFY: return CloudsearchSdfType.ADD;
-        case REMOVE: return CloudsearchSdfType.DELETE;
+            case INSERT:
+            case MODIFY:
+                return CloudsearchSdfType.ADD;
+            case REMOVE:
+                return CloudsearchSdfType.DELETE;
+            default:
+                return null;
         }
-        return null;
     }
 
-    public Map<String,?> getFields() {
+    public Map<String, ?> getFields() {
         return fields;
     }
 
@@ -90,24 +94,26 @@ public class AmazonSdfDTO {
     }
 
     public void setId(String id) {
-        this.id = id; 
+        this.id = id;
     }
 
     public void setFieldsFromEntity(Entity entity) throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),Lang.JSONLD);
+        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),
+                Lang.JSONLD);
         StringWriter stringWriter = new StringWriter();
-        RDFDataMgr.write(stringWriter, model, Lang.TURTLE); 
+        RDFDataMgr.write(stringWriter, model, Lang.TURTLE);
         String query = IoUtils.resourceAsString(Paths.get(CLOUDSEARCH_MAPPER_QUERY_SPARQL));
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             ResultSet resultSet = queryExecution.execSelect();
             List<String> resultVars = resultSet.getResultVars();
-            resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
+            resultSet.forEachRemaining(
+                result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
         } catch (Exception e) {
-            logger.debug("",e);
+            logger.debug("", e);
         }
         String presentationString = createPresentation(entity);
-        fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] {presentationString});
+        fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] { presentationString });
     }
 
     private String createPresentation(Entity entity) throws JsonGenerationException, JsonMappingException, IOException {
@@ -117,11 +123,9 @@ public class AmazonSdfDTO {
         return presentationWriter.toString();
     }
 
-
     private void processQuerySolution(QuerySolution querySolution, String resultVar) {
-        Optional.ofNullable(querySolution.get(resultVar))
-            .ifPresent(value -> {fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR));});  
+        Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> {
+            fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR));
+        });
     }
-
-
 }
