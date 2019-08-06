@@ -65,7 +65,6 @@ public class SampleData {
         entity.setBody(body);
         
         JsonNode jsonNode = body.get("@id");
-//        String id = jsonNode.get("@value").textValue();
         String id = jsonNode.asText().substring(jsonNode.asText().lastIndexOf("/")+1);
         entity.setId(id);
         String nowString = new Date().toString();
