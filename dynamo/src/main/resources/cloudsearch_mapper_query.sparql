@@ -19,7 +19,7 @@ WHERE {
   }
   OPTIONAL {
     ?subject unit:preferredLabel ?preferedLabelRaw
-    BIND (STR(?preferedLabelRaw) AS ?preferredlabelBound)
+    BIND (STR(?preferredLabelRaw) AS ?preferredlabelBound)
   }
   OPTIONAL {
     ?subject unit:alternativeLabel ?alternativeLabelRaw
