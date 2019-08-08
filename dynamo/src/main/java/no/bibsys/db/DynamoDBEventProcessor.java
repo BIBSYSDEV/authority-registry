@@ -54,18 +54,28 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
 
     private AmazonSdfDTO createAmazonSdfFromTriggerEvent(DynamodbStreamRecord dynamodDBStreamRecord) {
-        StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
-
-        AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
-        if (streamRecord.getNewImage().containsKey("id")) {
-            sdf.setId(streamRecord.getNewImage().get("id").getS());
-        }
         try {
-            sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
-        } catch (IOException e) {
-            logger.error("",e);
+            StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
+
+            AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
+            if (streamRecord == null) {
+                logger.debug("streamRecord == null");
+            }
+            if (streamRecord.getNewImage() == null) {
+                logger.debug("streamRecord.getNewImage() == null");
+            }
+            if (streamRecord.getNewImage().containsKey("id")) {
+                sdf.setId(streamRecord.getNewImage().get("id").getS());
+            }
+            try {
+                sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
+            } catch (IOException e) {
+                logger.error("",e);
+            }
+            return sdf;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return sdf;
     }
 
     private Entity extractFullEntity(Map<String, AttributeValue> map) {
