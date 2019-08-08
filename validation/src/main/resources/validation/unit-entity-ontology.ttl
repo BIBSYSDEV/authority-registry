@@ -52,7 +52,7 @@ unit:preferredLabel a rdfs:Property ;
   rdfs:range rdf:langString .
 
 unit:alternativeLabel a rdfs:Property ;
-  rdfs::subPropertyOf skos:altLabel ;
+  rdfs:subPropertyOf skos:altLabel ;
   rdfs:label "Alternative label"@en ;
   rdfs:label "Alternativt navn"@no ;
   rdfs:description "An alternative label for a thing" ;
