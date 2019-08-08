@@ -1,12 +1,12 @@
 {
-	"@id": "http://data.ub.uio.no/humord/c27724-2",
+	"@id": "http://data.ub.uio.no/humord/927724",
 	"@type": "http://unit.no/entitydata#Concept",
 	"editorialNote": {
 		"@language": "nb",
 		"@value": "Lukket bemerkning: ubo14111"
 	},
 	"inScheme": "https://unit.no/systems#humord",
-	"localIdentifier": "HUME27724",
+	"localIdentifier": "HUME927724",
 	"modified": "2014-12-30",
 	"preferredLabel": {
 		"@language": "nb",
