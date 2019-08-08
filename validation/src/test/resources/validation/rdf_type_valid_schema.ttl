@@ -1,0 +1,13 @@
+@prefix : <http://authority-registry/validation/__THIS_DOCUMENT__> .
+@prefix unit: <http://unit.no/entitydata#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+unit:nodeshape a sh:NodeShape ;
+  sh:targetClass unit:Concept ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:nodeKind sh:IRI
+  ] .
+

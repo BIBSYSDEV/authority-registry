@@ -23,7 +23,6 @@ public class ShaclValidatorTest extends ModelParser {
     private static final String RESOURCES_PATH = "validation";
     private static final String ENTITY_ONTOLOGY_TTL = "unit-entity-ontology.ttl";
     private static final String VALID_SCHEMA = "validShaclValidationSchema.ttl";
-    private static final String INVALID_PATH_SCHEMA = "invalidPathObjectShaclValidationSchema.ttl";
     private static final String INVALID_CLASS_SCHEMA = "invalidClassShaclValidationSchema.ttl";
     private static final String INVALID_DATATYPE_SCHEMA = "invalidDatatypeRangeShaclValidationSchema.ttl";
     private static final String INVALID_DOMAIN_SCEMA = "invalidPropertyDomainShaclValidationSchema.ttl";
@@ -31,6 +30,8 @@ public class ShaclValidatorTest extends ModelParser {
             "invalidPathObjectShaclValidationSchema.ttl";
     private static final String INVALID_TARGET_CLASS_VALIDATION_SCHEMA_TTL =
             "invalidTargetClassShaclValidationSchema.ttl";
+    private static final String RDF_TYPE_VALID_SCHEMA = "rdf_type_valid_schema.ttl";
+    private static final String FULLY_FEATURED_SHACL_SCHEMA = "fully_featured_shacl_schema.ttl";
 
     private final ShaclValidator validator;
 
@@ -56,6 +57,20 @@ public class ShaclValidatorTest extends ModelParser {
     public void shaclModelTargetClassesAreClassesOfOntology_validShaclSchema_valid()
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         boolean result = validator.checkModel(parseModel(VALID_SCHEMA));
+        assertTrue(result);
+    }
+
+    @Test
+    public void shaclModelRdfTypePropertiesAreAccepted_validShaclSchema_valid() throws IOException,
+            TargetClassPropertyObjectIsNotAResourceException, ShaclModelValidationException {
+        boolean result = validator.checkModel(parseModel(RDF_TYPE_VALID_SCHEMA));
+        assertTrue(result);
+    }
+
+    @Test
+    public void shaclModelForFullyFeaturedShaclModel_validShaclSchema_valid() throws IOException,
+            TargetClassPropertyObjectIsNotAResourceException, ShaclModelValidationException {
+        boolean result = validator.checkModel(parseModel(FULLY_FEATURED_SHACL_SCHEMA));
         assertTrue(result);
     }
 
