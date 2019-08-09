@@ -35,6 +35,7 @@ public class AmazonSdfDTO {
 
     private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
     public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
+    public static final String CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD = "modified";
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
 
@@ -114,6 +115,7 @@ public class AmazonSdfDTO {
         }
         String presentationString = createPresentation(entity);
         fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] { presentationString });
+        fields.put(CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD, new String[] { entity.getModified() });
     }
 
     private String createPresentation(Entity entity) throws JsonGenerationException, JsonMappingException, IOException {

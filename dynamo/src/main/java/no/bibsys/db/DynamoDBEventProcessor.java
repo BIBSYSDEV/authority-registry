@@ -38,7 +38,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     @Override
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
 
-        logger.debug("dynamodbEvent, #records={}", dynamodbEvent.getRecords().size());
+//        logger.debug("dynamodbEvent, #records={}", dynamodbEvent.getRecords().size());
 
         List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
                 .map(this::createAmazonSdfFromTriggerEvent)
@@ -69,6 +69,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             }
             try {
                 sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
+                logger.debug("sdf={}",sdf);
             } catch (IOException e) {
                 logger.error("",e);
             }
@@ -79,6 +80,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     }
 
     private Entity extractFullEntity(Map<String, AttributeValue> map) {
+        logger.debug("map={}",map);
         Entity entity = new Entity();
         ObjectNode body;
         try {
