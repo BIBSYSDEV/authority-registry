@@ -51,11 +51,20 @@ public class CloudsearchClient {
     public void uploadbatch(List<AmazonSdfDTO> documents)
             throws JsonGenerationException, JsonMappingException, IOException {
         
+        logger.debug("uploadbatch -> documents={}", documents);
+        
+        if (documents.isEmpty()) {
+            logger.debug("documents,isEmpty(), skipping batch");
+            return;
+        }
+        
         UploadDocumentsRequest uploadDocumentsRequest = new UploadDocumentsRequest()
                 .withContentType(ContentType.Applicationjson);
         
         String documentsAsString = batchToString(documents);
-        logger.debug("documentsAsString={}",documentsAsString);
+        if (documentsAsString == null || documentsAsString.isEmpty()) {
+            logger.debug("documentsAsString={}, skipping",documentsAsString);
+        }
 
         byte[] bytes = documentsAsString.getBytes(Charsets.UTF_8);
         InputStream inputStream = new ByteArrayInputStream(bytes);
@@ -71,8 +80,10 @@ public class CloudsearchClient {
     private String batchToString(List<AmazonSdfDTO> documents)
             throws JsonGenerationException, JsonMappingException, IOException {
         StringWriter batchDocuments = new StringWriter();
-        ObjectMapper objectMapper = JsonUtils.newJsonParser();
-        objectMapper.writeValue(batchDocuments, documents);
+        if (!documents.isEmpty()) {
+            ObjectMapper objectMapper = JsonUtils.newJsonParser();
+            objectMapper.writeValue(batchDocuments, documents);
+        }
         logger.debug("batchDocuments={}", batchDocuments);
         return batchDocuments.toString();
     }

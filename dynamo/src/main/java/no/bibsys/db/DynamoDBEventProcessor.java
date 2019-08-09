@@ -1,6 +1,16 @@
 package no.bibsys.db;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.OperationType;
 import com.amazonaws.services.dynamodbv2.model.StreamRecord;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -9,16 +19,9 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStream
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.JsonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
@@ -38,15 +41,17 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     @Override
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
 
-//        logger.debug("dynamodbEvent, #records={}", dynamodbEvent.getRecords().size());
-
-        List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
-                .map(this::createAmazonSdfFromTriggerEvent)
-                .collect(Collectors.toCollection(ArrayList::new));
-
         try {
-            cloudsearchClient.uploadbatch(documents);
-        } catch (IOException e) {
+            logger.debug("dynamodbEvent, #records={}, dynamodbEvent={}", dynamodbEvent.getRecords().size(), dynamodbEvent.toString());
+
+            List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
+                    .map(this::createAmazonSdfFromTriggerEvent)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            if (!documents.isEmpty()) {
+                cloudsearchClient.uploadbatch(documents);
+            }
+        } catch (Exception e) {
             logger.error("",e);
         }
         return null;
@@ -55,6 +60,11 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private AmazonSdfDTO createAmazonSdfFromTriggerEvent(DynamodbStreamRecord dynamodDBStreamRecord) {
         try {
+
+            if (OperationType.valueOf(dynamodDBStreamRecord.getEventName()) == OperationType.REMOVE) {
+                return null;
+            }
+
             StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
 
             AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
@@ -68,13 +78,15 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                 sdf.setId(streamRecord.getNewImage().get("id").getS());
             }
             try {
-                sdf.setFieldsFromEntity(extractFullEntity(streamRecord.getNewImage()));
+                Entity entity = extractFullEntity(streamRecord.getNewImage());
+                sdf.setFieldsFromEntity(entity);
                 logger.debug("sdf={}",sdf);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("",e);
             }
             return sdf;
         } catch (Exception e) {
+            logger.error("",e);
             throw new RuntimeException(e);
         }
     }

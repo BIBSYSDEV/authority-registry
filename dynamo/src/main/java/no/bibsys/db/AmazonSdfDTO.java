@@ -4,12 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -26,6 +24,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import com.google.gson.internal.LinkedTreeMap;
 
 import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.IoUtils;
@@ -49,7 +48,7 @@ public class AmazonSdfDTO {
 
     private final String type;
     private transient String id;
-    private final transient Map<String, String[]> fields = new ConcurrentHashMap<>();
+    private final transient LinkedTreeMap<String, Object> fields = new LinkedTreeMap<>();
 
     public AmazonSdfDTO(String eventName) {
         type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
@@ -64,7 +63,7 @@ public class AmazonSdfDTO {
     public String toString() {
         StringBuilder str = new StringBuilder(60);
         str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
-        fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
+        fields.forEach((k, v) -> str.append(k).append("=").append(fields.get(k)).append(", "));
         str.append("}]");
         return str.toString();
     }
@@ -115,7 +114,7 @@ public class AmazonSdfDTO {
         }
         String presentationString = createPresentation(entity);
         fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] { presentationString });
-        fields.put(CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD, new String[] { entity.getModified() });
+        fields.put(CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD,  entity.getModified());
     }
 
     private String createPresentation(Entity entity) throws JsonGenerationException, JsonMappingException, IOException {
