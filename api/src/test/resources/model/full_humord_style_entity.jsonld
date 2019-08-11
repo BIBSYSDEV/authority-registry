@@ -1,0 +1,95 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "http://unit.no/entitydata#hume000001",
+  "@type": "http://unit.no/entitydata#Concept",
+  "http://unit.no/entitydata#alternativeLabel": {
+    "@language": "en",
+    "@value": "Animals, exotic"
+  },
+  "http://unit.no/entitydata#broader": [
+    {
+      "@id": "http://unit.no/entitydata/uuid1"
+    },
+    {
+      "@id": "http://unit.no/entitydata/uuid2"
+    }
+  ],
+  "http://unit.no/entitydata#created": {
+    "@type": "xsd:date",
+    "@value": "2019-08-09"
+  },
+  "http://unit.no/entitydata#definition": [
+    {
+      "@language": "en",
+      "@value": "This is a definition"
+    },
+    {
+      "@language": "no",
+      "@value": "Dette er en definition"
+    }
+  ],
+  "http://unit.no/entitydata#editorialNote": [
+    {
+      "@language": "no",
+      "@value": "Dette er en editorial note"
+    },
+    {
+      "@language": "en",
+      "@value": "This is an editorial note"
+    }
+  ],
+  "http://unit.no/entitydata#identifier": "HUME000001",
+  "http://unit.no/entitydata#inScheme": {
+    "@id": "https://unit.no/systems/humord"
+  },
+  "http://unit.no/entitydata#localIdentifier": "HUME000001",
+  "http://unit.no/entitydata#modified": {
+    "@type": "xsd:date",
+    "@value": "2019-08-09"
+  },
+  "http://unit.no/entitydata#narrower": [
+    {
+      "@id": "http://unit.no/entitydata/uuid3"
+    },
+    {
+      "@id": "http://unit.no/entitydata/uuid4"
+    }
+  ],
+  "http://unit.no/entitydata#preferredLabel": [
+    {
+      "@language": "nb",
+      "@value": "Eksotiske dyr"
+    },
+    {
+      "@language": "en",
+      "@value": "Exotic animals"
+    }
+  ],
+  "http://unit.no/entitydata#related": [
+    {
+      "@id": "http://unit.no/entitydata/uuid5"
+    }
+  ],
+  "http://unit.no/entitydata#scopeNote": [
+    {
+      "@language": "no",
+      "@value": "Dette er en scope note"
+    },
+    {
+      "@language": "en",
+      "@value": "This is a scope note"
+    }
+  ],
+  "http://unit.no/entitydata#seeAlso": [
+    {
+      "@id": "http://unit.no/entitydata/uuid8"
+    },
+    {
+      "@id": "http://unit.no/entitydata/uuid7"
+    }
+  ]
+}
