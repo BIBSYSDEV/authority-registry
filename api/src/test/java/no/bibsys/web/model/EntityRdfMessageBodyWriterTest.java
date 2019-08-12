@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -43,20 +42,17 @@ public class EntityRdfMessageBodyWriterTest {
 
     @Test
     public void writeTo_writesValidJsonLd() throws IOException {
-        EntityRdfMessageBodyWriter entityRdfMessageBodyWriter = new EntityRdfMessageBodyWriter();
-        Annotation[] annotations = new Annotation[0];
-        MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         EntityDto entityDto = new EntityDto();
         entityDto.setId(SOME_ID);
         entityDto.setCreated(SOME_DATE);
         entityDto.setModified(SOME_DATE);
         entityDto.setBody(
                 IOUtils.resourceToString(TEST_ENTITY_JSONLD, UTF_8));
-        entityRdfMessageBodyWriter.writeTo(entityDto, String.class, String.class, annotations,
-                MediaType.APPLICATION_JSON_TYPE, headers, byteArrayOutputStream);
+        EntityRdfMessageBodyWriter entityRdfMessageBodyWriter = new EntityRdfMessageBodyWriter();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        entityRdfMessageBodyWriter.writeTo(entityDto, String.class, String.class, new Annotation[0],
+                MediaType.APPLICATION_JSON_TYPE, new MultivaluedHashMap<>(), byteArrayOutputStream);
         String output = byteArrayOutputStream.toString();
-
         assertThat(output, is(equalTo(IOUtils.resourceToString(FRAMED_JSONLD, UTF_8))));
     }
 }
