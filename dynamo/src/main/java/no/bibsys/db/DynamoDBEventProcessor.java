@@ -42,17 +42,17 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
 
         try {
-            logger.debug("dynamodbEvent, #records={}, dynamodbEvent={}", dynamodbEvent.getRecords().size(), dynamodbEvent.toString());
+            logger.debug("dynamodbEvent, #records={}, dynamodbEvent={}", dynamodbEvent.getRecords().size(),
+                    dynamodbEvent.toString());
 
             List<AmazonSdfDTO> documents = dynamodbEvent.getRecords().stream()
-                    .map(this::createAmazonSdfFromTriggerEvent)
-                    .collect(Collectors.toCollection(ArrayList::new));
+                    .map(this::createAmazonSdfFromTriggerEvent).collect(Collectors.toCollection(ArrayList::new));
 
             if (!documents.isEmpty()) {
                 cloudsearchClient.uploadbatch(documents);
             }
         } catch (Exception e) {
-            logger.error("",e);
+            logger.error("", e);
         }
         return null;
     }
