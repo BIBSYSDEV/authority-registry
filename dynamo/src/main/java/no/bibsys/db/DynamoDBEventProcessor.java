@@ -61,9 +61,6 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private AmazonSdfDTO createAmazonSdfFromTriggerEvent(DynamodbStreamRecord dynamodDBStreamRecord) {
         try {
 
-            if (OperationType.valueOf(dynamodDBStreamRecord.getEventName()) == OperationType.REMOVE) {
-                return null;
-            }
 
             StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
 
@@ -71,18 +68,31 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             if (streamRecord == null) {
                 logger.debug("streamRecord == null");
             }
-            if (streamRecord.getNewImage() == null) {
-                logger.debug("streamRecord.getNewImage() == null");
-            }
-            if (streamRecord.getNewImage().containsKey("id")) {
-                sdf.setId(streamRecord.getNewImage().get("id").getS());
-            }
-            try {
-                Entity entity = extractFullEntity(streamRecord.getNewImage());
-                sdf.setFieldsFromEntity(entity);
-                logger.debug("sdf={}",sdf);
-            } catch (Exception e) {
-                logger.error("",e);
+
+            if (OperationType.valueOf(dynamodDBStreamRecord.getEventName()) == OperationType.REMOVE) {
+                logger.debug("OperationType.REMOVE, streamRecord={}",streamRecord);
+                if (streamRecord.getKeys().containsKey("id")) {
+                    sdf.setId(streamRecord.getKeys().get("id").getS());
+                } else {
+                    logger.error("Cannot get 'ID' from streamRecord for REMOVE operation");
+                    return null;
+                }
+            } else {
+
+                if (streamRecord.getNewImage() == null) {
+                    logger.debug("streamRecord.getNewImage() == null");
+                }
+                if (streamRecord.getNewImage().containsKey("id")) {
+                    sdf.setId(streamRecord.getNewImage().get("id").getS());
+                }
+                logger.debug("streamRecord={}",streamRecord);
+                try {
+                    Entity entity = extractFullEntity(streamRecord.getNewImage());
+                    sdf.setFieldsFromEntity(entity);
+                    logger.debug("sdf={}",sdf);
+                } catch (Exception e) {
+                    logger.error("",e);
+                }
             }
             return sdf;
         } catch (Exception e) {
