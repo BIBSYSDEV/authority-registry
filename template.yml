@@ -115,30 +115,29 @@ Resources:
             Method: any
             RestApiId: !Ref RestApi
             
-  SNSDynamoDBChangeTopic:          
-    Description: "Common topic for signaling changes in DynamoDB"
-    Type: AWS::SNS::Topic
-    Properties: 
-      Name: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "SNS-Change"]]
-      DisplayName: String
-      TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
-      
-  SNSDynamoDBChangeTopicPolicy:      
-    Description: "Access to common topic for signaling changes in DynamoDB"
-    Type: AWS::SNS::TopicPolicy
-    Properties: 
-      PolicyDocument:
-        Id: SNSDynamoDBChangeTopicPolicy
-        Statement:
-        - Sid: SNSDynamoDBChangeTopicPolicy
-          Effect: Allow
-          Principal: 
-            AWS: "*"
-          Action: 
-          - sns:Publish
-          Resource: "*"
-      Topics: 
-      - !Ref SNSDynamoDBChangeTopic      
+#   SNSDynamoDBChangeTopic:          
+#     Description: "Common topic for signaling changes in DynamoDB"
+#     Type: AWS::SNS::Topic
+#     Properties: 
+#       DisplayName: String
+#       TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
+#       
+#   SNSDynamoDBChangeTopicPolicy:      
+#     Description: "Access to common topic for signaling changes in DynamoDB"
+#     Type: AWS::SNS::TopicPolicy
+#     Properties: 
+#       PolicyDocument:
+#         Id: SNSDynamoDBChangeTopicPolicy
+#         Statement:
+#         - Sid: SNSDynamoDBChangeTopicPolicy
+#           Effect: Allow
+#           Principal: 
+#             AWS: "*"
+#           Action: 
+#           - sns:Publish
+#           Resource: "*"
+#       Topics: 
+#       - !Ref SNSDynamoDBChangeTopic      
       
   DynamoDBEventProcessorLambda:
     Description: "Subscribes to common topic for signaling changes in DynamoDB"
@@ -208,13 +207,13 @@ Resources:
         unit.resource_type: DynamoDBTrigger_EventProcessor
         unit.environment: !Ref Stage
 
-  SNSDynamoDBChangeSubscription:          
-    Description: "Subscription to common topic for signaling changes in DynamoDB"
-    Type: AWS::SNS::Subscription
-    Properties: 
-      Endpoint: !GetAtt DynamoDBEventProcessorLambda.Arn
-      Protocol: lambda
-      TopicArn: !Ref SNSDynamoDBChangeTopic             
+#  SNSDynamoDBChangeSubscription:          
+#    Description: "Subscription to common topic for signaling changes in DynamoDB"
+#    Type: AWS::SNS::Subscription
+#    Properties: 
+#      Endpoint: !GetAtt DynamoDBEventProcessorLambda.Arn
+#      Protocol: lambda
+#      TopicArn: !Ref SNSDynamoDBChangeTopic             
 
 
   RestApiUrlParameter:
