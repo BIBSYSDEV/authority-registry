@@ -119,6 +119,7 @@ Resources:
     Description: "Common topic for signaling changes in DynamoDB"
     Type: AWS::SNS::Topic
     Properties: 
+      Name: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "SNS-Change"]]
       DisplayName: String
       TopicName: !Join ['-', [!Ref 'ProjectId', !Ref Branch, "DDBChangeTopic"]]
       
