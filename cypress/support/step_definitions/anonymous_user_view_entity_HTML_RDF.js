@@ -90,7 +90,6 @@ Then('anonymous user can view the data in the given serialization', () => {
                 case 'application/turtle':
                   checkAgainstTestData(testData, response);
               }
-
             });
           });
         });
