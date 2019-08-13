@@ -1,25 +1,23 @@
 package no.bibsys.entitydata.validation;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
+import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import no.bibsys.utils.IoUtils;
-import no.bibsys.utils.ModelParser;
-import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public class ModelParserTest extends ModelParser {
 
@@ -64,18 +62,16 @@ public class ModelParserTest extends ModelParser {
     }
 
 
-    @Ignore
     @Test
     public void foo() throws IOException {
         String inputString = IoUtils
             .resourceAsString(Paths.get(VALIDATION_FOLDER, "validGraph.ttl"));
         Model model = parseModel(inputString, Lang.TURTLE);
-        String jsonls = writeData(model, Lang.JSONLD);
-        String ttl = writeData(model, Lang.TURTLE);
-        String json = writeData(model, Lang.RDFJSON);
-        String nquads = writeData(model, Lang.NTRIPLES);
-        String rdfxml = writeData(model, Lang.RDFXML);
-        String rdf = writeData(model, Lang.RDFTHRIFT);
+        String jsonls = writeData(model, Lang.JSONLD, null);
+        String ttl = writeData(model, Lang.TURTLE, null);
+        String json = writeData(model, Lang.RDFJSON, null);
+        String nquads = writeData(model, Lang.NTRIPLES, null);
+        String rdfxml = writeData(model, Lang.RDFXML, null);
         assertFalse(1 == 2);
     }
 }
