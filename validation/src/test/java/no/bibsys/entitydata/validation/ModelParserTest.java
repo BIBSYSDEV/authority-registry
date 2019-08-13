@@ -51,7 +51,7 @@ public class ModelParserTest extends ModelParser {
     }
 
     @Test(expected = ValidationSchemaSyntaxErrorException.class)
-    public void getObjects_invalidInput_throwsException() throws IOException {
+    public void getObjects_invalidInput_throwsException() {
         Model model = parseModel(INVALID_INPUT, Lang.TURTLE);
         Set<Resource> objects = getUriResourceObjects(model);
         Set<RDFNode> resources = model.listObjects().toSet()
