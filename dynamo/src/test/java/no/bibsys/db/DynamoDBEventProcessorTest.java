@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,19 +18,20 @@ import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 public class DynamoDBEventProcessorTest {
 
     DynamoDBEventProcessor dynamoDBEventProcessor;
-    
+
     @Before
     public void init() throws IOException {
-        
+
         AmazonCloudSearchDomain cloudSearchDomainMock = Mockito.mock(AmazonCloudSearchDomain.class);
-        CloudsearchClient cloudsearchClientMock = new CloudsearchClient(cloudSearchDomainMock);  
+        CloudsearchClient cloudsearchClientMock = new CloudsearchClient(cloudSearchDomainMock);
         UploadDocumentsResult uploadDockumentsResponeMock = new UploadDocumentsResult();
         uploadDockumentsResponeMock.setStatus("Okidoi, mocked");
-        when(cloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class))).thenReturn((uploadDockumentsResponeMock));
-        
+        when(cloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class)))
+                .thenReturn((uploadDockumentsResponeMock));
+
         dynamoDBEventProcessor = new DynamoDBEventProcessor(cloudsearchClientMock);
     }
-    
+
     @Test
     public void testHandleRequest() throws IOException {
         DynamodbEvent dynamodbEvent = SampleEventData.sampleDynamoDBEvent();

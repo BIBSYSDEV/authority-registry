@@ -43,7 +43,15 @@ public class AmazonSdfDTO {
     }
     
     public enum EventName {
-        INSERT, MODIFY, REMOVE
+        INSERT(CloudsearchSdfType.ADD), 
+        MODIFY(CloudsearchSdfType.ADD), 
+        REMOVE(CloudsearchSdfType.DELETE);
+        
+        public final CloudsearchSdfType cloudsearchSdfType;
+        
+        EventName(CloudsearchSdfType cloudsearchSdfType) {
+            this.cloudsearchSdfType = cloudsearchSdfType;
+        }
     }
 
     private final String type;
@@ -51,7 +59,7 @@ public class AmazonSdfDTO {
     private final transient LinkedTreeMap<String, Object> fields = new LinkedTreeMap<>();
 
     public AmazonSdfDTO(String eventName) {
-        type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
+        type =  EventName.valueOf(eventName).cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
 
     public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
@@ -66,19 +74,6 @@ public class AmazonSdfDTO {
         fields.forEach((key, value) -> str.append(key).append("=").append(value).append(", "));
         str.append("}]");
         return str.toString();
-    }
-
-    private CloudsearchSdfType eventToOperation(String eventName) {
-        EventName event = EventName.valueOf(eventName);
-        switch (event) {
-            case INSERT:
-            case MODIFY:
-                return CloudsearchSdfType.ADD;
-            case REMOVE:
-                return CloudsearchSdfType.DELETE;
-            default:
-                return null;
-        }
     }
 
     public Map<String, ?> getFields() {
