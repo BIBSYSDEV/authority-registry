@@ -65,7 +65,8 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         try {
             StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
             if (streamRecord == null) {
-                logger.warn("streamRecord == null, skipping this event. incomuing DynamodbStreamRecord={}",dynamodDBStreamRecord);
+                logger.warn("streamRecord == null, skipping this event. incomuing DynamodbStreamRecord={}",
+                        dynamodDBStreamRecord);
                 return null;
             }
             AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());

@@ -40,7 +40,6 @@ public class CloudsearchClientIntegrationTest {
     public void testUpsert() throws IOException {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
         List<AmazonSdfDTO> documents = new ArrayList<>();
-        System.out.println(amazonSdfDTO);
         documents.add(amazonSdfDTO);
         cloudsearchClient.uploadbatch(documents);
     }
