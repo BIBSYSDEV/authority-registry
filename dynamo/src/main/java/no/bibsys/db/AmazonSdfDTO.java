@@ -3,6 +3,7 @@ package no.bibsys.db;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
 import com.google.gson.internal.LinkedTreeMap;
 
 import no.bibsys.db.structures.Entity;
@@ -63,7 +63,7 @@ public class AmazonSdfDTO {
     public String toString() {
         StringBuilder str = new StringBuilder(60);
         str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
-        fields.forEach((k, v) -> str.append(k).append("=").append(fields.get(k)).append(", "));
+        fields.forEach((key, value) -> str.append(key).append("=").append(value).append(", "));
         str.append("}]");
         return str.toString();
     }
@@ -99,16 +99,14 @@ public class AmazonSdfDTO {
 
     public void setFieldsFromEntity(Entity entity) throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),
+        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(StandardCharsets.UTF_8)),
                 Lang.JSONLD);
-        StringWriter stringWriter = new StringWriter();
-        RDFDataMgr.write(stringWriter, model, Lang.TURTLE);
         String query = IoUtils.resourceAsString(Paths.get(CLOUDSEARCH_MAPPER_QUERY_SPARQL));
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             ResultSet resultSet = queryExecution.execSelect();
             List<String> resultVars = resultSet.getResultVars();
             resultSet.forEachRemaining(
-                result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
+                result -> resultVars.forEach(resultVar -> processQuerySolution(result, resultVar)));
         } catch (Exception e) {
             logger.debug("", e);
         }

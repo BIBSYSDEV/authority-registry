@@ -25,6 +25,10 @@ import no.bibsys.utils.JsonUtils;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
+    private static final String DYNAMODB_MODIFIED_FIELD = "modified";
+    private static final String DYNAMODB_CREATED_FIELD = "created";
+    private static final String DYNAMODB_BODY_FIELD = "body";
+    private static final String DYNAMODB_ID_FIELD = "id";
     private final transient CloudsearchClient cloudsearchClient;
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
@@ -36,7 +40,6 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         // For mocking
         this.cloudsearchClient = cloudsearchClient;        
     }
-
 
     @Override
     public Void handleRequest(DynamodbEvent dynamodbEvent, Context context) {
@@ -60,36 +63,27 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     private AmazonSdfDTO createAmazonSdfFromTriggerEvent(DynamodbStreamRecord dynamodDBStreamRecord) {
         try {
-
-
             StreamRecord streamRecord = dynamodDBStreamRecord.getDynamodb();
-
-            AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
             if (streamRecord == null) {
-                logger.debug("streamRecord == null");
+                logger.warn("streamRecord == null, skipping this event. incomuing DynamodbStreamRecord={}",dynamodDBStreamRecord);
+                return null;
             }
-
+            AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
             if (OperationType.valueOf(dynamodDBStreamRecord.getEventName()) == OperationType.REMOVE) {
                 logger.debug("OperationType.REMOVE, streamRecord={}",streamRecord);
-                if (streamRecord.getKeys().containsKey("id")) {
-                    sdf.setId(streamRecord.getKeys().get("id").getS());
+                if (streamRecord.getKeys().containsKey(DYNAMODB_ID_FIELD)) {
+                    sdf.setId(streamRecord.getKeys().get(DYNAMODB_ID_FIELD).getS());
                 } else {
                     logger.error("Cannot get 'ID' from streamRecord for REMOVE operation");
                     return null;
                 }
             } else {
-
-                if (streamRecord.getNewImage() == null) {
-                    logger.debug("streamRecord.getNewImage() == null");
+                if (streamRecord.getNewImage().containsKey(DYNAMODB_ID_FIELD)) {
+                    sdf.setId(streamRecord.getNewImage().get(DYNAMODB_ID_FIELD).getS());
                 }
-                if (streamRecord.getNewImage().containsKey("id")) {
-                    sdf.setId(streamRecord.getNewImage().get("id").getS());
-                }
-                logger.debug("streamRecord={}",streamRecord);
                 try {
                     Entity entity = extractFullEntity(streamRecord.getNewImage());
                     sdf.setFieldsFromEntity(entity);
-                    logger.debug("sdf={}",sdf);
                 } catch (Exception e) {
                     logger.error("",e);
                 }
@@ -102,21 +96,15 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     }
 
     private Entity extractFullEntity(Map<String, AttributeValue> map) {
-        logger.debug("map={}",map);
         Entity entity = new Entity();
-        ObjectNode body;
         try {
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            AttributeValue attributeValue = map.get("body");
-            body = (ObjectNode) objectMapper.readTree(attributeValue.getS());
-
-            entity.setBody(body);
-
-            entity.setId(map.get("id").getS());
-            entity.setCreated(map.get("created").getS());
-            entity.setModified(map.get("modified").getS());
-
+            AttributeValue attributeValue = map.get(DYNAMODB_BODY_FIELD);
+            entity.setBody((ObjectNode)objectMapper.readTree(attributeValue.getS()));
+            entity.setId(map.get(DYNAMODB_ID_FIELD).getS());
+            entity.setCreated(map.get(DYNAMODB_CREATED_FIELD).getS());
+            entity.setModified(map.get(DYNAMODB_MODIFIED_FIELD).getS());
         } catch (IOException e) {
             logger.error("",e);
         }
