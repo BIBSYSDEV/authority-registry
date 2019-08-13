@@ -47,13 +47,15 @@ public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T>
                 break;
         }
 
-        ModelParser modelParser = new ModelParser();
         String frame;
         try {
             frame = IOUtils.resourceToString(JSON_LD_FRAME, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(String.format(FILE_NOT_FOUND_TEMPLATE, JSON_LD_FRAME));
         }
+        
+        ModelParser modelParser = new ModelParser();
+
         if (outputLang.equals(Lang.JSONLD)) {
             return modelParser.writeFormattedJsonLd(model, frame);
         }
