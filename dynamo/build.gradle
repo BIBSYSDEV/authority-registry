@@ -41,8 +41,8 @@ dependencies {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
 
+    implementation("com.google.code.gson:gson:2.8.1")
     testImplementation("org.mockito:mockito-core:2.28.2")
-    
 }
 
 

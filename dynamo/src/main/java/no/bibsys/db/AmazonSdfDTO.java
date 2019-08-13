@@ -1,16 +1,14 @@
 package no.bibsys.db;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -20,11 +18,13 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Charsets;
+import com.google.gson.internal.LinkedTreeMap;
 
 import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.IoUtils;
@@ -32,50 +32,51 @@ import no.bibsys.utils.JsonUtils;
 
 public class AmazonSdfDTO {
 
-    
+    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
     public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
+    public static final String CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD = "modified";
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
 
-    public enum CloudsearchSdfType { ADD, DELETE };
-    public enum EventName { INSERT, MODIFY, REMOVE };
+    public enum CloudsearchSdfType {
+        ADD, DELETE
+    }
+    
+    public enum EventName {
+        INSERT(CloudsearchSdfType.ADD), 
+        MODIFY(CloudsearchSdfType.ADD), 
+        REMOVE(CloudsearchSdfType.DELETE);
+        
+        public final CloudsearchSdfType cloudsearchSdfType;
+        
+        EventName(CloudsearchSdfType cloudsearchSdfType) {
+            this.cloudsearchSdfType = cloudsearchSdfType;
+        }
+    }
 
     private final String type;
     private transient String id;
-    private final transient Map<String, String[]> fields = new ConcurrentHashMap<>();
-
+    private final transient LinkedTreeMap<String, Object> fields = new LinkedTreeMap<>();
 
     public AmazonSdfDTO(String eventName) {
-        type = eventToOperation(eventName).name().toLowerCase(Locale.getDefault());
+        type =  EventName.valueOf(eventName).cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
 
     public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
         this.type = cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
     }
 
-
     @SuppressWarnings("PMD")
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder(60);
         str.append("AmazonSdfDTO [type=").append(type).append(", id=").append(id).append(", fields={");
-        fields.forEach((k, v) -> str.append(k).append("=").append(Arrays.toString(fields.get(k))).append(", "));
+        fields.forEach((key, value) -> str.append(key).append("=").append(value).append(", "));
         str.append("}]");
         return str.toString();
     }
 
-
-    private CloudsearchSdfType eventToOperation(String eventName) {
-        EventName event  = EventName.valueOf(eventName); 
-        switch (event) {
-        case INSERT:
-        case MODIFY: return CloudsearchSdfType.ADD;
-        case REMOVE: return CloudsearchSdfType.DELETE;
-        }
-        return null;
-    }
-
-    public Map<String,?> getFields() {
+    public Map<String, ?> getFields() {
         return fields;
     }
 
@@ -88,21 +89,25 @@ public class AmazonSdfDTO {
     }
 
     public void setId(String id) {
-        this.id = id; 
+        this.id = id;
     }
 
     public void setFieldsFromEntity(Entity entity) throws IOException {
         Model model = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(Charsets.UTF_8)),Lang.JSONLD);
-
+        RDFDataMgr.read(model, new ByteArrayInputStream(entity.getBody().toString().getBytes(StandardCharsets.UTF_8)),
+                Lang.JSONLD);
         String query = IoUtils.resourceAsString(Paths.get(CLOUDSEARCH_MAPPER_QUERY_SPARQL));
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             ResultSet resultSet = queryExecution.execSelect();
             List<String> resultVars = resultSet.getResultVars();
-            resultSet.forEachRemaining(result -> resultVars.stream().forEach(resultVar -> processQuerySolution(result, resultVar)));
+            resultSet.forEachRemaining(
+                result -> resultVars.forEach(resultVar -> processQuerySolution(result, resultVar)));
+        } catch (Exception e) {
+            logger.debug("", e);
         }
         String presentationString = createPresentation(entity);
-        fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] {presentationString});
+        fields.put(CLOUDSEARCH_PRESENTAION_FIELD, new String[] { presentationString });
+        fields.put(CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD,  entity.getModified());
     }
 
     private String createPresentation(Entity entity) throws JsonGenerationException, JsonMappingException, IOException {
@@ -112,10 +117,9 @@ public class AmazonSdfDTO {
         return presentationWriter.toString();
     }
 
-
     private void processQuerySolution(QuerySolution querySolution, String resultVar) {
-        Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR)));  
+        Optional.ofNullable(querySolution.get(resultVar)).ifPresent(value -> {
+            fields.put(resultVar, value.asLiteral().getString().split(SEPARATOR));
+        });
     }
-
-
 }

@@ -1,33 +1,65 @@
 {
-  
-  "@context": {
-    "@vocab": "http://unit.no/entitydata#",
-    "type": "@type",
-    "uri": "@id",
-    "language": "@language",
-    "value": "@value"
-  },
-  "@type": "Concept",
-  "identifier": {"@value": "identifier01", "@type": "http://www.w3.org/2001/XMLSchema#string"},
-  "localIdentifier": "localidentifier01",
-  "preferredLabel": [{
-      "@value": "The label",
-      "@language": "en"
+	"@id": "http://data.ub.uio.no/humord/111111",
+	"@type": "http://unit.no/entitydata#Concept",
+	"editorialNote": {
+		"@language": "nb",
+		"@value": "Lukket bemerkning: ubo14111"
+	},
+	"inScheme": "https://unit.no/systems#humord",
+	"localIdentifier": "HUME111111",
+	"modified": "2014-12-30",
+	"preferredLabel": {
+		"@language": "nb",
+		"@value": "Savosavo sprak"
+	},
+    "alternativeLabel": {
+        "@value": "The alternate label",
+        "@language": "en"
     },
-    {
-      "@value": "Etiketten",
-      "@language": "nb"
-    }
-  ],
-  "alternativeLabel": {
-    "@value": "The alternate label",
-    "@language": "en"
-  },
-  "definition": [{
-    "@value": "Some definition of the concept",
-    "@language": "en"
-  }, {
-    "@value": "En utfyllende definisjon av begrepet",
-    "@language": "nb"
-  }]
+    "definition": [{
+        "@value": "Some definition of the concept",
+        "@language": "en"
+        }, {
+        "@value": "En utfyllende definisjon av begrepet",
+        "@language": "nb"
+    }],
+    "narrower": "narrow-1",
+    "broader": "broader-1",
+    "related": "related-1",
+    "seeAlso": "seealso-1",
+	
+	"@context": {
+		"editorialNote": {
+			"@id": "http://unit.no/entitydata#editorialNote"
+		},
+		"inScheme": {
+			"@id": "http://unit.no/entitydata#inScheme",
+			"@type": "@id"
+		},
+		"localIdentifier": {
+			"@id": "http://unit.no/entitydata#localIdentifier"
+		},
+		"modified": {
+			"@id": "http://unit.no/entitydata#modified",
+			"@type": "http://www.w3.org/2001/XMLSchema#date"
+		},
+		"preferredLabel": {
+			"@id": "http://unit.no/entitydata#preferredLabel"
+        },
+        "definition": {
+            "@id": "http://unit.no/entitydata#definition"
+        },
+        "narrower": {
+            "@id": "http://unit.no/entitydata#narrower"
+        },
+        "broader": {
+            "@id": "http://unit.no/entitydata#broader"
+        },
+        "related": {
+            "@id": "http://unit.no/entitydata#related"
+        },
+        "seeAlso": {
+            "@id": "http://unit.no/entitydata#seealso"
+    	}
+	}
 }

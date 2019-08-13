@@ -42,7 +42,8 @@ public class CloudsearchClientTest {
         amazonCloudSearchDomainMock = Mockito.mock(AmazonCloudSearchDomain.class);
         UploadDocumentsResult uploadDockumentsResponeMock = new UploadDocumentsResult();
         uploadDockumentsResponeMock.setStatus("Okidoi, mocked");
-        when(amazonCloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class))).thenReturn((uploadDockumentsResponeMock));
+        when(amazonCloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class)))
+            .thenReturn((uploadDockumentsResponeMock));
         cloudsearchClient = new CloudsearchClient(amazonCloudSearchDomainMock);
     }
     
