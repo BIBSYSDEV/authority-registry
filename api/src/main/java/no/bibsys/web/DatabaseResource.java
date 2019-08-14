@@ -17,10 +17,12 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.SearchService;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.CustomMediaType;
 import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.QueryResultDto;
 import no.bibsys.web.model.RegistryCreateRequestParametersObject;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
@@ -37,6 +39,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
@@ -68,10 +71,12 @@ public class DatabaseResource {
     public static final String PATH_DELIMITER = "/";
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
+    private final transient SearchService searchService;
 
     public DatabaseResource(RegistryService registryService, EntityService entityService) {
         this.entityService = entityService;
         this.registryService = registryService;
+        this.searchService = null;
     }
 
     @POST
@@ -186,6 +191,25 @@ public class DatabaseResource {
         return Response.ok(registryDto).build();
     }
 
+    @GET
+    @Path("/{registryName}/search")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response queryRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+                                  @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                                              description = NAME_OF_REGISTRY_TO + "query",
+                                              schema = @Schema(type = STRING)) 
+                                  @PathParam(REGISTRY_NAME) String registryName,
+                                  @QueryParam("q") String queryString,
+                                  @QueryParam("scheme") String scheme
+                                  ) throws JsonProcessingException {
+
+        QueryResultDto queryResultDto = searchService.simpleQuery(registryName, queryString, scheme);
+        return Response.ok(queryResultDto).build();
+    }
+    
+    
+    
     @PUT
     @Path("/{registryName}/schema")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
