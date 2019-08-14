@@ -76,7 +76,7 @@ public class DatabaseResource {
     public DatabaseResource(RegistryService registryService, EntityService entityService) {
         this.entityService = entityService;
         this.registryService = registryService;
-        this.searchService = null;
+        this.searchService = new SearchService(null);
     }
 
     @POST
