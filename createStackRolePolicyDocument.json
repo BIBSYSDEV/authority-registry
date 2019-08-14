@@ -68,7 +68,7 @@
         "tag:GetTagKeys",
         "tag:GetTagValues",
         "tag:TagResources",
-        "tag:UntagGetResources"
+        "tag:UntagResources"
       ],
       "Effect": "Allow",
       "Resource": "*"
