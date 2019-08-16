@@ -4,53 +4,29 @@
   "modified": "2019-01-29T22:24:27.868Z",
   "path"    : null,
   "body"    : {
-    "id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
-    "type": "Concept",
+    "@id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
+    "@type": "unit:Concept",
     "preferredLabel": [{
-      "language": "en",
-      "value": "someLabel"
+      "@language": "no",
+      "@value": "norskLabel"
     }, {
-      "language": "no",
-      "value": "norskLabel"
+      "@language": "en",
+      "@value": "someLabel"
     }],
     "@context": {
-      "@vocab": "http://unit.no/entitydata#",
-      "xsd": "http://www.w3.org/2001/XMLSchema#",
-      "id": "@id",
       "preferredLabel": {
-        "@container": "@set"
+        "@id": "http://unit.no/entitydata#preferredLabel"
       },
-      "alternativeLabel": {
-        "@container": "@set"
-      },
-      "inScheme": {
-        "@type": "@id"
-      },
-      "broader": {
-        "@type": "@id",
-        "@container": "@set"
-      },
-      "narrower": {
-        "@type": "@id",
-        "@container": "@set"
-      },
-      "related": {
-        "@type": "@id",
-        "@container": "@set"
-      },
-      "seeAlso": {
-        "@type": "@id",
-        "@container": "@set"
-      },
-      "type": "@type",
-      "language": "@language",
-      "value": "@value",
-      "created": {
-        "@type": "xsd:date"
-      },
-      "modified": {
-        "@type": "xsd:date"
-      }
+      "@vocab": "http://authority-registry/validation/THIS_DOCUMENT",
+      "unit": "http://unit.no/entitydata#",
+      "owl": "http://www.w3.org/2002/07/owl#",
+      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "sh": "http://www.w3.org/ns/shacl#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "dcterms": "http://purl.org/dc/terms/",
+      "skos": "http://www.w3.org/2004/02/skos/core#",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+      "vann": "http://purl.org/vocab/vann/"
     }
   }
 }
