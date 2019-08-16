@@ -29,6 +29,7 @@ dependencies {
     implementation('com.amazonaws:aws-java-sdk-acm:1.11.562')
     implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
 
+    implementation("com.amazonaws:aws-java-sdk-cloudsearch:1.11.+")
 
     //jersey libraries
     implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.28")

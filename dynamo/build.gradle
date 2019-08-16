@@ -17,6 +17,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-resourcegroupstaggingapi:1.11.+")
     implementation("com.amazonaws:aws-lambda-java-events:2.2.6")
     implementation 'io.github.dibog:cloudwatch-logback-appender:2.0.0'
+    implementation("no.bibsys.aws:aws-build-tools:1.5.3d")
 
     //library for using embedded DynamoDB during local tests
     testImplementation("com.almworks.sqlite4java:libsqlite4java-linux-amd64:1.0.392")

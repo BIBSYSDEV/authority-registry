@@ -20,12 +20,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.utils.JsonUtils;
+
+
 
 public class CloudsearchClient {
 
-
-    private static final String CLOUDSEARCH_DOCUMENT_ENDPOINT_NAME = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
+    public static final String CLOUDSEARCH_DOCUMENT_ENDPOINT = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
+    
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
     
     private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
@@ -33,7 +36,7 @@ public class CloudsearchClient {
     
     public CloudsearchClient() {
 
-        String serviceEndpoint = System.getenv(CLOUDSEARCH_DOCUMENT_ENDPOINT_NAME).trim();
+        String serviceEndpoint = new Environment().readEnv(CLOUDSEARCH_DOCUMENT_ENDPOINT).trim();
         String signingRegion = System.getenv(AWS_REGION_PROPERTY_NAME);
         
         logger.debug("documentUploadClient.serviceEndpoint='{}', signingRegion='{}'", serviceEndpoint, signingRegion);
@@ -77,6 +80,14 @@ public class CloudsearchClient {
 
     }
 
+    public  String simpleSearch(String query) {
+        return "";
+    }
+    
+
+    
+    
+    
     private String batchToString(List<AmazonSdfDTO> documents)
             throws JsonGenerationException, JsonMappingException, IOException {
         StringWriter batchDocuments = new StringWriter();
