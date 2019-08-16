@@ -61,6 +61,7 @@ Then('anonymous user can view the data in the given serialization', () => {
       cy.get('@formats').then((formats) => {
         formats.forEach(format => {
           const formatType = format[0];
+          cy.log('Testing dereferencing of: ' + formatType);
           const fileName = 'tests.' + formatType.replace('application/',
             '').replace('+', '');
           cy.fixture(fileName).then((testData) => {
@@ -70,14 +71,15 @@ Then('anonymous user can view the data in the given serialization', () => {
                 Accept: formatType,
               },
             }).then((response) => {
-
               switch (formatType) {
                 default:
                 case 'application/json':
                 case 'application/ld+json':
                   if (typeof testData === 'object') {
-                    expect(JSON.stringify(response.body.body)).to.deep.equal(
-                      JSON.stringify(testData.body));
+                    expect(response.body.body['@id']).to.deep.equal(testData.body['@id']);
+                    expect(response.body.body['@type']).to.deep.equal(testData.body['@type']);
+                    expect(response.body.body.alternativeLabel).to.deep.equal(testData.body.alternativeLabel);
+                    expect(response.body.body.preferredLabel).to.deep.equal(testData.body.preferredLabel);
                   } else {
                     expect(JSON.stringify(
                       JSON.parse(response.body))).to.deep.equal(
@@ -96,6 +98,7 @@ Then('anonymous user can view the data in the given serialization', () => {
       });
     });
   });
+
 });
 
 function checkAgainstTestData(testData, response) {
