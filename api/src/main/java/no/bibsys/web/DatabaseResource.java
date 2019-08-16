@@ -197,6 +197,7 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/search")
+    @Produces(MediaType.APPLICATION_JSON)
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response queryRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
@@ -208,7 +209,7 @@ public class DatabaseResource {
 
                                   ) throws JsonProcessingException {
         
-        String queryResult = searchService.simpleQuery(registryName, queryString);
+        List<String> queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok(queryResult).build();
     }
     

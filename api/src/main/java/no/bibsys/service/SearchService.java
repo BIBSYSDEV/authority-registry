@@ -1,11 +1,16 @@
 package no.bibsys.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomain;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomainClientBuilder;
+import com.amazonaws.services.cloudsearchdomain.model.Hit;
+import com.amazonaws.services.cloudsearchdomain.model.Hits;
 import com.amazonaws.services.cloudsearchdomain.model.QueryParser;
 import com.amazonaws.services.cloudsearchdomain.model.SearchException;
 import com.amazonaws.services.cloudsearchdomain.model.SearchRequest;
@@ -38,7 +43,7 @@ public class SearchService {
 
     }
 
-    public String simpleQuery(String registryName, String queryString) {
+    public List<String> simpleQuery(String registryName, String queryString) {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
 
@@ -47,12 +52,17 @@ public class SearchService {
                 .withReturn("presentaion_json")
                 .withQueryParser(QueryParser.Simple);
         try {
+            List<String> result = new ArrayList<>();
             SearchResult searchResult = searchClient.search(searchRequest);
             logger.debug("searchResult={}", searchResult);
-            return searchResult.toString();
+             Hits hits = searchResult.getHits();
+             for (Hit hit : hits.getHit()) {
+                result.addAll(hit.getFields().get("presentaion_json"));
+            }
+            return result;
         } catch (SearchException e) {
             logger.error("",e);
         }
-        return "{}";
+        return null;
     }
 }
