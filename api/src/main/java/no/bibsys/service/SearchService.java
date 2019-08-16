@@ -44,6 +44,7 @@ public class SearchService {
 
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
+                .withReturn("presentaion_json")
                 .withQueryParser(QueryParser.Simple);
         try {
             SearchResult searchResult = searchClient.search(searchRequest);
