@@ -21,6 +21,7 @@ import no.bibsys.aws.tools.Environment;
 
 public class SearchService {
 
+    private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private transient final String serviceEndpoint;
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
 
@@ -49,7 +50,7 @@ public class SearchService {
 
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
-                .withReturn("presentaion_json")
+                .withReturn(CLOUDSEARCH_RETURN_FIELD)
                 .withQueryParser(QueryParser.Simple);
         try {
             List<String> result = new ArrayList<>();
@@ -57,8 +58,9 @@ public class SearchService {
             logger.debug("searchResult={}", searchResult);
              Hits hits = searchResult.getHits();
              for (Hit hit : hits.getHit()) {
-                result.addAll(hit.getFields().get("presentaion_json"));
+                result.addAll(hit.getFields().get(CLOUDSEARCH_RETURN_FIELD));
             }
+             logger.debug("result={}", result);
             return result;
         } catch (SearchException e) {
             logger.error("",e);
