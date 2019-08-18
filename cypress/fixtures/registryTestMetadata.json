@@ -1,45 +1,48 @@
 {
-  "id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
-  "description": "descriptionValue",
-  "name": "nameValue",
-  "registryName": "registryNameValue",
-  "@context": {
-    "@vocab": "http://unit.no/entitydata#",
-    "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "id": "@id",
-    "preferredLabel": {
-      "@container": "@set"
-    },
-    "alternativeLabel": {
-      "@container": "@set"
-    },
-    "inScheme": {
-      "@type": "@id"
-    },
-    "broader": {
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "narrower": {
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "related": {
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "seeAlso": {
-      "@type": "@id",
-      "@container": "@set"
-    },
-    "type": "@type",
-    "language": "@language",
-    "value": "@value",
-    "created": {
-      "@type": "xsd:date"
-    },
-    "modified": {
-      "@type": "xsd:date"
+  "id": "test",
+  "metadata": {
+    "id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
+    "description": "descriptionValue",
+    "name": "nameValue",
+    "registryName": "registryNameValue",
+    "@context": {
+      "@vocab": "http://unit.no/entitydata#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "id": "@id",
+      "preferredLabel": {
+        "@container": "@set"
+      },
+      "alternativeLabel": {
+        "@container": "@set"
+      },
+      "inScheme": {
+        "@type": "@id"
+      },
+      "broader": {
+        "@type": "@id",
+        "@container": "@set"
+      },
+      "narrower": {
+        "@type": "@id",
+        "@container": "@set"
+      },
+      "related": {
+        "@type": "@id",
+        "@container": "@set"
+      },
+      "seeAlso": {
+        "@type": "@id",
+        "@container": "@set"
+      },
+      "type": "@type",
+      "language": "@language",
+      "value": "@value",
+      "created": {
+        "@type": "xsd:date"
+      },
+      "modified": {
+        "@type": "xsd:date"
+      }
     }
   }
 }
