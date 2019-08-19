@@ -59,6 +59,7 @@ import java.util.List;
         in = SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
+    private static final String ENTITY = "entity";
     private static final String NAME_OF_REGISTRY_TO = "Name of registry to ";
     private static final String NAME_OF_REGISTRY_IN = "Name of registry in ";
     private static final String NAME_OF_NEW_REGISTRY = "Name of new registry";
@@ -67,7 +68,6 @@ public class DatabaseResource {
     private static final String REGISTRY_NAME = "registryName";
     private static final String PATH_DELIMITER = "/";
     private static final String REGISTRY = "registry";
-    public static final String ENTITY = "entity";
 
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
@@ -248,7 +248,7 @@ public class DatabaseResource {
         for (EntityDto entityDto : entityDtos) {
             EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
             String entityId = persistedEntity.getId();
-            persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
+            persistedEntity.setPath(String.join("/", REGISTRY, registryName, ENTITY, entityId));
             persistedEntities.add(persistedEntity);
         }
 
