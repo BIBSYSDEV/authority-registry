@@ -45,6 +45,8 @@ import no.bibsys.db.structures.RegistryStatus;
 
 public class TableDriver {
 
+    private static final String STACK_NAME = "STACK_NAME";
+    private static final String DID_NOT_EXIST = "did not exist";
     private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
     public static final String AWS_CLOUDFORMATION_STACK_NAME = "aws: cloudformation: stack - name";
@@ -217,7 +219,7 @@ public class TableDriver {
             logger.debug("getResourcesRequest={}",getResourcesRequest);
             GetResourcesResult resources =  taggingAPIclient.getResources(getResourcesRequest); 
 
-            String res = Optional.ofNullable(resources.toString()).orElse("did no exist");
+            String res = Optional.ofNullable(resources.toString()).orElse(DID_NOT_EXIST);
 
             logger.debug("Resources is {} and resource tag mapping size is {}",
                     res, resources.getResourceTagMappingList().size());
@@ -266,6 +268,6 @@ public class TableDriver {
     }
 
     private String findStackName() {
-        return System.getenv("STACK_NAME");
+        return System.getenv(STACK_NAME);
     }
 }
