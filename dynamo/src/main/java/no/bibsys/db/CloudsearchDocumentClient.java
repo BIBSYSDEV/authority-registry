@@ -25,16 +25,16 @@ import no.bibsys.utils.JsonUtils;
 
 
 
-public class CloudsearchClient {
+public class CloudsearchDocumentClient {
 
     public static final String CLOUDSEARCH_DOCUMENT_ENDPOINT = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
     
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
     
-    private static final Logger logger = LoggerFactory.getLogger(CloudsearchClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(CloudsearchDocumentClient.class);
     private final transient AmazonCloudSearchDomain documentUploadClient;
     
-    public CloudsearchClient() {
+    public CloudsearchDocumentClient() {
 
         String serviceEndpoint = new Environment().readEnv(CLOUDSEARCH_DOCUMENT_ENDPOINT).trim();
         String signingRegion = System.getenv(AWS_REGION_PROPERTY_NAME);
@@ -46,7 +46,7 @@ public class CloudsearchClient {
                 .withEndpointConfiguration(endpointConfiguration).build();
     }
     
-    public CloudsearchClient(AmazonCloudSearchDomain documentUploadClient) {
+    public CloudsearchDocumentClient(AmazonCloudSearchDomain documentUploadClient) {
         // For mocking
         this.documentUploadClient = documentUploadClient;
     }

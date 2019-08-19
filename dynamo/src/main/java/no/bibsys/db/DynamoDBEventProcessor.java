@@ -29,16 +29,16 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private static final String DYNAMODB_CREATED_FIELD = "created";
     private static final String DYNAMODB_BODY_FIELD = "body";
     private static final String DYNAMODB_ID_FIELD = "id";
-    private final transient CloudsearchClient cloudsearchClient;
+    private final transient CloudsearchDocumentClient cloudsearchDocumentClient;
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
     public DynamoDBEventProcessor() {
-        cloudsearchClient = new CloudsearchClient();        
+        cloudsearchDocumentClient = new CloudsearchDocumentClient();        
     }
 
-    public DynamoDBEventProcessor(CloudsearchClient cloudsearchClient) {
+    public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
         // For mocking
-        this.cloudsearchClient = cloudsearchClient;        
+        this.cloudsearchDocumentClient = cloudsearchClient;        
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                     .map(this::createAmazonSdfFromTriggerEvent).collect(Collectors.toCollection(ArrayList::new));
 
             if (!documents.isEmpty()) {
-                cloudsearchClient.uploadbatch(documents);
+                cloudsearchDocumentClient.uploadbatch(documents);
             }
         } catch (Exception e) {
             logger.error("", e);
