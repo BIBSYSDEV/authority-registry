@@ -57,7 +57,7 @@ public class SearchService {
         String filterQuery = String.format(FILTERQUERY_BASE,registryName);
         
         // Fjerne denne etter testing
-        filterQuery = "inscheme:%27http%3A%2F%2Fdata.ub.uio.no%2Fhumord%27";
+        filterQuery = "inscheme:'http://data.ub.uio.no/humord'";
         
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
