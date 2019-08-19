@@ -21,6 +21,7 @@ import no.bibsys.aws.tools.Environment;
 
 public class SearchService {
 
+    private static final String FILTERQUERY_BASE = "inscheme:'%s'";
     private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private transient final String serviceEndpoint;
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
@@ -47,12 +48,15 @@ public class SearchService {
     public List<String> simpleQuery(String registryName, String queryString) {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
-
+        
+        String filterQuery = String.format(FILTERQUERY_BASE,registryName);
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
+                .withFilterQuery(filterQuery)
                 .withReturn(CLOUDSEARCH_RETURN_FIELD)
                 .withQueryParser(QueryParser.Simple);
         try {
+            logger.debug("searchRequest={}", searchRequest);
             List<String> result = new ArrayList<>();
             SearchResult searchResult = searchClient.search(searchRequest);
             logger.debug("searchResult={}", searchResult);
