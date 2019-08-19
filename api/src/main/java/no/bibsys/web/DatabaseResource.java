@@ -65,6 +65,10 @@ public class DatabaseResource {
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
+    private static final String PATH_DELIMITER = "/";
+    private static final String REGISTRY = "registry";
+    public static final String ENTITY = "entity";
+
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
 
@@ -219,15 +223,10 @@ public class DatabaseResource {
 
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
-
         UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-
-        String enityPath = String.join("/", "registry", registryName, "entity", entityId);
-
+        String enityPath = String.join(PATH_DELIMITER, REGISTRY, registryName, ENTITY, entityId);
         uriBuilder.path(enityPath);
-
         persistedEntity.setPath(enityPath);
-
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
     }
 

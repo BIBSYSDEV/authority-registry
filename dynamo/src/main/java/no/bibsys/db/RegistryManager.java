@@ -48,7 +48,7 @@ public class RegistryManager extends ModelParser {
 
     public RegistryManager(AmazonDynamoDB client, AWSResourceGroupsTaggingAPI taggingAPIclient, AWSLambda lambdaClient)
             throws IOException {
-        this(new TableDriver(client, taggingAPIclient, lambdaClient), new DynamoDBMapper(client));
+        this(new TableDriver(client, taggingApiClient, lambdaClient), new DynamoDBMapper(client));
     }
 
     public RegistryManager(TableDriver tableDriver, DynamoDBMapper dynamoDBMapper) throws IOException {

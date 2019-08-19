@@ -35,6 +35,14 @@ unit:identifier a rdfs:Property ;
   rdfs:domain unit:Concept ;
   rdfs:range xsd:string .
 
+unit:localIdentifier a rdfs:Property ;
+  rdfs:subPropertyOf dcterms:identifier ;
+  rdfs:label "local identifier"@en ;
+  rdfs:label "lokalidentifikator"@no ;
+  rdfs:description "A unique local identifier" ;
+  rdfs:domain unit:Concept ;
+  rdfs:range xsd:string .
+
 unit:preferredLabel a rdfs:Property ;
   rdfs:subPropertyOf skos:prefLabel ;
   rdfs:label "Preferred label"@en ;
@@ -49,7 +57,7 @@ unit:alternativeLabel a rdfs:Property ;
   rdfs:label "Alternativt navn"@no ;
   rdfs:description "An alternative label for a thing" ;
   rdfs:domain unit:Concept ;
-  rdfs:range unit:Concept .
+  rdfs:range rdf:langString .
 
 unit:narrower a rdfs:Property ;
   rdfs:subPropertyOf skos:narrower ;
@@ -75,12 +83,28 @@ unit:related a rdfs:Property ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:Concept .
 
-unit:deinition a rdfs:Property ;
+unit:definition a rdfs:Property ;
   rdfs:subPropertyOf skos:definition ;
   rdfs:label "Definition"@en ;
   rdfs:label "Beskrivelse"@no ;
   rdfs:description "A complete definition of what the term means and how it is to be used" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
+  rdfs:range rdf:langString .
+
+unit:editorialNote a rdfs:Property ;
+  rdfs:subPropertyOf skos:editorialNote ;
+  rdfs:label "Editorial note"@en ;
+  rdfs:label "Redaktørnote"@no ;
+  rdfs:description "A note of editorial significance" ;
+  rdfs:domain unit:Concept, unit:ConceptScheme ;
+  rdfs:range rdf:langString .
+
+unit:scopeNote a rdfs:Property ;
+  rdfs:subPropertyOf skos:scopeNote ;
+  rdfs:label "Scope note"@en ;
+  rdfs:label "Scope-notat"@no ;
+  rdfs:description "A note regarding the extent and content of the application of a term" ;
+  rdfs:domain unit:Concept ;
   rdfs:range rdf:langString .
 
 unit:inScheme a rdfs:Property ;
@@ -97,3 +121,19 @@ unit:seeAlso a rdfs:Property ;
   rdfs:label "Se også"@no ;
   rdfs:description "A generic, unspecified relation for relevant information" ;
   rdfs:domain unit:Concept, unit:ConceptScheme .
+
+unit:modified a rdfs:Property ;
+  rdfs:subPropertyOf skos:modified ;
+  rdfs:label "modified"@en ;
+  rdfs:label "modifisert"@no ;
+  rdfs:description "The last date of modification" ;
+  rdfs:domain unit:Concept, unit:ConceptScheme ;
+  rdfs:range xsd:date .
+
+unit:created a rdfs:Property ;
+  rdfs:subPropertyOf skos:created ;
+  rdfs:label "created"@en ;
+  rdfs:label "opprettet"@no ;
+  rdfs:description "The date of creation" ;
+  rdfs:domain unit:Concept, unit:ConceptScheme ;
+  rdfs:range xsd:date .

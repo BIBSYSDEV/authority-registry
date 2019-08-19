@@ -1,0 +1,78 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix unit: <http://unit.no/entitydata#> .
+@prefix unit-systems: <http://unit.no/systems#> .
+
+unit:EntityShape a sh:NodeShape ;
+    sh:targetClass unit:Concept ;
+    sh:closed true ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:nodeKind sh:IRI ;
+        sh:in ( unit:Concept )
+    ] ;
+    sh:property [
+        sh:path unit:identifier ;
+        sh:datatype xsd:string ;
+        sh:name "identifier" ;
+        sh:maxCount 1 ;
+        sh:minCount 1
+    ] ;
+    sh:property [
+        sh:path unit:preferredLabel ;
+        sh:datatype rdf:langString ;
+        sh:minCount 1;
+        sh:uniqueLang true
+    ] ;
+    sh:property [
+        sh:path unit:alternativeLabel ;
+        sh:datatype rdf:langString
+    ] ;
+    sh:property [
+        sh:path unit:inScheme ;
+        sh:nodeKind sh:IRI ;
+        sh:in ( unit-systems:humord )
+    ] ;
+    sh:property [
+        sh:path unit:localIdentifier ;
+        sh:datatype xsd:string ;
+        sh:pattern "^AUTID[0-9]+$"
+    ] ;
+    sh:property [
+        sh:path unit:modified ;
+        sh:datatype xsd:date ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path unit:created ;
+        sh:datatype xsd:date ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path unit:definition ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true
+    ] ;
+    sh:property [
+        sh:path unit:editorialNote ;
+        sh:datatype rdf:langString
+    ] ;
+    sh:property [
+        sh:path unit:scopeNote ;
+        sh:datatype rdf:langString
+    ] ;
+    sh:property [
+        sh:path unit:broader ;
+        sh:nodeKind sh:IRI
+    ];
+    sh:property [
+        sh:path unit:narrower ;
+        sh:nodeKind sh:IRI ;
+        sh:maxCount 1
+    ];
+    sh:property [
+        sh:path unit:related ;
+        sh:nodeKind sh:IRI
+    ] .

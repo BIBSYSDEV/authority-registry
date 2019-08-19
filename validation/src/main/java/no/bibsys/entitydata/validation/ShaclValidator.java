@@ -9,13 +9,16 @@ import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNot
 import no.bibsys.entitydata.validation.rdfutils.ShaclConstants;
 import no.bibsys.utils.ModelParser;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -95,8 +98,18 @@ public class ShaclValidator extends ModelParser {
         if (validRanges.containsAll(actualRanges)) {
             return true;
         } else {
-            throw new ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException();
+            throw new ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeException(
+                    generateValidationErrorFromComparison(actualRanges, validRanges));
         }
+    }
+
+    private String generateValidationErrorFromComparison(Model inputModel, Model validationModel) {
+        Model temporaryModel = ModelFactory.createDefaultModel();
+        temporaryModel.add(inputModel);
+        temporaryModel.remove(validationModel);
+        StringWriter stringWriter = new StringWriter();
+        RDFDataMgr.write(stringWriter, temporaryModel, Lang.TURTLE);
+        return stringWriter.toString();
     }
 
     private boolean shaclModelTargetClassesAreInDomainOfRespectiveProperties(ShaclParser shaclParser)

@@ -52,12 +52,12 @@ unit:preferredLabel a rdfs:Property ;
   rdfs:range rdf:langString .
 
 unit:alternativeLabel a rdfs:Property ;
-  rdfs::subPropertyOf skos:altLabel ;
+  rdfs:subPropertyOf skos:altLabel ;
   rdfs:label "Alternative label"@en ;
   rdfs:label "Alternativt navn"@no ;
   rdfs:description "An alternative label for a thing" ;
   rdfs:domain unit:Concept ;
-  rdfs:range unit:Concept .
+  rdfs:range rdf:langString .
 
 unit:narrower a rdfs:Property ;
   rdfs:subPropertyOf skos:narrower ;
@@ -91,7 +91,7 @@ unit:definition a rdfs:Property ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
 
-unit:ediorialNote a rdfs:Property ;
+unit:editorialNote a rdfs:Property ;
   rdfs:subPropertyOf skos:editorialNote ;
   rdfs:label "Editorial note"@en ;
   rdfs:label "Redaktørnote"@no ;
@@ -137,7 +137,3 @@ unit:created a rdfs:Property ;
   rdfs:description "The date of creation" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
-
-# This should be handled in the validator, I will fix
-rdf:type a rdfs:Property .
-  

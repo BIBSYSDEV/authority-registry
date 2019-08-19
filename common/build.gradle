@@ -7,5 +7,5 @@ dependencies {
     implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.11.0'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
-    
+
 }
