@@ -76,13 +76,14 @@ public class SearchService {
                      List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
                      for (String string : list) {
                          result.append(string);
+                         result.append(",");
                     }
                  } catch (Exception e) {
                      logger.error("",e);
                  }
             }
             result.append("]");
-            return result.toString();
+            return result.toString().replace(",]", "]");
         } catch (SearchException e) {
             logger.error("",e);
         }
