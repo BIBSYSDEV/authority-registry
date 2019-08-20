@@ -15,22 +15,18 @@ import com.amazonaws.services.cloudsearchdomain.model.QueryParser;
 import com.amazonaws.services.cloudsearchdomain.model.SearchException;
 import com.amazonaws.services.cloudsearchdomain.model.SearchRequest;
 import com.amazonaws.services.cloudsearchdomain.model.SearchResult;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
-import no.bibsys.utils.JsonUtils;
 
-// @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public class SearchService {
 
-    private static final String FILTERQUERY_BASE = "inscheme:'%s'";
+    private static final String FILTERQUERY_BASE = "inscheme:'http://unit.no/system#%s'";
     private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
-    
+
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
-    
+
     private transient final String serviceEndpoint;
     private final transient AmazonCloudSearchDomain searchClient;
 
@@ -44,19 +40,14 @@ public class SearchService {
         EndpointConfiguration endpointConfiguration = new EndpointConfiguration(serviceEndpoint, signingRegion);
         searchClient = AmazonCloudSearchDomainClientBuilder.standard()
                 .withEndpointConfiguration(endpointConfiguration).build();
-
-
     }
 
     public String simpleQuery(String registryName, String queryString) {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
-        
+
         String filterQuery = String.format(FILTERQUERY_BASE,registryName);
-        
-        // Fjerne denne etter testing
-        filterQuery = "inscheme:'http://data.ub.uio.no/humord'";
-        
+
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
                 .withFilterQuery(filterQuery)
@@ -64,29 +55,23 @@ public class SearchService {
                 .withQueryParser(QueryParser.Simple);
         try {
             logger.debug("searchRequest={}", searchRequest);
-            StringWriter result = new StringWriter();
             SearchResult searchResult = searchClient.search(searchRequest);
             logger.debug("searchResult={}", searchResult);
-             Hits hits = searchResult.getHits();
-             ObjectMapper objectMapper = JsonUtils.newJsonParser();
-             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-             result.append("[");
-             for (Hit hit : hits.getHit()) {
-                 try {
-                     List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
-                     for (String string : list) {
-                         result.append(string);
-                         result.append(",");
-                    }
-                 } catch (Exception e) {
-                     logger.error("",e);
-                 }
+            Hits hits = searchResult.getHits();
+            StringWriter result = new StringWriter();
+            result.append("[");
+            for (Hit hit : hits.getHit()) {
+                List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
+                for (String presentationJson : list) {
+                    result.append(presentationJson).append(",");
+                }
             }
             result.append("]");
+            // Removing the last ','
             return result.toString().replace(",]", "]");
         } catch (SearchException e) {
             logger.error("",e);
+            throw e;
         }
-        return null;
     }
 }
