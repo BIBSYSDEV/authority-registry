@@ -19,18 +19,11 @@ import no.bibsys.utils.JsonUtils;
 
 public class SearchServiceTest {
 
-    
-    
-    
-    
     private static final String TESTDATA_FOLDER = "testdata";
     private static final String bodyFilename = "cloudsearch_response.json";
     private static final Object CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private final transient ObjectMapper objectMapper = JsonUtils.newJsonParser();
 
-
-    
-    
     @Ignore
     @Test
     public void testSimpleQuery() throws IOException {
@@ -39,12 +32,11 @@ public class SearchServiceTest {
         assertNotNull(searchResult);
         Hits hits = searchResult.getHits();
         for (Hit hit : hits.getHit()) {
-                List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
-                for (String presentationJsonString : list) {
-                    System.out.println(presentationJsonString);
-               }
-       }
-
+            List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
+            for (String presentationJsonString : list) {
+                assertNotNull(presentationJsonString);
+            }
+        }
     }
 
 }
