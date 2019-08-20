@@ -80,14 +80,6 @@ public class CloudsearchDocumentClient {
 
     }
 
-    public  String simpleSearch(String query) {
-        return "";
-    }
-    
-
-    
-    
-    
     private String batchToString(List<AmazonSdfDTO> documents)
             throws JsonGenerationException, JsonMappingException, IOException {
         StringWriter batchDocuments = new StringWriter();
