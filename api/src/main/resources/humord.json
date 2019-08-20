@@ -1,0 +1,161 @@
+[
+    {
+        "term-id": "HUME00001",
+        "dato": "1994-03-21",
+        "hovedemnefrase": "Humaniora"
+    },
+    {
+        "term-id": "HUME00002",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Humanistiske fag",
+        "se-id": "HUME00001"
+    },
+    {
+        "term-id": "HUME00003",
+        "dato": "1994-03-21",
+        "hovedemnefrase": "Humanvitenskap",
+        "se-id": "HUME00001"
+    },
+    {
+        "term-id": "HUME00004",
+        "dato": "1994-03-21",
+        "hovedemnefrase": "Humord",
+        "se-id": "HUME00001"
+    },
+    {
+        "term-id": "HUME00005",
+        "dato": "1995-03-01",
+        "hovedemnefrase": "Arkeologi",
+        "definisjon": "Kulturen, livet og levemåten i eldre tider grunnet på utgravninger og funn i jorda <SNL>",
+        "se-ogsa-id": "HUME12563",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00001"
+    },
+    {
+        "term-id": "HUME00006",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Fortidsminner",
+        "se-ogsa-id": [
+            "HUME04581",
+            "HUME04546",
+            "HUME12105"
+        ],
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00005"
+    },
+    {
+        "term-id": "HUME00007",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Fornminner",
+        "se-id": "HUME00006"
+    },
+    {
+        "term-id": "HUME00008",
+        "dato": "2015-11-20",
+        "hovedemnefrase": "Faste fortidsminner",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00006"
+    },
+    {
+        "term-id": "HUME00009",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Boplasser",
+        "se-ogsa-id": [
+            "HUME09034",
+            "HUME09054",
+            "HUME09052"
+        ],
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00008"
+    },
+    {
+        "term-id": "HUME00010",
+        "dato": "2006-11-24",
+        "hovedemnefrase": "Crannog",
+        "definisjon": "Befestet boplass anlagt i innsjø i Irland, Skottland og England <UBO>",
+        "se-ogsa-id": "HUME05291",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00009"
+    },
+    {
+        "term-id": "HUME00011",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Hellere",
+        "definisjon": "Overheng under bergvegg eller liten hule hvor åpningen er større enn dybden. Heller har i stor grad vært brukt som boplass og som leger under fangst og fiske <UBO>",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00009"
+    },
+    {
+        "term-id": "HUME00012",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Bygdeborger",
+        "se-ogsa-id": [
+            "HUME05293",
+            "HUME05291"
+        ],
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00008"
+    },
+    {
+        "term-id": "HUME00013",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Dyregraver",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00008"
+    },
+    {
+        "term-id": "HUME00014",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Gravplasser",
+        "kvalifikator": "Arkeologi",
+        "se-ogsa-id": "HUME08415",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00008"
+    },
+    {
+        "term-id": "HUME00015",
+        "dato": "1994-03-21",
+        "hovedemnefrase": "Gravanlegg",
+        "se-id": "HUME00014"
+    },
+    {
+        "term-id": "HUME00016",
+        "dato": "1994-03-21",
+        "hovedemnefrase": "Gravfelt",
+        "se-id": "HUME00014"
+    },
+    {
+        "term-id": "HUME00017",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Nekropoler",
+        "se-id": "HUME00014"
+    },
+    {
+        "term-id": "HUME00018",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Graver",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00014"
+    },
+    {
+        "term-id": "HUME00019",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Båtgraver",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00018"
+    },
+    {
+        "term-id": "HUME00020",
+        "dato": "2009-10-22",
+        "hovedemnefrase": "Gravhauger",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00014"
+    },
+    {
+        "term-id": "HUME00021",
+        "dato": "2011-09-14",
+        "hovedemnefrase": "Gårdshauger",
+        "toppterm-id": "HUME00005",
+        "overordnetterm-id": "HUME00020"
+    }
+]

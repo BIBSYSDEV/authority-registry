@@ -1,31 +1,37 @@
 package no.bibsys.web;
 
 import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
-import no.bibsys.utils.IoUtils;
-import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
-import no.bibsys.web.model.EntityDto;
-import no.bibsys.web.model.RegistryDto;
-import no.bibsys.web.model.RegistryInfoNoMetadataDto;
-import no.bibsys.web.security.ApiKeyConstants;
-import org.junit.Test;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import no.bibsys.utils.IoUtils;
+import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
+import no.bibsys.web.model.EntityDto;
+import no.bibsys.web.model.RegistryDto;
+import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.security.ApiKeyConstants;
+
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
+    private static final String INVALID_APIKEY = "invalidAPIKEY";
     private static final String UPDATED_PUBLISHER_VALUE = "Updated publisher value";
     private static final String PUBLISHER = "Publisher";
+    Logger logger = LoggerFactory.getLogger(RegistryDatabaseResourceTest.class);
 
     @Test
     public void createRegistry_RegistryNotExistingUserNotAuthorized_StatusForbidden() {
@@ -52,7 +58,6 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         RegistryDto expectedRegistry = sampleData.sampleRegistryDto(registryName);
         Response response = createRegistry(expectedRegistry, apiAdminKey);
 
-        System.out.println("response from createRegistry: " + response);
         RegistryInfoNoMetadataDto actualRegistry = response.readEntity(RegistryInfoNoMetadataDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
@@ -224,8 +229,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        Response response = target("/registry/" + registryName)
-                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
                 apiAdminKey).delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.OK.getStatusCode())));
@@ -239,9 +243,8 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        Response response = target("/registry/" + registryName)
-                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
-                "invalidAPIKEY").delete();
+        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+                INVALID_APIKEY).delete();
 
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -250,8 +253,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     public void deleteRegistry_RegistryNotExisting_ReturnsStatusNotFound() {
 
         String registryName = UUID.randomUUID().toString();
-        Response response = target("/registry/" + registryName)
-                .request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
+        Response response = target("/registry/" + registryName).request().header(ApiKeyConstants.API_KEY_PARAM_NAME,
                 apiAdminKey).delete();
 
         String entity = response.readEntity(String.class);

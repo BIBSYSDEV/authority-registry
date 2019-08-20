@@ -41,6 +41,8 @@ import static org.junit.Assert.assertThat;
 
 public class EntityDatabaseResourceTest extends DatabaseResourceTest {
 
+    private static final String ENTITY_SAMPLE_ID = "/entity/sampleId";
+
     @Test
     public void getEntity_RegistryExists_ReturnsStatusOk() throws Exception {
         String registryName = createRegistry();
@@ -85,7 +87,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         EntityDto actualEntity = response.readEntity(EntityDto.class);
 
         assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
-        assertThat(response.getLocation().toString(), containsString("/entity/sampleId"));
+        assertThat(response.getLocation().toString(), containsString(ENTITY_SAMPLE_ID));
 
         Response readResponse = readEntity(registryName, actualEntity.getId(), MediaType.APPLICATION_JSON);
         EntityDto readEntity = readResponse.readEntity(EntityDto.class);
@@ -127,7 +129,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         EntityDto expectedEntity = sampleData.sampleEntityDto();
         Response response = insertEntryRequest(registryName, expectedEntity, registryAdminKey);
         assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
-        assertThat(response.getLocation().toString(), containsString("/entity/sampleId"));
+        assertThat(response.getLocation().toString(), containsString(ENTITY_SAMPLE_ID));
     }
 
     @Test

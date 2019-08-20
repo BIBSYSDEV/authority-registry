@@ -59,13 +59,16 @@ import java.util.List;
         in = SecuritySchemeIn.HEADER)
 public class DatabaseResource {
 
+    private static final String ENTITY = "entity";
     private static final String NAME_OF_REGISTRY_TO = "Name of registry to ";
     private static final String NAME_OF_REGISTRY_IN = "Name of registry in ";
     private static final String NAME_OF_NEW_REGISTRY = "Name of new registry";
     private static final String ENTITY_ID = "entityId";
     private static final String STRING = "string";
     private static final String REGISTRY_NAME = "registryName";
-    public static final String PATH_DELIMITER = "/";
+    private static final String PATH_DELIMITER = "/";
+    private static final String REGISTRY = "registry";
+
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
 
@@ -221,9 +224,9 @@ public class DatabaseResource {
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
         UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-        String entityPath = String.join(PATH_DELIMITER, entityId);
-        uriBuilder.path(entityPath);
-        persistedEntity.setPath(entityPath);
+        String enityPath = String.join(PATH_DELIMITER, REGISTRY, registryName, ENTITY, entityId);
+        uriBuilder.path(enityPath);
+        persistedEntity.setPath(enityPath);
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
     }
 
@@ -245,7 +248,7 @@ public class DatabaseResource {
         for (EntityDto entityDto : entityDtos) {
             EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
             String entityId = persistedEntity.getId();
-            persistedEntity.setPath(String.join("/", "registry", registryName, "entity", entityId));
+            persistedEntity.setPath(String.join("/", REGISTRY, registryName, ENTITY, entityId));
             persistedEntities.add(persistedEntity);
         }
 

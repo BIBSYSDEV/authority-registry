@@ -44,21 +44,21 @@ import static java.util.Objects.nonNull;
 
 public class TableDriver {
 
+    private static final String STACK_NAME = "STACK_NAME";
     private static final String TABLECLASS_TAG_KEY = "no.unit.entitydata.tableclass";
     private static final Logger logger = LoggerFactory.getLogger(TableDriver.class);
+    private static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
+    private static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
     private static final String UNIT_RESOURCE_TYPE = "unit.resource_type";
     private static final String AWS_CLOUDFORMATION_LOGICAL_ID = "aws:cloudformation:logical-id";
     private static final String AWS_CLOUDFORMATION_STACK_NAME = "aws:cloudformation:stack-name";
     private static final int SINGLE_ITEM = 1;
     private static final int ONLY_ELEMENT = 0;
-    private static final String STACK_NAME = "STACK_NAME";
-    private static final String DYNAMO_DB_EVENT_PROCESSOR_LAMBDA = "DynamoDBEventProcessorLambda";
-    private static final String DYNAMO_DB_TRIGGER_EVENT_PROCESSOR = "DynamoDBTrigger_EventProcessor";
     private final transient AmazonDynamoDB client;
     private final transient DynamoDB dynamoDb;
     private final transient DynamoDBMapper mapper;
-    private final transient AWSResourceGroupsTaggingAPI taggingApiClient;
     private final transient AWSLambda lambdaClient;
+    private final transient AWSResourceGroupsTaggingAPI taggingApiClient;
     private final transient String stackName;
 
     public TableDriver(final AmazonDynamoDB client,

@@ -35,6 +35,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UrlUpdaterTest {
 
+    private static final String API_ID = "apiID";
+    private static final String BASE_PATH_VALUE = "BasePathValue";
     private static final String DEFAULT_ZONE_NAME = "aws.unit.no.";
     private static final String DEFAULT_RECORD_SET_NAME = "api.entitydata.aws.unit.no.";
     private final transient String certificateArn = "TheCerificate";
@@ -53,7 +55,7 @@ public class UrlUpdaterTest {
     public UrlUpdaterTest() {
         staticUrlInfo = new StaticUrlInfo(DEFAULT_ZONE_NAME, DEFAULT_RECORD_SET_NAME, Stage.TEST);
         apiGatewayClient = mockApiGatewayClient();
-        route53Updater = new Route53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client);
+        route53Updater = new Route53Updater(staticUrlInfo, API_ID, apiGatewayClient, route53Client);
 
         route53Updater.setRoute53Client(mockRoute53Client());
         urlUpdater = new UrlUpdater(route53Updater);
@@ -85,7 +87,7 @@ public class UrlUpdaterTest {
 
         // necessary when apiGateway is called to delete old mappings
         when(client.getBasePathMappings(any()))
-            .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath("BasePathValue")));
+            .thenReturn(new GetBasePathMappingsResult().withItems(new BasePathMapping().withBasePath(BASE_PATH_VALUE)));
         return client;
     }
 
@@ -124,7 +126,7 @@ public class UrlUpdaterTest {
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createUpdateRequest(certificateArn);
         ChangeResourceRecordSetsRequest recordSetsRequest = request.get();
 
-        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client));
+        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, API_ID, apiGatewayClient, route53Client));
 
         ChangeResourceRecordSetsResult testResult = urlUpdater.executeUpdate(recordSetsRequest);
         assertThat(testResult, is(not(nullValue())));
@@ -135,7 +137,7 @@ public class UrlUpdaterTest {
         Optional<ChangeResourceRecordSetsRequest> request = urlUpdater.createDeleteRequest();
         ChangeResourceRecordSetsRequest recordSetsRequest = request.get();
 
-        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, "apiID", apiGatewayClient, route53Client));
+        urlUpdater = new UrlUpdater(new MockRoute53Updater(staticUrlInfo, API_ID, apiGatewayClient, route53Client));
 
         ChangeResourceRecordSetsResult result = urlUpdater.executeDelete(recordSetsRequest);
         assertThat(result, is(not(nullValue())));
