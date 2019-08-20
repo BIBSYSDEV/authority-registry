@@ -1,6 +1,6 @@
 package no.bibsys.service;
 
-import java.util.ArrayList;
+import java.io.StringWriter;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.utils.JsonUtils;
 
-@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+// @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public class SearchService {
 
     private static final String FILTERQUERY_BASE = "inscheme:'%s'";
@@ -48,7 +48,7 @@ public class SearchService {
 
     }
 
-    public List<String> simpleQuery(String registryName, String queryString) {
+    public String simpleQuery(String registryName, String queryString) {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
         
@@ -64,23 +64,25 @@ public class SearchService {
                 .withQueryParser(QueryParser.Simple);
         try {
             logger.debug("searchRequest={}", searchRequest);
-            List<String> result = new ArrayList<>();
+            StringWriter result = new StringWriter();
             SearchResult searchResult = searchClient.search(searchRequest);
             logger.debug("searchResult={}", searchResult);
              Hits hits = searchResult.getHits();
              ObjectMapper objectMapper = JsonUtils.newJsonParser();
              objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+             result.append("[");
              for (Hit hit : hits.getHit()) {
                  try {
                      List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
                      for (String string : list) {
-                         result.add(string);
+                         result.append(string);
                     }
                  } catch (Exception e) {
                      logger.error("",e);
                  }
             }
-            return result;
+            result.append("]");
+            return result.toString();
         } catch (SearchException e) {
             logger.error("",e);
         }

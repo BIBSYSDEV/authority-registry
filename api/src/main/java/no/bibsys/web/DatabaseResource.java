@@ -209,7 +209,7 @@ public class DatabaseResource {
 
                                   ) throws JsonProcessingException {
         
-        List<String> queryResult = searchService.simpleQuery(registryName, queryString);
+        String queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok().entity(queryResult).build();
     }
     
