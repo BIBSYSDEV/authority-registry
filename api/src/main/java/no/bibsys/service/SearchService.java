@@ -21,14 +21,17 @@ import no.bibsys.aws.tools.Environment;
 
 public class SearchService {
 
+    private static final String JSON_START_ARRAY = "[";
+    private static final String JSON_END_ARRAY = "]";
+    private static final String LAST_ELEMENT_TRAILING_COMMA = ",]";
     private static final String FILTERQUERY_BASE = "inscheme:'http://unit.no/system#%s'";
     private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
 
-    private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
-
-    private transient final String serviceEndpoint;
+    private final transient String serviceEndpoint;
     private final transient AmazonCloudSearchDomain searchClient;
+    
+    private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
 
     public SearchService(Environment environmentReader) {
         this.serviceEndpoint = environmentReader.readEnv(EnvironmentVariables.CLOUDSEARCH_SEARCH_ENDPOINT);
@@ -59,19 +62,23 @@ public class SearchService {
             logger.debug("searchResult={}", searchResult);
             Hits hits = searchResult.getHits();
             StringWriter result = new StringWriter();
-            result.append("[");
-            for (Hit hit : hits.getHit()) {
-                List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
-                for (String presentationJson : list) {
-                    result.append(presentationJson).append(",");
-                }
-            }
-            result.append("]");
-            // Removing the last ','
-            return result.toString().replace(",]", "]");
+            return writeHitsToString(hits, result);
         } catch (SearchException e) {
             logger.error("",e);
             throw e;
         }
+    }
+
+    private String writeHitsToString(Hits hits, StringWriter result) {
+        result.append(JSON_START_ARRAY);
+        for (Hit hit : hits.getHit()) {
+            List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
+            for (String presentationJson : list) {
+                result.append(presentationJson).append(",");
+            }
+        }
+        result.append(JSON_END_ARRAY);
+        // Removing the last ','
+        return result.toString().replace(LAST_ELEMENT_TRAILING_COMMA, JSON_END_ARRAY);
     }
 }
