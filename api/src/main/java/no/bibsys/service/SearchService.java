@@ -17,11 +17,9 @@ import com.amazonaws.services.cloudsearchdomain.model.SearchRequest;
 import com.amazonaws.services.cloudsearchdomain.model.SearchResult;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import no.bibsys.EnvironmentVariables;
 import no.bibsys.aws.tools.Environment;
-import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.JsonUtils;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
@@ -50,7 +48,7 @@ public class SearchService {
 
     }
 
-    public List<Entity> simpleQuery(String registryName, String queryString) {
+    public List<String> simpleQuery(String registryName, String queryString) {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
         
@@ -66,7 +64,7 @@ public class SearchService {
                 .withQueryParser(QueryParser.Simple);
         try {
             logger.debug("searchRequest={}", searchRequest);
-            List<Entity> result = new ArrayList<>();
+            List<String> result = new ArrayList<>();
             SearchResult searchResult = searchClient.search(searchRequest);
             logger.debug("searchResult={}", searchResult);
              Hits hits = searchResult.getHits();
@@ -74,9 +72,10 @@ public class SearchService {
              objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
              for (Hit hit : hits.getHit()) {
                  try {
-                     Entity entity = new Entity();
-                     entity.setBody((ObjectNode)objectMapper.readTree(hit.getFields().get(CLOUDSEARCH_RETURN_FIELD).toString()));
-                     result.add(entity);
+                     List<String> list = hit.getFields().get(CLOUDSEARCH_RETURN_FIELD);
+                     for (String string : list) {
+                         result.add(string);
+                    }
                  } catch (Exception e) {
                      logger.error("",e);
                  }

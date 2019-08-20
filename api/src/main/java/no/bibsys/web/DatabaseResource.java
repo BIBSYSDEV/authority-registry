@@ -39,7 +39,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
 import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
@@ -210,7 +209,7 @@ public class DatabaseResource {
 
                                   ) throws JsonProcessingException {
         
-        List<Entity> queryResult = searchService.simpleQuery(registryName, queryString);
+        List<String> queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok(queryResult).build();
     }
     
