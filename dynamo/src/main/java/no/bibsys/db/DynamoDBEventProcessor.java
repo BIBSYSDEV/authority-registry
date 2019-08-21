@@ -12,8 +12,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStreamRecord;
-import com.sun.deploy.Environment;
 
+import no.bibsys.aws.tools.Environment;
 import no.bibsys.db.AmazonSdfDTO.CloudsearchOperation;
 import no.bibsys.db.AmazonSdfDTO.EventName;
 import no.bibsys.db.structures.Entity;
@@ -31,13 +31,13 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     public DynamoDBEventProcessor() {
         cloudsearchDocumentClient = new CloudsearchDocumentClient();
-        restApiUrl = new no.bibsys.aws.tools.Environment().readEnv(RESTAPI_URL);
+        restApiUrl = new Environment().readEnv(RESTAPI_URL);
     }
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
         // For mocking
         this.cloudsearchDocumentClient = cloudsearchClient;        
-        restApiUrl = new no.bibsys.aws.tools.Environment().readEnv(RESTAPI_URL);
+        restApiUrl = new Environment().readEnv(RESTAPI_URL);
     }
 
     @Override
