@@ -125,7 +125,7 @@ Resources:
       Environment:
         Variables:
           CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com
-          RESTAPI_URL: !GetAtt RestApiUrlParameter
+          RESTAPI_URL: !GetAtt RestApiUrlParameter.value  
       MemorySize: 1512
       Timeout: 20
       Policies:
