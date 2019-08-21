@@ -1,7 +1,34 @@
 package no.bibsys.web;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -17,6 +44,7 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.SearchService;
 import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.web.model.CustomMediaType;
@@ -26,30 +54,6 @@ import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -71,10 +75,15 @@ public class DatabaseResource {
 
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
+    private final transient SearchService searchService;
 
-    public DatabaseResource(RegistryService registryService, EntityService entityService) {
+    public DatabaseResource(
+            RegistryService registryService, 
+            EntityService entityService, 
+            SearchService searchService) {
         this.entityService = entityService;
         this.registryService = registryService;
+        this.searchService = searchService;
     }
 
     @POST
@@ -189,6 +198,26 @@ public class DatabaseResource {
         return Response.ok(registryDto).build();
     }
 
+    @GET
+    @Path("/{registryName}/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response queryRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+                                  @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                                              description = NAME_OF_REGISTRY_TO + "query",
+                                              schema = @Schema(type = STRING)) 
+                                  @PathParam(REGISTRY_NAME) String registryName,
+                                  @QueryParam("query") String queryString
+
+                                  ) throws JsonProcessingException {
+        
+        String queryResult = searchService.simpleQuery(registryName, queryString);
+        return Response.ok().entity(queryResult).build();
+    }
+    
+    
+    
     @PUT
     @Path("/{registryName}/schema")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)

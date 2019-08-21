@@ -9,6 +9,8 @@ public class MockEnvironment extends Environment {
     public static final String TEST_REGISTRY_ADMIN_API_KEY = "testRegistryAdminApiKey";
     public static final String API_KEYS_FOR_UNIT_TESTS = "apiKeysForUnitTests";
 
+    
+    
     @Override
     public String readEnv(String name) {
         String value = null;
@@ -19,6 +21,8 @@ public class MockEnvironment extends Environment {
             value = "test";
         } else if (EnvironmentVariables.REGISTRY_METADATA_TABLE_NAME.equals(name)) {
             value = "unitTestsValidationSchemaTable";
+        } else if (EnvironmentVariables.CLOUDSEARCH_SEARCH_ENDPOINT.equals(name)) {
+            value = "cloudsearch";
         }
 
         Preconditions.checkNotNull(value);

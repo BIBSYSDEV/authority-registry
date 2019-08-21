@@ -16,7 +16,7 @@ public class CloudsearchClientIntegrationTest {
 
     private static final String sampleDynamoDBIdentifier = "test-identifier-01";
     
-    CloudsearchClient cloudsearchClient;
+    CloudsearchDocumentClient cloudsearchClient;
     AmazonCloudSearchDomain amazonCloudSearchDomainMock;
     
     private AmazonSdfDTO createSampleAmazonSDF() throws IOException {
@@ -30,7 +30,7 @@ public class CloudsearchClientIntegrationTest {
     
     @Before
     public void init() throws IOException {
-        cloudsearchClient = new CloudsearchClient();
+        cloudsearchClient = new CloudsearchDocumentClient();
     }
     
     
