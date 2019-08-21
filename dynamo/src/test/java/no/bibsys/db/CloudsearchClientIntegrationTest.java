@@ -48,7 +48,7 @@ public class CloudsearchClientIntegrationTest {
     @Ignore
     @Test
     public void testDelete() throws IOException {
-        AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.CloudsearchSdfType.DELETE);
+        AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.CloudsearchOperation.DELETE);
         amazonSdfDTO.setId(sampleDynamoDBIdentifier);
         List<AmazonSdfDTO> documents = new ArrayList<>();
         documents.add(amazonSdfDTO);

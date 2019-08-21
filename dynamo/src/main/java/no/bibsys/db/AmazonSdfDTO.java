@@ -38,19 +38,19 @@ public class AmazonSdfDTO {
     private static final String CLOUDSEARCH_MAPPER_QUERY_SPARQL = "cloudsearch_mapper_query.sparql";
     private static final String SEPARATOR = "§§§§";
 
-    public enum CloudsearchSdfType {
+    public enum CloudsearchOperation {
         ADD, DELETE
     }
     
     public enum EventName {
-        INSERT(CloudsearchSdfType.ADD), 
-        MODIFY(CloudsearchSdfType.ADD), 
-        REMOVE(CloudsearchSdfType.DELETE);
+        INSERT(CloudsearchOperation.ADD), 
+        MODIFY(CloudsearchOperation.ADD), 
+        REMOVE(CloudsearchOperation.DELETE);
         
-        public final CloudsearchSdfType cloudsearchSdfType;
+        public final CloudsearchOperation cloudsearchOperation;
         
-        EventName(CloudsearchSdfType cloudsearchSdfType) {
-            this.cloudsearchSdfType = cloudsearchSdfType;
+        EventName(CloudsearchOperation cloudsearchSdfType) {
+            this.cloudsearchOperation = cloudsearchSdfType;
         }
     }
 
@@ -59,11 +59,16 @@ public class AmazonSdfDTO {
     private final transient LinkedTreeMap<String, Object> fields = new LinkedTreeMap<>();
 
     public AmazonSdfDTO(String eventName) {
-        type =  EventName.valueOf(eventName).cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
+        type =  EventName.valueOf(eventName).cloudsearchOperation.name().toLowerCase(Locale.getDefault());
     }
 
-    public AmazonSdfDTO(CloudsearchSdfType cloudsearchSdfType) {
-        this.type = cloudsearchSdfType.name().toLowerCase(Locale.getDefault());
+    public AmazonSdfDTO(CloudsearchOperation cloudsearchOperation) {
+        this.type = cloudsearchOperation.name().toLowerCase(Locale.getDefault());
+    }
+
+    public AmazonSdfDTO(CloudsearchOperation cloudsearchOperation, String entityIdentifier) {
+        this.type = cloudsearchOperation.name().toLowerCase(Locale.getDefault());
+        this.id = entityIdentifier;
     }
 
     @SuppressWarnings("PMD")
