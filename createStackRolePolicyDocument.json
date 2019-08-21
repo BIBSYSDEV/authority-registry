@@ -31,10 +31,7 @@
         "cloudformation:CreateChangeSet"
       ],
       "Effect": "Allow",
-      "Resource": [
-        "arn:aws:cloudformation:eu-west-1:aws:transform/Serverless-2016-10-31",
-        "arn:aws:cloudformation:eu-west-1:aws:transform/Include"
-      ]
+      "Resource": "*"
     },
     {
       "Action": [
@@ -68,7 +65,7 @@
         "tag:GetTagKeys",
         "tag:GetTagValues",
         "tag:TagResources",
-        "tag:UntagGetResources"
+        "tag:UntagResources"
       ],
       "Effect": "Allow",
       "Resource": "*"

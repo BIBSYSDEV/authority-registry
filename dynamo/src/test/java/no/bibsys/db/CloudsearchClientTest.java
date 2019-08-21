@@ -25,7 +25,7 @@ public class CloudsearchClientTest {
     private static final String sampleIdentifier = "identifier01";
     private static final String sampleDynamoDBIdentifier = "dynamooDB-identifier01";
     
-    CloudsearchClient cloudsearchClient;
+    CloudsearchDocumentClient cloudsearchClient;
     AmazonCloudSearchDomain amazonCloudSearchDomainMock;
     
     private AmazonSdfDTO createSampleAmazonSDF() throws IOException {
@@ -44,7 +44,7 @@ public class CloudsearchClientTest {
         uploadDockumentsResponeMock.setStatus("Okidoi, mocked");
         when(amazonCloudSearchDomainMock.uploadDocuments(any(UploadDocumentsRequest.class)))
             .thenReturn((uploadDockumentsResponeMock));
-        cloudsearchClient = new CloudsearchClient(amazonCloudSearchDomainMock);
+        cloudsearchClient = new CloudsearchDocumentClient(amazonCloudSearchDomainMock);
     }
     
     

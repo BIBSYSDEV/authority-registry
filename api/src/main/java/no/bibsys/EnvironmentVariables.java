@@ -30,6 +30,13 @@ public class EnvironmentVariables {
      */
     public static final String APPLICATION_URL = "APPLICATION_URL";
 
+    /**
+     * Static URL of the cloudSearch domain that will give us the endpoints for searching and document upload data.
+     */
+    public static final String CLOUDSEARCH_DOMAIN = "CLOUDSEARCH_DOMAIN";
+    public static final String CLOUDSEARCH_SEARCH_ENDPOINT = "CLOUDSEARCH_SEARCH_ENDPOINT";
+
+    
 
     /**
      * Git branch.

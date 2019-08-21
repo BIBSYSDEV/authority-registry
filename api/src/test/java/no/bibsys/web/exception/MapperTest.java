@@ -14,6 +14,7 @@ import no.bibsys.service.ApiKey;
 import no.bibsys.service.AuthenticationService;
 import no.bibsys.service.EntityService;
 import no.bibsys.service.RegistryService;
+import no.bibsys.service.SearchService;
 import no.bibsys.testtemplates.SampleData;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.DatabaseResource;
@@ -47,6 +48,7 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
     private String registryAdminKey;
     protected RegistryService mockRegistryService;
     protected EntityService mockEntityService;
+    protected SearchService mockSearchService;
 
     @BeforeClass
     public static void init() throws IOException {
@@ -89,7 +91,9 @@ public abstract class MapperTest<M extends ExceptionMapper<?>> extends JerseyTes
 
         mockRegistryService = mock(RegistryService.class);
         mockEntityService = mock(EntityService.class);
-        jerseyConfig.register(new DatabaseResource(mockRegistryService, mockEntityService));
+        mockSearchService = mock(SearchService.class);
+
+        jerseyConfig.register(new DatabaseResource(mockRegistryService, mockEntityService, mockSearchService));
 
         jerseyConfig.register(createMapper().getClass());
 

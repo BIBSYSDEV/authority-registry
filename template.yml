@@ -94,7 +94,7 @@ Resources:
           - tag:GetTagKeys
           - tag:GetTagValues
           - tag:TagResources
-          - tag:UntagGetResources
+          - tag:UntagResources
           Resource: "*"
         - Effect: Allow
           Action:
@@ -107,6 +107,7 @@ Resources:
           STAGE_NAME: !Ref Stage
           API_KEY_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "apiKeys"]]
           VALIDATION_SCHEMA_TABLE_NAME: !Join ['-', [!Ref 'ProjectId', !Ref Branch, !Ref Stage, "validationSchemas"]]
+          CLOUDSEARCH_SEARCH_ENDPOINT: '{{resolve:ssm:CLOUDSEARCH_SEARCH_ENDPOINT:1}}'
       Events:
         ApiResource:
           Type: Api
@@ -124,7 +125,7 @@ Resources:
       CodeUri: api/build/libs/api-fat.jar
       Environment:
         Variables:
-          CLOUDSEARCH_DOCUMENT_ENDPOINT: doc-entity-search-dev-jdpvcxeyb2eh545fcyex5gwswm.eu-west-1.cloudsearch.amazonaws.com
+          CLOUDSEARCH_DOCUMENT_ENDPOINT: '{{resolve:ssm:CLOUDSEARCH_DOCUMENT_ENDPOINT:1}}'
       MemorySize: 1512
       Timeout: 20
       Policies:
