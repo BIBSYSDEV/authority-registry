@@ -1,5 +1,7 @@
 package no.bibsys.db;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,7 +84,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityIdentifier);
             
             logger.debug("cloudsearchOperation={}, entityIdentifier={}",cloudsearchOperation.name(),entityIdentifier);
-            if (cloudsearchOperation == cloudsearchOperation.ADD) {
+            if (cloudsearchOperation == CloudsearchOperation.ADD) {
                     Entity entity = getEntity(entityIdentifier);
                     sdf.setFieldsFromEntity(entity);
             }
@@ -96,8 +98,17 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private Entity getEntity(String entityIdentifier) {
         Entity entity = new Entity();
         entity.setId(entityIdentifier);
-        String entityUrl = restApiUrl+"/"+entityIdentifier;
-        logger.debug("GETing @{}",entityUrl);
+        String entityUrlString = restApiUrl+"/"+entityIdentifier;
+        URL entityUrl;
+        try {
+            entityUrl = new URL(entityUrlString);
+            String  content = (String) entityUrl.getContent();
+            logger.debug("content={}", content);
+        } catch (IOException e) {
+            logger.error("",e);
+            throw new RuntimeException(e);
+        }
+        logger.debug("GETing @{}",entityUrl.toExternalForm());
         return entity;
     }
 
