@@ -12,6 +12,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStreamRecord;
+import com.sun.deploy.Environment;
 
 import no.bibsys.db.AmazonSdfDTO.CloudsearchOperation;
 import no.bibsys.db.AmazonSdfDTO.EventName;
@@ -23,16 +24,20 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 //    private static final String DYNAMODB_CREATED_FIELD = "created";
 //    private static final String DYNAMODB_BODY_FIELD = "body";
     private static final String DYNAMODB_ID_FIELD = "id";
+    private static final String RESTAPI_URL = "RESTAPI_URL";
     private final transient CloudsearchDocumentClient cloudsearchDocumentClient;
+    private final transient String restApiUrl; 
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
     public DynamoDBEventProcessor() {
-        cloudsearchDocumentClient = new CloudsearchDocumentClient();        
+        cloudsearchDocumentClient = new CloudsearchDocumentClient();
+        restApiUrl = new no.bibsys.aws.tools.Environment().readEnv(RESTAPI_URL);
     }
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
         // For mocking
         this.cloudsearchDocumentClient = cloudsearchClient;        
+        restApiUrl = new no.bibsys.aws.tools.Environment().readEnv(RESTAPI_URL);
     }
 
     @Override
@@ -91,6 +96,8 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private Entity getEntity(String entityIdentifier) {
         Entity entity = new Entity();
         entity.setId(entityIdentifier);
+        String entityUrl = restApiUrl+"/"+entityIdentifier;
+        logger.debug("GETing @{}",entityUrl);
         return entity;
     }
 
