@@ -36,8 +36,8 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
         // For mocking
-        this.cloudsearchDocumentClient = cloudsearchClient;        
-        restApiUrl = new Environment().readEnv(RESTAPI_URL);
+        this.cloudsearchDocumentClient = cloudsearchClient;
+        restApiUrl = "http://localhost";
     }
 
     @Override

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -32,6 +33,7 @@ public class DynamoDBEventProcessorTest {
         dynamoDBEventProcessor = new DynamoDBEventProcessor(cloudsearchClientMock);
     }
 
+    @Ignore
     @Test
     public void testHandleRequest() throws IOException {
         DynamodbEvent dynamodbEvent = SampleEventData.sampleDynamoDBEvent();
