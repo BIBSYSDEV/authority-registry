@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,12 +21,12 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStreamRecord;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import no.bibsys.db.AmazonSdfDTO.CloudsearchOperation;
 import no.bibsys.db.AmazonSdfDTO.EventName;
-import no.bibsys.db.structures.Entity;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
 
@@ -101,8 +103,14 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             logger.debug("cloudsearchOperation={}, entityIdentifier={}",cloudsearchOperation.name(),entityUuid);
             if (cloudsearchOperation == CloudsearchOperation.ADD) {
                 String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
-                Entity entity = getEntity(entityIdentifier);
-                sdf.setFieldsFromEntity(entity);
+                String entitySource = getEntityAsString(entityIdentifier);
+                
+                ObjectMapper objectMapper = JsonUtils.newJsonParser();
+                objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+                ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
+                Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
+                fields.forEachRemaining(e ->  sdf.setField(e.getKey(), e.getValue().asText()));
+                sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, entitySource);
             }
             return sdf;
         } catch (Exception e) {
@@ -111,8 +119,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
         }
     }
 
-    protected Entity getEntity(String entityIdentifierUrl) {
-        Entity entity = new Entity();
+    protected String getEntityAsString(String entityIdentifierUrl) {
 
         logger.debug("entityUrlString={}",entityIdentifierUrl);
         URL entityUrl;
@@ -134,11 +141,11 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
             logger.debug("content={}", content);
 
-            ObjectMapper objectMapper = JsonUtils.newJsonParser();
-            objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            entity.setBody((ObjectNode)objectMapper.readTree(content));
-            return entity;
-
+//            ObjectMapper objectMapper = JsonUtils.newJsonParser();
+//            objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+//            entity.setBody((ObjectNode)objectMapper.readTree(content));
+//            return entity;
+            return content;
         } catch (IOException e) {
             logger.error("",e);
             throw new RuntimeException(e);

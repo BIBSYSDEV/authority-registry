@@ -17,11 +17,9 @@ import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsResult;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 
-import no.bibsys.db.structures.Entity;
-
 public class DynamoDBEventProcessorTest {
 
-    private static final String TESTENTITY_ID = "https://qpshvtds48.execute-api.eu-west-1.amazonaws.com/final/registry/tekord-r/entity/00b67e45-e6a0-41d3-adc1-0e95652419e9";
+    private static final String TESTENTITY_ID = "https://qpshvtds48.execute-api.eu-west-1.amazonaws.com/final/registry/tekord-r/entity/00a28789-2418-4474-a0f8-ca1f9e8bc7d0";
 
     DynamoDBEventProcessor dynamoDBEventProcessor;
 
@@ -49,8 +47,8 @@ public class DynamoDBEventProcessorTest {
     @Ignore
     @Test
     public void testGetEntity() throws IOException {
-        Entity entity = dynamoDBEventProcessor.getEntity(TESTENTITY_ID);
-        assertNotNull(entity);
+        String entitySource = dynamoDBEventProcessor.getEntityAsString(TESTENTITY_ID);
+        assertNotNull(entitySource);
     }
     
 }

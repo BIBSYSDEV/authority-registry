@@ -46,13 +46,16 @@ public class SearchService {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
 
-        String filterQuery = String.format(FILTERQUERY_BASE,registryName);
 
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
-                .withFilterQuery(filterQuery)
                 .withReturn(CLOUDSEARCH_RETURN_FIELD)
                 .withQueryParser(QueryParser.Simple);
+        
+        if (registryName != null && !registryName.isEmpty()) {
+            String filterQuery = String.format(FILTERQUERY_BASE,registryName);
+            searchRequest.setFilterQuery(filterQuery);
+        }
         try {
             logger.debug("searchRequest={}", searchRequest);
             SearchResult searchResult = searchClient.search(searchRequest);
