@@ -28,6 +28,15 @@
       "@type": "@id",
       "@container": "@set"
     },
+    "editorialNote": {
+      "@container": "@set"
+    },
+    "scopeNote": {
+      "@container": "@set"
+    },
+    "definition": {
+      "@container": "@set"
+    },
     "type": "@type",
     "language": "@language",
     "value": "@value",
