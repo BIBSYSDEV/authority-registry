@@ -168,7 +168,7 @@ public class TableDriver {
 
             request.setStreamSpecification(
                     new StreamSpecification().withStreamEnabled(true)
-                            .withStreamViewType(StreamViewType.KEYS_ONLY));
+                            .withStreamViewType(StreamViewType.NEW_IMAGE));
             Collection<Tag> tags = Collections.singleton(
                     new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName())
             );
