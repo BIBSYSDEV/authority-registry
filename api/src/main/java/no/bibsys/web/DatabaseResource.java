@@ -201,8 +201,6 @@ public class DatabaseResource {
     @GET
     @Path("/{registryName}/search")
     @Produces(MediaType.APPLICATION_JSON)
-    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     public Response queryRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
                                   @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                                               description = NAME_OF_REGISTRY_TO + "query",
@@ -287,8 +285,6 @@ public class DatabaseResource {
 
     @GET
     @Path("/{registryName}/entity/{entityId}")
-    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-
     @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON, CustomMediaType.APPLICATION_RDF,
             CustomMediaType.APPLICATION_RDF_XML, CustomMediaType.APPLICATION_JSON_LD,
             CustomMediaType.APPLICATION_N_TRIPLES, CustomMediaType.APPLICATION_TURTLE, CustomMediaType.APPLICATION_MARC,
