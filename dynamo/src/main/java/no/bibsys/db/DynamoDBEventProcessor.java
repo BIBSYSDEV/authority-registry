@@ -98,10 +98,8 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             String eventName = dynamodDBStreamRecord.getEventName();
             CloudsearchOperation cloudsearchOperation = EventName.valueOf(eventName).cloudsearchOperation;
 
-            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
-
             logger.debug("cloudsearchOperation={}, entityIdentifier={}",cloudsearchOperation.name(),entityUuid);
-            if (cloudsearchOperation == CloudsearchOperation.ADD) {
+//            if (cloudsearchOperation == CloudsearchOperation.ADD) {
                 String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
                 String entitySource = getEntityAsString(entityIdentifier);
                 
@@ -109,10 +107,12 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                 objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
                 ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
                 Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
+                
+                AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
                 fields.forEachRemaining(e ->  sdf.setField(e.getKey(), e.getValue().asText()));
                 sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, entitySource);
-            }
-            return sdf;
+                return sdf;
+//            }
         } catch (Exception e) {
             logger.error("",e);
             throw new RuntimeException(e);
