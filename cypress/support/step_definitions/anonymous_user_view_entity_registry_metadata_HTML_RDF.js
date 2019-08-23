@@ -87,8 +87,7 @@ function testRdf(registryName, registryEndpoint) {
                   JSON.stringify(testData));
               } else {
                 expect(JSON.stringify(
-                  JSON.parse(response.body))).to.deep.equal(
-                    JSON.stringify(JSON.parse(testData)));
+                  JSON.parse(response.body))).to.deep.equal(JSON.stringify(JSON.parse(testData)));
               }
               break;
             case 'application/rdf':

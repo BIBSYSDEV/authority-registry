@@ -1,13 +1,4 @@
 {
-  "id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
-  "type": "Concept",
-  "preferredLabel": [{
-    "language": "en",
-    "value": "someLabel"
-  }, {
-    "language": "no",
-    "value": "norskLabel"
-  }],
   "@context": {
     "@vocab": "http://unit.no/entitydata#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -35,6 +26,15 @@
     },
     "seeAlso": {
       "@type": "@id",
+      "@container": "@set"
+    },
+    "editorialNote": {
+      "@container": "@set"
+    },
+    "scopeNote": {
+      "@container": "@set"
+    },
+    "definition": {
       "@container": "@set"
     },
     "type": "@type",

@@ -1,21 +1,25 @@
 package no.bibsys.web.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.MessageBodyWriter;
+import no.bibsys.utils.ModelParser;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.MessageBodyWriter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+
 public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T> {
 
+    private static final String JSON_LD_CONTEXT = "/writer/entitydata_context.jsonld";
+    private static final String FILE_NOT_FOUND_TEMPLATE = "Could not find file %s";
 
     protected String serializeRdf(MediaType mediaType, String body) {
 
@@ -42,14 +46,23 @@ public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T>
                 outputLang = Lang.JSONLD;
                 break;
         }
-        StringWriter writer = new StringWriter();
 
-        RDFDataMgr.write(writer, model, outputLang);
-        return writer.toString();
+        String context;
+        try {
+            context = IOUtils.resourceToString(JSON_LD_CONTEXT, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(String.format(FILE_NOT_FOUND_TEMPLATE, JSON_LD_CONTEXT));
+        }
+        
+        ModelParser modelParser = new ModelParser();
+
+        if (outputLang.equals(Lang.JSONLD)) {
+            return modelParser.writeFormattedJsonLd(model, context);
+        }
+        return modelParser.writeData(model, outputLang, null);
     }
 
     protected void writerStringToOutputStream(OutputStream entityStream, String serialized) throws IOException {
-
         OutputStreamWriter writer = new OutputStreamWriter(entityStream);
         writer.write(serialized);
         writer.flush();
