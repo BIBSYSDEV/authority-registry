@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T> {
 
-    private static final String JSON_LD_FRAME = "/writer/entitydata_frame.jsonld";
+    private static final String JSON_LD_CONTEXT = "/writer/entitydata_context.jsonld";
     private static final String FILE_NOT_FOUND_TEMPLATE = "Could not find file %s";
 
     protected String serializeRdf(MediaType mediaType, String body) {
@@ -47,17 +47,17 @@ public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T>
                 break;
         }
 
-        String frame;
+        String context;
         try {
-            frame = IOUtils.resourceToString(JSON_LD_FRAME, StandardCharsets.UTF_8);
+            context = IOUtils.resourceToString(JSON_LD_CONTEXT, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException(String.format(FILE_NOT_FOUND_TEMPLATE, JSON_LD_FRAME));
+            throw new RuntimeException(String.format(FILE_NOT_FOUND_TEMPLATE, JSON_LD_CONTEXT));
         }
         
         ModelParser modelParser = new ModelParser();
 
         if (outputLang.equals(Lang.JSONLD)) {
-            return modelParser.writeFormattedJsonLd(model, frame);
+            return modelParser.writeFormattedJsonLd(model, context);
         }
         return modelParser.writeData(model, outputLang, null);
     }

@@ -78,7 +78,6 @@ function testRdf(registryName, registryEndpoint) {
             Accept: mediaType,
           },
         }).then((response) => {
-          cy.log('Testing mediatype: ' + mediaType);
           switch (mediaType) {
             default:
             case 'application/json':

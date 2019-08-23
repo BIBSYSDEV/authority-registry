@@ -47,9 +47,9 @@ public class ModelParser {
     }
 
     @JsonIgnore
-    public String writeData(Model model, Lang lang, String frame) {
+    public String writeData(Model model, Lang lang, String context) {
         if (lang.equals(Lang.JSONLD)) {
-            return writeFormattedJsonLd(model, frame);
+            return writeFormattedJsonLd(model, context);
         } else {
             return write(model, lang);
         }
@@ -62,15 +62,15 @@ public class ModelParser {
     }
 
     @JsonIgnore
-    public String writeFormattedJsonLd(Model model, String frame) {
+    public String writeFormattedJsonLd(Model model, String context) {
 
         JsonLdOptions jsonLdOptions = new JsonLdOptions();
-        jsonLdOptions.setOmitDefault(true);
+        jsonLdOptions.setOmitGraph(true);
 
         Context jsonLdContext = new Context();
-        jsonLdContext.set(JsonLDWriter.JSONLD_CONTEXT, frame);
+        jsonLdContext.set(JsonLDWriter.JSONLD_CONTEXT, context);
         // There is a suspicion that root node selection is necessary, however
-        // how to generate the frame code is not clear at this time, nor
+        // how to generate the context code is not clear at this time, nor
         // is it necessary for the current MVP
         // jsonLdContext.set(JsonLDWriter.JSONLD_FRAME, "{  \"type\": \"Concept\"\n }");
         jsonLdContext.set(JsonLDWriter.JSONLD_OPTIONS, jsonLdOptions);
