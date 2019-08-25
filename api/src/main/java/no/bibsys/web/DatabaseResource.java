@@ -72,7 +72,7 @@ public class DatabaseResource {
     private static final String REGISTRY_NAME = "registryName";
     private static final String REGISTRY = "registry";
 
-    private final Logger logger = LoggerFactory.getLogger(DatabaseResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseResource.class);
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
     private final transient SearchService searchService;
