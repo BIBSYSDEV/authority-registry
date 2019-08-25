@@ -27,6 +27,8 @@ import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -70,6 +72,7 @@ public class DatabaseResource {
     private static final String REGISTRY_NAME = "registryName";
     private static final String REGISTRY = "registry";
 
+    private final Logger logger = LoggerFactory.getLogger(DatabaseResource.class);
     private final transient RegistryService registryService;
     private final transient EntityService entityService;
     private final transient SearchService searchService;
@@ -250,6 +253,9 @@ public class DatabaseResource {
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
         UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+        logger.info("uriInfo.getBaseUri: {}", uriInfo.getBaseUri());
+        logger.info("uriInfo.getPath: {}", uriInfo.getPath());
+        logger.info("uriInfo.getAbsolutePath: {}", uriInfo.getAbsolutePath());
         uriBuilder.path(entityId);
         persistedEntity.setPath(uriBuilder.build().getPath());
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
