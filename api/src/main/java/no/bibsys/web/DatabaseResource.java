@@ -253,9 +253,6 @@ public class DatabaseResource {
         EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
         String entityId = persistedEntity.getId();
         UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-        logger.info("uriInfo.getBaseUri: {}", uriInfo.getBaseUri());
-        logger.info("uriInfo.getPath: {}", uriInfo.getPath());
-        logger.info("uriInfo.getAbsolutePath: {}", uriInfo.getAbsolutePath());
         uriBuilder.path(entityId);
         persistedEntity.setPath(uriBuilder.build().getPath());
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
