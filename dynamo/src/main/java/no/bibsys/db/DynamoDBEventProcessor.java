@@ -125,7 +125,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             connection.setRequestProperty(CONTENT_TYPE_PROPERTY_NAME, CONTENT_TYPE);
 
             // give it 15 seconds to respond
-            connection.setReadTimeout(15*1000);
+            connection.setReadTimeout(15 * 1000);
             connection.connect();
 
             // read the output from the server

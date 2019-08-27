@@ -35,7 +35,6 @@ public class CloudsearchClientTest {
         
         String presentationString = entity.toString();
         amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, presentationString);
-//        amazonSdfDTO.setFieldsFromEntity(entity);
         return amazonSdfDTO;
     }
     
