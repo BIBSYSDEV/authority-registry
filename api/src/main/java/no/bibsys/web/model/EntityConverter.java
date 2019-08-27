@@ -1,11 +1,27 @@
 package no.bibsys.web.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import no.bibsys.db.structures.Entity;
+import org.apache.commons.io.IOUtils;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.util.ResourceUtils;
+
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+
+import static no.bibsys.entitydata.validation.ontology.UnitOntology.SAME_AS;
 
 public class EntityConverter extends BaseConverter {
-        
+
+    public static final String PATH_SEPARATOR = "/";
+
     public static EntityDto toEntityDto(Entity entity) throws JsonProcessingException {
         EntityDto dto = new EntityDto();
         dto.setId(entity.getId());
@@ -14,7 +30,7 @@ public class EntityConverter extends BaseConverter {
         dto.setBody(toJson(entity.getBody()));
         return dto;
     }
-    
+
     public static Entity toEntity(EntityDto dto) {
         Entity entity = new Entity();
         entity.setId(dto.getId());
@@ -23,5 +39,41 @@ public class EntityConverter extends BaseConverter {
         entity.setBody(toObjectNode(dto.getBody()));
         return entity;
     }
-    
+
+    public static Entity toEntity(String uri, EntityDto dto) {
+        Entity entity = new Entity();
+        String id = dto.getId();
+        String finalizedUri = uri + PATH_SEPARATOR + id;
+        entity.setId(id);
+        entity.setCreated(dto.getCreated());
+        entity.setModified(dto.getModified());
+        String body = rewriteBodyWithId(finalizedUri, dto.getBody());
+        entity.setBody(toObjectNode(body));
+        return entity;
+    }
+
+    private static String rewriteBodyWithId(String uri, String dtoBody) {
+        Model input = ModelFactory.createDefaultModel();
+        InputStream inputStream = IOUtils.toInputStream(dtoBody, StandardCharsets.UTF_8);
+        RDFDataMgr.read(input, inputStream, Lang.JSONLD);
+
+        ResIterator subjectIterator = input.listSubjects();
+
+        boolean initialPass = true;
+        while (subjectIterator.hasNext()) {
+            Resource subject = subjectIterator.nextResource();
+            Resource replacementUri = ResourceFactory.createResource(uri);
+            if (initialPass && !subject.isAnon() && !subject.equals(replacementUri)) {
+                initialPass = false;
+                input.add(ResourceFactory.createStatement(replacementUri, SAME_AS, subject));
+            } else {
+                initialPass = false;
+            }
+            ResourceUtils.renameResource(subject, uri);
+        }
+
+        StringWriter stringWriter = new StringWriter();
+        RDFDataMgr.write(stringWriter, input, Lang.JSONLD);
+        return stringWriter.toString();
+    }
 }

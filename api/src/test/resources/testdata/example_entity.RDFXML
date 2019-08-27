@@ -8,7 +8,7 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:vann="http://purl.org/vocab/vann/"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
-  <unit:Concept rdf:about="http://authority-registry/validation/__THIS_DOCUMENT__a">
+  <unit:Concept rdf:about="__REPLACE__">
     <unit:preferredLabel xml:lang="en">someLabel</unit:preferredLabel>
     <unit:preferredLabel xml:lang="no">norskLabel</unit:preferredLabel>
   </unit:Concept>

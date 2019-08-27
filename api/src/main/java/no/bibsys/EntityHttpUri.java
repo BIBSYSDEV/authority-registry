@@ -33,18 +33,31 @@ public class EntityHttpUri {
     private static final String MALFORMED_REGISTRY_PATH = "The path did not conform to template registry/{registryId}";
     private static final String MALFORMED_ENTITY_PATH
             = "The path did not conform to template registry/{registryId}/entity/{entityId}";
-    private final String namespace;
-    private final String[] pathElements;
-    private UriBuilder uriBuilder;
+    private transient final String namespace;
+    private transient final String[] pathElements;
+    private transient UriBuilder uriBuilder;
 
-    EntityHttpUri(String namespace, String... pathElements) throws MalformedEntityHttpUriException {
-        handlePathErrors(pathElements);
-        this.namespace = namespace;
-        this.pathElements = pathElements;
-        setUriBuilder();
+    private enum PathElements {
+        REGISTRY(REGISTRY_STRING, FIRST_ELEMENT),
+        ENTITY(ENTITY_STRING, THIRD_ELEMENT);
+        String elementString;
+        int expectedPosition;
+
+        PathElements(String elementString, int expectedPosition) {
+            this.elementString = elementString;
+            this.expectedPosition = expectedPosition;
+        }
     }
 
-    EntityHttpUri(String uri) throws URISyntaxException, MalformedURLException, MalformedEntityHttpUriException {
+    // Default constructor
+    /* default */ EntityHttpUri(String namespace, String... pathElements) throws MalformedEntityHttpUriException {
+        /* default */ handlePathErrors(pathElements);
+        /* default */ this.namespace = namespace;
+        /* default */ this.pathElements = pathElements.clone();
+        /* default */ setUriBuilder();
+    }
+
+    public EntityHttpUri(String uri) throws URISyntaxException, MalformedURLException, MalformedEntityHttpUriException {
         URI localUri = new URI(uri);
         String path = localUri.getPath();
         String[] pathElements = path.substring(REMOVE_FIRST_SEPARATOR).split(PATH_SEPARATOR);
@@ -65,26 +78,13 @@ public class EntityHttpUri {
         return port;
     }
 
-    private enum PathElements {
-        REGISTRY(REGISTRY_STRING, FIRST_ELEMENT),
-        ENTITY(ENTITY_STRING, THIRD_ELEMENT);
-
-        PathElements(String elementString, int expectedPosition) {
-            this.elementString = elementString;
-            this.expectedPosition = expectedPosition;
-        }
-
-        String elementString;
-        int expectedPosition;
-    }
-
-    private void handlePathErrors(String[] pathElements) throws MalformedEntityHttpUriException {
+    private void handlePathErrors(String... pathElements) throws MalformedEntityHttpUriException {
         String errors = getPathErrors(pathElements);
         if (nonNull(errors)) {
             throw new MalformedEntityHttpUriException(errors);
         }
     }
-    private String getPathErrors(String[] pathElements) {
+    private String getPathErrors(String... pathElements) {
 
         if (isNull(pathElements) || pathElements.length == EMPTY) {
             return THE_PATH_ELEMENTS_WERE_EMPTY;
@@ -97,9 +97,9 @@ public class EntityHttpUri {
         }
 
         if (length > ENTITY_HTTP_URI_PATH_LENGTH || length == 3 ||
-                (length == ENTITY_HTTP_URI_PATH_LENGTH
+                length == ENTITY_HTTP_URI_PATH_LENGTH
                         && !pathElements[PathElements.ENTITY.expectedPosition]
-                        .equals(PathElements.ENTITY.elementString))) {
+                        .equals(PathElements.ENTITY.elementString)) {
             return MALFORMED_ENTITY_PATH;
         }
 

@@ -1,30 +1,28 @@
 package no.bibsys.web;
 
 import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
-
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
@@ -77,7 +75,7 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         String registryName = createRegistry();
         putSchema(registryName, validValidationSchema);
 
-        EntityDto entity = sampleData.sampleEntityDto();
+        EntityDto entity = sampleData.sampleEntityDto("https://example.org/12");
         insertEntryRequest(registryName, entity, apiAdminKey);
 
         String schemaAsJson = "Schema as Json";

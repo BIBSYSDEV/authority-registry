@@ -160,7 +160,8 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     protected Response createEntity(String registryName) throws IOException {
-        EntityDto entity = sampleData.sampleEntityDto();
+        EntityDto entity = sampleData.sampleEntityDto("http://localhost/null/registry/" + registryName
+                + "/entity/sampleId");
         return insertEntryRequest(registryName, entity, apiAdminKey);
     }
 
@@ -193,7 +194,7 @@ public class DatabaseResourceTest extends JerseyTest {
     }
 
     private EntityDto createSampleEntity(String identifier) throws IOException {
-        EntityDto sampleEntityDto = sampleData.sampleEntityDto();
+        EntityDto sampleEntityDto = sampleData.sampleEntityDto("https://example.org/21");
         sampleEntityDto.setId(identifier);
         return sampleEntityDto;
     }

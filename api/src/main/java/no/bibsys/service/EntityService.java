@@ -1,12 +1,6 @@
 package no.bibsys.service;
 
-import java.util.Objects;
-
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import no.bibsys.db.EntityManager;
 import no.bibsys.db.structures.Entity;
 import no.bibsys.entitydata.validation.DataValidator;
@@ -15,6 +9,10 @@ import no.bibsys.service.exceptions.ValidationSchemaNotFoundException;
 import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityConverter;
 import no.bibsys.web.model.EntityDto;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+
+import java.util.Objects;
 
 public class EntityService extends ModelParser {
 
@@ -29,10 +27,10 @@ public class EntityService extends ModelParser {
         this.registryService = registryService;
     }
 
-    public EntityDto addEntity(String registryId, EntityDto entityDto)
+    public EntityDto addEntity(String uri, String registryId, EntityDto entityDto)
         throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
         validateEntity(registryId, entityDto);
-        return addEntityToRegistry(registryId, entityDto);
+        return addEntityToRegistry(uri, registryId, entityDto);
     }
 
     public EntityDto updateEntity(String registryId, EntityDto entityDto)
@@ -50,7 +48,7 @@ public class EntityService extends ModelParser {
         entityManager.deleteEntity(registryId, entityId);
     }
 
-    private boolean validateEntity(String registryId, EntityDto entityDto)
+    private void validateEntity(String registryId, EntityDto entityDto)
         throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
         String validationSchema = registryService.getRegistry(registryId).getSchema();
         if (Objects.isNull(validationSchema)) {
@@ -58,8 +56,8 @@ public class EntityService extends ModelParser {
         }
 
         DataValidator dataValidator = new DataValidator(parseModel(validationSchema, VALIDATION_SCHEMA_LANGUAGE));
-        Model dataModel = parseModel(entityDto.getBody(), VALIDATION_SCHEMA_LANGUAGE);
-        return dataValidator.isValidEntry(dataModel);
+        Model dataModel = parseModel(entityDto.getBody(), Lang.JSONLD);
+        dataValidator.isValidEntry(dataModel);
     }
 
     private EntityDto updateEntityInRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
@@ -67,8 +65,8 @@ public class EntityService extends ModelParser {
         return EntityConverter.toEntityDto(entity);
     }
 
-    private EntityDto addEntityToRegistry(String registryId, EntityDto entityDto) throws JsonProcessingException {
-        Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(entityDto));
+    private EntityDto addEntityToRegistry(String uri, String registryId, EntityDto entityDto) throws JsonProcessingException {
+        Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(uri, entityDto));
         return EntityConverter.toEntityDto(entity);
     }
 }

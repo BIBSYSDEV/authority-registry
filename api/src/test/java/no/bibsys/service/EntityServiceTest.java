@@ -42,6 +42,7 @@ public class EntityServiceTest {
     private static final String REGISTRY_ID = "registryId";
     private static final String SCHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
     private static final String VALIDATION_FOLDER = "validation";
+    private static final String HTTP_EXAMPLE_ORG_FESTIVE = "http://example.org/festive";
     private final transient SampleData sampleData = new SampleData();
     private final transient AmazonDynamoDB client = LocalDynamoDBHelper.getClient();
     private transient RegistryDto registryDto;
@@ -89,8 +90,8 @@ public class EntityServiceTest {
     @Test(expected = ValidationSchemaNotFoundException.class)
     public void addEntity_NoValidationSchema_throwsException()
             throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException {
-        EntityDto entityDto = sampleData.sampleEntityDtoWithValidData();
-        entityService.addEntity(registryDto.getId(), entityDto);
+        EntityDto entityDto = sampleData.sampleEntityDtoWithValidData("https://example.org/21");
+        entityService.addEntity(HTTP_EXAMPLE_ORG_FESTIVE, registryDto.getId(), entityDto);
     }
 
     @Test(expected = EntityFailedShaclValidationException.class)
@@ -99,7 +100,7 @@ public class EntityServiceTest {
             ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         addValidationSchemaToRegistry(registryDto.getId());
         EntityDto entityDto = sampleData.sampleEntityDtoWithInValidData();
-        entityService.addEntity(registryDto.getId(), entityDto);
+        entityService.addEntity(HTTP_EXAMPLE_ORG_FESTIVE + "/sampleId", registryDto.getId(), entityDto);
     }
 
     private void addValidationSchemaToRegistry(String registryId)
@@ -114,9 +115,10 @@ public class EntityServiceTest {
 
             throws IOException, EntityFailedShaclValidationException, ValidationSchemaNotFoundException,
             ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
-        EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData();
+        EntityDto expectedEntity = sampleData.sampleEntityDtoWithValidData(HTTP_EXAMPLE_ORG_FESTIVE
+                + "/sampleId");
         addValidationSchemaToRegistry(registryDto.getId());
-        entityService.addEntity(registryDto.getId(), expectedEntity);
+        entityService.addEntity(HTTP_EXAMPLE_ORG_FESTIVE, registryDto.getId(), expectedEntity);
 
         EntityDto actualEntity = entityService.getEntity(registryDto.getId(), expectedEntity.getId());
         assertThat(actualEntity.isIsomorphic(expectedEntity), is(equalTo(true)));
