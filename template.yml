@@ -126,6 +126,8 @@ Resources:
       Environment:
         Variables:
           CLOUDSEARCH_DOCUMENT_ENDPOINT: '{{resolve:ssm:CLOUDSEARCH_DOCUMENT_ENDPOINT:1}}'
+          RESTAPI_URL: !GetAtt RestApiUrlParameter.Value  
+          STAGE: !Ref Stage
       MemorySize: 1512
       Timeout: 20
       Policies:

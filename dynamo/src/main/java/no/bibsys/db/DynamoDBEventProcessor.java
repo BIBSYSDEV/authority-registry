@@ -1,35 +1,46 @@
 package no.bibsys.db;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.OperationType;
 import com.amazonaws.services.dynamodbv2.model.StreamRecord;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent.DynamodbStreamRecord;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import no.bibsys.db.structures.Entity;
+import no.bibsys.db.AmazonSdfDTO.CloudsearchOperation;
+import no.bibsys.db.AmazonSdfDTO.EventName;
+import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
-    private static final String DYNAMODB_MODIFIED_FIELD = "modified";
-    private static final String DYNAMODB_CREATED_FIELD = "created";
+    private static final String EMPTY_TEMPLATE = "";
     private static final String DYNAMODB_BODY_FIELD = "body";
+    private static final String CONTENT_TYPE = "application/ld+json";
+    private static final String CONTENT_TYPE_PROPERTY_NAME = "Accept";
     private static final String DYNAMODB_ID_FIELD = "id";
+    private static final String ENTITY_ID_FIELD = "id";
+
     private final transient CloudsearchDocumentClient cloudsearchDocumentClient;
+
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
     public DynamoDBEventProcessor() {
@@ -38,7 +49,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
         // For mocking
-        this.cloudsearchDocumentClient = cloudsearchClient;        
+        this.cloudsearchDocumentClient = cloudsearchClient;
     }
 
     @Override
@@ -55,7 +66,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                 cloudsearchDocumentClient.uploadbatch(documents);
             }
         } catch (Exception e) {
-            logger.error("", e);
+            logger.error(EMPTY_TEMPLATE, e);
         }
         return null;
     }
@@ -69,48 +80,75 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
                         dynamodDBStreamRecord);
                 return null;
             }
-            AmazonSdfDTO sdf = new AmazonSdfDTO(dynamodDBStreamRecord.getEventName());
-            if (OperationType.valueOf(dynamodDBStreamRecord.getEventName()) == OperationType.REMOVE) {
-                logger.debug("OperationType.REMOVE, streamRecord={}",streamRecord);
-                if (streamRecord.getKeys().containsKey(DYNAMODB_ID_FIELD)) {
-                    sdf.setId(streamRecord.getKeys().get(DYNAMODB_ID_FIELD).getS());
-                } else {
-                    logger.error("Cannot get 'ID' from streamRecord for REMOVE operation");
-                    return null;
-                }
+
+            String entityUuid;
+            if (streamRecord.getKeys().containsKey(DYNAMODB_ID_FIELD)) {
+                entityUuid = streamRecord.getKeys().get(DYNAMODB_ID_FIELD).getS();
             } else {
-                if (streamRecord.getNewImage().containsKey(DYNAMODB_ID_FIELD)) {
-                    sdf.setId(streamRecord.getNewImage().get(DYNAMODB_ID_FIELD).getS());
-                }
-                try {
-                    Entity entity = extractFullEntity(streamRecord.getNewImage());
-                    sdf.setFieldsFromEntity(entity);
-                } catch (Exception e) {
-                    logger.error("",e);
-                }
+                logger.error("Cannot get 'ID' from streamRecord for REMOVE operation");
+                return null;
             }
+
+            String eventName = dynamodDBStreamRecord.getEventName();
+            CloudsearchOperation cloudsearchOperation = EventName.valueOf(eventName).cloudsearchOperation;
+
+            logger.debug("cloudsearchOperation={}, entityIdentifier={}",cloudsearchOperation.name(),entityUuid);
+            String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
+            String entitySource = getEntityAsString(entityIdentifier);
+
+            ObjectMapper objectMapper = JsonUtils.newJsonParser();
+            objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
+            Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
+
+            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
+            fields.forEachRemaining(e ->  sdf.setField(e.getKey(), e.getValue().asText()));
+            sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, entitySource);
             return sdf;
         } catch (Exception e) {
-            logger.error("",e);
+            logger.error(EMPTY_TEMPLATE,e);
             throw new RuntimeException(e);
         }
     }
 
-    private Entity extractFullEntity(Map<String, AttributeValue> map) {
-        Entity entity = new Entity();
+    protected String getEntityAsString(String entityIdentifierUrl) {
+
+        logger.debug("entityUrlString={}",entityIdentifierUrl);
+        URL entityUrl;
+        try {
+            entityUrl = new URL(entityIdentifierUrl);
+
+            HttpURLConnection connection = (HttpURLConnection) entityUrl.openConnection();
+
+            // just want to do an HTTP GET here
+            connection.setRequestMethod(HttpMethod.GET.name());
+            connection.setRequestProperty(CONTENT_TYPE_PROPERTY_NAME, CONTENT_TYPE);
+
+            // give it 15 seconds to respond
+            connection.setReadTimeout(15 * 1000);
+            connection.connect();
+
+            // read the output from the server
+            return IoUtils.streamToString(connection.getInputStream());
+            
+        } catch (IOException e) {
+            logger.error(EMPTY_TEMPLATE,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getEntityIdentifier(Map<String, AttributeValue> map) {
         try {
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             AttributeValue attributeValue = map.get(DYNAMODB_BODY_FIELD);
-            entity.setBody((ObjectNode)objectMapper.readTree(attributeValue.getS()));
-            entity.setId(map.get(DYNAMODB_ID_FIELD).getS());
-            entity.setCreated(map.get(DYNAMODB_CREATED_FIELD).getS());
-            entity.setModified(map.get(DYNAMODB_MODIFIED_FIELD).getS());
+            ObjectNode body = (ObjectNode)objectMapper.readTree(attributeValue.getS());
+            return body.get(ENTITY_ID_FIELD).asText();
         } catch (IOException e) {
-            logger.error("",e);
+            logger.error(EMPTY_TEMPLATE,e);
+            throw new RuntimeException(e);
         }
-        return entity;
     }
-
 }
+
 

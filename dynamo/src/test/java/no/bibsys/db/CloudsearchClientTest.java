@@ -32,7 +32,9 @@ public class CloudsearchClientTest {
         AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.EventName.INSERT.name());
         amazonSdfDTO.setId(sampleDynamoDBIdentifier);
         Entity entity = new SampleData().bigsampleEntity();
-        amazonSdfDTO.setFieldsFromEntity(entity);
+        
+        String presentationString = entity.toString();
+        amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, presentationString);
         return amazonSdfDTO;
     }
     

@@ -21,18 +21,11 @@ public class SampleEventData {
 
     private static final String SAMPLE_RECORD_IDENTIFIER = "dsr1";
     
-
-    
+    private static final String SAMPLE_ENTITY_URI = "https://example.org/final/registry/tekord-r/entity/00b67e45-e6a0-41d3-adc1-0e95652419e9";
     
     private static String sampleJsonRecordBody() throws IOException { 
-        String bodyString = IoUtils.resourceAsString(Paths.get("json", "sampleEventRecordBody.json"));
-//        ObjectNode body = (ObjectNode) JsonUtils.newJsonParser().readTree(bodyString);
-        
-        return bodyString;
+        return IoUtils.resourceAsString(Paths.get("json", "sampleEventRecordBody.json"));
     }
-
-    
-    
 
     public static DynamodbEvent sampleDynamoDBEvent() throws IOException {
      
@@ -80,7 +73,7 @@ public class SampleEventData {
         Map<String, AttributeValue> newImageMap = new HashMap<>();
         newImageMap.put("created", new AttributeValue(nowStr));
         newImageMap.put("modified", new AttributeValue(nowStr));
-        newImageMap.put("id", new AttributeValue(SAMPLE_RECORD_IDENTIFIER));
+        newImageMap.put("id", new AttributeValue(SAMPLE_ENTITY_URI));
         newImageMap.put("body", new AttributeValue(sampleJsonRecordBody()));
         dynamodbStreamRecord.setNewImage(newImageMap);
         return dynamodbStreamRecord;
