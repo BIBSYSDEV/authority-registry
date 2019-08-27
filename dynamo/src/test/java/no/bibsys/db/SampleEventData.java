@@ -21,17 +21,11 @@ public class SampleEventData {
 
     private static final String SAMPLE_RECORD_IDENTIFIER = "dsr1";
     
-    private static final String SAMPLE_ENTITY_URI = "https://qpshvtds48.execute-api.eu-west-1.amazonaws.com/final/registry/tekord-r/entity/00b67e45-e6a0-41d3-adc1-0e95652419e9";
+    private static final String SAMPLE_ENTITY_URI = "https://example.org/final/registry/tekord-r/entity/00b67e45-e6a0-41d3-adc1-0e95652419e9";
     
     private static String sampleJsonRecordBody() throws IOException { 
-        String bodyString = IoUtils.resourceAsString(Paths.get("json", "sampleEventRecordBody.json"));
-//        ObjectNode body = (ObjectNode) JsonUtils.newJsonParser().readTree(bodyString);
-        
-        return bodyString;
+        return IoUtils.resourceAsString(Paths.get("json", "sampleEventRecordBody.json"));
     }
-
-    
-    
 
     public static DynamodbEvent sampleDynamoDBEvent() throws IOException {
      

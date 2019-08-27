@@ -1,5 +1,6 @@
 package no.bibsys.service;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -19,9 +20,11 @@ import no.bibsys.aws.tools.Environment;
 
 public class SearchService {
 
+    private static final String EMPTY_STRING = "";
+    private static final String COMMA_SEPARATOR = ",";
     private static final String JSON_START_ARRAY = "[";
     private static final String JSON_END_ARRAY = "]";
-    private static final String FILTERQUERY_BASE = "inscheme:'http://unit.no/system#%s'";
+    private static final String FILTER_QUERY_TEMPLATE = "inscheme:'http://unit.no/system#%s'";
     private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
 
@@ -52,24 +55,22 @@ public class SearchService {
                 .withReturn(CLOUDSEARCH_RETURN_FIELD)
                 .withQueryParser(QueryParser.Simple);
         
-        if (registryName != null && !registryName.isEmpty()) {
-            String filterQuery = String.format(FILTERQUERY_BASE,registryName);
+        if (Objects.nonNull(registryName) && !registryName.isEmpty()) {
+            String filterQuery = String.format(FILTER_QUERY_TEMPLATE,registryName);
             searchRequest.setFilterQuery(filterQuery);
         }
         try {
-            logger.debug("searchRequest={}", searchRequest);
             SearchResult searchResult = searchClient.search(searchRequest);
-            logger.debug("searchResult={}", searchResult);
             Hits hits = searchResult.getHits();
             return hitToString(hits);
         } catch (SearchException e) {
-            logger.error("",e);
+            logger.error(EMPTY_STRING,e);
             throw e;
         }
     }
 
     private String hitToString(Hits hits) {
-        return JSON_START_ARRAY + String.join(",",
+        return JSON_START_ARRAY + String.join(COMMA_SEPARATOR,
                 hits.getHit().stream()
                         .map(hit -> hit.getFields().get(CLOUDSEARCH_RETURN_FIELD).stream().findFirst().get())
                         .collect(Collectors.toList()))
