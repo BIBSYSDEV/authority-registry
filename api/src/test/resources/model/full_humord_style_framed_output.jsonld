@@ -1,0 +1,93 @@
+{
+  "id" : "http://unit.no/entitydata#hume000001",
+  "type" : "Concept",
+  "alternativeLabel" : [ {
+    "language" : "en",
+    "value" : "Animals, exotic"
+  } ],
+  "broader" : [ "http://unit.no/entitydata/uuid2", "http://unit.no/entitydata/uuid1" ],
+  "created" : "2019-08-09",
+  "definition" : [ {
+    "language" : "no",
+    "value" : "Dette er en definition"
+  }, {
+    "language" : "en",
+    "value" : "This is a definition"
+  } ],
+  "editorialNote" : [ {
+    "language" : "no",
+    "value" : "Dette er en editorial note"
+  }, {
+    "language" : "en",
+    "value" : "This is an editorial note"
+  } ],
+  "identifier" : "HUME000001",
+  "inScheme" : "https://unit.no/systems/humord",
+  "localIdentifier" : "HUME000001",
+  "modified" : "2019-08-09",
+  "narrower" : [ "http://unit.no/entitydata/uuid3", "http://unit.no/entitydata/uuid4" ],
+  "preferredLabel" : [ {
+    "language" : "nb",
+    "value" : "Eksotiske dyr"
+  }, {
+    "language" : "en",
+    "value" : "Exotic animals"
+  } ],
+  "related" : [ "http://unit.no/entitydata/uuid5" ],
+  "scopeNote" : [ {
+    "language" : "no",
+    "value" : "Dette er en scope note"
+  }, {
+    "language" : "en",
+    "value" : "This is a scope note"
+  } ],
+  "seeAlso" : [ "http://unit.no/entitydata/uuid7", "http://unit.no/entitydata/uuid8" ],
+  "@context" : {
+    "@vocab" : "http://unit.no/entitydata#",
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "id" : "@id",
+    "preferredLabel" : {
+      "@container" : "@set"
+    },
+    "alternativeLabel" : {
+      "@container" : "@set"
+    },
+    "inScheme" : {
+      "@type" : "@id"
+    },
+    "broader" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "narrower" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "related" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "seeAlso" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "editorialNote" : {
+      "@container" : "@set"
+    },
+    "scopeNote" : {
+      "@container" : "@set"
+    },
+    "definition" : {
+      "@container" : "@set"
+    },
+    "type" : "@type",
+    "language" : "@language",
+    "value" : "@value",
+    "created" : {
+      "@type" : "xsd:date"
+    },
+    "modified" : {
+      "@type" : "xsd:date"
+    }
+  }
+}

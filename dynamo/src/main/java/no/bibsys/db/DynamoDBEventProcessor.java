@@ -44,7 +44,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
     public DynamoDBEventProcessor() {
-        cloudsearchDocumentClient = new CloudsearchDocumentClient();
+        cloudsearchDocumentClient = new CloudsearchDocumentClient();        
     }
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {

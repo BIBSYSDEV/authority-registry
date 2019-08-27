@@ -49,7 +49,6 @@ public class SearchService {
         logger.debug("Searching, endpoint={}, registryName={}, queryString={}", 
                 this.serviceEndpoint, registryName, queryString);
 
-
         SearchRequest searchRequest = new SearchRequest()
                 .withQuery(queryString)
                 .withReturn(CLOUDSEARCH_RETURN_FIELD)

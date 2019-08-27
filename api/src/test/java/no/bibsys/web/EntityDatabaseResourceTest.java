@@ -77,7 +77,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
-    public void insertEntity_RegistryExistUserAuthorized_ReturnsStatusOK() throws Exception {
+    public void insertEntity_RegistryExistUserAuthorized_ReturnsStatusCreated() throws Exception {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
