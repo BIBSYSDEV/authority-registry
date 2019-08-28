@@ -8,6 +8,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.ResourceUtils;
@@ -62,20 +63,25 @@ public class EntityConverter extends BaseConverter {
         Model input = ModelFactory.createDefaultModel();
         InputStream inputStream = IOUtils.toInputStream(dtoBody, StandardCharsets.UTF_8);
         RDFDataMgr.read(input, inputStream, Lang.JSONLD);
-
         ResIterator subjectIterator = input.listSubjects();
 
         boolean initialPass = true;
+        Statement seeAlsoStatement = null;
+
         while (subjectIterator.hasNext()) {
             Resource subject = subjectIterator.nextResource();
             Resource replacementUri = ResourceFactory.createResource(uri);
             if (initialPass && !subject.isAnon() && !subject.getURI().equals(replacementUri.getURI())) {
                 logger.info("Comparison of URIs");
                 logger.info("Replacing {} with {}", subject, replacementUri);
-                input.add(ResourceFactory.createStatement(replacementUri, SAME_AS, subject));
+                seeAlsoStatement = ResourceFactory.createStatement(replacementUri, SAME_AS, subject);
             }
             initialPass = false;
             ResourceUtils.renameResource(subject, uri);
+        }
+
+        if (nonNull(seeAlsoStatement)) {
+            input.add(seeAlsoStatement);
         }
 
         StringWriter stringWriter = new StringWriter();
