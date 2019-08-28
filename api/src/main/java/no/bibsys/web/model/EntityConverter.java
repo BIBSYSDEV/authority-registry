@@ -69,14 +69,12 @@ public class EntityConverter extends BaseConverter {
         while (subjectIterator.hasNext()) {
             Resource subject = subjectIterator.nextResource();
             Resource replacementUri = ResourceFactory.createResource(uri);
-            if (initialPass && !subject.isAnon() && !subject.getURI().equals(replacementUri.getURI()) {
-                initialPass = false;
+            if (initialPass && !subject.isAnon() && !subject.getURI().equals(replacementUri.getURI())) {
                 logger.info("Comparison of URIs");
                 logger.info("Replacing {} with {}", subject, replacementUri);
                 input.add(ResourceFactory.createStatement(replacementUri, SAME_AS, subject));
-            } else {
-                initialPass = false;
             }
+            initialPass = false;
             ResourceUtils.renameResource(subject, uri);
         }
 
