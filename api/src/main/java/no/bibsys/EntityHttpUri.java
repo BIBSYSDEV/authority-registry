@@ -29,8 +29,8 @@ public class EntityHttpUri {
     private static final String MALFORMED_REGISTRY_PATH = "The path did not conform to template registry/{registryId}";
     private static final String MALFORMED_ENTITY_PATH
             = "The path did not conform to template registry/{registryId}/entity/{entityId}";
-    private transient final String namespace;
-    private transient final String[] pathElements;
+    private final transient String namespace;
+    private final transient String[] pathElements;
     private transient UriBuilder uriBuilder;
 
     public EntityHttpUri(String namespace, String... pathElements) throws MalformedEntityHttpUriException {
@@ -80,8 +80,9 @@ public class EntityHttpUri {
             return MALFORMED_REGISTRY_PATH;
         }
 
-        if (length > ENTITY_HTTP_URI_PATH_LENGTH || length == 3 ||
-                length == ENTITY_HTTP_URI_PATH_LENGTH
+        if (length > ENTITY_HTTP_URI_PATH_LENGTH
+                || length == 3
+                || length == ENTITY_HTTP_URI_PATH_LENGTH
                         && !pathElements[PathElements.ENTITY.expectedPosition]
                         .equals(PathElements.ENTITY.elementString)) {
             return MALFORMED_ENTITY_PATH;

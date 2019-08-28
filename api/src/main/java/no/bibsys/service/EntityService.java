@@ -65,7 +65,8 @@ public class EntityService extends ModelParser {
         return EntityConverter.toEntityDto(entity);
     }
 
-    private EntityDto addEntityToRegistry(String uri, String registryId, EntityDto entityDto) throws JsonProcessingException {
+    private EntityDto addEntityToRegistry(String uri, String registryId, EntityDto entityDto)
+            throws JsonProcessingException {
         Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(uri, entityDto));
         return EntityConverter.toEntityDto(entity);
     }
