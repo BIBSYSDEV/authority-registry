@@ -15,7 +15,9 @@ import org.apache.jena.util.ResourceUtils;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
+import static java.util.Objects.nonNull;
 import static no.bibsys.entitydata.validation.ontology.UnitOntology.SAME_AS;
 
 public class EntityConverter extends BaseConverter {
@@ -43,8 +45,9 @@ public class EntityConverter extends BaseConverter {
     public static Entity toEntity(String uri, EntityDto dto) {
         Entity entity = new Entity();
         String id = dto.getId();
-        String finalizedUri = uri + PATH_SEPARATOR + id;
-        entity.setId(id);
+        String finalizedId = nonNull(id) ? id : UUID.randomUUID().toString();
+        String finalizedUri = uri + PATH_SEPARATOR + finalizedId;
+        entity.setId(finalizedId);
         entity.setCreated(dto.getCreated());
         entity.setModified(dto.getModified());
         String body = rewriteBodyWithId(finalizedUri, dto.getBody());

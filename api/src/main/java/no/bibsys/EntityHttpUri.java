@@ -15,8 +15,6 @@ import static java.util.Objects.nonNull;
 public class EntityHttpUri {
 
     private static final String PATH_SEPARATOR = "/";
-    private static final String REGISTRY_STRING = "registry";
-    private static final String ENTITY_STRING = "entity";
     private static final int REGISTRY_HTTP_URI_PATH_LENGTH = 2;
     private static final int ENTITY_HTTP_URI_PATH_LENGTH = 4;
     private static final String EMPTY_STRING = "";
@@ -27,8 +25,6 @@ public class EntityHttpUri {
     private static final int REMOVE_FIRST_SEPARATOR = 1;
     private static final int REMOVE_DEFAULT_PORT = -1;
     private static final int EMPTY = 0;
-    private static final int FIRST_ELEMENT = 0;
-    private static final int THIRD_ELEMENT = 2;
     private static final String THE_PATH_ELEMENTS_WERE_EMPTY = "The path elements were empty";
     private static final String MALFORMED_REGISTRY_PATH = "The path did not conform to template registry/{registryId}";
     private static final String MALFORMED_ENTITY_PATH
@@ -37,24 +33,11 @@ public class EntityHttpUri {
     private transient final String[] pathElements;
     private transient UriBuilder uriBuilder;
 
-    private enum PathElements {
-        REGISTRY(REGISTRY_STRING, FIRST_ELEMENT),
-        ENTITY(ENTITY_STRING, THIRD_ELEMENT);
-        String elementString;
-        int expectedPosition;
-
-        PathElements(String elementString, int expectedPosition) {
-            this.elementString = elementString;
-            this.expectedPosition = expectedPosition;
-        }
-    }
-
-    // Default constructor
-    /* default */ EntityHttpUri(String namespace, String... pathElements) throws MalformedEntityHttpUriException {
-        /* default */ handlePathErrors(pathElements);
-        /* default */ this.namespace = namespace;
-        /* default */ this.pathElements = pathElements.clone();
-        /* default */ setUriBuilder();
+    public EntityHttpUri(String namespace, String... pathElements) throws MalformedEntityHttpUriException {
+        handlePathErrors(pathElements);
+        this.namespace = namespace;
+        this.pathElements = pathElements.clone();
+        setUriBuilder();
     }
 
     public EntityHttpUri(String uri) throws URISyntaxException, MalformedURLException, MalformedEntityHttpUriException {
@@ -84,6 +67,7 @@ public class EntityHttpUri {
             throw new MalformedEntityHttpUriException(errors);
         }
     }
+
     private String getPathErrors(String... pathElements) {
 
         if (isNull(pathElements) || pathElements.length == EMPTY) {
