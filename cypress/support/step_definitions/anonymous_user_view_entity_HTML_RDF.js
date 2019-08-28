@@ -92,7 +92,7 @@ Then('anonymous user can view the data in the given serialization', () => {
                   case 'application/rdf+xml':
                   case 'application/n-triples':
                   case 'application/turtle':
-                    checkAgainstTestData(testData, response);
+                    checkAgainstTestData(testData, response, currentUrl);
                 }
               });
             });
@@ -104,10 +104,10 @@ Then('anonymous user can view the data in the given serialization', () => {
 
 });
 
-function checkAgainstTestData(testData, response) {
+function checkAgainstTestData(testData, response, replacementUrl) {
   const tests = testData.split(EOL);
   tests.forEach((test) => {
-    expect(response.body).to.contain(test);
+    let current_test = test.replace(/__REPLACE__/g, replacementUrl);
+    expect(response.body).to.contain(current_test);
   });
-
 }

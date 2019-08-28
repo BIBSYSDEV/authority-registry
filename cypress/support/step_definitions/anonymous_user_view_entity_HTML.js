@@ -24,7 +24,8 @@ Then('anonymous user can view the data in the given format', () => {
     cy.get('@entityId').then((entityId) => {
       const getEntityUrl = '/registry/' + registryName + '/entity/' + entityId;
       cy.visit(getEntityUrl);
-      cy.get('li[data-automation-id="@id"]').should('contain', 'http://authority-registry/validation/__THIS_DOCUMENT__a');
+      const currentUri = Cypress.config().baseUrl + getEntityUrl;
+      cy.get('li[data-automation-id="@id"]').should('contain', currentUri);
       cy.get('li[data-automation-id="@type"]').should('contain', 'unit:Concept');
       cy.get('li[data-automation-id=preferredLabel]').should('contain', 'norskLabel');
     });
