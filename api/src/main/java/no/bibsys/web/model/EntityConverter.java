@@ -11,6 +11,8 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.ResourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -22,7 +24,8 @@ import static no.bibsys.entitydata.validation.ontology.UnitOntology.SAME_AS;
 
 public class EntityConverter extends BaseConverter {
 
-    public static final String PATH_SEPARATOR = "/";
+    private static final String PATH_SEPARATOR = "/";
+    private static final Logger logger = LoggerFactory.getLogger(EntityConverter.class);
 
     public static EntityDto toEntityDto(Entity entity) throws JsonProcessingException {
         EntityDto dto = new EntityDto();
@@ -66,8 +69,10 @@ public class EntityConverter extends BaseConverter {
         while (subjectIterator.hasNext()) {
             Resource subject = subjectIterator.nextResource();
             Resource replacementUri = ResourceFactory.createResource(uri);
-            if (initialPass && !subject.isAnon() && !subject.equals(replacementUri)) {
+            if (initialPass && !subject.isAnon() && !subject.getURI().equals(replacementUri.getURI()) {
                 initialPass = false;
+                logger.info("Comparison of URIs");
+                logger.info("Replacing {} with {}", subject, replacementUri);
                 input.add(ResourceFactory.createStatement(replacementUri, SAME_AS, subject));
             } else {
                 initialPass = false;

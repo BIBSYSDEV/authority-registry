@@ -71,27 +71,30 @@ Then('anonymous user can view the data in the given serialization', () => {
                 Accept: formatType,
               },
             }).then((response) => {
-              switch (formatType) {
-                default:
-                case 'application/json':
-                case 'application/ld+json':
-                  if (typeof testData === 'object') {
-                    expect(response.body.body['@id']).to.deep.equal(testData.body['@id']);
-                    expect(response.body.body['@type']).to.deep.equal(testData.body['@type']);
-                    expect(response.body.body.alternativeLabel).to.deep.equal(testData.body.alternativeLabel);
-                    expect(response.body.body.preferredLabel).to.deep.equal(testData.body.preferredLabel);
-                  } else {
-                    expect(JSON.stringify(
-                      JSON.parse(response.body))).to.deep.equal(
-                      JSON.stringify(JSON.parse(testData)));
-                  }
-                  break;
-                case 'application/rdf':
-                case 'application/rdf+xml':
-                case 'application/n-triples':
-                case 'application/turtle':
-                  checkAgainstTestData(testData, response);
-              }
+              cy.url().then((url) => {
+                const currentUrl = Cypress.config().baseUrl + '/' + getUrl;
+                switch (formatType) {
+                  default:
+                  case 'application/json':
+                  case 'application/ld+json':
+                    if (typeof testData === 'object') {
+                      expect(response.body.body['@id']).to.deep.equal(currentUrl);
+                      expect(response.body.body['@type']).to.deep.equal(testData.body['@type']);
+                      expect(response.body.body.alternativeLabel).to.deep.equal(testData.body.alternativeLabel);
+                      expect(response.body.body.preferredLabel).to.deep.equal(testData.body.preferredLabel);
+                    } else {
+                      expect(JSON.stringify(
+                        JSON.parse(response.body))).to.deep.equal(
+                        JSON.stringify(JSON.parse(testData.replace('__REPLACE__', currentUrl))));
+                    }
+                    break;
+                  case 'application/rdf':
+                  case 'application/rdf+xml':
+                  case 'application/n-triples':
+                  case 'application/turtle':
+                    checkAgainstTestData(testData, response);
+                }
+              });
             });
           });
         });
