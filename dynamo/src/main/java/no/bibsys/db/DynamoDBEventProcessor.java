@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -37,7 +38,8 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private static final String CONTENT_TYPE = "application/ld+json";
     private static final String CONTENT_TYPE_PROPERTY_NAME = "Accept";
     private static final String DYNAMODB_ID_FIELD = "id";
-    private static final String ENTITY_ID_FIELD = "id";
+    private static final String ENTITY_ID_FIELD = "@id";
+    private static final String ENTITY_ID_FIELD_ALIASED = "id";
 
     private final transient CloudsearchDocumentClient cloudsearchDocumentClient;
 
@@ -143,7 +145,11 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             AttributeValue attributeValue = map.get(DYNAMODB_BODY_FIELD);
             ObjectNode body = (ObjectNode)objectMapper.readTree(attributeValue.getS());
-            return body.get(ENTITY_ID_FIELD).asText();
+            String identifier = body.get(ENTITY_ID_FIELD).asText();
+            if (Objects.isNull(identifier)) {
+                identifier = body.get(ENTITY_ID_FIELD_ALIASED).asText();
+            }
+            return identifier;
         } catch (IOException e) {
             logger.error(EMPTY_TEMPLATE,e);
             throw new RuntimeException(e);
