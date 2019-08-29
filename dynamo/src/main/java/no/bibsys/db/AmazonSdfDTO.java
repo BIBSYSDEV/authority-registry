@@ -18,11 +18,11 @@ import com.google.gson.internal.LinkedTreeMap;
 
 public class AmazonSdfDTO {
 
+    private static final int EMPTY_LIST = 0;
     private static final String JSON_LD_VALUE = "value";
-    public static final String CLOUDSEARCH_PRESENTATION_FIELD = "presentation_json";
-    public static final String CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD = "modified";
-    public static final String  CLOUDSEARCH_OVERFLOW_FIELD = "overflow"; // Any property not mapped goes here
-    public static final String  NO_CLOUDSEARCH_MAPPING = "DONT-PUT-THIS-IN-CLOUDSEARCH"; //  Not inserting i CS
+    protected static final String CLOUDSEARCH_PRESENTATION_FIELD = "presentation_json";
+    private static final String  CLOUDSEARCH_OVERFLOW_FIELD = "overflow"; // Any property not mapped goes here
+    private static final String  NO_CLOUDSEARCH_MAPPING = "DONT-PUT-THIS-IN-CLOUDSEARCH"; //  Not inserting i CS
 
     private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
 
@@ -119,14 +119,10 @@ public class AmazonSdfDTO {
     }
 
     public void setField(String fieldName, JsonNode value) {
-        try {
-            String targetSearchFieldName = getSearchFieldName(fieldName);
-            if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
-                Object extractedValue = extractFieldValue(value);
-                fields.put(targetSearchFieldName, extractedValue);
-            }
-        } catch (Exception e) {
-            logger.debug("fieldName={}",fieldName,e);
+        String targetSearchFieldName = getSearchFieldName(fieldName);
+        if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
+            Object extractedValue = extractFieldValue(value);
+            fields.put(targetSearchFieldName, extractedValue);
         }
     }
 
@@ -137,25 +133,21 @@ public class AmazonSdfDTO {
         }
     }
 
-
-
-
-
-    private Object extractFieldValue(JsonNode value) {
-        switch (value.getNodeType()) { 
+    private Object extractFieldValue(JsonNode jsonNode) {
+        switch (jsonNode.getNodeType()) { 
         case ARRAY:
-            JsonNodeType elementType = value.get(0).getNodeType();
+            JsonNodeType elementType = jsonNode.get(0).getNodeType();
             if (elementType == JsonNodeType.OBJECT) {
-                return getValueFieldsFromArrayOfObjects((ArrayNode) value);
+                return getValueFieldsFromArrayOfObjects((ArrayNode) jsonNode);
             } else {
-                return Arrays.asList(value);
+                return Arrays.asList(jsonNode);
             }
         case OBJECT:
-            return getJsonObjectValueField(value);
+            return getJsonObjectValueField(jsonNode);
         case STRING:
-            return value.asText();
+            return jsonNode.asText();
         default:
-            return value.asText();
+            return jsonNode.asText();
         }
     }
 
@@ -167,10 +159,10 @@ public class AmazonSdfDTO {
         List<String> stringList = new ArrayList<>();
         array.forEach(element -> stringList.add(getJsonObjectValueField(element)));
         if (stringList.isEmpty()) {
-            return new String[0];  
+            return new String[EMPTY_LIST];  
         } 
-        String[] stringArr = new String[stringList.size()]; 
-        return (String[]) stringList.toArray(stringArr);
+        String[] stringArray = new String[stringList.size()]; 
+        return (String[]) stringList.toArray(stringArray);
     }
 
     private String getSearchFieldName(String sourceField) {

@@ -79,7 +79,6 @@ public class CloudsearchClientTest {
     public void testCreateAmazonSDFAndCheckPresentation() throws IOException {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
         assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
-        System.out.println(amazonSdfDTO.toString());
     }
     
     @Test
@@ -96,12 +95,6 @@ public class CloudsearchClientTest {
         amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
         
         assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
-        
-        System.out.println(amazonSdfDTO);
-
     }
-
-    
-    
-    
+   
 }
