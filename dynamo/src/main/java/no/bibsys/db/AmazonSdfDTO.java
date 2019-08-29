@@ -4,6 +4,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.internal.LinkedTreeMap;
 
 public class AmazonSdfDTO {
@@ -11,7 +14,8 @@ public class AmazonSdfDTO {
     public static final String CLOUDSEARCH_PRESENTATION_FIELD = "presentation_json";
     public static final String CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD = "modified";
     public static final String  CLOUDSEARCH_OVERFLOW_FIELD = "overflow"; // Any property not mapped goes here
-
+    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
+    
     public enum CloudsearchOperation {
         ADD, DELETE
     }
@@ -109,6 +113,7 @@ public class AmazonSdfDTO {
         if (mappings.containsKey(sourceField)) {
             return mappings.get(sourceField);              
         } else {
+            logger.debug("No mapping for field={}, using {}",sourceField, CLOUDSEARCH_OVERFLOW_FIELD);
             return CLOUDSEARCH_OVERFLOW_FIELD;
         }
     }

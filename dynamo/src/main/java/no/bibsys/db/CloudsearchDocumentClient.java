@@ -54,8 +54,6 @@ public class CloudsearchDocumentClient {
     public void uploadbatch(List<AmazonSdfDTO> documents)
             throws JsonGenerationException, JsonMappingException, IOException {
         
-        logger.debug("uploadbatch -> documents={}", documents);
-        
         if (documents.isEmpty()) {
             logger.debug("documents,isEmpty(), skipping batch");
             return;
