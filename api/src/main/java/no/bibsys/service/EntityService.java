@@ -12,6 +12,7 @@ import no.bibsys.web.model.EntityDto;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class EntityService extends ModelParser {
@@ -28,7 +29,7 @@ public class EntityService extends ModelParser {
     }
 
     public EntityDto addEntity(String uri, String registryId, EntityDto entityDto)
-        throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, IOException {
         validateEntity(registryId, entityDto);
         return addEntityToRegistry(uri, registryId, entityDto);
     }
@@ -66,7 +67,7 @@ public class EntityService extends ModelParser {
     }
 
     private EntityDto addEntityToRegistry(String uri, String registryId, EntityDto entityDto)
-            throws JsonProcessingException {
+            throws IOException {
         Entity entity = entityManager.addEntity(registryId, EntityConverter.toEntity(uri, entityDto));
         return EntityConverter.toEntityDto(entity);
     }

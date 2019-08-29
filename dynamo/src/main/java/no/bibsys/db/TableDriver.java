@@ -151,7 +151,7 @@ public class TableDriver {
                     new Tag().withKey(TABLECLASS_TAG_KEY).withValue(clazz.getSimpleName()));
             request.setTags(tags);
             TableUtils.createTableIfNotExists(client, request);
-            logger.debug("Table create request sendt, tableId={} with tags={}", tableName, tags);
+            logger.debug("Table create request send, tableId={} with tags={}", tableName, tags);
             return;
         }
         logger.warn("Tried to create table but it already exists, tableName={}", tableName);
@@ -200,7 +200,7 @@ public class TableDriver {
         }
     }
 
-    protected String findDynamoTriggerArn() throws ResourceFilteringException {
+    protected String findDynamoTriggerArn() {
         TagFilter tagFiltersAWS = new TagFilter()
                 .withKey(AWS_CLOUDFORMATION_LOGICAL_ID).withValues(DYNAMO_DB_EVENT_PROCESSOR_LAMBDA);
         TagFilter tagFiltersUNIT = new TagFilter()

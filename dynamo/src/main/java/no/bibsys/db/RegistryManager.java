@@ -21,7 +21,6 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
-import no.bibsys.utils.exception.ValidationSchemaSyntaxErrorException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
@@ -198,7 +197,7 @@ public class RegistryManager extends ModelParser {
 
     }
 
-    private Model parseValidationSchema(String schema) throws ValidationSchemaSyntaxErrorException {
+    private Model parseValidationSchema(String schema) {
         return parseModel(schema, SUPPORTED_LANGUAGE);
     }
 

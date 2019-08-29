@@ -246,7 +246,7 @@ public class DatabaseResource {
                                          content = @Content(schema = @Schema(implementation = EntityDto.class)))
                                          EntityDto entityDto,
                                  @Context UriInfo uriInfo)
-            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, IOException {
 
         String baseUri = generateBaseUri(uriInfo);
         UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
@@ -289,7 +289,7 @@ public class DatabaseResource {
                                            String registryName, @RequestBody(description = "Array of Entity to upload",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class))))
                                            EntityDto... entityDtos)
-            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, IOException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
 

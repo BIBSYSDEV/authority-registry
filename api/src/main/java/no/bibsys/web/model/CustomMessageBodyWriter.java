@@ -63,10 +63,10 @@ public abstract class CustomMessageBodyWriter<T> implements MessageBodyWriter<T>
     }
 
     protected void writerStringToOutputStream(OutputStream entityStream, String serialized) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(entityStream);
-        writer.write(serialized);
-        writer.flush();
-        writer.close();
+        try (OutputStreamWriter writer = new OutputStreamWriter(entityStream)) {
+            writer.write(serialized);
+            writer.flush();
+        }
     }
 
 }

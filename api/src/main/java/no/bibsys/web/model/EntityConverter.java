@@ -15,6 +15,7 @@ import org.apache.jena.util.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +47,7 @@ public class EntityConverter extends BaseConverter {
         return entity;
     }
 
-    public static Entity toEntity(String uri, EntityDto dto) {
+    public static Entity toEntity(String uri, EntityDto dto) throws IOException {
         Entity entity = new Entity();
         String id = dto.getId();
         String finalizedId = nonNull(id) ? id : UUID.randomUUID().toString();
@@ -59,10 +60,13 @@ public class EntityConverter extends BaseConverter {
         return entity;
     }
 
-    private static String rewriteBodyWithId(String uri, String dtoBody) {
+    private static String rewriteBodyWithId(String uri, String dtoBody) throws IOException {
         Model input = ModelFactory.createDefaultModel();
-        InputStream inputStream = IOUtils.toInputStream(dtoBody, StandardCharsets.UTF_8);
-        RDFDataMgr.read(input, inputStream, Lang.JSONLD);
+
+        try (InputStream inputStream = IOUtils.toInputStream(dtoBody, StandardCharsets.UTF_8)) {
+            RDFDataMgr.read(input, inputStream, Lang.JSONLD);
+        }
+
         ResIterator subjectIterator = input.listSubjects();
 
         boolean initialPass = true;
