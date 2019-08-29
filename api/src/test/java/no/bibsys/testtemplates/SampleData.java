@@ -1,18 +1,16 @@
 package no.bibsys.testtemplates;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.jena.riot.Lang;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
+import org.apache.jena.riot.Lang;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SampleData {
 
@@ -23,16 +21,16 @@ public class SampleData {
     public SampleData() {
     }
 
-    public EntityDto sampleEntityDtoWithValidData() throws IOException {
-        return sampleEntityDto(VALID_GRAPH_JSON);
+    public EntityDto sampleEntityDtoWithValidData(String expectedUri) throws IOException {
+        return sampleEntityDto(VALID_GRAPH_JSON, expectedUri);
     }
 
-    public EntityDto sampleEntityDto() throws IOException {
+    public EntityDto sampleEntityDto(String expectedUri) throws IOException {
 
-        return sampleEntityDtoWithValidData();
+        return sampleEntityDtoWithValidData(expectedUri);
     }
 
-    private EntityDto sampleEntityDto(String bodyFilename) throws IOException {
+    private EntityDto sampleEntityDto(String bodyFilename, String expectedUri) throws IOException {
         String id = "sampleId";
         EntityDto entityDto = new EntityDto();
         entityDto.setId(id);
@@ -40,6 +38,7 @@ public class SampleData {
         entityDto.setModified("2019-06-03");
         entityDto.setPath("http://example.org/a1234");
         String body = IoUtils.resourceAsString(Paths.get(VALIDATION_FOLDER, bodyFilename));
+        body = body.replace("__REPLACE__", expectedUri);
         new ModelParser().parseModel(body, Lang.JSONLD);
 
         entityDto.setBody(body);
@@ -67,6 +66,6 @@ public class SampleData {
     }
 
     public EntityDto sampleEntityDtoWithInValidData() throws IOException {
-        return sampleEntityDto(INVALID_GRAPH_JSON);
+        return sampleEntityDto(INVALID_GRAPH_JSON, "http://example.org/festive");
     }
 }

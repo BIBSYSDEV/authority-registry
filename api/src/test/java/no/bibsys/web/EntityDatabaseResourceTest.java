@@ -14,6 +14,7 @@ import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -82,7 +84,8 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        String expectedUri = "http://localhost/null/registry/" + registryName + "/entity/sampleId";
+        EntityDto expectedEntity = sampleData.sampleEntityDto(expectedUri);
         Response response = insertEntryRequest(registryName, expectedEntity, apiAdminKey);
         EntityDto actualEntity = response.readEntity(EntityDto.class);
 
@@ -102,7 +105,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        EntityDto expectedEntity = sampleData.sampleEntityDto("https://example.org/21");
         Response response = insertEntryRequest(registryName, expectedEntity, apiAdminKey);
         String message = response.readEntity(String.class);
 
@@ -115,7 +118,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         String registryName = UUID.randomUUID().toString();
         createRegistry(registryName, apiAdminKey);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        EntityDto expectedEntity = sampleData.sampleEntityDto("https://example.org/21");
         Response response = insertEntryRequest(registryName, expectedEntity, "invalidKey");
         assertThat(response.getStatus(), is(equalTo(Status.FORBIDDEN.getStatusCode())));
     }
@@ -126,7 +129,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         createRegistry(registryName, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        EntityDto expectedEntity = sampleData.sampleEntityDto("https://example.org/21");
         Response response = insertEntryRequest(registryName, expectedEntity, registryAdminKey);
         assertThat(response.getStatus(), is(equalTo(Status.CREATED.getStatusCode())));
         assertThat(response.getLocation().toString(), containsString(ENTITY_SAMPLE_ID));
@@ -199,7 +202,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         ModelParser parser = new ModelParser();
         Model actualModel = parser.parseModel(new ByteArrayInputStream(rdf.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
-        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
+        Model expectedModel = parser.parseModel(getModifiedTestData(testFile, registryName), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
@@ -218,7 +221,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         ModelParser parser = new ModelParser();
         Model actualModel = parser.parseModel(new ByteArrayInputStream(triples.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", ""));
-        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
+        Model expectedModel = parser.parseModel(getModifiedTestData(testFile, registryName), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
@@ -237,11 +240,20 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
         ModelParser parser = new ModelParser();
         Model actualModel = parser.parseModel(new ByteArrayInputStream(turtle.getBytes(StandardCharsets.UTF_8)), lang);
         String testFile = String.format(ENTITY_EXAMPLE_FILE, lang.getLabel().replaceAll("/", "").toUpperCase());
-        Model expectedModel = parser.parseModel(new FileInputStream(new File(testFile)), lang);
+
+        Model expectedModel = parser.parseModel(getModifiedTestData(testFile, registryName), lang);
 
         assertThat(actualModel.isIsomorphicWith(expectedModel), is(true));
     }
-    
+
+    private InputStream getModifiedTestData(String file, String registryName) throws IOException {
+        FileInputStream inputStream = new FileInputStream(new File(file));
+        String testData = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        testData = testData.replace("__REPLACE__", "http://localhost/null/registry/" + registryName
+                + "/entity/sampleId");
+        return IOUtils.toInputStream(testData, StandardCharsets.UTF_8);
+    }
+
     @Test
     public void deleteEntity_entityExists_entityIsDeleted() throws IOException {
         String registryName = UUID.randomUUID().toString();
@@ -330,7 +342,7 @@ public class EntityDatabaseResourceTest extends DatabaseResourceTest {
     private EntityDto updateEntityLabel(String newLabel, ObjectMapper mapper) throws IOException {
 
         SampleData updatedSampleData = new SampleData();
-        EntityDto updatedEntity = updatedSampleData.sampleEntityDto();
+        EntityDto updatedEntity = updatedSampleData.sampleEntityDto("https://example.org/21");
         ObjectNode body = mapper.readValue(updatedEntity.getBody(), ObjectNode.class);
         body.remove("label");
         body.put("label", newLabel);

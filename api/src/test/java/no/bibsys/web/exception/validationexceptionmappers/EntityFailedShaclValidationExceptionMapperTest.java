@@ -24,7 +24,7 @@ public class EntityFailedShaclValidationExceptionMapperTest
     @Test
     public void insertEntity_entityFailedValidation_ReturnsStatusBadRequest() throws Exception {
 
-        when(mockEntityService.addEntity(anyString(), any())).thenAnswer(invocation -> { 
+        when(mockEntityService.addEntity(anyString(), anyString(), any())).thenAnswer(invocation -> {
             throw new EntityFailedShaclValidationException(SOME_TURTLE);
         });
 
@@ -33,7 +33,7 @@ public class EntityFailedShaclValidationExceptionMapperTest
         createRegistry(registryDto, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        EntityDto expectedEntity = sampleData.sampleEntityDto("https://example.org/21");
         Response response = insertEntityRequest(registryName, expectedEntity, apiAdminKey);
         assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
     }

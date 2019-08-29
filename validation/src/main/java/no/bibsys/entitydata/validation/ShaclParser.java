@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 public class ShaclParser {
 
-    public static final String DOMAIN_MODEL_QUERY_TTL = "shaclGenerateDomainModelQuery.sparql";
-    public static final String RANGE_MODEL_QUERY_TTL = "shaclGenerateRangeModelQuery.sparql";
-    public static final String RESOURCES_FOLDER = "validation";
+    private static final String DOMAIN_MODEL_QUERY_TTL = "shaclGenerateDomainModelQuery.sparql";
+    private static final String RANGE_MODEL_QUERY_TTL = "shaclGenerateRangeModelQuery.sparql";
+    private static final String RESOURCES_FOLDER = "validation";
     private final transient Model model;
 
     public ShaclParser(Model shaclModel) {
@@ -54,9 +54,9 @@ public class ShaclParser {
     private Model generateModel(String rangeModelQueryTtl) throws IOException {
         String queryString = IoUtils.resourceAsString(Paths.get(RESOURCES_FOLDER, rangeModelQueryTtl));
         Query query = QueryFactory.create(queryString);
-        QueryExecution qe = QueryExecutionFactory.create(query, model);
-        Model resultModel = qe.execConstruct();
-        return resultModel;
+        try (QueryExecution qe = QueryExecutionFactory.create(query, model)) {
+            return qe.execConstruct();
+        }
     }
 
     public Model generateRangeModel() throws IOException {

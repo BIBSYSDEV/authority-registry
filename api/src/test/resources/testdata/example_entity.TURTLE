@@ -8,6 +8,6 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix vann:  <http://purl.org/vocab/vann/> .
 
-<http://authority-registry/validation/__THIS_DOCUMENT__a>
+<__REPLACE__>
         a                    unit:Concept ;
         unit:preferredLabel  "someLabel"@en , "norskLabel"@no .

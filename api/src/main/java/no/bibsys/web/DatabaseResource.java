@@ -1,34 +1,7 @@
 package no.bibsys.web;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -55,6 +28,35 @@ import no.bibsys.web.model.RegistryInfoNoMetadataDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+import static no.bibsys.EnvironmentVariables.STAGE_NAME;
+
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
@@ -77,8 +79,8 @@ public class DatabaseResource {
     private final transient SearchService searchService;
 
     public DatabaseResource(
-            RegistryService registryService, 
-            EntityService entityService, 
+            RegistryService registryService,
+            EntityService entityService,
             SearchService searchService) {
         this.entityService = entityService;
         this.registryService = registryService;
@@ -202,19 +204,18 @@ public class DatabaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response queryRegistry(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
                                   @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                                              description = NAME_OF_REGISTRY_TO + "query",
-                                              schema = @Schema(type = STRING)) 
+                                          description = NAME_OF_REGISTRY_TO + "query",
+                                          schema = @Schema(type = STRING))
                                   @PathParam(REGISTRY_NAME) String registryName,
                                   @QueryParam("query") String queryString
 
-                                  ) throws JsonProcessingException {
-        
+    ) throws JsonProcessingException {
+
         String queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok().entity(queryResult).build();
     }
-    
-    
-    
+
+
     @PUT
     @Path("/{registryName}/schema")
     @SecurityRequirement(name = ApiKeyConstants.API_KEY)
@@ -245,14 +246,34 @@ public class DatabaseResource {
                                          content = @Content(schema = @Schema(implementation = EntityDto.class)))
                                          EntityDto entityDto,
                                  @Context UriInfo uriInfo)
-            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, IOException {
 
-        EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
+        String baseUri = generateBaseUri(uriInfo);
+        UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
+
+        EntityDto persistedEntity = entityService.addEntity(baseUri, registryName, entityDto);
         String entityId = persistedEntity.getId();
-        UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
         uriBuilder.path(entityId);
         persistedEntity.setPath(uriBuilder.build().getPath());
         return Response.created(uriBuilder.build()).entity(persistedEntity).build();
+    }
+
+    private String generateBaseUri(UriInfo uriInfo) {
+        String baseUri = System.getenv("BASE_URI");
+        UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if (isNull(baseUri)) {
+            // A hack to allow dereferencing in non-production environments
+            String stage = System.getenv(STAGE_NAME);
+            URI uri = uriBuilder.build();
+            baseUri = stringBuilder.append(uri.getScheme())
+                    .append("://").append(uri.getHost())
+                    .append("/").append(stage).append("/").append(uriInfo.getPath()).toString();
+        } else {
+            baseUri = stringBuilder.append(baseUri).append(uriBuilder.build().getPath()).toString();
+        }
+        return baseUri;
     }
 
     @POST
@@ -261,23 +282,28 @@ public class DatabaseResource {
     @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
     @Produces({MediaType.APPLICATION_JSON})
     public Response uploadEntities(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+                                   @Context UriInfo uriInfo,
                                    @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
                                            description = NAME_OF_REGISTRY_TO + "add to",
                                            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
                                            String registryName, @RequestBody(description = "Array of Entity to upload",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = EntityDto.class))))
                                            EntityDto... entityDtos)
-            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, JsonProcessingException {
+            throws EntityFailedShaclValidationException, ValidationSchemaNotFoundException, IOException {
 
         List<EntityDto> persistedEntities = new ArrayList<>();
+
+        String baseUri = generateBaseUri(uriInfo);
+
         for (EntityDto entityDto : entityDtos) {
-            EntityDto persistedEntity = entityService.addEntity(registryName, entityDto);
+            EntityDto persistedEntity = entityService.addEntity(baseUri, registryName, entityDto);
             String entityId = persistedEntity.getId();
             persistedEntity.setPath(String.join("/", REGISTRY, registryName, ENTITY, entityId));
             persistedEntities.add(persistedEntity);
         }
 
-        return Response.status(Status.OK).entity(new GenericEntity<List<EntityDto>>(persistedEntities) {}).type(
+        return Response.status(Status.OK).entity(new GenericEntity<List<EntityDto>>(persistedEntities) {
+        }).type(
                 MediaType.APPLICATION_JSON).build();
     }
 

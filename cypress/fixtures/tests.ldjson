@@ -1,5 +1,5 @@
 {
-	"id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
+	"id": "__REPLACE__",
 	"type": "Concept",
 	"preferredLabel": [{
 		"language": "en",
@@ -8,6 +8,9 @@
 		"language": "no",
 		"value": "norskLabel"
 	}],
+	"sameAs":{
+	    "id":"http://authority-registry/validation/__THIS_DOCUMENT__a"
+	},
 	"@context": {
 		"@vocab": "http://unit.no/entitydata#",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",

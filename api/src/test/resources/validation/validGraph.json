@@ -1,5 +1,5 @@
 {
-  "@id": "http://authority-registry/validation/__THIS_DOCUMENT__a",
+  "@id": "__REPLACE__",
   "@type" : "unit:Concept",
   "preferredLabel" : [ {
     "@language" : "no",

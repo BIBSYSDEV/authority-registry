@@ -1,5 +1,5 @@
 {
-  "@id" : "http://example.org/a",
+  "@id" : "http://example.org/festive/sampleId",
   "@type" : "http://example.org/ClassA",
   "name" : "http://example.org/somename",
   "@context" : {

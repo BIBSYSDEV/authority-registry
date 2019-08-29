@@ -21,7 +21,7 @@ public class RegistryMetadataTableBeingCreatedExceptionMapperTest
     @Test
     public void insertEntity_registryNotCreatedYet_ReturnsStatusServiceUnavailable() throws Exception {
 
-        when(mockEntityService.addEntity(anyString(), any())).thenAnswer(invocation -> {
+        when(mockEntityService.addEntity(anyString(), anyString(), any())).thenAnswer(invocation -> {
             throw new RegistryMetadataTableBeingCreatedException();
         });
 
@@ -30,7 +30,7 @@ public class RegistryMetadataTableBeingCreatedExceptionMapperTest
         createRegistry(registryDto, apiAdminKey);
         putSchema(registryName, validValidationSchema);
 
-        EntityDto expectedEntity = sampleData.sampleEntityDto();
+        EntityDto expectedEntity = sampleData.sampleEntityDto("https://example.org/21");
         Response response = insertEntityRequest(registryName, expectedEntity, apiAdminKey);
         assertThat(response.getStatus(), is(Status.SERVICE_UNAVAILABLE.getStatusCode()));
     }

@@ -7,7 +7,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
-
 import no.bibsys.db.exceptions.EntityNotFoundException;
 import no.bibsys.db.exceptions.ItemExistsException;
 import no.bibsys.db.exceptions.RegistryNotFoundException;
