@@ -70,7 +70,9 @@ public class EntityConverter extends BaseConverter {
         ResIterator subjectIterator = input.listSubjects();
 
         boolean initialPass = true;
-        Statement seeAlsoStatement = null;
+
+        // The following is incorrectly identified as closeable
+        Statement seeAlsoStatement = null; //NOPMD
 
         while (subjectIterator.hasNext()) {
             Resource subject = subjectIterator.nextResource();

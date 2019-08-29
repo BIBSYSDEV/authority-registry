@@ -43,7 +43,8 @@ public class EntityHttpUri {
     public EntityHttpUri(String uri) throws URISyntaxException, MalformedURLException, MalformedEntityHttpUriException {
         URI localUri = new URI(uri);
         String path = localUri.getPath();
-        String[] pathElements = path.substring(REMOVE_FIRST_SEPARATOR).split(PATH_SEPARATOR);
+        path = path.startsWith(PATH_SEPARATOR) ? path.substring(REMOVE_FIRST_SEPARATOR) : path;
+        String[] pathElements = path.split(PATH_SEPARATOR);
 
         handlePathErrors(pathElements);
         this.namespace = new URL(localUri.getScheme(),
