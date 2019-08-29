@@ -7,15 +7,26 @@
     "inScheme": "http://data.ub.uio.no/humord",
     "localIdentifier": "HUME02544",
     "modified": "1994-03-21",
-    "preferredLabel": [
+    "preferredLabel": [{
+        "language": "nb",
+        "value": "Venezia"
+    }],
+    "alternativeLabel": {
+        "value": "The alternate label",
+        "language": "en"
+    },
+    "definition": [{
+            "value": "Some definition of the concept",
+            "language": "en"
+        },
         {
-            "language": "nb",
-            "value": "Venezia"
+            "value": "En utfyllende definisjon av begrepet",
+            "language": "nb"
         }
     ],
-    "sameAs": {
-        "id": "http://data.ub.uio.no/humord/c02544"
-    },
+    "sameAs": [
+        "http://data.ub.uio.no/humord/c02544"
+    ],
     "@context": {
         "@vocab": "http://unit.no/entitydata#",
         "xsd": "http://www.w3.org/2001/XMLSchema#",

@@ -92,10 +92,12 @@ public class CloudsearchClientTest {
         Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
 
         AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.EventName.INSERT.name());
-        fields.forEachRemaining(e ->  amazonSdfDTO.setField(e.getKey(), e.getValue().asText()));
+        fields.forEachRemaining(e ->  amazonSdfDTO.setField(e.getKey(), e.getValue()));
         amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
         
         assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
+        
+        System.out.println(amazonSdfDTO);
 
     }
 
