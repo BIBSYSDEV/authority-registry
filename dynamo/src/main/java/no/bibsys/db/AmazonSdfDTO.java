@@ -1,46 +1,95 @@
 package no.bibsys.db;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.google.gson.internal.LinkedTreeMap;
+
 
 public class AmazonSdfDTO {
 
-    public static final String CLOUDSEARCH_PRESENTAION_FIELD = "presentation_json";
-    public static final String CLOUDSEARCH_MODIFIED_TIMESTAMP_FIELD = "modified";
+    private static final int EMPTY_LIST = 0;
+    private static final String JSON_LD_VALUE = "value";
+    protected static final String CLOUDSEARCH_PRESENTATION_FIELD = "presentation_json";
+    private static final String  CLOUDSEARCH_OVERFLOW_FIELD = "overflow"; // Any property not mapped goes here
+    private static final String  NO_CLOUDSEARCH_MAPPING = "DONT-PUT-THIS-IN-CLOUDSEARCH"; //  Not inserting i CS
+
+    private static final Logger logger = LoggerFactory.getLogger(AmazonSdfDTO.class);
 
     public enum CloudsearchOperation {
         ADD, DELETE
     }
-    
+
     public enum EventName {
         INSERT(CloudsearchOperation.ADD), 
         MODIFY(CloudsearchOperation.ADD), 
         REMOVE(CloudsearchOperation.DELETE);
-        
+
         public final CloudsearchOperation cloudsearchOperation;
-        
+
         EventName(CloudsearchOperation cloudsearchSdfType) {
             this.cloudsearchOperation = cloudsearchSdfType;
+        }
+    }
+
+    public enum SearchFieldsNameMap {
+        alternativelabel("alternativeLabel","alternativelabel"), 
+        broader("broader","broader"), 
+        definition("definition","definition"),
+        identifier("id","identifier"),
+        inscheme("inScheme","inscheme"),
+        localidentifier("localIdentifier","localidentifier"),
+        modified("modified","modified"),
+        narrower("narrower","narrower"),
+        preferredlabel("preferredLabel", "preferredlabel"),
+        related("related","related"),
+        seealso("seeAlso","seealso"),
+        sameas("sameAs","sameas"),
+        type("type","type"),
+        context("@context", NO_CLOUDSEARCH_MAPPING),
+        cloudsearch_presentation_field(CLOUDSEARCH_PRESENTATION_FIELD, CLOUDSEARCH_PRESENTATION_FIELD)
+        ;
+
+        public final String sourceField;
+        public final String searchField;
+
+        SearchFieldsNameMap(String sourceField, String searchField) {
+            this.sourceField = sourceField;
+            this.searchField = searchField;
         }
     }
 
     private final String type;
     private transient String id;
     private final transient LinkedTreeMap<String, Object> fields = new LinkedTreeMap<>();
+    private final transient Map<String, String> mappings = new ConcurrentHashMap<>();
+
 
     public AmazonSdfDTO(String eventName) {
         type =  EventName.valueOf(eventName).cloudsearchOperation.name().toLowerCase(Locale.getDefault());
-    }
-
-    public AmazonSdfDTO(CloudsearchOperation cloudsearchOperation) {
-        this.type = cloudsearchOperation.name().toLowerCase(Locale.getDefault());
+        initMapping();
     }
 
     public AmazonSdfDTO(CloudsearchOperation cloudsearchOperation, String entityIdentifier) {
         this.type = cloudsearchOperation.name().toLowerCase(Locale.getDefault());
         this.id = entityIdentifier;
+        initMapping();
+    }
+
+    private void initMapping() {
+        for (SearchFieldsNameMap fieldMap : SearchFieldsNameMap.values()) {
+            mappings.put(fieldMap.sourceField, fieldMap.searchField);
+        }
     }
 
     @SuppressWarnings("PMD")
@@ -69,8 +118,59 @@ public class AmazonSdfDTO {
         this.id = id;
     }
 
-    public void setField(String fieldName, Object value) {
-        fields.put(fieldName, value);
+    public void setField(String fieldName, JsonNode value) {
+        String targetSearchFieldName = getSearchFieldName(fieldName);
+        if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
+            Object extractedValue = extractFieldValue(value);
+            fields.put(targetSearchFieldName, extractedValue);
+        }
     }
-    
+
+    public void setField(String fieldName, String value) {
+        String targetSearchFieldName = getSearchFieldName(fieldName);
+        if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
+            fields.put(targetSearchFieldName, value);
+        }
+    }
+
+    private Object extractFieldValue(JsonNode jsonNode) {
+        switch (jsonNode.getNodeType()) { 
+        case ARRAY:
+            JsonNodeType elementType = jsonNode.get(0).getNodeType();
+            if (elementType == JsonNodeType.OBJECT) {
+                return getValueFieldsFromArrayOfObjects((ArrayNode) jsonNode);
+            } else {
+                return Arrays.asList(jsonNode);
+            }
+        case OBJECT:
+            return getJsonObjectValueField(jsonNode);
+        case STRING:
+            return jsonNode.asText();
+        default:
+            return jsonNode.asText();
+        }
+    }
+
+    private String getJsonObjectValueField(JsonNode value) {
+        return value.findValue(JSON_LD_VALUE).asText();
+    }
+
+    private String[] getValueFieldsFromArrayOfObjects(ArrayNode array) {
+        List<String> stringList = new ArrayList<>();
+        array.forEach(element -> stringList.add(getJsonObjectValueField(element)));
+        if (stringList.isEmpty()) {
+            return new String[EMPTY_LIST];  
+        } 
+        String[] stringArray = new String[stringList.size()]; 
+        return (String[]) stringList.toArray(stringArray);
+    }
+
+    private String getSearchFieldName(String sourceField) {
+        if (mappings.containsKey(sourceField)) {
+            return mappings.get(sourceField);              
+        } else {
+            logger.debug("No mapping for field={}, using {}",sourceField, CLOUDSEARCH_OVERFLOW_FIELD);
+            return CLOUDSEARCH_OVERFLOW_FIELD;
+        }
+    }
 }
