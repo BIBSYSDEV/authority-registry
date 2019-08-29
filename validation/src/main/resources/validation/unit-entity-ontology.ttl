@@ -137,3 +137,9 @@ unit:created a rdfs:Property ;
   rdfs:description "The date of creation" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
+
+unit:sameAs a rdfs:Property ;
+  rdfs:subPropertyOf owl:sameAs ;
+  rdfs:label "same as"@en ;
+  rdfs:label "samme som"@no ;
+  rdfs:description "Relation between two identical things" .

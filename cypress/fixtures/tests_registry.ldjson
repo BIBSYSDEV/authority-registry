@@ -48,6 +48,10 @@
     },
     "modified": {
       "@type": "xsd:date"
+    },
+    "sameAs": {
+      "@type": "@id",
+      "@container": "@set"
     }
   }
 }
