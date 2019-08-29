@@ -72,6 +72,11 @@ public class SampleData {
         entity.setModified(nowString);
         return entity;
     }
+
+    public String bigsampleEntity4() throws IOException {
+        String bodyString = IoUtils.resourceAsString(Paths.get("json", "bigsample4.json"));
+        return bodyString;
+    }
     
     
     

@@ -103,9 +103,9 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
             Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
 
-            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
+            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityIdentifier);
             fields.forEachRemaining(e ->  sdf.setField(e.getKey(), e.getValue().asText()));
-            sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, entitySource);
+            sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
             return sdf;
         } catch (Exception e) {
             logger.error(EMPTY_TEMPLATE,e);

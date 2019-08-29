@@ -8,7 +8,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +19,13 @@ import org.mockito.Mockito;
 import com.amazonaws.services.cloudsearchdomain.AmazonCloudSearchDomain;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsRequest;
 import com.amazonaws.services.cloudsearchdomain.model.UploadDocumentsResult;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import no.bibsys.db.structures.Entity;
+import no.bibsys.utils.JsonUtils;
 
 public class CloudsearchClientTest {
 
@@ -34,7 +41,7 @@ public class CloudsearchClientTest {
         Entity entity = new SampleData().bigsampleEntity();
         
         String presentationString = entity.toString();
-        amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD, presentationString);
+        amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, presentationString);
         return amazonSdfDTO;
     }
     
@@ -71,10 +78,27 @@ public class CloudsearchClientTest {
     @Test
     public void testCreateAmazonSDFAndCheckPresentation() throws IOException {
         AmazonSdfDTO amazonSdfDTO = createSampleAmazonSDF();
-        assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTAION_FIELD));
+        assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
         System.out.println(amazonSdfDTO.toString());
     }
     
+    @Test
+    public void testCreateAmazonSDO4() throws IOException {
+        String entitySource = new SampleData().bigsampleEntity4();
+
+        ObjectMapper objectMapper = JsonUtils.newJsonParser();
+        objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
+        Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
+
+        AmazonSdfDTO amazonSdfDTO = new AmazonSdfDTO(AmazonSdfDTO.EventName.INSERT.name());
+        fields.forEachRemaining(e ->  amazonSdfDTO.setField(e.getKey(), e.getValue().asText()));
+        amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
+        
+        assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
+
+    }
+
     
     
     
