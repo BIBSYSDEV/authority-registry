@@ -2,12 +2,10 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,32 +120,27 @@ public class AmazonSdfDTO {
 
     public void setField(String fieldName, JsonNode value) {
         try {
-        String targetSearchFieldName = getSearchFieldName(fieldName);
-        if (NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
-            // NO-OP
-        } else {
-            Object extractedValue = extractFieldValue(value);
-            fields.put(targetSearchFieldName, extractedValue);
-        }
+            String targetSearchFieldName = getSearchFieldName(fieldName);
+            if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
+                Object extractedValue = extractFieldValue(value);
+                fields.put(targetSearchFieldName, extractedValue);
+            }
         } catch (Exception e) {
-            System.out.println(fieldName);
-            e.printStackTrace();
+            logger.debug("fieldName={}",fieldName,e);
         }
     }
 
     public void setField(String fieldName, String value) {
         String targetSearchFieldName = getSearchFieldName(fieldName);
-        if (NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
-            // NO-OP
-        } else {
+        if (!NO_CLOUDSEARCH_MAPPING.equalsIgnoreCase(targetSearchFieldName)) {
             fields.put(targetSearchFieldName, value);
         }
     }
 
-    
-    
-    
-    
+
+
+
+
     private Object extractFieldValue(JsonNode value) {
         switch (value.getNodeType()) { 
         case ARRAY:
@@ -171,13 +164,13 @@ public class AmazonSdfDTO {
     }
 
     private String[] getValueFieldsFromArrayOfObjects(ArrayNode array) {
-            List<String> stringList = new ArrayList<>();
-            array.forEach(element -> stringList.add(getJsonObjectValueField(element)));
-            if (stringList.size() == 0) {
-              return new String[0];  
-            } 
-            String[] stringArr = new String[stringList.size()]; 
-            return (String[]) stringList.toArray(stringArr);
+        List<String> stringList = new ArrayList<>();
+        array.forEach(element -> stringList.add(getJsonObjectValueField(element)));
+        if (stringList.isEmpty()) {
+            return new String[0];  
+        } 
+        String[] stringArr = new String[stringList.size()]; 
+        return (String[]) stringList.toArray(stringArr);
     }
 
     private String getSearchFieldName(String sourceField) {
