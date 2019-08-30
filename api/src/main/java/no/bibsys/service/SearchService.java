@@ -1,6 +1,5 @@
 package no.bibsys.service;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ public class SearchService {
     private static final String COMMA_SEPARATOR = ",";
     private static final String JSON_START_ARRAY = "[";
     private static final String JSON_END_ARRAY = "]";
-    private static final String FILTER_QUERY_TEMPLATE = "inscheme:'http://unit.no/system#%s'";
     private static final String CLOUDSEARCH_RETURN_FIELD = "presentation_json";
     private static final String AWS_REGION_PROPERTY_NAME = "AWS_REGION";
 
@@ -54,10 +52,6 @@ public class SearchService {
                 .withReturn(CLOUDSEARCH_RETURN_FIELD)
                 .withQueryParser(QueryParser.Simple);
         
-        if (Objects.nonNull(registryName) && !registryName.isEmpty()) {
-            String filterQuery = String.format(FILTER_QUERY_TEMPLATE,registryName);
-            searchRequest.setFilterQuery(filterQuery);
-        }
         try {
             SearchResult searchResult = searchClient.search(searchRequest);
             Hits hits = searchResult.getHits();
