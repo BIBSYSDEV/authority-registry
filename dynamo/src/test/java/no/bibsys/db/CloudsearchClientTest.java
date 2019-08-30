@@ -95,6 +95,7 @@ public class CloudsearchClientTest {
         amazonSdfDTO.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
         
         assertNotNull(amazonSdfDTO.getFields().get(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD));
+        
     }
    
 }

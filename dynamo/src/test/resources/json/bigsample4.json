@@ -1,78 +1,70 @@
 {
-    "id": "https://ozbvft90ha.execute-api.eu-west-1.amazonaws.com/final/registry/humord/entity/7efde9d5-c93b-4f2a-80b6-b9cc79e810eb",
-    "type": "Concept",
-    "broader": [
-        "https://ozbvft90ha.execute-api.eu-west-1.amazonaws.com/final/registry/humord/entity/c2ca6a4b-0e25-4104-88b2-6e4f349015aa"
-    ],
-    "inScheme": "http://data.ub.uio.no/humord",
-    "localIdentifier": "HUME02544",
-    "modified": "1994-03-21",
-    "preferredLabel": [{
-        "language": "nb",
-        "value": "Venezia"
-    }],
-    "alternativeLabel": {
-        "value": "The alternate label",
-        "language": "en"
+  "id" : "https://ozbvft90ha.execute-api.eu-west-1.amazonaws.com/final/registry/humord/entity/2b03e0b7-b1fe-4218-b097-443f992d62e6",
+  "type" : "Concept",
+  "alternativeLabel" : [ {
+    "language" : "nb",
+    "value" : "Sultekunst"
+  } ],
+  "broader" : [ "http://data.ub.uio.no/humord/c03843" ],
+  "inScheme" : "http://data.ub.uio.no/humord",
+  "localIdentifier" : "HUME03849",
+  "modified" : "1994-03-21",
+  "preferredLabel" : [ {
+    "language" : "nb",
+    "value" : "Slanking"
+  } ],
+  "related" : [ "http://data.ub.uio.no/humord/c03939" ],
+  "sameAs" : [ "http://data.ub.uio.no/humord/c03849" ],
+  "@context" : {
+    "@vocab" : "http://unit.no/entitydata#",
+    "xsd" : "http://www.w3.org/2001/XMLSchema#",
+    "id" : "@id",
+    "preferredLabel" : {
+      "@container" : "@set"
     },
-    "definition": [{
-            "value": "Some definition of the concept",
-            "language": "en"
-        },
-        {
-            "value": "En utfyllende definisjon av begrepet",
-            "language": "nb"
-        }
-    ],
-    "sameAs": [
-        "http://data.ub.uio.no/humord/c02544"
-    ],
-    "@context": {
-        "@vocab": "http://unit.no/entitydata#",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "id": "@id",
-        "preferredLabel": {
-            "@container": "@set"
-        },
-        "alternativeLabel": {
-            "@container": "@set"
-        },
-        "inScheme": {
-            "@type": "@id"
-        },
-        "broader": {
-            "@type": "@id",
-            "@container": "@set"
-        },
-        "narrower": {
-            "@type": "@id",
-            "@container": "@set"
-        },
-        "related": {
-            "@type": "@id",
-            "@container": "@set"
-        },
-        "seeAlso": {
-            "@type": "@id",
-            "@container": "@set"
-        },
-        "editorialNote": {
-            "@container": "@set"
-        },
-        "scopeNote": {
-            "@container": "@set"
-        },
-        "definition": {
-            "@container": "@set"
-        },
-        "type": "@type",
-        "language": "@language",
-        "value": "@value",
-        "created": {
-            "@type": "xsd:date"
-        },
-        "modified": {
-            "@type": "xsd:date"
-        }
+    "alternativeLabel" : {
+      "@container" : "@set"
+    },
+    "inScheme" : {
+      "@type" : "@id"
+    },
+    "broader" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "narrower" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "related" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "seeAlso" : {
+      "@type" : "@id",
+      "@container" : "@set"
+    },
+    "editorialNote" : {
+      "@container" : "@set"
+    },
+    "scopeNote" : {
+      "@container" : "@set"
+    },
+    "definition" : {
+      "@container" : "@set"
+    },
+    "type" : "@type",
+    "language" : "@language",
+    "value" : "@value",
+    "created" : {
+      "@type" : "xsd:date"
+    },
+    "modified" : {
+      "@type" : "xsd:date"
+    },
+    "sameAs" : {
+      "@type" : "@id",
+      "@container" : "@set"
     }
+  }
 }

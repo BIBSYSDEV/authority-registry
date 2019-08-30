@@ -2,6 +2,7 @@ package no.bibsys.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -140,7 +141,9 @@ public class AmazonSdfDTO {
             if (elementType == JsonNodeType.OBJECT) {
                 return getValueFieldsFromArrayOfObjects((ArrayNode) jsonNode);
             } else {
-                return Arrays.asList(jsonNode);
+                List<String> valueList = new ArrayList<>();
+                jsonNode.elements().forEachRemaining(element -> valueList.add(element.asText()));
+                return valueList;
             }
         case OBJECT:
             return getJsonObjectValueField(jsonNode);
@@ -155,14 +158,10 @@ public class AmazonSdfDTO {
         return value.findValue(JSON_LD_VALUE).asText();
     }
 
-    private String[] getValueFieldsFromArrayOfObjects(ArrayNode array) {
+    private List<String> getValueFieldsFromArrayOfObjects(ArrayNode array) {
         List<String> stringList = new ArrayList<>();
         array.forEach(element -> stringList.add(getJsonObjectValueField(element)));
-        if (stringList.isEmpty()) {
-            return new String[EMPTY_LIST];  
-        } 
-        String[] stringArray = new String[stringList.size()]; 
-        return (String[]) stringList.toArray(stringArray);
+        return stringList;
     }
 
     private String getSearchFieldName(String sourceField) {
