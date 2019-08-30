@@ -95,7 +95,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
             logger.debug("cloudsearchOperation={}, entityUuid={}", cloudsearchOperation.name(), entityUuid);
             AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
-            if(cloudsearchOperation == CloudsearchOperation.ADD) {
+            if (cloudsearchOperation == CloudsearchOperation.ADD) {
                 String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
                 String entitySource = getEntityAsString(entityIdentifier);
 
