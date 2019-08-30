@@ -88,4 +88,11 @@ public class CloudsearchDocumentClient {
         logger.debug("batchDocuments={}", batchDocuments);
         return batchDocuments.toString();
     }
+    
+    
+    
+    
+    
+    
+    
 }

@@ -93,19 +93,21 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             String eventName = dynamodDBStreamRecord.getEventName();
             CloudsearchOperation cloudsearchOperation = EventName.valueOf(eventName).cloudsearchOperation;
 
-            logger.debug("cloudsearchOperation={}, entityIdentifier={}", cloudsearchOperation.name(), entityUuid);
-            String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
-            String entitySource = getEntityAsString(entityIdentifier);
+            logger.debug("cloudsearchOperation={}, entityUuid={}", cloudsearchOperation.name(), entityUuid);
+            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityUuid);
+            if(cloudsearchOperation == CloudsearchOperation.ADD) {
+                String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
+                String entitySource = getEntityAsString(entityIdentifier);
 
-            ObjectMapper objectMapper = JsonUtils.newJsonParser();
-            objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            ObjectNode objectNode = (ObjectNode) objectMapper.readTree(entitySource);
-            Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
+                ObjectMapper objectMapper = JsonUtils.newJsonParser();
+                objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+                ObjectNode objectNode = (ObjectNode) objectMapper.readTree(entitySource);
+                Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
 
-            AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityIdentifier);
-            fields.forEachRemaining(e -> sdf.setField(e.getKey(), e.getValue()));
+                fields.forEachRemaining(e -> sdf.setField(e.getKey(), e.getValue()));
 
-            sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
+                sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
+            } 
             return sdf;
         } catch (Exception e) {
             logger.error(EMPTY_TEMPLATE, e);
