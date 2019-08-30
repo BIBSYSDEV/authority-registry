@@ -1,8 +1,6 @@
 package no.bibsys.db;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,7 +17,6 @@ import com.google.gson.internal.LinkedTreeMap;
 
 public class AmazonSdfDTO {
 
-    private static final int EMPTY_LIST = 0;
     private static final String JSON_LD_VALUE = "value";
     protected static final String CLOUDSEARCH_PRESENTATION_FIELD = "presentation_json";
     private static final String  CLOUDSEARCH_OVERFLOW_FIELD = "overflow"; // Any property not mapped goes here
