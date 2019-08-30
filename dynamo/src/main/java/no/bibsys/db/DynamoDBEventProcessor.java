@@ -1,19 +1,5 @@
 package no.bibsys.db;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.StreamRecord;
@@ -25,11 +11,24 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import no.bibsys.db.AmazonSdfDTO.CloudsearchOperation;
 import no.bibsys.db.AmazonSdfDTO.EventName;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Void> {
 
@@ -46,7 +45,7 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBEventProcessor.class);
 
     public DynamoDBEventProcessor() {
-        cloudsearchDocumentClient = new CloudsearchDocumentClient();        
+        cloudsearchDocumentClient = new CloudsearchDocumentClient();
     }
 
     public DynamoDBEventProcessor(CloudsearchDocumentClient cloudsearchClient) {
@@ -94,29 +93,29 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             String eventName = dynamodDBStreamRecord.getEventName();
             CloudsearchOperation cloudsearchOperation = EventName.valueOf(eventName).cloudsearchOperation;
 
-            logger.debug("cloudsearchOperation={}, entityIdentifier={}",cloudsearchOperation.name(),entityUuid);
+            logger.debug("cloudsearchOperation={}, entityIdentifier={}", cloudsearchOperation.name(), entityUuid);
             String entityIdentifier = getEntityIdentifier(streamRecord.getNewImage());
             String entitySource = getEntityAsString(entityIdentifier);
 
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            ObjectNode objectNode = (ObjectNode)objectMapper.readTree(entitySource);
+            ObjectNode objectNode = (ObjectNode) objectMapper.readTree(entitySource);
             Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
 
             AmazonSdfDTO sdf = new AmazonSdfDTO(cloudsearchOperation, entityIdentifier);
-            fields.forEachRemaining(e ->  sdf.setField(e.getKey(), e.getValue()));
-            
+            fields.forEachRemaining(e -> sdf.setField(e.getKey(), e.getValue()));
+
             sdf.setField(AmazonSdfDTO.CLOUDSEARCH_PRESENTATION_FIELD, entitySource);
             return sdf;
         } catch (Exception e) {
-            logger.error(EMPTY_TEMPLATE,e);
+            logger.error(EMPTY_TEMPLATE, e);
             throw new RuntimeException(e);
         }
     }
 
     protected String getEntityAsString(String entityIdentifierUrl) {
 
-        logger.debug("entityUrlString={}",entityIdentifierUrl);
+        logger.debug("entityUrlString={}", entityIdentifierUrl);
         URL entityUrl;
         try {
             entityUrl = new URL(entityIdentifierUrl);
@@ -133,9 +132,9 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
 
             // read the output from the server
             return IoUtils.streamToString(connection.getInputStream());
-            
+
         } catch (IOException e) {
-            logger.error(EMPTY_TEMPLATE,e);
+            logger.error(EMPTY_TEMPLATE, e);
             throw new RuntimeException(e);
         }
     }
@@ -145,14 +144,11 @@ public class DynamoDBEventProcessor implements RequestHandler<DynamodbEvent, Voi
             ObjectMapper objectMapper = JsonUtils.newJsonParser();
             objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             AttributeValue attributeValue = map.get(DYNAMODB_BODY_FIELD);
-            ObjectNode body = (ObjectNode)objectMapper.readTree(attributeValue.getS());
-            String identifier = body.get(ENTITY_ID_FIELD).asText();
-            if (Objects.isNull(identifier)) {
-                identifier = body.get(ENTITY_ID_FIELD_ALIASED).asText();
-            }
-            return identifier;
+            ObjectNode body = (ObjectNode) objectMapper.readTree(attributeValue.getS());
+            return nonNull(body.get(ENTITY_ID_FIELD)) ? body.get(ENTITY_ID_FIELD).asText()
+                    : body.get(ENTITY_ID_FIELD_ALIASED).asText();
         } catch (IOException e) {
-            logger.error(EMPTY_TEMPLATE,e);
+            logger.error(EMPTY_TEMPLATE, e);
             throw new RuntimeException(e);
         }
     }
