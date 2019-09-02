@@ -23,8 +23,6 @@ import com.google.common.base.Charsets;
 import no.bibsys.aws.tools.Environment;
 import no.bibsys.utils.JsonUtils;
 
-
-
 public class CloudsearchDocumentClient {
 
     public static final String CLOUDSEARCH_DOCUMENT_ENDPOINT = "CLOUDSEARCH_DOCUMENT_ENDPOINT";
@@ -75,7 +73,6 @@ public class CloudsearchDocumentClient {
         
         UploadDocumentsResult uploadDocumentsResult = documentUploadClient.uploadDocuments(uploadDocumentsRequest);
         logger.debug("uploadDocumentsResult={}",uploadDocumentsResult);
-
     }
 
     private String batchToString(List<AmazonSdfDTO> documents)
@@ -89,3 +86,4 @@ public class CloudsearchDocumentClient {
         return batchDocuments.toString();
     }
 }
+
