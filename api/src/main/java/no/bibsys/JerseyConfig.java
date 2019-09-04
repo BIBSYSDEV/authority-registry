@@ -1,19 +1,10 @@
 package no.bibsys;
 
-import java.io.IOException;
-
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPIClientBuilder;
-
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import no.bibsys.aws.tools.Environment;
@@ -26,6 +17,7 @@ import no.bibsys.service.SearchService;
 import no.bibsys.service.exceptions.UnknownStatusExceptionMapper;
 import no.bibsys.web.CorsFilter;
 import no.bibsys.web.DatabaseResource;
+import no.bibsys.web.JsonLdContextResource;
 import no.bibsys.web.PingResource;
 import no.bibsys.web.exception.BadRequestExceptionMapper;
 import no.bibsys.web.exception.BaseExceptionMapper;
@@ -53,6 +45,13 @@ import no.bibsys.web.model.EntityRdfMessageBodyWriter;
 import no.bibsys.web.model.RegistryMessageBodyWriter;
 import no.bibsys.web.model.RegistryRdfMessageBodyWriter;
 import no.bibsys.web.security.AuthenticationFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 @SuppressWarnings("PMD")
 public class JerseyConfig extends ResourceConfig {
@@ -105,6 +104,8 @@ public class JerseyConfig extends ResourceConfig {
 
         registerExceptionMappers();
         registerMessageBodyWriters();
+
+        register(JsonLdContextResource.class);
     }
 
     private void registerMessageBodyWriters() {
