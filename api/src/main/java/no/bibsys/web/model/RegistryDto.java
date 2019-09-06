@@ -1,7 +1,8 @@
 package no.bibsys.web.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement
@@ -12,6 +13,7 @@ public class RegistryDto {
     private String path;
     private Map<String, Object> metadata;
     private String schema;
+    private String uiSchema;
 
     public String getId() {
         return id;
@@ -51,6 +53,14 @@ public class RegistryDto {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+    
+    public void setUiSchema(String uiSchema) {
+        this.uiSchema = uiSchema;
+    }
+
+    public String getUiSchema() {
+        return uiSchema;
     }
 
     @Override

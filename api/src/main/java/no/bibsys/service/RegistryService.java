@@ -22,6 +22,7 @@ import no.bibsys.service.exceptions.UnknownStatusException;
 import no.bibsys.web.model.RegistryConverter;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.model.RegistryInfoUiSchemaDto;
 
 public class RegistryService {
 
@@ -56,6 +57,15 @@ public class RegistryService {
         return registryInfoNoMetadataDto;
     }
 
+    public RegistryInfoUiSchemaDto getRegistryUiSchema(String registryId) {
+        Registry registry = registryManager.getRegistry(registryMetadataTableName, registryId);
+        RegistryDto registryDto = RegistryConverter.toRegistryDto(registry);
+        RegistryInfoUiSchemaDto registryInfoUiSchemaDto = new RegistryInfoUiSchemaDto();
+        registryInfoUiSchemaDto.setId(registryDto.getId());
+        registryInfoUiSchemaDto.setUischema(registryDto.getUiSchema());
+        return registryInfoUiSchemaDto;
+    }
+    
     public RegistryDto getRegistry(String registryId) {
         Registry registry = registryManager.getRegistry(registryMetadataTableName, registryId);
         return RegistryConverter.toRegistryDto(registry);
