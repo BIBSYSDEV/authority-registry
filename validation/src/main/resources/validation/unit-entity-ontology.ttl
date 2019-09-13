@@ -143,3 +143,11 @@ unit:sameAs a rdfs:Property ;
   rdfs:label "same as"@en ;
   rdfs:label "samme som"@no ;
   rdfs:description "Relation between two identical things" .
+
+unit:localIdentifierCode a rdfs:Property ;
+  rdfs:subPropertyOf dcterms:identifier ;
+  rdfs:label "local identifier code"@en ;
+  rdfs:label "lokalidentifikatorkode"@no ;
+  rdfs:description "A code used in local identifiers" ;
+  rdfs:domain unit:ConceptScheme ;
+  rdfs:range xsd:string .

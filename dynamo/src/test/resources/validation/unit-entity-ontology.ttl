@@ -137,3 +137,11 @@ unit:created a rdfs:Property ;
   rdfs:description "The date of creation" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
+
+unit:localIdentifierCode a rdfs:Property ;
+  rdfs:subPropertyOf dcterms:identifier ;
+  rdfs:label "local identifier code"@en ;
+  rdfs:label "lokalidentifikatorkode"@no ;
+  rdfs:description "A code used in local identifiers" ;
+  rdfs:domain unit:ConceptScheme ;
+  rdfs:range xsd:string .
