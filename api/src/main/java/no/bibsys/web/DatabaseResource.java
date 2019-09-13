@@ -198,7 +198,7 @@ public class DatabaseResource {
                                               schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
                                               String registryName) throws JsonProcessingException {
 
-        RegistryInfoUiSchemaDto registryDto = registryService.getRegistryInfo(registryName);
+        RegistryInfoNoMetadataDto registryDto = registryService.getRegistryInfo(registryName);
         return Response.ok(registryDto).build();
     }
     
@@ -212,8 +212,44 @@ public class DatabaseResource {
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
     String registryName) throws JsonProcessingException {
         
-        RegistryInfoNoMetadataDto registryDto = registryService.getRegistryInfo(registryName);
+        RegistryInfoUiSchemaDto registryDto = registryService.getRegistryUiSchema(registryName);
         return Response.ok(registryDto).build();
+    }
+
+
+    @PUT
+    @Path("/{registryName}/uischema")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response updateRegistryUiSchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+                                         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                                                 description = NAME_OF_REGISTRY_TO + "update",
+                                                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+                                                 String registryName, @RequestBody(description = "uischema",
+            content = @Content(schema = @Schema(type = STRING))) String uiSchema)
+
+            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+
+        RegistryDto updateRegistry = registryService.updateRegistryUiSchema(registryName, uiSchema);
+        return Response.ok(updateRegistry).build();
+    }
+    
+    @PUT
+    @Path("/{registryName}/schema")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = NAME_OF_REGISTRY_TO + "update",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+    String registryName, @RequestBody(description = "Validation schema",
+    content = @Content(schema = @Schema(type = STRING))) String schema)
+    
+            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        
+        RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
+        updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
+        return Response.ok(updateRegistry).build();
     }
 
     @GET
@@ -230,25 +266,6 @@ public class DatabaseResource {
 
         String queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok().entity(queryResult).build();
-    }
-
-
-    @PUT
-    @Path("/{registryName}/schema")
-    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
-    public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-                                         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                                                 description = NAME_OF_REGISTRY_TO + "update",
-                                                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
-                                                 String registryName, @RequestBody(description = "Validation schema",
-            content = @Content(schema = @Schema(type = STRING))) String schema)
-
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
-
-        RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
-        updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
-        return Response.ok(updateRegistry).build();
     }
 
     @POST
