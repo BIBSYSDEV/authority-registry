@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 @Provider
 @Produces(MediaType.TEXT_HTML)
 public class EntityHtmlMessageBodyWriter extends ModelParser implements MessageBodyWriter<EntityDto> {
@@ -81,6 +83,9 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements MessageB
 
     private String extractId(Model model) {
         Resource resource = model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT).nextResource();
+        if (isNull(resource)) {
+            resource = model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT_SCHEME).nextResource();
+        }
         return resource.toString();
     }
 
