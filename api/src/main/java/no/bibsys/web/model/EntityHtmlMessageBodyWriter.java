@@ -82,7 +82,10 @@ public class EntityHtmlMessageBodyWriter extends ModelParser implements MessageB
     }
 
     private String extractId(Model model) {
-        Resource resource = model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT).nextResource();
+        Resource resource = null;
+        if (model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT).hasNext() ) {
+            resource = model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT).nextResource();
+        }
         if (isNull(resource)) {
             resource = model.listSubjectsWithProperty(RDF.type, UnitOntology.CONCEPT_SCHEME).nextResource();
         }
