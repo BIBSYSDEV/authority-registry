@@ -1,28 +1,31 @@
 package no.bibsys.web;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
+
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import no.bibsys.db.helpers.AwsResourceGroupsTaggingApiMockBuilder;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.web.exception.validationexceptionmappers.ShaclModelDatatypeObjectsDoNotMapExactlyPropertyRangeExceptionMapper;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.model.RegistryInfoUiSchemaDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.Assert.assertThat;
 
 public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
 
@@ -84,6 +87,19 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
     }
 
     @Test
+    public void putRegistryUiSchema_NonEmptyRegistry_ReturnsStatusOk() throws Exception {
+        String registryName = createRegistry();
+        putUiSchema(registryName, validUiSchema);
+        
+        EntityDto entity = sampleData.sampleEntityDto("https://example.org/12");
+        insertEntryRequest(registryName, entity, apiAdminKey);
+        
+        String schemaAsJson = "Schema as Json";
+        Response putRegistrySchemaResponse = putUiSchema(registryName, schemaAsJson);
+        assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+    }
+    
+    @Test
     public void putRegistrySchema_RegistryExistsValidSchema_ReturnsStatusOK() {
         String registryName = createRegistry();
 
@@ -93,6 +109,18 @@ public class RegistryDatabaseResourceTest extends DatabaseResourceTest {
         Response response = readSchema(registryName);
         RegistryInfoNoMetadataDto registry = response.readEntity(RegistryInfoNoMetadataDto.class);
         assertThat(validValidationSchema, is(equalTo(registry.getSchema())));
+    }
+    
+    @Test
+    public void putUiSchema_RegistryExistsValidSchema_ReturnsStatusOK() {
+        String registryName = createRegistry();
+        
+        Response putRegistrySchemaResponse = putUiSchema(registryName, validUiSchema);
+        assertThat(putRegistrySchemaResponse.getStatus(), is(equalTo(Status.OK.getStatusCode())));
+
+        Response response = readUiSchema(registryName);
+        RegistryInfoUiSchemaDto registry = response.readEntity(RegistryInfoUiSchemaDto.class);
+        assertThat(validUiSchema, is(equalTo(registry.getUischema())));
     }
 
     @Test

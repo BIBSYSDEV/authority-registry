@@ -180,7 +180,6 @@ public class RegistryManager extends ModelParser {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
 
         validateRegistryExists(registryId);
-        validateRegistryNotEmpty(registryId);
 
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.UPDATE)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();

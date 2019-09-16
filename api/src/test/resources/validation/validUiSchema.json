@@ -1,0 +1,102 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "label": "Identifier",
+        "scope": "#/properties/identifier",
+        "rule": {
+            "effect": "DISABLE",
+            "condition": {
+                "scope": "#/properties/identifier"
+            }
+        }
+
+      },
+      {
+        "type": "VerticalLayout",
+        "label": "Preferred Label",
+        "elements": [
+            {
+                "type": "Control",
+		        "label": "Preferred Label",
+                "scope": "#/properties/preferredLabel"
+            }
+        ]
+      },
+      {
+        "type": "VerticalLayout",
+        "label": "Alternative label",
+        "elements": [
+           {
+             "type": "Control",
+	         "label": "Alternative label",
+             "scope": "#/properties/alternativeLabel"
+           }
+        ]
+      },
+      {
+        "type": "Control",
+        "label": "Definition",
+        "scope": "#/properties/definition"
+      },
+      {
+        "type": "Control",
+      	"label": "Narrower",
+        "scope": "#/properties/narrower"
+      },
+      {
+        "type": "Control",
+      	"label": "Broader",
+        "scope": "#/properties/broader"
+      },
+      {
+        "type": "Control",
+        "label": "Related",
+        "scope": "#/properties/related"
+      },
+      {
+        "type": "Control",
+        "label": "Local Identifier",
+        "scope": "#/properties/localIdentifier",
+        "rule": {
+            "effect": "DISABLE",
+            "condition": {
+                "scope": "#/properties/localIdentifier"
+        	}
+    	}
+      },
+      {
+        "type": "Control",
+        "label": "Editorial Note",
+        "scope": "#/properties/editorialNote"
+      },
+      {
+        "type": "Control",
+        "label": "Scope Note",
+        "scope": "#/properties/scopeNote"
+      },
+      {
+        "type": "Control",
+        "label": "Last modified",
+        "scope": "#/properties/modified",
+        "rule": {
+            "effect": "DISABLE",
+            "condition": {
+                "scope": "#/properties/modified"
+            }
+        }
+      },
+      {
+        "type": "Control",
+        "label": "In scheme",
+        "scope": "#/properties/inScheme",
+        "rule": {
+            "effect": "DISABLE",
+            "condition": {
+                "scope": "#/properties/identifier"
+            }
+        }
+      }
+    ]
+  }

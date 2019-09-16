@@ -9,9 +9,6 @@ public class RegistryInfoUiSchemaDto {
     private String id;
     private String uischema;
 
-    public RegistryInfoUiSchemaDto() {
-    }
-
     public String getId() {
         return id;
     }
