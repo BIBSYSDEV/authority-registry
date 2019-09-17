@@ -228,7 +228,7 @@ public class DatabaseResource {
                                                  String registryName, @RequestBody(description = "uischema",
             content = @Content(schema = @Schema(type = STRING))) String uiSchema)
 
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+            throws IOException, TargetClassPropertyObjectIsNotAResourceException {
 
         RegistryDto updateRegistry = registryService.updateRegistryUiSchema(registryName, uiSchema);
         return Response.ok(updateRegistry).build();

@@ -94,7 +94,7 @@ public class RegistryService {
     }
 
     public RegistryDto updateRegistryUiSchema(String registryId, String uiSchema)
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+            throws IOException, TargetClassPropertyObjectIsNotAResourceException {
         Registry registry = registryManager.updateRegistryUiSchema(registryMetadataTableName, registryId, uiSchema);
         return RegistryConverter.toRegistryDto(registry);
     }
