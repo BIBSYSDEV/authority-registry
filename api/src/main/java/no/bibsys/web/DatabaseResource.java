@@ -1,7 +1,38 @@
 package no.bibsys.web;
 
+import static java.util.Objects.isNull;
+import static no.bibsys.EnvironmentVariables.STAGE_NAME;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
 import com.amazonaws.services.s3.Headers;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -25,37 +56,9 @@ import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryCreateRequestParametersObject;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.model.RegistryInfoNoMetadataDto;
+import no.bibsys.web.model.RegistryInfoUiSchemaDto;
 import no.bibsys.web.security.ApiKeyConstants;
 import no.bibsys.web.security.Roles;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
-import static no.bibsys.EnvironmentVariables.STAGE_NAME;
 
 @Path("/registry")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -198,6 +201,56 @@ public class DatabaseResource {
         RegistryInfoNoMetadataDto registryDto = registryService.getRegistryInfo(registryName);
         return Response.ok(registryDto).build();
     }
+    
+    @GET
+    @Path("/{registryName}/uischema")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response getRegistryUiSchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = NAME_OF_REGISTRY_TO + "get schema",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+        String registryName) throws JsonProcessingException {
+        
+        RegistryInfoUiSchemaDto registryDto = registryService.getRegistryUiSchema(registryName);
+        return Response.ok(registryDto).build();
+    }
+
+
+    @PUT
+    @Path("/{registryName}/uischema")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response updateRegistryUiSchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+                                         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+                                                 description = NAME_OF_REGISTRY_TO + "update",
+                                                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+                                                 String registryName, @RequestBody(description = "uischema",
+            content = @Content(schema = @Schema(type = STRING))) String uiSchema)
+
+            throws IOException, TargetClassPropertyObjectIsNotAResourceException {
+
+        RegistryDto updateRegistry = registryService.updateRegistryUiSchema(registryName, uiSchema);
+        return Response.ok(updateRegistry).build();
+    }
+    
+    @PUT
+    @Path("/{registryName}/schema")
+    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
+    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
+    public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
+            @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
+            description = NAME_OF_REGISTRY_TO + "update",
+            schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
+        String registryName, @RequestBody(description = "Validation schema",
+        content = @Content(schema = @Schema(type = STRING))) String schema)
+    
+            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        
+        RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
+        updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
+        return Response.ok(updateRegistry).build();
+    }
 
     @GET
     @Path("/{registryName}/search")
@@ -213,25 +266,6 @@ public class DatabaseResource {
 
         String queryResult = searchService.simpleQuery(registryName, queryString);
         return Response.ok().entity(queryResult).build();
-    }
-
-
-    @PUT
-    @Path("/{registryName}/schema")
-    @SecurityRequirement(name = ApiKeyConstants.API_KEY)
-    @RolesAllowed({Roles.API_ADMIN, Roles.REGISTRY_ADMIN})
-    public Response updateRegistrySchema(@HeaderParam(ApiKeyConstants.API_KEY_PARAM_NAME) String apiKey,
-                                         @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
-                                                 description = NAME_OF_REGISTRY_TO + "update",
-                                                 schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
-                                                 String registryName, @RequestBody(description = "Validation schema",
-            content = @Content(schema = @Schema(type = STRING))) String schema)
-
-            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
-
-        RegistryDto updateRegistry = registryService.updateRegistrySchema(registryName, schema);
-        updateRegistry.setPath(String.format("/registry/%s/schema", registryName));
-        return Response.ok(updateRegistry).build();
     }
 
     @POST

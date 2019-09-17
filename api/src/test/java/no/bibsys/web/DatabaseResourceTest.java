@@ -1,8 +1,32 @@
 package no.bibsys.web;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.JerseyConfig;
 import no.bibsys.LocalDynamoDBHelper;
 import no.bibsys.MockEnvironment;
@@ -18,27 +42,6 @@ import no.bibsys.utils.IoUtils;
 import no.bibsys.web.model.EntityDto;
 import no.bibsys.web.model.RegistryDto;
 import no.bibsys.web.security.ApiKeyConstants;
-import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 public class DatabaseResourceTest extends JerseyTest {
 
@@ -50,7 +53,9 @@ public class DatabaseResourceTest extends JerseyTest {
         "invalidDatatypeRangeShaclValidationSchema.json";
     protected static final String ENTITY_EXAMPLE_FILE = "src/test/resources/testdata/example_entity.%s";
     private static final String VALID_SHACL_VALIDATION_SCHEMA_JSON = "validShaclValidationSchema.json";
+    private static final String VALID_UISCHEMA_JSON = "validUiSchema.json";
     protected static String validValidationSchema;
+    protected static String validUiSchema;
     protected final SampleData sampleData = new SampleData();
     protected String apiAdminKey;
     protected String registryAdminKey;
@@ -60,6 +65,8 @@ public class DatabaseResourceTest extends JerseyTest {
         System.setProperty("sqlite4java.library.path", "build/libs");
         validValidationSchema = IoUtils.resourceAsString(
             Paths.get(VALIDATION_FOLDER, VALID_SHACL_VALIDATION_SCHEMA_JSON));
+        validUiSchema = IoUtils.resourceAsString(
+                Paths.get(VALIDATION_FOLDER, VALID_UISCHEMA_JSON));
     }
 
     @AfterClass
@@ -128,6 +135,12 @@ public class DatabaseResourceTest extends JerseyTest {
             javax.ws.rs.client.Entity.entity(schemaAsJson, MediaType.APPLICATION_JSON));
     }
 
+    protected Response putUiSchema(String registryName, String uiSchemaAsJson) {
+        return target(String.format("/registry/%s/uischema", registryName)).request().header(
+                ApiKeyConstants.API_KEY_PARAM_NAME, registryAdminKey).put(
+                        javax.ws.rs.client.Entity.entity(uiSchemaAsJson, MediaType.APPLICATION_JSON));
+    }
+    
     protected Response createRegistry(String registryName, String apiKey) {
         RegistryDto registryDto = sampleData.sampleRegistryDto(registryName);
         return createRegistry(registryDto, apiKey);
@@ -216,6 +229,11 @@ public class DatabaseResourceTest extends JerseyTest {
     protected Response readSchema(String registryName) {
         return target(String.format("/registry/%s/schema", registryName)).request().header(
             ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
+    }
+    
+    protected Response readUiSchema(String registryName) {
+        return target(String.format("/registry/%s/uischema", registryName)).request().header(
+                ApiKeyConstants.API_KEY_PARAM_NAME, apiAdminKey).get();
     }
 
     protected Response replaceApiKey(String registryName, String oldApiKey) {

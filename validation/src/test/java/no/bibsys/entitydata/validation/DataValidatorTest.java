@@ -1,8 +1,14 @@
 package no.bibsys.entitydata.validation;
 
-import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
-import no.bibsys.utils.IoUtils;
-import no.bibsys.utils.ModelParser;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -16,17 +22,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import no.bibsys.entitydata.validation.exceptions.EntityFailedShaclValidationException;
+import no.bibsys.utils.IoUtils;
+import no.bibsys.utils.ModelParser;
 
 public class DataValidatorTest extends ModelParser {
 
+    private static final String DELIMITER = "";
     private static final String VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
     private static final String RESOURCES_FOLDER = "validation";
     private static final String SHACL_VALIDATION_SCHEMA_TTL = "validShaclValidationSchema.ttl";
@@ -42,7 +44,7 @@ public class DataValidatorTest extends ModelParser {
             "invalid_schema_and_invalid_graph_fails_message.txt";
     private static final String PATH_SEPARATOR = "/";
     private static final String SOME_BNODE_AND_A_TURTLE_LINE_ENDING = "SOME_BNODE\" ;";
-    private static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = DELIMITER;
     private static final String NEWLINE = "\n";
 
     private transient DataValidator dataValidator;
@@ -59,7 +61,7 @@ public class DataValidatorTest extends ModelParser {
 
     @Test
     public void validationResult_validationSchemaAndValidGraph_true() throws IOException {
-        TestData testData = new TestData(Paths.get("validation", "validGraph.ttl")).invoke();
+        TestData testData = new TestData(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_TTL)).invoke();
         Model dataModel = testData.getDataModel();
         assertTrue(dataValidator.validationResult(dataModel));
     }
@@ -81,7 +83,7 @@ public class DataValidatorTest extends ModelParser {
 
     @Test
     public void valiationReport_validSchemaAndValidGraphTTL_report() throws IOException {
-        TestData testData = new TestData(Paths.get("validation", VALID_GRAPH_TTL)).invoke();
+        TestData testData = new TestData(Paths.get(RESOURCES_FOLDER, VALID_GRAPH_TTL)).invoke();
         Model dataModel = testData.getDataModel();
         Model report = dataValidator.validationReport(dataModel);
         Model expectedModel = ModelFactory.createDefaultModel();
@@ -149,13 +151,13 @@ public class DataValidatorTest extends ModelParser {
     private void testExceptionMessageContainingTurtle() throws IOException {
         // This jiggery pokery needs to be done to avoid matching the bnode id, which is a uuid
 
-        String expectedMesage = IOUtils.resourceToString(Paths.get(PATH_SEPARATOR + RESOURCES_FOLDER,
-                INVALID_SCHEMA_AND_INVALID_GRAPH_FAILS_MESSAGE_TXT).toString(), StandardCharsets.UTF_8)
+        String expectedMesage = IOUtils.resourceToString(PATH_SEPARATOR + String.join(PATH_SEPARATOR, RESOURCES_FOLDER,
+                INVALID_SCHEMA_AND_INVALID_GRAPH_FAILS_MESSAGE_TXT), StandardCharsets.UTF_8)
                 .replace(SOME_BNODE_AND_A_TURTLE_LINE_ENDING, EMPTY_STRING);
         String[] lines = expectedMesage.split(NEWLINE);
         int counter = 0;
         while (counter < lines.length - 1) {
-            expectedException.expectMessage(containsString(lines[counter]));
+            expectedException.expectMessage(containsString(lines[counter].trim()));
             counter++;
         }
 

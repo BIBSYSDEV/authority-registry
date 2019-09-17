@@ -1,5 +1,18 @@
 package no.bibsys.db;
 
+import static java.util.Objects.nonNull;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
@@ -7,6 +20,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.SaveB
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.TableNameOverride;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.resourcegroupstaggingapi.AWSResourceGroupsTaggingAPI;
+
 import no.bibsys.db.exceptions.RegistryAlreadyExistsException;
 import no.bibsys.db.exceptions.RegistryCreationFailureException;
 import no.bibsys.db.exceptions.RegistryMetadataTableBeingCreatedException;
@@ -21,18 +35,6 @@ import no.bibsys.entitydata.validation.exceptions.ShaclModelValidationException;
 import no.bibsys.entitydata.validation.exceptions.TargetClassPropertyObjectIsNotAResourceException;
 import no.bibsys.utils.IoUtils;
 import no.bibsys.utils.ModelParser;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 public class RegistryManager extends ModelParser {
 
@@ -173,28 +175,48 @@ public class RegistryManager extends ModelParser {
                 .collect(Collectors.toList());
     }
 
-    public Registry updateRegistrySchema(String registryMetadataTableName, String registryId, String schema)
-        throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+    public Registry updateRegistryUiSchema(String registryMetadataTableName, String registryId, String uiSchema)
+        throws IOException, TargetClassPropertyObjectIsNotAResourceException {
         registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
 
         validateRegistryExists(registryId);
-        validateRegistryNotEmpty(registryId);
-
-        Model model = parseValidationSchema(schema);
-        shaclValidator.checkModel(model);
 
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.UPDATE)
                 .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
 
+        // We only want to modify the uischema
+        Registry registry = getRegistry(registryMetadataTableName, registryId);
+        registry.setUiSchema(uiSchema);
+        mapper.save(registry, config);
+
+        logger.info("Registry uischema updated successfully, registryMetadataTableNameId={}, registryId={}",
+                registryMetadataTableName, registry.getId());
+        return registry;
+
+    }
+    
+    public Registry updateRegistrySchema(String registryMetadataTableName, String registryId, String schema)
+            throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
+        registryMetadataManager.validateRegistryMetadataTable(registryMetadataTableName);
+        
+        validateRegistryExists(registryId);
+        validateRegistryNotEmpty(registryId);
+        
+        Model model = parseValidationSchema(schema);
+        shaclValidator.checkModel(model);
+        
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder().withSaveBehavior(SaveBehavior.UPDATE)
+                .withTableNameOverride(TableNameOverride.withTableNameReplacement(registryMetadataTableName)).build();
+        
         // We only want to modify the schema
         Registry registry = getRegistry(registryMetadataTableName, registryId);
         registry.setSchema(schema);
         mapper.save(registry, config);
-
+        
         logger.info("Registry schema updated successfully, registryMetadataTableNameId={}, registryId={}",
                 registryMetadataTableName, registry.getId());
         return registry;
-
+        
     }
 
     private Model parseValidationSchema(String schema) {

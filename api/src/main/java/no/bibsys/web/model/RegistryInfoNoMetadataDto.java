@@ -12,7 +12,7 @@ public class RegistryInfoNoMetadataDto {
 
     public RegistryInfoNoMetadataDto() {
     }
-    
+
     public RegistryInfoNoMetadataDto(RegistryDto registry) {
         id = registry.getId();
         apiKey = registry.getApiKey();
