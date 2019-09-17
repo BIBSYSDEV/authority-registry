@@ -9,7 +9,7 @@ import org.apache.jena.rdf.model.impl.ResourceImpl;
 public class UnitOntology {
 
     private static final String NAMESPACE_TEMPLATE = "http://unit.no/entitydata#%s";
-    private static final String CONCEPT_SCHEME_STRING = "ConseptScheme";
+    private static final String CONCEPT_SCHEME_STRING = "ConceptScheme";
     public static final Resource CONCEPT_SCHEME = ResourceFactory.createResource(String.format(NAMESPACE_TEMPLATE, CONCEPT_SCHEME_STRING));
     private static String NAMESPACE = "http://unit.no/entitydata#";
     private static final String preferredLabelString = String.join("", NAMESPACE, "preferredLabel");
