@@ -210,7 +210,7 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = NAME_OF_REGISTRY_TO + "get schema",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
-    String registryName) throws JsonProcessingException {
+        String registryName) throws JsonProcessingException {
         
         RegistryInfoUiSchemaDto registryDto = registryService.getRegistryUiSchema(registryName);
         return Response.ok(registryDto).build();
@@ -242,8 +242,8 @@ public class DatabaseResource {
             @Parameter(in = ParameterIn.PATH, name = REGISTRY_NAME, required = true,
             description = NAME_OF_REGISTRY_TO + "update",
             schema = @Schema(type = STRING)) @PathParam(REGISTRY_NAME)
-    String registryName, @RequestBody(description = "Validation schema",
-    content = @Content(schema = @Schema(type = STRING))) String schema)
+        String registryName, @RequestBody(description = "Validation schema",
+        content = @Content(schema = @Schema(type = STRING))) String schema)
     
             throws IOException, ShaclModelValidationException, TargetClassPropertyObjectIsNotAResourceException {
         
