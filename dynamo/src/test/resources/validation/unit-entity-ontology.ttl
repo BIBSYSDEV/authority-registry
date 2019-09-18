@@ -145,3 +145,35 @@ unit:localIdentifierCode a rdfs:Property ;
   rdfs:description "A code used in local identifiers" ;
   rdfs:domain unit:ConceptScheme ;
   rdfs:range xsd:string .
+
+unit:Time a rdfs:Class ;
+  rdfs:label "Time period"@en, "Tidsperiode"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#Time> .
+
+unit:Topic a rdfs:Class ;
+  rdfs:label "Topic"@en, "Innholdsbeskrivende emne"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#Topic> .
+
+unit:Place a rdfs:Class ;
+  rdfs:label "Place"@en, "Sted"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#Place> .
+
+unit:GenreForm a rdfs:Class ;
+  rdfs:label "Form/genre"@en, "Form/sjanger"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#GenreForm> .
+
+unit:CompoundConcept a rdfs:Class ;
+  rdfs:label "Compound concept"@en, "Komposittbegrep"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#CompoundConcept> .
+
+unit:VirtualCompoundConcept a rdfs:Class ;
+  rdfs:label "Virtual compound concept"@en, "Virtuell komposittbegrep"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#VirtualCompoundConcept> .
+
+unit:LinkingTerm a rdfs:Class ;
+  rdfs:label "Linking term"@en, "Knuteterm"@nb ;
+  rdfs:subClassOf <http://data.ub.uio.no/onto#KnuteTerm> .
+
+unit:ThesaurusArray a rdfs:Class ;
+  rdfs:label "Thesaurus array"@en, "Fasett"@nb ;
+  rdfs:subClassOf <http://purl.org/iso25964/skos-thes#ThesaurusArray> .
