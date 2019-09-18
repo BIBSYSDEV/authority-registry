@@ -11,26 +11,26 @@
 unit: a owl:Ontology ;
   dcterms:description "A simple vocabulary to hold UNIT-specific authority terms and provide relations to common vocabularies" ;
   dcterms:title "UNIT entity vocabulary"@en ;
-  dcterms:title "UNIT entitetsvokabular"@no ;
+  dcterms:title "UNIT entitetsvokabular"@nb ;
   vann:preferredNamespacePrefix "bsa" ;
   vann:preferredNamespaceUri <__THIS_DOCUMENT__> .
 
 unit:ConceptScheme a rdfs:Class ;
   rdfs:subClassOf skos:ConceptScheme ;
   rdfs:label "Concept scheme"@en ;
-  rdfs:label "Begrepssett"@no ;
+  rdfs:label "Begrepssett"@nb ;
   rdfs:description "A set of concepts that logically or organisationally belong together" .
 
 unit:Concept a rdfs:Class ;
   rdfs:subClassOf skos:Concept ;
   rdfs:label "Concept@en" ;
-  rdfs:label "Begrep"@no ;
+  rdfs:label "Begrep"@nb ;
   rdfs:description "A concept is an abstract idea" .
 
 unit:identifier a rdfs:Property ;
   rdfs:subPropertyOf dcterms:identifier ;
   rdfs:label "identifier"@en ;
-  rdfs:label "identifikator"@no ;
+  rdfs:label "identifikator"@nb ;
   rdfs:description "A unique identifier" ;
   rdfs:domain unit:Concept ;
   rdfs:range xsd:string .
@@ -38,7 +38,7 @@ unit:identifier a rdfs:Property ;
 unit:localIdentifier a rdfs:Property ;
   rdfs:subPropertyOf dcterms:identifier ;
   rdfs:label "local identifier"@en ;
-  rdfs:label "lokalidentifikator"@no ;
+  rdfs:label "lokalidentifikator"@nb ;
   rdfs:description "A unique local identifier" ;
   rdfs:domain unit:Concept ;
   rdfs:range xsd:string .
@@ -46,7 +46,7 @@ unit:localIdentifier a rdfs:Property ;
 unit:preferredLabel a rdfs:Property ;
   rdfs:subPropertyOf skos:prefLabel ;
   rdfs:label "Preferred label"@en ;
-  rdfs:label "Foretrukket navn"@no ;
+  rdfs:label "Foretrukket navn"@nb ;
   rdfs:description "A preferred label for a thing" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
@@ -54,7 +54,7 @@ unit:preferredLabel a rdfs:Property ;
 unit:alternativeLabel a rdfs:Property ;
   rdfs:subPropertyOf skos:altLabel ;
   rdfs:label "Alternative label"@en ;
-  rdfs:label "Alternativt navn"@no ;
+  rdfs:label "Alternativt navn"@nb ;
   rdfs:description "An alternative label for a thing" ;
   rdfs:domain unit:Concept ;
   rdfs:range rdf:langString .
@@ -62,7 +62,7 @@ unit:alternativeLabel a rdfs:Property ;
 unit:narrower a rdfs:Property ;
   rdfs:subPropertyOf skos:narrower ;
   rdfs:label "Narrower"@en ;
-  rdfs:label "Underordnet begrep"@no ;
+  rdfs:label "Underordnet begrep"@nb ;
   rdfs:description "If X is narrower than Y, then X has a subpart relation with Y" ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:Concept .
@@ -70,7 +70,7 @@ unit:narrower a rdfs:Property ;
 unit:broader a rdfs:Property ;
   rdfs:subPropertyOf skos:broader ;
   rdfs:label "Broader"@en ;
-  rdfs:label "Overordnet begrep"@no ;
+  rdfs:label "Overordnet begrep"@nb ;
   rdfs:description "If X is broader than Y, then Y has a subpart relation with X" ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:Concept .
@@ -78,7 +78,7 @@ unit:broader a rdfs:Property ;
 unit:related a rdfs:Property ;
   rdfs:subPropertyOf skos:related ;
   rdfs:label "Related"@en ;
-  rdfs:label "Relatert begrep"@no ;
+  rdfs:label "Relatert begrep"@nb ;
   rdfs:description "If X is related to Y, then X stands in some unspecified, but nevertheless relevant relation to Y" ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:Concept .
@@ -86,7 +86,7 @@ unit:related a rdfs:Property ;
 unit:definition a rdfs:Property ;
   rdfs:subPropertyOf skos:definition ;
   rdfs:label "Definition"@en ;
-  rdfs:label "Beskrivelse"@no ;
+  rdfs:label "Beskrivelse"@nb ;
   rdfs:description "A complete definition of what the term means and how it is to be used" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
@@ -94,7 +94,7 @@ unit:definition a rdfs:Property ;
 unit:editorialNote a rdfs:Property ;
   rdfs:subPropertyOf skos:editorialNote ;
   rdfs:label "Editorial note"@en ;
-  rdfs:label "Redaktørnote"@no ;
+  rdfs:label "Redaktørnote"@nb ;
   rdfs:description "A note of editorial significance" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range rdf:langString .
@@ -102,7 +102,7 @@ unit:editorialNote a rdfs:Property ;
 unit:scopeNote a rdfs:Property ;
   rdfs:subPropertyOf skos:scopeNote ;
   rdfs:label "Scope note"@en ;
-  rdfs:label "Scope-notat"@no ;
+  rdfs:label "Scope-notat"@nb ;
   rdfs:description "A note regarding the extent and content of the application of a term" ;
   rdfs:domain unit:Concept ;
   rdfs:range rdf:langString .
@@ -110,7 +110,7 @@ unit:scopeNote a rdfs:Property ;
 unit:inScheme a rdfs:Property ;
   rdfs:subPropertyOf skos:inScheme ;
   rdfs:label "In concept scheme"@en ;
-  rdfs:label "I begrepssett"@no ;
+  rdfs:label "I begrepssett"@nb ;
   rdfs:description "The relation between a concept and the concept scheme to which it belongs" ;
   rdfs:domain unit:Concept ;
   rdfs:range unit:ConceptScheme .
@@ -118,14 +118,14 @@ unit:inScheme a rdfs:Property ;
 unit:seeAlso a rdfs:Property ;
   rdfs:subPropertyOf rdfs:seeAlso ;
   rdfs:label "See also"@en ;
-  rdfs:label "Se også"@no ;
+  rdfs:label "Se også"@nb ;
   rdfs:description "A generic, unspecified relation for relevant information" ;
   rdfs:domain unit:Concept, unit:ConceptScheme .
 
 unit:modified a rdfs:Property ;
   rdfs:subPropertyOf skos:modified ;
   rdfs:label "modified"@en ;
-  rdfs:label "modifisert"@no ;
+  rdfs:label "modifisert"@nb ;
   rdfs:description "The last date of modification" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
@@ -133,7 +133,7 @@ unit:modified a rdfs:Property ;
 unit:created a rdfs:Property ;
   rdfs:subPropertyOf skos:created ;
   rdfs:label "created"@en ;
-  rdfs:label "opprettet"@no ;
+  rdfs:label "opprettet"@nb ;
   rdfs:description "The date of creation" ;
   rdfs:domain unit:Concept, unit:ConceptScheme ;
   rdfs:range xsd:date .
@@ -141,13 +141,13 @@ unit:created a rdfs:Property ;
 unit:sameAs a rdfs:Property ;
   rdfs:subPropertyOf owl:sameAs ;
   rdfs:label "same as"@en ;
-  rdfs:label "samme som"@no ;
+  rdfs:label "samme som"@nb ;
   rdfs:description "Relation between two identical things" .
 
 unit:localIdentifierCode a rdfs:Property ;
   rdfs:subPropertyOf dcterms:identifier ;
   rdfs:label "local identifier code"@en ;
-  rdfs:label "lokalidentifikatorkode"@no ;
+  rdfs:label "lokalidentifikatorkode"@nb ;
   rdfs:description "A code used in local identifiers" ;
   rdfs:domain unit:ConceptScheme ;
   rdfs:range xsd:string .
