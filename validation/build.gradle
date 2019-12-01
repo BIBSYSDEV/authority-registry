@@ -2,7 +2,7 @@ dependencies{
 
     implementation project (":common")
     implementation group: 'org.apache.jena', name: 'jena-core', version: '3.11.0'
-    implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.11.0'
+    implementation group: 'org.apache.jena', name: 'jena-arq', version: '3.13.1'
     implementation  ('org.topbraid:shacl:1.1.0') {
         exclude group: 'org.apache.jena', module: 'jena-arq'
     }
