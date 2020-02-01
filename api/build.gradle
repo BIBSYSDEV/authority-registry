@@ -72,7 +72,7 @@ dependencies {
     // This is for simulating DynamoDB locally
     testRuntimeClasspath ("com.amazonaws:DynamoDBLocal:1.11.119")
 
-    testImplementation("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.28")
+    testImplementation("org.glassfish.jersey.test-framework.providers:jersey-test-framework-provider-grizzly2:2.30")
     testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0")
     testImplementation("org.mockito:mockito-core:2.28.2")
 }
