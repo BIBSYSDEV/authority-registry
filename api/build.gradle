@@ -32,7 +32,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-cloudsearch:1.11.+")
 
     //jersey libraries
-    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.28")
+    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:2.30")
     implementation("org.glassfish.jersey.inject:jersey-hk2:2.28") {
         exclude group: 'javax.inject'
     }
