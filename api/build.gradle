@@ -60,7 +60,7 @@ dependencies {
 	
 	//RDF
 	  implementation("org.apache.jena:jena-core:3.11.0")
-    implementation("org.apache.jena:jena-arq:3.11.0")
+    implementation("org.apache.jena:jena-arq:3.14.0")
 	
 	// MARC
 	  implementation("org.marc4j:marc4j:2.8.3")
