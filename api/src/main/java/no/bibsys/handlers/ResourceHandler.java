@@ -23,6 +23,8 @@ import no.bibsys.aws.tools.Environment;
 import no.bibsys.handlers.utils.SwaggerHubUpdater;
 import no.bibsys.staticurl.UrlUpdater;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for common methods of InitHandler and DestroyHandler.
@@ -30,6 +32,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplate<SimpleResponse> {
 
     private static final String REST_API_NOT_FOUND_MESSAGE = "Could not find a RestApi in stack ";
+    private static final Logger logger = LoggerFactory.getLogger(ResourceHandler.class);
+
     protected final transient String stackName;
     protected final transient SwaggerHubUpdater swaggerHubUpdater;
     private final transient Stage stage;
@@ -92,10 +96,12 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
             String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
+            logger.info("URLLLLLLLLLLLLL:"+newUrl);
             staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl, staticUrlInfo.getStage());
         }
         if (Stage.TEST.equals(stage)) {
             String newUrl = "test." + staticUrlInfo.getRecordSetName();
+            logger.info("TESTING URLLLLLLLLLLLLL:"+newUrl);
             staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(), newUrl, staticUrlInfo.getStage());
         }
         return staticUrlInfo;
