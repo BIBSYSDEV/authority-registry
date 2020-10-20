@@ -95,12 +95,12 @@ public abstract class ResourceHandler extends CodePipelineFunctionHandlerTemplat
         if (!GitConstants.MASTER_BRANCH.equalsIgnoreCase(gitBranch)) {
 
             String randomString = DigestUtils.sha1Hex(gitBranch).substring(0, 5);
-            String newUrl = String.format("%s.%s", randomString, staticUrlInfo.getRecordSetName());
+            String newUrl = String.format("%s-%s", randomString, staticUrlInfo.getRecordSetName());
             logger.info("URLLLLLLLLLLLLL:"+newUrl);
             staticUrlInfo = new StaticUrlInfo(hostedZoneName, newUrl, staticUrlInfo.getStage());
         }
         if (Stage.TEST.equals(stage)) {
-            String newUrl = "test." + staticUrlInfo.getRecordSetName();
+            String newUrl = "test-" + staticUrlInfo.getRecordSetName();
             logger.info("TESTING URLLLLLLLLLLLLL:"+newUrl);
             staticUrlInfo = new StaticUrlInfo(staticUrlInfo.getZoneName(), newUrl, staticUrlInfo.getStage());
         }
